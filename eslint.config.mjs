@@ -19,12 +19,10 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   // 기본 권장 설정
-  js.configs.recommended,
-
   // Next.js 설정
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
-
   // TypeScript 파일 전용 설정
+  js.configs.recommended, // JavaScript 파일용 설정
+  ...compat.extends('next/core-web-vitals', 'next/typescript'), // Prettier (맨 마지막)
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -174,8 +172,6 @@ const eslintConfig = [
       },
     },
   },
-
-  // JavaScript 파일용 설정
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -189,8 +185,6 @@ const eslintConfig = [
       'no-console': 'warn',
     },
   },
-
-  // Prettier (맨 마지막)
   eslintConfigPrettier,
 ];
 

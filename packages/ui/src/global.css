@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'tw-animate-css';
+
 :root {
   /* === 01.2.1 Neutral Colors === */
   --color-title: #252525;
@@ -108,9 +110,7 @@ html {
 }
 
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   font-size: var(--font-size-body);
   line-height: var(--line-height-normal);
   color: var(--color-body);

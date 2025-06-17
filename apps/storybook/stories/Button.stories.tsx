@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import Button from './Button.js';
+import Button from '@repo/ui/Button/Button';
 
 // React Icons 예시 (실제 프로젝트에서 사용할 아이콘들)
 import {
-  FiArrowRight,
-  FiDownload,
-  FiEdit3,
-  FiHeart,
-  FiPlus,
-  FiSearch,
-  FiSettings,
-  FiShare2,
-  FiTrash2,
-  FiUser,
-} from 'react-icons/fi';
+  ArrowRight,
+  Download,
+  Edit3, //(※ 최신 버전엔 PenLine/Pencil로 대체될 수 있음)
+  Heart,
+  Plus,
+  Search,
+  Share2,
+  User,
+  Settings,
+  Trash,
+} from 'lucide-react';
 
 const meta = {
   title: 'Components/Button',
@@ -121,13 +121,13 @@ export const ButtonTypes: Story = {
       <div>
         <h3 className="text-h3 mb-3">🔤 아이콘+텍스트 버튼</h3>
         <div className="flex gap-3">
-          <Button variant="primary" Icon={FiPlus}>
+          <Button variant="primary" Icon={Plus}>
             상품 등록
           </Button>
-          <Button variant="secondary" Icon={FiHeart}>
+          <Button variant="secondary" Icon={Heart}>
             관심 상품
           </Button>
-          <Button variant="ghost" Icon={FiShare2}>
+          <Button variant="ghost" Icon={Share2}>
             공유하기
           </Button>
         </div>
@@ -136,9 +136,9 @@ export const ButtonTypes: Story = {
       <div>
         <h3 className="text-h3 mb-3">🎯 아이콘만 있는 버튼</h3>
         <div className="flex gap-3">
-          <Button variant="primary" Icon={FiPlus} ariaLabel="추가" />
-          <Button variant="secondary" Icon={FiHeart} ariaLabel="좋아요" />
-          <Button variant="ghost" Icon={FiShare2} ariaLabel="공유" />
+          <Button variant="primary" Icon={Plus} ariaLabel="추가" />
+          <Button variant="secondary" Icon={Heart} ariaLabel="좋아요" />
+          <Button variant="ghost" Icon={Share2} ariaLabel="공유" />
         </div>
       </div>
     </div>
@@ -146,8 +146,7 @@ export const ButtonTypes: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          '3가지 버튼 타입을 모두 보여주는 예시입니다. 각각의 사용 시나리오가 다릅니다.',
+        story: '3가지 버튼 타입을 모두 보여주는 예시입니다. 각각의 사용 시나리오가 다릅니다.',
       },
     },
   },
@@ -186,33 +185,14 @@ export const States: Story = {
         <h3 className="text-h3 mb-3">🔧 아이콘 버튼 상태</h3>
         <div className="space-y-3">
           <div className="flex gap-3">
-            <Button variant="primary" Icon={FiEdit3} ariaLabel="수정" />
-            <Button
-              variant="secondary"
-              Icon={FiDownload}
-              ariaLabel="다운로드"
-            />
-            <Button variant="ghost" Icon={FiSettings} ariaLabel="설정" />
+            <Button variant="primary" Icon={Edit3} ariaLabel="수정" />
+            <Button variant="secondary" Icon={Download} ariaLabel="다운로드" />
+            <Button variant="ghost" Icon={Settings} ariaLabel="설정" />
           </div>
           <div className="flex gap-3">
-            <Button
-              variant="primary"
-              Icon={FiEdit3}
-              disabled
-              ariaLabel="수정"
-            />
-            <Button
-              variant="secondary"
-              Icon={FiDownload}
-              disabled
-              ariaLabel="다운로드"
-            />
-            <Button
-              variant="ghost"
-              Icon={FiSettings}
-              disabled
-              ariaLabel="설정"
-            />
+            <Button variant="primary" Icon={Edit3} disabled ariaLabel="수정" />
+            <Button variant="secondary" Icon={Download} disabled ariaLabel="다운로드" />
+            <Button variant="ghost" Icon={Settings} disabled ariaLabel="설정" />
           </div>
         </div>
       </div>
@@ -232,18 +212,18 @@ export const States: Story = {
 
 export const AuctionAppExamples: Story = {
   render: () => (
-    <div className="space-y-6 max-w-sm">
+    <div className="max-w-sm space-y-6">
       <div>
         <h3 className="text-h3 mb-3">🏠 홈화면 액션</h3>
         <div className="space-y-2">
-          <Button variant="primary" Icon={FiPlus} className="w-full">
+          <Button variant="primary" Icon={Plus} className="w-full">
             상품 등록하기
           </Button>
           <div className="flex gap-2">
-            <Button variant="secondary" Icon={FiSearch} className="flex-1">
+            <Button variant="secondary" Icon={Search} className="flex-1">
               검색
             </Button>
-            <Button variant="ghost" Icon={FiUser} ariaLabel="프로필" />
+            <Button variant="ghost" Icon={User} ariaLabel="프로필" />
           </div>
         </div>
       </div>
@@ -255,10 +235,10 @@ export const AuctionAppExamples: Story = {
             입찰하기
           </Button>
           <div className="flex gap-2">
-            <Button variant="secondary" Icon={FiHeart} className="flex-1">
+            <Button variant="secondary" Icon={Heart} className="flex-1">
               관심 등록
             </Button>
-            <Button variant="ghost" Icon={FiShare2} ariaLabel="공유하기" />
+            <Button variant="ghost" Icon={Share2} ariaLabel="공유하기" />
           </div>
         </div>
       </div>
@@ -266,13 +246,13 @@ export const AuctionAppExamples: Story = {
       <div>
         <h3 className="text-h3 mb-3">⚙️ 관리 액션</h3>
         <div className="flex gap-2">
-          <Button variant="ghost" Icon={FiEdit3}>
+          <Button variant="ghost" Icon={Edit3}>
             수정
           </Button>
-          <Button variant="secondary" Icon={FiDownload}>
+          <Button variant="secondary" Icon={Download}>
             다운로드
           </Button>
-          <Button variant="primary" Icon={FiTrash2}>
+          <Button variant="primary" Icon={Trash}>
             삭제
           </Button>
         </div>
@@ -280,11 +260,11 @@ export const AuctionAppExamples: Story = {
 
       <div>
         <h3 className="text-h3 mb-3">🎯 빠른 액션 (아이콘만)</h3>
-        <div className="flex gap-2 justify-center">
-          <Button variant="ghost" Icon={FiHeart} ariaLabel="좋아요" />
-          <Button variant="ghost" Icon={FiShare2} ariaLabel="공유" />
-          <Button variant="ghost" Icon={FiDownload} ariaLabel="다운로드" />
-          <Button variant="ghost" Icon={FiSettings} ariaLabel="설정" />
+        <div className="flex justify-center gap-2">
+          <Button variant="ghost" Icon={Heart} ariaLabel="좋아요" />
+          <Button variant="ghost" Icon={Share2} ariaLabel="공유" />
+          <Button variant="ghost" Icon={Download} ariaLabel="다운로드" />
+          <Button variant="ghost" Icon={Settings} ariaLabel="설정" />
         </div>
       </div>
     </div>
@@ -307,15 +287,13 @@ export const StyleGuide: Story = {
       <div>
         <h3 className="text-h3 mb-3">🎨 Primary 버튼 (메인 액션)</h3>
         <div className="space-y-2">
-          <p className="text-caption">
-            배경: #64B5F7, 텍스트: white, 호버: #045A9A
-          </p>
-          <div className="flex gap-3 items-center">
+          <p className="text-caption">배경: #64B5F7, 텍스트: white, 호버: #045A9A</p>
+          <div className="flex items-center gap-3">
             <Button variant="primary">입찰하기</Button>
-            <Button variant="primary" Icon={FiArrowRight}>
+            <Button variant="primary" Icon={ArrowRight}>
               다음 단계
             </Button>
-            <Button variant="primary" Icon={FiPlus} ariaLabel="추가" />
+            <Button variant="primary" Icon={Plus} ariaLabel="추가" />
           </div>
         </div>
       </div>
@@ -323,15 +301,13 @@ export const StyleGuide: Story = {
       <div>
         <h3 className="text-h3 mb-3">🎨 Secondary 버튼 (보조 액션)</h3>
         <div className="space-y-2">
-          <p className="text-caption">
-            배경: white, 테두리: #64B5F7, 텍스트: #64B5F7
-          </p>
-          <div className="flex gap-3 items-center">
+          <p className="text-caption">배경: white, 테두리: #64B5F7, 텍스트: #64B5F7</p>
+          <div className="flex items-center gap-3">
             <Button variant="secondary">취소</Button>
-            <Button variant="secondary" Icon={FiHeart}>
+            <Button variant="secondary" Icon={Heart}>
               관심등록
             </Button>
-            <Button variant="secondary" Icon={FiShare2} ariaLabel="공유" />
+            <Button variant="secondary" Icon={Share2} ariaLabel="공유" />
           </div>
         </div>
       </div>
@@ -340,12 +316,12 @@ export const StyleGuide: Story = {
         <h3 className="text-h3 mb-3">🎨 Ghost 버튼 (미니멀 액션)</h3>
         <div className="space-y-2">
           <p className="text-caption">배경: transparent, 텍스트: #64B5F7</p>
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             <Button variant="ghost">더보기</Button>
-            <Button variant="ghost" Icon={FiEdit3}>
+            <Button variant="ghost" Icon={Edit3}>
               수정
             </Button>
-            <Button variant="ghost" Icon={FiSettings} ariaLabel="설정" />
+            <Button variant="ghost" Icon={Settings} ariaLabel="설정" />
           </div>
         </div>
       </div>
@@ -367,23 +343,17 @@ export const AccessibilityTest: Story = {
     <div className="space-y-4">
       <div>
         <h3 className="text-h3 mb-3">♿ 접근성 테스트</h3>
-        <p className="text-caption mb-4">
-          Tab 키로 포커스 이동, Space/Enter로 클릭 테스트
-        </p>
+        <p className="text-caption mb-4">Tab 키로 포커스 이동, Space/Enter로 클릭 테스트</p>
         <div className="space-y-3">
           <div className="flex gap-2">
             <Button variant="primary">포커스 테스트 1</Button>
-            <Button variant="secondary" Icon={FiHeart}>
+            <Button variant="secondary" Icon={Heart}>
               포커스 테스트 2
             </Button>
-            <Button
-              variant="ghost"
-              Icon={FiSettings}
-              ariaLabel="설정 (아이콘만)"
-            />
+            <Button variant="ghost" Icon={Settings} ariaLabel="설정 (아이콘만)" />
           </div>
 
-          <div className="bg-[var(--color-background)] p-3 rounded-lg">
+          <div className="rounded-lg bg-[var(--color-background)] p-3">
             <p className="text-caption">
               ✅ 아이콘만 있는 버튼에는 ariaLabel 필수
               <br />
@@ -412,7 +382,7 @@ export const Interactive: Story = {
   args: {
     variant: 'primary',
     children: '클릭해보세요!',
-    Icon: FiPlus,
+    Icon: Plus,
     onClick: () => alert('🎉 버튼이 클릭되었습니다!'),
   },
   parameters: {
