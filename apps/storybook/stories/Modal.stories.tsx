@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { Button } from '@repo/ui/Button/Button';
-import { Modal, type ModalProps } from '@repo/ui/Modal/Modal';
+import { Button } from '@repo/ui/components/Button/Button';
+import { Modal, type ModalProps } from '@repo/ui/components/Modal/Modal';
 import { CircleCheck, Clock, Heart, MapPin, Star, TriangleAlert } from 'lucide-react';
 
 // 🔧 Modal을 제어하는 Wrapper 컴포넌트

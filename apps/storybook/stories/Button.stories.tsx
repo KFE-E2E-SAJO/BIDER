@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import Button from '@repo/ui/Button/Button';
+import { Button } from '@repo/ui/components/Button/Button';
 
 // React Icons 예시 (실제 프로젝트에서 사용할 아이콘들)
 import {
