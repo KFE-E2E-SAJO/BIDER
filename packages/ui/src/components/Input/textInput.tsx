@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { cn } from '../lib/utils/cn.js';
+import { cn } from '@/lib/utils.js';
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;

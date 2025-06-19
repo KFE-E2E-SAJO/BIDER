@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { FocusTrap } from 'focus-trap-react'; // ★ 추가
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.js';
 import { X } from 'lucide-react';
 
 export interface ModalProps {
