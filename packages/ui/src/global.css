@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 :root {
   /* === 01.2.1 Neutral Colors === */
   --color-title: #252525;
