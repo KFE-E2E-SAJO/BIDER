@@ -15,8 +15,7 @@
     "check-types": "turbo run check-types",
     "prepare": "lefthook install",
     "hooks:install": "lefthook install",
-    "hooks:uninstall": "lefthook uninstall",
-    "dev:storybook": "turbo run dev --filter=@repo/ui --filter=@apps/storybook"
+    "hooks:uninstall": "lefthook uninstall"
   },
   "devDependencies": {
     "eslint-config-prettier": "^10.1.1",
