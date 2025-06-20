@@ -1,19 +1,11 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "node",
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/hooks/*": ["src/hooks/*"],
-      "@/utils": ["src/lib/utils"],
-      "@/*": ["src/*"]
-    }
+    "baseUrl": "."
   },
-  "extends": "@repo/typescript-config/base.json",
-  "include": ["."],
+  "extends": "@repo/typescript-config/react-library.json",
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "build"]
 }

@@ -3,14 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    ".": "./dist",
+    "./*": "./dist/*.js",
     "./styles.css": "./dist/index.css"
   },
   "type": "module",
   "scripts": {
     "lint": "eslint . --max-warnings 15",
     "generate:component": "turbo gen react-component",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:styles": "tailwindcss -i ./src/global.css -o ./dist/index.css",
+    "build:components": "tsc",
+    "dev:styles": "tailwindcss -i ./src/global.css -o ./dist/index.css --watch",
+    "dev:components": "tsc --watch"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
