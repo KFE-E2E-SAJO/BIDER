@@ -14,13 +14,6 @@
     }
   },
   "extends": "@repo/typescript-config/base.json",
-  "include": [
-    "src/**/*",
-    ".storybook/**/*",
-    "tailwind.config.ts",
-    "turbo/generators/**/*",
-    "vitest.config.ts",
-    "vitest.shims.d.ts"
-  ],
-  "exclude": ["node_modules", "dist"]
+  "include": ["."],
+  "exclude": ["node_modules", "dist", "build"]
 }
