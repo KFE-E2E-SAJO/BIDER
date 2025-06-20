@@ -5,7 +5,8 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
+      "env": ["NODE_OPTIONS=--max-old-space-size=4096"]
     },
     "dev": {
       "cache": false,
@@ -15,8 +16,8 @@
       "dependsOn": ["^lint"],
       "inputs": ["$TURBO_DEFAULT$", "eslint.config.*", ".eslintrc.*"]
     },
-    "type-check": {
-      "dependsOn": ["^type-check"],
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
       "inputs": ["$TURBO_DEFAULT$", "tsconfig.json", "**/*.ts", "**/*.tsx"]
     },
     "test": {
@@ -25,6 +26,10 @@
     },
     "clean": {
       "cache": false
+    },
+    "build-storybook": {
+      "dependsOn": ["^build-storybook"],
+      "inputs": ["$TURBO_DEFAULT$", "storybook.config.*"]
     }
   },
   "globalDependencies": ["package.json", "pnpm-workspace.yaml", "tsconfig.json"],

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useCallback, useEffect } from 'react';
 import { FocusTrap } from 'focus-trap-react'; // ★ 추가
 

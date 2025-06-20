@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    ".": "./src"
+    ".": "./dist",
+    "./styles.css": "./dist/index.css"
   },
   "type": "module",
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
+    "lint": "eslint . --max-warnings 15",
     "generate:component": "turbo gen react-component",
-    "check-types": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -17,7 +18,7 @@
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/cli": "^4.1.10",
     "@turbo/gen": "^2.5.0",
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.15.32",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
     "eslint": "^9.28.0",

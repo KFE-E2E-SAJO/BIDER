@@ -1,4 +1,21 @@
-import { defineConfig } from 'eslint/config';
-import reactInternal from '../eslint-config/react-internal.js';
+// packages/ui/eslint.config.mjs
+import { config } from '@repo/eslint-config';
+// import { config } from '@repo/eslint-config/react-internal.js';
 
-export default defineConfig([...reactInternal]);
+// /** @type {import("eslint").Linter.Config} */
+// export default config;
+import baseConfig from '@repo/eslint-config/react.js';
+
+/** @type {import("eslint").Linter.Config[]} */
+export default [
+  {
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      'storybook-static/**', // Storybook 빌드 파일 제외
+      '.storybook/main.ts', // Storybook 설정 파일도 제외 가능
+    ],
+  },
+  ...baseConfig,
+];

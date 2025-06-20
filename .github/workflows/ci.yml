@@ -1,0 +1,61 @@
+name: CI (FSD + Supabase/Prisma)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.1
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (all)
+        run: pnpm turbo lint
+
+      - name: Typecheck (all)
+        run: pnpm turbo typecheck
+
+      # - name: Test (all)
+      #   run: pnpm turbo test
+
+      - name: Build (all)
+        run: pnpm turbo build
+
+      - name: Build Storybook (ui)
+        run: pnpm --filter=ui build-storybook
+
+      # Prisma, Supabase 백엔드 Step (주석 해제시)
+      # - name: Prisma Format & Validate
+      #   run: |
+      #     cd backend/prisma
+      #     pnpm prisma format
+      #     pnpm prisma validate
+
+      # - name: Prisma Migrate Check (optional)
+      #   run: |
+      #     cd backend/prisma
+      #     pnpm prisma migrate diff --from-empty --to-schema-datamodel schema.prisma
+
+      # - name: Supabase Functions Lint/Test (optional)
+      #   run: |
+      #     cd backend/supabase
+      #     pnpm lint
+      #     pnpm test

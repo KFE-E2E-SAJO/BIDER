@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ComponentType, SVGProps } from 'react';
 
 export interface ButtonProps {

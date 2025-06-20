@@ -1,5 +1,4 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "module": "esnext",
@@ -14,6 +13,14 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src"],
+  "extends": "@repo/typescript-config/base.json",
+  "include": [
+    "src/**/*",
+    ".storybook/**/*",
+    "tailwind.config.ts",
+    "turbo/generators/**/*",
+    "vitest.config.ts",
+    "vitest.shims.d.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

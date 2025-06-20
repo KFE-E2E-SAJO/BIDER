@@ -5,6 +5,7 @@
   "exports": {
     ".": "./tailwind.config.ts"
   },
+  "scripts": {},
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "tailwindcss": "^3.4.0"
