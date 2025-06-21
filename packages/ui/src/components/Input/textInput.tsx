@@ -1,7 +1,7 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useRef, useState } from 'react';
-import { cn } from '../../lib/utils';
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;

@@ -4,7 +4,10 @@
     "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "dist",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "extends": "@repo/typescript-config/react-library.json",
   "include": ["src/**/*"],

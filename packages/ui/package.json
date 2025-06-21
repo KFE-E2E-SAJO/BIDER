@@ -12,9 +12,9 @@
     "generate:component": "turbo gen react-component",
     "typecheck": "tsc --noEmit",
     "build:styles": "tailwindcss -i ./src/global.css -o ./dist/index.css",
-    "build:components": "tsc",
+    "build:components": "tsc && tsc-alias",
     "dev:styles": "tailwindcss -i ./src/global.css -o ./dist/index.css --watch",
-    "dev:components": "tsc --watch"
+    "dev:components": "tsc --watch & tsc-alias --watch"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -27,9 +27,11 @@
     "@types/react-dom": "19.1.1",
     "eslint": "^9.28.0",
     "tailwindcss": "^4.1.10",
+    "tsc-alias": "^1.8.16",
     "typescript": "5.8.2"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "focus-trap-react": "^11.0.4",
