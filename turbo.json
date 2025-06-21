@@ -33,7 +33,8 @@
     },
     "storybook": {
       "dependsOn": ["^build"],
-      "cache": false
+      "cache": false,
+      "persistent": true
     }
   },
   "globalDependencies": ["package.json", "pnpm-workspace.yaml", "tsconfig.json"],
