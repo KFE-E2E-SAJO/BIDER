@@ -3,8 +3,9 @@ import type { Config } from 'tailwindcss';
 
 const config: Pick<Config, 'content' | 'presets'> = {
   content: [
-    './src/**/*.{js,ts,jsx,tsx}', // UI 컴포넌트 사용 위치
+    './stories/**/*.{ts,tsx}', // ✅ 스토리북 내부 스토리
   ],
+
   presets: [sharedConfig],
 };
 

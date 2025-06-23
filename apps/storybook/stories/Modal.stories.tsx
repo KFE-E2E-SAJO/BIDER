@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { Button } from '../Button/Button.jsx';
-import { Modal, type ModalProps } from './Modal.js';
-// React Icons 예시
-import { FiAlertTriangle, FiCheckCircle, FiClock, FiHeart, FiMapPin, FiStar } from 'react-icons/fi';
+import { Button } from '@repo/ui/components/Button/Button';
+import { Modal, type ModalProps } from '@repo/ui/components/Modal/Modal';
+import { CircleCheck, Clock, Heart, MapPin, Star, TriangleAlert } from 'lucide-react';
 
 // 🔧 Modal을 제어하는 Wrapper 컴포넌트
 interface ModalWrapperProps extends Omit<ModalProps, 'isOpen' | 'onClose'> {
@@ -118,7 +117,7 @@ export const AuctionSuccess: Story = {
           다른 분께 입찰 기회가 넘어갑니다.
         </p>
         <div className="flex items-center justify-center gap-2 text-[var(--color-main)]">
-          <FiClock width={16} height={16} />
+          <Clock width={16} height={16} />
           <span className="text-caption">남은 시간 2:58:31</span>
         </div>
       </div>
@@ -186,7 +185,7 @@ export const VerticalButtons: Story = {
     children: (
       <div className="space-y-3">
         <div className="flex items-start justify-center gap-3">
-          <FiAlertTriangle className="mt-1 text-[24px] text-[var(--color-danger)]" />
+          <TriangleAlert className="mt-1 text-[24px] text-[var(--color-danger)]" />
           <div>
             <p className="text-body">
               삭제된 계정은 복구할 수 없습니다.
@@ -214,7 +213,7 @@ export const NoButtons: Story = {
     children: (
       <div className="space-y-4">
         <div className="flex items-center justify-center gap-2">
-          <FiCheckCircle className="text-[24px] text-[var(--color-danger)]" />
+          <CircleCheck className="text-[24px] text-[var(--color-danger)]" />
           <p className="text-body">설정이 저장되었습니다!</p>
         </div>
       </div>
@@ -264,7 +263,7 @@ export const AuctionScenarios: Story = {
           >
             <div className="space-y-3">
               <div className="flex items-center justify-center gap-2 text-[var(--color-warning)]">
-                <FiClock className="text-[24px]" />
+                <Clock className="text-[24px]" />
                 <span className="text-body font-medium">3분 남음</span>
               </div>
               <p className="text-body">
@@ -284,7 +283,7 @@ export const AuctionScenarios: Story = {
           >
             <div className="space-y-3">
               <div className="flex items-center justify-center">
-                <FiHeart className="text-[24px] text-[var(--color-danger)]" />
+                <Heart className="text-[24px] text-[var(--color-danger)]" />
               </div>
               <p className="text-body">
                 가격 변동이나 경매 시작 시
@@ -308,7 +307,7 @@ export const AuctionScenarios: Story = {
           >
             <div className="space-y-3">
               <div className="flex items-center justify-center">
-                <FiMapPin className="text-[24px] text-[var(--color-main)]" />
+                <MapPin className="text-[24px] text-[var(--color-main)]" />
               </div>
               <div>
                 <p className="text-body mb-2">
@@ -335,7 +334,7 @@ export const AuctionScenarios: Story = {
             <div className="space-y-3">
               <div className="flex items-center justify-center gap-1">
                 {[1, 2, 3, 4, 5].map((_star, idx) => (
-                  <FiStar key={idx} className="text-[24px] text-[var(--color-warning)]" />
+                  <Star key={idx} className="text-[24px] text-[var(--color-warning)]" />
                 ))}
               </div>
               <p className="text-body">
@@ -446,37 +445,34 @@ export const AccessibilityTest: Story = {
   },
 };
 
-// 컴포넌트로 분리
-const InteractiveModal = () => {
-  const [result, setResult] = useState('');
-
-  return (
-    <div className="space-y-4">
-      <ModalWrapper
-        title="인터랙티브 테스트"
-        confirmText="확인"
-        cancelText="취소"
-        onConfirm={() => setResult('✅ 확인 버튼이 클릭되었습니다!')}
-        onCancel={() => setResult('❌ 취소 버튼이 클릭되었습니다!')}
-      >
-        <p className="text-body">
-          버튼을 클릭하여 모달의 동작을 테스트해보세요.
-          <br />
-          결과가 아래에 표시됩니다.
-        </p>
-      </ModalWrapper>
-
-      {result && (
-        <div className="rounded-lg bg-[var(--color-main-lightest)] p-4">
-          <p className="text-body text-[var(--color-main-text)]">{result}</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
 export const Interactive: Story = {
-  render: () => <InteractiveModal />, // 컴포넌트 사용
+  render: () => {
+    const [result, setResult] = useState('');
+
+    return (
+      <div className="space-y-4">
+        <ModalWrapper
+          title="인터랙티브 테스트"
+          confirmText="확인"
+          cancelText="취소"
+          onConfirm={() => setResult('✅ 확인 버튼이 클릭되었습니다!')}
+          onCancel={() => setResult('❌ 취소 버튼이 클릭되었습니다!')}
+        >
+          <p className="text-body">
+            버튼을 클릭하여 모달의 동작을 테스트해보세요.
+            <br />
+            결과가 아래에 표시됩니다.
+          </p>
+        </ModalWrapper>
+
+        {result && (
+          <div className="rounded-lg bg-[var(--color-main-lightest)] p-4">
+            <p className="text-body text-[var(--color-main-text)]">{result}</p>
+          </div>
+        )}
+      </div>
+    );
+  },
   args: {
     children: '인터랙티브 테스트 내용',
     title: '인터랙티브 테스트',

@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "moduleResolution": "NodeNext"
+    "module": "esnext",
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "extends": "@repo/typescript-config/base.json",
-  "include": [
-    "src/**/*",
-    ".storybook/**/*",
-    "tailwind.config.ts",
-    "turbo/generators/**/*",
-    "vitest.config.ts",
-    "vitest.shims.d.ts"
-  ],
-  "exclude": ["node_modules", "dist"]
+  "extends": "@repo/typescript-config/react-library.json",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "build"]
 }

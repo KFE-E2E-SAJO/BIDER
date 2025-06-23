@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useCallback, useEffect } from 'react';
-import { FiX } from 'react-icons/fi';
 import { FocusTrap } from 'focus-trap-react'; // ★ 추가
-import { Button } from '../Button/Button.jsx';
+
+import { X } from 'lucide-react';
+import Button from '@/components/Button/Button';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -142,7 +143,7 @@ export const Modal: React.FC<ModalProps> = ({
             className="absolute right-[15px] top-[15px] rounded-lg p-2 text-[var(--color-sub-body)] transition-colors duration-200 hover:bg-[var(--color-background)] hover:text-[var(--color-body)] focus:outline-none focus:ring-2 focus:ring-[var(--color-main)] focus:ring-offset-2"
             aria-label="모달 닫기"
           >
-            <FiX width={20} height={20} />
+            <X width={20} height={20} />
           </button>
 
           {/* 제목 */}
