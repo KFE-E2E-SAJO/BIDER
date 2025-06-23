@@ -4,7 +4,7 @@
   "private": true,
   "exports": {
     "./*": "./src/*.tsx",
-    "./global.css": "./src/global.css",
+    "./styles.css": "./src/global.css",
     "./Button/Button": "./src/Button/Button.tsx"
   },
   "type": "module",
