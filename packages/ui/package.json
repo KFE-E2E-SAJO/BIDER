@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*.tsx",
-    "./styles.css": "./src/global.css",
-    "./Button/Button": "./src/Button/Button.tsx"
+    "./*": "./dist/*.js",
+    "./styles.css": "./dist/index.css"
   },
   "type": "module",
   "scripts": {
