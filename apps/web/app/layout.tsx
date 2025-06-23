@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import './tailwind.css';
+import '../styles/global.css';
 import '@repo/ui/styles.css';
 
 const geistSans = localFont({
