@@ -29,7 +29,7 @@ function Tabs({ className, items, ...props }: CustomTabsProps) {
             key={item.value}
             value={item.value}
             className={cn(
-              `cursor-pointer rounded-full border border-[var(--neutral-300)] px-3 py-2 text-[var(--neutral-700)] data-[state=active]:border-[var(--neutral-900)] data-[state=active]:bg-[var(--neutral-900)] data-[state=active]:text-[var(--neutral-0)]`
+              'data-[state=active]:text-neutral-0 cursor-pointer rounded-full border border-neutral-300 px-3 py-2 text-neutral-700 data-[state=active]:border-neutral-900 data-[state=active]:bg-neutral-900'
             )}
           >
             {item.label}
