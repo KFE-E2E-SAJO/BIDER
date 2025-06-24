@@ -1,17 +1,19 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+@import "tailwindcss";
 @import 'tw-animate-css';
 
 :root {
   /* === 01.2.1 Neutral Colors === */
-  --color-title: #252525;
-  --color-body: #3b3b3b;
-  --color-sub-body: #686868;
-  --color-placeholder: #8c8c8c;
-  --color-line: #b4b4b4;
-  --color-disabled: #dadada;
-  --color-background: #f1f1f1;
+  --neutral-900: #252525;       /* 텍스트 (title) */
+  --neutral-800: #3b3b3b;       /* 텍스트 (body) */
+  --neutral-700: #686868;       /* 텍스트 (sub-body) */
+  --neutral-600: #8c8c8c;       /* placeholder */
+  --neutral-400: #b4b4b4;       /* line */
+  --neutral-300: #dadada;       /* disabled */
+  --neutral-100: #f1f1f1;       /* background */
+  --neutral-0: #ffffff;         /* pure white */
 
   /* === 01.2.2 Primary Colors === */
   --color-main: #64b5f7;
