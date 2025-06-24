@@ -74,7 +74,6 @@ function TooltipContent({
   const handleClose = (e?: any) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-    console.log('handleClose 호출됨', onClose); // 디버깅용
     onClose?.();
   };
 
@@ -86,7 +85,7 @@ function TooltipContent({
         side="bottom"
         align="start"
         className={cn(
-          'typo-caption text-neutral-0 text-balance rounded-[3px] bg-neutral-800 py-[5px] pl-[11px] pr-[5px]',
+          'typo-caption text-neutral-0 text-balance rounded-[3px] bg-neutral-800 py-[5px] pl-[11px] pr-[6px]',
           'animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]',
           'relative flex items-center',
           className
@@ -99,7 +98,7 @@ function TooltipContent({
         {children}
         {showCloseButton && (
           <button className="cursor-pointer" onClick={handleClose} aria-label="툴팁 닫기">
-            <X size={18} className="pl-[2px]" />
+            <X size={18} className="pl-[4px]" />
           </button>
         )}
         <TooltipPrimitive.Arrow className="absolute left-[-5px] top-[-1px] z-50 size-2.5 rounded-[2px] fill-neutral-800" />

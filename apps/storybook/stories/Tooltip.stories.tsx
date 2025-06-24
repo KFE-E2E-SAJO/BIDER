@@ -31,3 +31,16 @@ export const Default: Story = {
     </TooltipProvider>
   ),
 };
+
+export const Top: Story = {
+  render: () => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <h3>버튼</h3>
+        </TooltipTrigger>
+        <TooltipContent side="top">툴팁 내용입니다</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ),
+};
