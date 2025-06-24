@@ -1,9 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 @import 'tw-animate-css';
 
-:root {
+@theme {
   /* === 01.2.1 Neutral Colors === */
   --color-title: #252525;
   --color-body: #3b3b3b;
@@ -118,40 +116,6 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* === Typography Classes === */
-.text-h1 {
-  font-size: var(--font-size-h1);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  color: var(--color-title);
-}
-
-.text-h2 {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  color: var(--color-title);
-}
-
-.text-h3 {
-  font-size: var(--font-size-h3);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  color: var(--color-title);
-}
-
-.text-body {
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-normal);
-  color: var(--color-body);
-}
-
-.text-caption {
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-normal);
-  color: var(--color-sub-body);
 }
 
 /* === Utility Classes === */
