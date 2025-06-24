@@ -34,8 +34,8 @@ export const WithImage: Story = {
 /** 👉 이미지가 없을 때 Fallback 렌더링 */
 export const FallbackOnly: Story = {
   render: () => (
-    <Avatar>
-      <AvatarFallback>JD</AvatarFallback>
-    </Avatar>
+    <div className="w-16">
+      <Avatar>{/* <AvatarFallback>JD</AvatarFallback> */}</Avatar>
+    </div>
   ),
 };
