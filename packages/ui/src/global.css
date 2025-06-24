@@ -1,9 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 @import 'tw-animate-css';
 
-:root {
+@theme {
   /* === 01.2.1 Neutral Colors === */
   --color-title: #252525;
   --color-body: #3b3b3b;
@@ -12,6 +10,7 @@
   --color-line: #b4b4b4;
   --color-disabled: #dadada;
   --color-background: #f1f1f1;
+  --color-chat-message: #f6f6f6; /* 채팅메시지 배경 */
 
   /* === 01.2.2 Primary Colors === */
   --color-main: #64b5f7;
@@ -22,18 +21,18 @@
 
   /* === 01.2.3 Secondary Colors === */
   /* Alert/Success */
-  --color-alert: #7ADC79;
-  --color-alert-light: #DCFBB4;
+  --color-alert: #7adc79;
+  --color-alert-light: #dcfbb4;
 
   /* Warning */
-  --color-warning: #FDB74D;
-  --color-warning-medium: #EF9409;
-  --color-warning-light: #FFE5C0;
+  --color-warning: #fdb74d;
+  --color-warning-medium: #ef9409;
+  --color-warning-light: #ffe5c0;
 
   /* Danger/Error */
-  --color-danger: #F2597F;
-  --color-danger-light: #FF9BB4;
-  --color-danger-lightest: #FFD1DD;
+  --color-danger: #f2597f;
+  --color-danger-light: #ff9bb4;
+  --color-danger-lightest: #ffd1dd;
 
   /* === Typography === */
   --font-size-h1: 32px; /* 모바일 H1 */
@@ -42,6 +41,7 @@
   --font-size-body: 16px; /* 모바일 본문 */
   --font-size-caption: 12px; /* 작은 텍스트 */
   --font-size-button: 16px; /* 버튼 텍스트 */
+  --font-size-textarea: 14px; /* 텍스트 영역 기본 폰트 크기 */
 
   --line-height-tight: 1.2;
   --line-height-normal: 1.4;
