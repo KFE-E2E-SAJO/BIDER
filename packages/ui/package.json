@@ -14,7 +14,7 @@
     "build:styles": "tailwindcss -i ./src/global.css -o ./dist/index.css",
     "build:components": "tsc && tsc-alias",
     "dev:styles": "tailwindcss -i ./src/global.css -o ./dist/index.css --watch",
-    "dev:components": "tsc --watch & tsc-alias --watch"
+    "dev:components": "concurrently \"tsc --watch\" \"tsc-alias --watch\""
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -26,6 +26,7 @@
     "@types/node": "^22.15.32",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
+    "concurrently": "^9.2.0",
     "eslint": "^9.28.0",
     "tailwindcss": "^4.1.10",
     "tsc-alias": "^1.8.16",
@@ -33,7 +34,6 @@
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
-    "@radix-ui/react-tabs": "^1.1.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "focus-trap-react": "^11.0.4",
