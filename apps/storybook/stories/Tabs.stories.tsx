@@ -1,4 +1,3 @@
-// import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/components/Tabs/Tabs';
 import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
@@ -20,8 +19,6 @@ type Story = StoryObj<typeof Tabs>;
 /* ------------------------------------------------------------------ */
 /* 🌟 Stories                                                         */
 /* ------------------------------------------------------------------ */
-
-// Tabs.stories.tsx
 
 export const Default: Story = {
   render: () => {
