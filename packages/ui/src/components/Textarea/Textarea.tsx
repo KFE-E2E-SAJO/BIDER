@@ -6,18 +6,13 @@ const textareaVariants = cva(
   'w-full min-h-[2.5rem] resize-none rounded border px-3 py-2 transition-shadow focus:outline-none',
   {
     variants: {
-      size: {
-        form: 'resize-none',
-        chat: 'resize-none rounded-xl',
-      },
-      intent: {
-        form: 'bg-white border-neutral-400 focus:border-main focus:ring-0 text-body',
-        chat: 'bg-chat-message border-transparent text-body placeholder:text-neutral-400',
+      variant: {
+        form: 'resize-none bg-white border-neutral-400 focus:border-main focus:ring-0 text-body',
+        chat: 'resize-none rounded-xl bg-chat-message border-transparent text-body placeholder:text-neutral-400',
       },
     },
     defaultVariants: {
-      size: 'form',
-      intent: 'form',
+      variant: 'form',
     },
   }
 );
@@ -27,7 +22,7 @@ export interface TextareaProps
     VariantProps<typeof textareaVariants> {}
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, size, intent, onInput, ...props }, ref) => {
+  ({ className, variant, onInput, ...props }, ref) => {
     const innerRef = React.useRef<HTMLTextAreaElement>(null);
     const [overflowStyle, setOverflowStyle] = React.useState<'hidden' | 'auto' | undefined>(
       'hidden'
@@ -38,14 +33,14 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     const updateOverflowStyle = () => {
       const textarea = innerRef.current;
       if (textarea) {
-        if (size === 'form') {
+        if (variant === 'form') {
           textarea.style.height = 'auto';
           textarea.style.height = textarea.scrollHeight + 'px';
 
           const isFirstLine = textarea.scrollHeight <= textarea.clientHeight + 5;
           const newOverflowStyle = isFirstLine ? 'hidden' : 'auto';
           setOverflowStyle(newOverflowStyle);
-        } else if (size === 'chat') {
+        } else if (variant === 'chat') {
           textarea.style.height = 'auto';
           textarea.style.height = textarea.scrollHeight + 'px';
           setOverflowStyle('hidden');
@@ -60,10 +55,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     React.useEffect(() => {
       updateOverflowStyle();
-    }, [props.value, size]);
+    }, [props.value, variant]);
 
     const getOverflowStyle = () => {
-      if (size === 'chat') return 'hidden';
+      if (variant === 'chat') return 'hidden';
       return overflowStyle;
     };
 
@@ -71,7 +66,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       <textarea
         ref={innerRef}
         data-slot="textarea"
-        className={cn(textareaVariants({ size, intent, className }))}
+        className={cn(textareaVariants({ variant, className }))}
         {...props}
         onInput={handleInput}
         rows={1}
