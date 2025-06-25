@@ -4,7 +4,6 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { Dialog, type DialogProps } from '@repo/ui/components/Dialog/Dialog';
 import { CircleCheck, Clock, Heart, MapPin, Star, TriangleAlert } from 'lucide-react';
 
-// 🔧 타입 안전한 Modal 제어 Wrapper 컴포넌트
 interface DialogWrapperProps extends Omit<DialogProps, 'open' | 'onOpenChange'> {
   children: React.ReactNode;
 }
@@ -15,11 +14,7 @@ const DialogWrapper = ({ children, ...dialogProps }: DialogWrapperProps) => {
   return (
     <>
       <Button onClick={() => setIsOpen(true)}>모달 열기</Button>
-      <Dialog
-        {...dialogProps}
-        open={isOpen}
-        onOpenChange={(open) => setIsOpen(open)} // 🔧 boolean 매개변수 수용
-      >
+      <Dialog {...dialogProps} open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
         {children}
       </Dialog>
     </>
@@ -181,7 +176,7 @@ export const NoCloseButton: Story = {
     title: '중요한 공지사항',
     confirmText: '확인했습니다',
     buttonLayout: 'vertical',
-    showCloseButton: false, // 🔧 닫기 버튼 숨김
+    showCloseButton: false,
     closeOnBackdropClick: false,
     closeOnEscape: false,
     children: (
@@ -202,7 +197,6 @@ export const InteractionOptions: Story = {
       <div>
         <h3 className="text-h3 mb-3">🔧 상호작용 옵션 테스트</h3>
         <div className="flex flex-wrap gap-3">
-          {/* 배경 클릭 비활성화 */}
           <DialogWrapper
             title="중요한 선택"
             confirmText="확인"
@@ -217,7 +211,6 @@ export const InteractionOptions: Story = {
             </p>
           </DialogWrapper>
 
-          {/* ESC 키 비활성화 */}
           <DialogWrapper
             title="필수 확인"
             confirmText="동의"

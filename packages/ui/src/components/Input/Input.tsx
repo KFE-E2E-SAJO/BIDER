@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { XIcon } from 'lucide-react'; // 삭제 아이콘
+import { XIcon } from 'lucide-react';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   status?: 'default' | 'focus' | 'typing' | 'error' | 'disabled';
@@ -62,7 +62,6 @@ const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
       onChange?.(event);
     };
 
-    // 삭제 버튼을 보여줄 조건
     const showClear =
       showClearButton &&
       !disabled &&
@@ -106,7 +105,6 @@ const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className={cn('flex w-full flex-col gap-2', className)}>
-        {/* Label */}
         {label && (
           <label
             htmlFor={props.id}
@@ -122,16 +120,13 @@ const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
 
-        {/* Write Text */}
         {writeText && (
           <div className="text-sm" style={{ color: 'var(--color-sub-body)' }}>
             {writeText}
           </div>
         )}
 
-        {/* Input Container */}
         <div className="relative">
-          {/* Left Icon */}
           {icon && (
             <div
               className="absolute left-3 top-1/2 -translate-y-1/2"
@@ -144,11 +139,7 @@ const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             type={type}
             data-slot="input"
-            className={cn(
-              getInputStyles(),
-              icon && 'pl-10',
-              showClear && 'pr-10' // 삭제 버튼 공간 확보
-            )}
+            className={cn(getInputStyles(), icon && 'pl-10', showClear && 'pr-10')}
             ref={ref}
             disabled={disabled}
             value={value !== undefined ? value : inputValue}
@@ -159,7 +150,6 @@ const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
 
-          {/* Clear Button */}
           {showClear && (
             <button
               type="button"
@@ -178,7 +168,6 @@ const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {/* Error Message */}
         {status === 'error' && errorMessage && (
           <p className="text-sm" style={{ color: 'var(--color-danger)' }}>
             {errorMessage}

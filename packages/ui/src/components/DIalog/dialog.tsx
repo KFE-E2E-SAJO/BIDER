@@ -23,7 +23,6 @@ export interface DialogProps {
   showCloseButton?: boolean;
 }
 
-//내부 컴포넌트들
 function DialogRoot({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root {...props} />;
 }
@@ -77,7 +76,6 @@ function DialogContent({
         {...props}
       >
         {children}
-        {/* DialogContent에서는 닫기 버튼 제거 - Dialog 컴포넌트에서만 관리 */}
       </DialogPrimitive.Content>
     </DialogPortal>
   );
@@ -176,7 +174,6 @@ const Dialog: React.FC<DialogProps> = ({
             }
           }}
         >
-          {/* 닫기 버튼 - 한 곳에서만 관리 */}
           {showCloseButton && (
             <DialogPrimitive.Close className="absolute right-4 top-4 z-10 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:pointer-events-none">
               <XIcon className="h-4 w-4" />
@@ -184,22 +181,19 @@ const Dialog: React.FC<DialogProps> = ({
             </DialogPrimitive.Close>
           )}
 
-          {/* 제목 - 닫기 버튼과 겹침 방지하면서 중앙 정렬 */}
           {title && (
             <DialogPrimitive.Title
               className={cn(
                 'mb-4 whitespace-pre-line text-center text-lg font-semibold leading-none tracking-tight',
-                showCloseButton ? 'px-8 pt-8' : 'pt-2' // 🔧 양쪽 패딩으로 진짜 중앙 정렬
+                showCloseButton ? 'px-8 pt-8' : 'pt-2'
               )}
             >
               {title}
             </DialogPrimitive.Title>
           )}
 
-          {/* 본문 */}
           <div className="mb-6 text-center">{children}</div>
 
-          {/* 액션 버튼 */}
           {!hideActions && (onConfirm || onCancel) && (
             <div
               className={cn(
