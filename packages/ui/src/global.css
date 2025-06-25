@@ -90,7 +90,7 @@
   line-height: var(--line-height-normal);
 }
 .typo-subtitle-small-bold {
-  font-size: var(--font-size-subtitle-small);
+  font-size: var(--text-subtitle-small);
   font-weight: 600;
   line-height: var(--line-height-normal);
 }
