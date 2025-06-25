@@ -1,36 +1,34 @@
-import { Avatar } from '@repo/ui/components/Avatar/Avatar';
+import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 /* ------------------------------------------------------------------ */
 /* 📑 Storybook 메타데이터                                             */
 /* ------------------------------------------------------------------ */
-const meta: Meta<typeof Avatar> = {
-  title: 'Components/Avatar',
-  component: Avatar,
+
+const meta: Meta<typeof Tabs> = {
+  title: 'Components/Tabs',
+  component: Tabs,
   tags: ['autodocs'],
   argTypes: {
     className: { control: false },
   },
 };
 export default meta;
-type Story = StoryObj<typeof Avatar>;
+type Story = StoryObj<typeof Tabs>;
 
 /* ------------------------------------------------------------------ */
 /* 🌟 Stories                                                         */
 /* ------------------------------------------------------------------ */
 
-export const WithImage: Story = {
-  render: () => (
-    <div className="w-16">
-      <Avatar src="https://i.pinimg.com/originals/36/9a/fb/369afb7c81a3278b1fd8f804cd105b37.jpg" />
-    </div>
-  ),
-};
+export const Default: Story = {
+  render: () => {
+    const items = [
+      { value: 'all', label: '전체', content: '계정 설정 화면' },
+      { value: 'a', label: '경매 진행 중', content: '경매 진행 중 화면' },
+      { value: 'b', label: '낙찰', content: '낙찰 화면' },
+      { value: 'c', label: '패찰', content: '패찰 화면' },
+    ];
 
-export const FallbackOnly: Story = {
-  render: () => (
-    <div className="w-16">
-      <Avatar />
-    </div>
-  ),
+    return <Tabs defaultValue="all" items={items} />;
+  },
 };
