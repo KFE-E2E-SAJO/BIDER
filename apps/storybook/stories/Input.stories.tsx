@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { TextInput } from '@repo/ui/components/Input/textInput';
+import { inputContent } from '@repo/ui/components/Input/Input';
 
-const meta: Meta<typeof TextInput> = {
+const meta: Meta<typeof inputContent> = {
   title: 'components/TextInput',
-  component: TextInput,
+  component: inputContent,
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   args: {
     label: '',
     placeholder: '내용을 입력해주세요',
@@ -15,7 +14,7 @@ const meta: Meta<typeof TextInput> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof TextInput>;
+type Story = StoryObj<typeof inputContent>;
 
 export const Default: Story = {};
 
@@ -52,12 +51,6 @@ export const Error: Story = {
   args: {
     status: 'error',
     errorMessage: '문제가 발생했습니다.',
-  },
-};
-
-export const Success: Story = {
-  args: {
-    status: 'success',
   },
 };
 
