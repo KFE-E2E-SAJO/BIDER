@@ -7,7 +7,6 @@ const meta: Meta<typeof inputContent> = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   args: {
     label: '',
     placeholder: '내용을 입력해주세요',

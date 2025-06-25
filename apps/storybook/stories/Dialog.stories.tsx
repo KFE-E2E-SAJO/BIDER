@@ -31,38 +31,7 @@ const meta = {
   component: DialogWrapper,
   parameters: {
     layout: 'centered',
-    docs: {
-      description: {
-        component: `
-## Dialog Modal 컴포넌트
-
-지역기반 중고거래 경매 모바일 웹앱에 최적화된 모달 컴포넌트입니다.
-
-### 🎯 설계 원칙
-- **단일 책임 원칙**: 사용자 확인/선택만 담당
-- **의존성 최소화**: Button 컴포넌트 재사용, Radix UI 기반
-- **아토믹 디자인**: Organism 레벨 (Button + 레이아웃 조합)
-
-### 📱 모달 특징
-- **반응형 디자인**: 데스크톱 센터 모달, 모바일 최적화
-- **패딩**: 안전한 여백과 레이아웃
-- **모서리**: 둥근 모서리 디자인
-- **그림자**: 깔끔한 드롭 섀도우
-- **애니메이션**: 부드러운 페이드/줌 효과
-
-### 🔧 주요 기능
-- **2가지 버튼 레이아웃**: 가로/세로 배치
-- **접근성**: ESC 키, 배경 클릭 닫기, 포커스 관리
-- **커스터마이징**: 제목, 버튼 텍스트, 레이아웃 옵션
-- **닫기 버튼**: 선택적 표시/숨김
-
-### 🛍️ 경매 앱 사용 시나리오
-각 스토리는 실제 경매 앱에서 사용될 수 있는 모달 예시들입니다.
-        `,
-      },
-    },
   },
-  tags: ['autodocs'],
   argTypes: {
     title: {
       control: 'text',
@@ -133,13 +102,6 @@ export const AuctionSuccess: Story = {
       </div>
     ),
   },
-  parameters: {
-    docs: {
-      description: {
-        story: '📱 입찰 성공 후 결제 안내 모달',
-      },
-    },
-  },
 };
 
 export const FavoriteStore: Story = {
@@ -161,13 +123,6 @@ export const FavoriteStore: Story = {
       </div>
     ),
   },
-  parameters: {
-    docs: {
-      description: {
-        story: '📱 상점 즐겨찾기 쿠폰 안내 모달',
-      },
-    },
-  },
 };
 
 export const HorizontalButtons: Story = {
@@ -178,13 +133,6 @@ export const HorizontalButtons: Story = {
     buttonLayout: 'horizontal',
     showCloseButton: true,
     children: <p className="text-sm">현재 세션이 종료되며 다시 로그인해야 합니다.</p>,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: '🔧 가로 버튼 레이아웃: 동일한 중요도의 선택지',
-      },
-    },
   },
 };
 
@@ -210,13 +158,6 @@ export const VerticalButtons: Story = {
       </div>
     ),
   },
-  parameters: {
-    docs: {
-      description: {
-        story: '🔧 세로 버튼 레이아웃: 주요 액션 강조 및 신중한 선택 유도',
-      },
-    },
-  },
 };
 
 export const NoButtons: Story = {
@@ -232,13 +173,6 @@ export const NoButtons: Story = {
         </div>
       </div>
     ),
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: '🔧 버튼 없는 모달: 단순 알림용, X 버튼으로만 닫기',
-      },
-    },
   },
 };
 
@@ -259,13 +193,6 @@ export const NoCloseButton: Story = {
         </p>
       </div>
     ),
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: '🔧 닫기 버튼 없는 모달: 필수 확인이 필요한 경우',
-      },
-    },
   },
 };
 
@@ -314,13 +241,6 @@ export const InteractionOptions: Story = {
     closeOnBackdropClick: true,
     closeOnEscape: true,
   },
-  parameters: {
-    docs: {
-      description: {
-        story: '🔧 다양한 상호작용 옵션들을 테스트할 수 있습니다.',
-      },
-    },
-  },
 };
 
 export const Interactive: Story = {
@@ -357,12 +277,5 @@ export const Interactive: Story = {
     title: '인터랙티브 테스트',
     confirmText: '확인',
     cancelText: '취소',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: '🔧 실제로 상호작용해볼 수 있는 인터랙티브 모달입니다.',
-      },
-    },
   },
 };
