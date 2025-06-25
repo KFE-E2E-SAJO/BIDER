@@ -5,14 +5,14 @@
 
 @theme {
   /* === 01.2.1 Neutral Colors === */
-  --color-neutral-900: #252525;       /* 텍스트 (title) */
-  --color-neutral-800: #3b3b3b;       /* 텍스트 (body) */
-  --color-neutral-700: #686868;       /* 텍스트 (sub-body) */
-  --color-neutral-600: #8c8c8c;       /* placeholder */
-  --color-neutral-400: #b4b4b4;       /* line */
-  --color-neutral-300: #dadada;       /* disabled */
-  --color-neutral-100: #f1f1f1;       /* background */
-  --color-neutral-0: #ffffff;         /* pure white */
+  --color-neutral-900: #252525; /* 텍스트 (title) */
+  --color-neutral-800: #3b3b3b; /* 텍스트 (body) */
+  --color-neutral-700: #686868; /* 텍스트 (sub-body) */
+  --color-neutral-600: #8c8c8c; /* placeholder */
+  --color-neutral-400: #b4b4b4; /* line */
+  --color-neutral-300: #dadada; /* disabled */
+  --color-neutral-100: #f1f1f1; /* background */
+  --color-neutral-0: #ffffff; /* pure white */
 
   /* === 01.2.2 Primary Colors === */
   --color-main: #64b5f7;
@@ -23,30 +23,30 @@
 
   /* === 01.2.3 Secondary Colors === */
   /* Alert/Success */
-  --color-alert: #7ADC79;
-  --color-alert-light: #DCFBB4;
+  --color-alert: #7adc79;
+  --color-alert-light: #dcfbb4;
 
   /* Warning */
-  --color-warning: #FDB74D;
-  --color-warning-medium: #EF9409;
-  --color-warning-light: #FFE5C0;
+  --color-warning: #fdb74d;
+  --color-warning-medium: #ef9409;
+  --color-warning-light: #ffe5c0;
 
   /* Danger/Error */
-  --color-danger: #F2597F;
-  --color-danger-light: #FF9BB4;
-  --color-danger-lightest: #FFD1DD;
+  --color-danger: #f2597f;
+  --color-danger-light: #ff9bb4;
+  --color-danger-lightest: #ffd1dd;
 
   /* Dimmed */
   --color-dimmed: #00000066;
 
   /* === Typography === */
-  --font-size-h1: 32px; /* 모바일 H1 */
-  --font-size-h2: 28px; /* 모바일 H2 */
-  --font-size-h3: 24px; /* 모바일 H3 */
-  --font-size-subtitle: 20px; 
-  --font-size-subtitle-small: 16px; 
-  --font-size-body: 14px;
-  --font-size-caption: 12px; /* 작은 텍스트 */
+  --text-h1: 32px; /* 모바일 H1 */
+  --text-h2: 28px; /* 모바일 H2 */
+  --text-h3: 24px; /* 모바일 H3 */
+  --text-subtitle: 20px;
+  --text-subtitle-small: 16px;
+  --text-body: 14px;
+  --text-caption: 12px; /* 작은 텍스트 */
 
   --line-height-tight: 1.3;
   --line-height-normal: 1.4;
@@ -65,67 +65,65 @@
 
 /* === Typography Classes === */
 .typo-h1 {
-  font-size: var(--font-size-h1);
+  font-size: var(--text-h1);
   font-weight: 700;
   line-height: var(--line-height-tight);
 }
-.typo-h2{
-  font-size: var(--font-size-h2);
+.typo-h2 {
+  font-size: var(--text-h2);
   font-weight: 700;
   line-height: var(--line-height-normal);
 }
-.typo-h3{
-  font-size: var(--font-size-h3);
+.typo-h3 {
+  font-size: var(--text-h3);
   font-weight: 700;
   line-height: var(--line-height-normal);
 }
-.typo-subtitle-bold{
-  font-size: var(--font-size-subtitle);
+.typo-subtitle-bold {
+  font-size: var(--text-subtitle);
   font-weight: 600;
   line-height: var(--line-height-normal);
 }
-.typo-subtitle-medium{
-  font-size: var(--font-size-subtitle);
+.typo-subtitle-medium {
+  font-size: var(--text-subtitle);
   font-weight: 500;
   line-height: var(--line-height-normal);
 }
-.typo-subtitle-small-bold{
+.typo-subtitle-small-bold {
   font-size: var(--font-size-subtitle-small);
   font-weight: 600;
   line-height: var(--line-height-normal);
 }
-.typo-subtitle-small-medium{
-  font-size: var(--font-size-subtitle-small);
+.typo-subtitle-small-medium {
+  font-size: var(--text-subtitle-small);
   font-weight: 500;
   line-height: var(--line-height-normal);
 }
-.typo-body-bold{
-  font-size: var(--font-size-subtitle-small);
+.typo-body-bold {
+  font-size: var(--text-subtitle-small);
   font-weight: 600;
   line-height: var(--line-height-relaxed);
 }
-.typo-body-medium{
-  font-size: var(--font-size-body);
+.typo-body-medium {
+  font-size: var(--text-body);
   font-weight: 500;
   line-height: var(--line-height-relaxed);
 }
-.typo-body-regular{
-  font-size: var(--font-size-body);
+.typo-body-regular {
+  font-size: var(--text-body);
   font-weight: 400;
   line-height: var(--line-height-relaxed);
 }
-.typo-caption-medium{
-  font-size: var(--font-size-caption);
+.typo-caption-medium {
+  font-size: var(--text-caption);
   font-weight: 500;
   line-height: var(--line-height-relaxed);
 }
-.typo-caption-regular{
-  font-size: var(--font-size-caption);
+.typo-caption-regular {
+  font-size: var(--text-caption);
   font-weight: 400;
   line-height: var(--line-height-relaxed);
 }
-
-
 
 /* === Base Styles === */
 * {
@@ -133,14 +131,14 @@
 }
 
 html {
-  font-size: var(--font-size-body); /* 기본 폰트 크기 */
+  font-size: var(--text-body); /* 기본 폰트 크기 */
 }
 
 body {
-  font-family: "Noto Sans KR", sans-serif;
-  font-size: var(--font-size-body);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: var(--text-body);
   line-height: var(--line-height-normal);
-  color: var(--color-body);
+  color: var(--color-neutral-700);
   background-color: white;
   margin: 0;
   padding: 0;
