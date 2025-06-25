@@ -1,132 +1,64 @@
-'use client';
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-import React, { ComponentType, SVGProps } from 'react';
+import { cn } from '@/lib/utils';
 
-export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'ghost';
-  disabled?: boolean;
-  Icon?: ComponentType<SVGProps<SVGSVGElement>>;
-  children?: React.ReactNode;
-  onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
-  ariaLabel?: string; // 접근성 지원: 아이콘만 있는 버튼에 aria-label 필수
-  className?: string;
-}
-
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  disabled = false,
-  Icon,
-  children,
-  onClick,
-  type = 'button',
-  ariaLabel,
-  className = '',
-  ...props
-}) => {
-  // 버튼 타입 결정: 아이콘만 / 텍스트만 / 아이콘+텍스트
-  const isIconOnly = Icon && !children;
-  const hasIcon = !!Icon;
-  const hasText = !!children;
-
-  // 기본 스타일
-  const baseStyles = `
-    inline-flex items-center justify-center
-    font-medium transition-all duration-200
-    focus:outline-none focus:ring-2 focus:ring-[var(--color-main)] focus:ring-offset-2
-    disabled:cursor-not-allowed
-    rounded-[3px]
-    text-[16px]
-  `;
-
-  // 패딩 스타일 (아이콘만 있는 버튼 vs 일반 버튼)
-  const paddingStyles = isIconOnly
-    ? 'p-[20px]'
-    : hasIcon && hasText
-      ? 'py-[15px] pl-[12px] pr-[16px]'
-      : 'py-[15px] px-[16px]'; // 텍스트만
-
-  // 아이콘과 텍스트 간격
-  const gapStyles = hasIcon && hasText ? 'gap-[6px]' : '';
-
-  // 변형별 스타일
-  const variantStyles = {
-    primary: {
-      enabled: `
-        bg-[var(--color-main)] text-white
-        hover:bg-[var(--color-main-text)]
-        active:bg-[var(--color-main-text)]
-      `,
-      disabled: `
-        bg-[var(--color-disabled)] text-[var(--color-placeholder)]
-      `,
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-subtitle-small font-semibold transition-all disabled:pointer-events-none disabled:bg-neutral-300 disabled:text-neutral-600 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-sm",
+  {
+    variants: {
+      variant: {
+        default: 'bg-main text-neutral-0',
+        destructive:
+          'bg-destructive text-neutral-0 shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+        outline:
+          'border border-main text-main bg-neutral-0 shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+        secondary: 'bg-main-lightest text-main shadow-xs border border-main hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+        link: 'underline-offset-3 underline text-body font-medium',
+        loading: 'bg-main-lighter text-main disabled:bg-main-lighter disabled:text-main',
+        muted: 'border border-neutral-300 text-neutral-700',
+      },
+      size: {
+        default: 'w-full h-13 px-4 py-2 has-[>svg]:px-3',
+        lg: 'w-43 h-13 gap-1.5 px-6 has-[>svg]:px-4',
+        sm: 'w-28 h-9 gap-1.5 px-3 has-[>svg]:px-2.5 text-caption font-normal',
+        icon: 'size-15 [&>svg.lucide]:size-[25px]',
+        thin: 'w-full h-10 px-4 py-2 has-[>svg]:px-3 text-body font-medium',
+        fit: 'w-fit',
+      },
+      shape: {
+        rounded: 'rounded-full h-11 px-6 has-[>svg]:px-4 font-normal',
+      },
     },
-    secondary: {
-      enabled: `
-        bg-white border border-[var(--color-main)] text-[var(--color-main)]
-        hover:bg-[var(--color-main-lightest)]
-        active:bg-[var(--color-main-lighter)]
-      `,
-      disabled: `
-        bg-white border border-[var(--color-disabled)] text-[var(--color-disabled)]
-      `,
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
     },
-    ghost: {
-      enabled: `
-        bg-transparent text-[var(--color-main)]
-        hover:bg-[var(--color-main-lightest)]
-        active:bg-[var(--color-main-lighter)]
-      `,
-      disabled: `
-        bg-transparent text-[var(--color-disabled)]
-      `,
-    },
-  };
-
-  // 현재 상태에 따른 스타일 선택
-  const currentVariantStyle = disabled
-    ? variantStyles[variant].disabled
-    : variantStyles[variant].enabled;
-
-  // 최종 클래스명 조합
-  const buttonClass = `
-    ${baseStyles}
-    ${paddingStyles}
-    ${gapStyles}
-    ${currentVariantStyle}
-    ${className}
-  `
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  // 클릭 핸들러
-  const handleClick = () => {
-    if (!disabled && onClick) {
-      onClick();
-    }
-  };
-
-  // 접근성 검증 (아이콘만 있는 버튼은 ariaLabel 필수)
-  if (isIconOnly && !ariaLabel) {
-    console.warn('Button: 아이콘만 있는 버튼에는 ariaLabel이 필요합니다.');
   }
+);
+
+function Button({
+  className,
+  variant,
+  size,
+  shape,
+  asChild = false,
+  ...props
+}: React.ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  }) {
+  const Comp = asChild ? Slot : 'button';
 
   return (
-    <button
-      type={type}
-      className={buttonClass}
-      disabled={disabled}
-      onClick={handleClick}
-      aria-label={ariaLabel}
+    <Comp
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, shape, className }))}
       {...props}
-    >
-      {/* 아이콘 렌더링 */}
-      {Icon && <Icon width={16} height={16} className="flex-shrink-0" />}
-
-      {/* 텍스트 렌더링 */}
-      {children && <span className="flex-shrink-0">{children}</span>}
-    </button>
+    />
   );
-};
+}
 
-export default Button;
+export { Button, buttonVariants };
