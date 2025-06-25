@@ -13,6 +13,5 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx"
-  },
-  "include": ["src", ".storybook/**/*", "stories", "packages"]
+  }
 }
