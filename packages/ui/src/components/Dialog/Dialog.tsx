@@ -57,18 +57,18 @@ function DialogContent({
         className={cn(
           'fixed bottom-0 left-0 right-0 w-full rounded-t-lg',
           'sm:bottom-auto sm:left-1/2 sm:right-auto sm:top-1/2 sm:w-auto sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg',
-          'z-50 grid gap-4 border bg-white p-6 shadow-lg duration-200',
+          'z-50 grid gap-4 bg-white p-6 shadow-lg duration-200',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
           'data-[state=closed]:translate-y-full data-[state=open]:translate-y-0',
-          'sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95',
+          'sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95 pt-12',
           className
         )}
         {...props}
       >
         {showCloseButton && (
-          <DialogClose className="absolute right-4 top-4 z-10 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:pointer-events-none">
-            <XIcon className="h-4 w-4" />
+          <DialogClose className="absolute right-4 top-4 z-10 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none">
+            <XIcon className="h-5 w-5" />
             <span className="sr-only">Close</span>
           </DialogClose>
         )}
