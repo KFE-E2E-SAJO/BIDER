@@ -1,0 +1,90 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  CirclePlus,
+  House,
+  LayoutGrid,
+  LucideIcon,
+  MessageSquareMore,
+  UserRound,
+} from 'lucide-react';
+
+interface NavItems {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  matchPath: (pathname: string) => boolean;
+}
+
+const navItems: NavItems[] = [
+  {
+    href: '/',
+    label: '홈',
+    icon: House,
+    matchPath: (pathname) => pathname === '/' || pathname.includes('/'),
+  },
+  {
+    href: '/category',
+    label: '카테고리',
+    icon: LayoutGrid,
+    matchPath: (pathname) => pathname === '/category' || pathname.includes('/category'),
+  },
+  {
+    href: '/product/registration',
+    label: '출품하기',
+    icon: CirclePlus,
+    matchPath: (pathname) =>
+      pathname === '/product/registration' || pathname.includes('/product/registration'),
+  },
+  {
+    href: '/chat',
+    label: '채팅',
+    icon: MessageSquareMore,
+    matchPath: (pathname) => pathname === '/chat' || pathname.includes('/chat'),
+  },
+  {
+    href: '/mypage',
+    label: '마이페이지',
+    icon: UserRound,
+    matchPath: (pathname) => pathname === '/mypage' || pathname.includes('/mypage'),
+  },
+];
+
+const Nav = () => {
+  const pathname = usePathname();
+  const hasNewChat = true; //새로운 채팅 여부 받아오기
+
+  return (
+    <nav className="bg-neutral-0 fixed bottom-0 left-0 flex w-full items-baseline justify-between px-[25px] pb-[34px] pt-[13px]">
+      {navItems.map(({ href, label, icon: Icon, matchPath }) => {
+        const isActive = matchPath(pathname);
+        const isChat = href == '/chat';
+
+        return (
+          <Link
+            key={href}
+            href={href}
+            className="relative flex flex-col items-center justify-center"
+          >
+            <Icon
+              className={`w-6 ${isActive ? 'fill-neutral-900 stroke-neutral-900' : 'fill-neutral-0 stroke-neutral-400'}`}
+              strokeWidth={1.5}
+            />
+            {isChat && hasNewChat && (
+              <span className="bg-alert absolute right-[-18%] top-[-3%] h-3.5 w-3.5 rounded-full border-2 border-[var(--color-neutral-0)]"></span>
+            )}
+            <span
+              className={`text-caption pt-1.5 font-[500] ${isActive ? 'text-neutral-900' : 'text-neutral-400'}`}
+            >
+              {label}
+            </span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+};
+
+export default Nav;

@@ -2,7 +2,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@theme {
+@theme static {
   /* === 01.2.1 Neutral Colors === */
   --color-neutral-900: #252525; /* 텍스트 (title) */
   --color-neutral-800: #3b3b3b; /* 텍스트 (body) */
@@ -62,68 +62,6 @@
   --z-toast: 1080;
 }
 
-/* === Typography Classes === */
-.typo-h1 {
-  font-size: var(--text-h1);
-  font-weight: 700;
-  line-height: var(--line-height-tight);
-}
-.typo-h2 {
-  font-size: var(--text-h2);
-  font-weight: 700;
-  line-height: var(--line-height-normal);
-}
-.typo-h3 {
-  font-size: var(--text-h3);
-  font-weight: 700;
-  line-height: var(--line-height-normal);
-}
-.typo-subtitle-bold {
-  font-size: var(--text-subtitle);
-  font-weight: 600;
-  line-height: var(--line-height-normal);
-}
-.typo-subtitle-medium {
-  font-size: var(--text-subtitle);
-  font-weight: 500;
-  line-height: var(--line-height-normal);
-}
-.typo-subtitle-small-bold {
-  font-size: var(--text-subtitle-small);
-  font-weight: 600;
-  line-height: var(--line-height-normal);
-}
-.typo-subtitle-small-medium {
-  font-size: var(--text-subtitle-small);
-  font-weight: 500;
-  line-height: var(--line-height-normal);
-}
-.typo-body-bold {
-  font-size: var(--text-subtitle-small);
-  font-weight: 600;
-  line-height: var(--line-height-relaxed);
-}
-.typo-body-medium {
-  font-size: var(--text-body);
-  font-weight: 500;
-  line-height: var(--line-height-relaxed);
-}
-.typo-body-regular {
-  font-size: var(--text-body);
-  font-weight: 400;
-  line-height: var(--line-height-relaxed);
-}
-.typo-caption-medium {
-  font-size: var(--text-caption);
-  font-weight: 500;
-  line-height: var(--line-height-relaxed);
-}
-.typo-caption-regular {
-  font-size: var(--text-caption);
-  font-weight: 400;
-  line-height: var(--line-height-relaxed);
-}
-
 /* === Base Styles === */
 * {
   box-sizing: border-box;
@@ -137,7 +75,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: var(--text-body);
   line-height: var(--line-height-normal);
-  color: var(--color-neutral-700);
+  color: var(--color-neutral-900);
   background-color: white;
   margin: 0;
   padding: 0;
@@ -148,4 +86,68 @@ body {
 html,
 body {
   height: 100%;
+}
+
+@layer utilities {
+  /* === Typography Classes === */
+  .typo-h1 {
+    font-size: var(--text-h1);
+    font-weight: 700;
+    line-height: var(--line-height-tight);
+  }
+  .typo-h2 {
+    font-size: var(--text-h2);
+    font-weight: 700;
+    line-height: var(--line-height-normal);
+  }
+  .typo-h3 {
+    font-size: var(--text-h3);
+    font-weight: 700;
+    line-height: var(--line-height-normal);
+  }
+  .typo-subtitle-bold {
+    font-size: var(--text-subtitle);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+  }
+  .typo-subtitle-medium {
+    font-size: var(--text-subtitle);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+  }
+  .typo-subtitle-small-bold {
+    font-size: var(--text-subtitle-small);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+  }
+  .typo-subtitle-small-medium {
+    font-size: var(--text-subtitle-small);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+  }
+  .typo-body-bold {
+    font-size: var(--text-subtitle-small);
+    font-weight: 600;
+    line-height: var(--line-height-relaxed);
+  }
+  .typo-body-medium {
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: var(--line-height-relaxed);
+  }
+  .typo-body-regular {
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: var(--line-height-relaxed);
+  }
+  .typo-caption-medium {
+    font-size: var(--text-caption);
+    font-weight: 500;
+    line-height: var(--line-height-relaxed);
+  }
+  .typo-caption-regular {
+    font-size: var(--text-caption);
+    font-weight: 400;
+    line-height: var(--line-height-relaxed);
+  }
 }
