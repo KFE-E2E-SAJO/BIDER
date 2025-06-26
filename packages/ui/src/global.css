@@ -149,3 +149,13 @@ html,
 body {
   height: 100%;
 }
+
+.scroll-container {
+  overflow-x: auto;
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
