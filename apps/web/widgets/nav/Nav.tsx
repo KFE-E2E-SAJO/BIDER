@@ -10,6 +10,7 @@ import {
   MessageSquareMore,
   UserRound,
 } from 'lucide-react';
+import AlertBadge from '@/shared/ui/badge/AlertBadge';
 
 interface NavItems {
   href: string;
@@ -72,9 +73,7 @@ const Nav = () => {
               className={`w-6 ${isActive ? 'fill-neutral-900 stroke-neutral-900' : 'fill-neutral-0 stroke-neutral-400'}`}
               strokeWidth={1.5}
             />
-            {isChat && hasNewChat && (
-              <span className="bg-alert absolute right-[-18%] top-[-3%] h-3.5 w-3.5 rounded-full border-2 border-[var(--color-neutral-0)]"></span>
-            )}
+            {isChat && hasNewChat && <AlertBadge />}
             <span
               className={`text-caption pt-1.5 font-[500] ${isActive ? 'text-neutral-900' : 'text-neutral-400'}`}
             >
