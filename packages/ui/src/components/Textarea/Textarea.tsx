@@ -8,12 +8,8 @@ const textareaVariants = cva(
   {
     variants: {
       variant: {
-        form: [
-          'bg-white border-neutral-400 focus:border-main focus:ring-0 text-body resize-none',
-        ].join(' '),
-        chat: [
-          'bg-chat-message border-transparent text-body placeholder:text-neutral-400 rounded-xl resize-none',
-        ].join(' '),
+        form: 'bg-white border-neutral-400 focus:border-main focus:ring-0 text-body resize-none',
+        chat: 'bg-chat-message border-transparent text-body placeholder:text-neutral-400 rounded-xl resize-none',
       },
     },
     defaultVariants: {
