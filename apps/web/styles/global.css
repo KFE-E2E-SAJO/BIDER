@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-@theme static {
+@theme {
   /* === 01.2.1 Neutral Colors === */
   --color-neutral-900: #252525; /* 텍스트 (title) */
   --color-neutral-800: #3b3b3b; /* 텍스트 (body) */
