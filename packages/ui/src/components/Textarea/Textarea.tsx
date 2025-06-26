@@ -3,12 +3,12 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const textareaVariants = cva(
-  'w-full min-h-[2.5rem] resize-none rounded border px-3 py-2 transition-shadow focus:outline-none',
+  'w-full resize-none rounded border text-body px-3 py-2 transition-shadow focus:outline-none',
   {
     variants: {
       variant: {
-        form: 'bg-white border-neutral-400 focus:border-main focus:ring-0 text-body resize-none',
-        chat: 'bg-chat-message border-transparent text-body placeholder:text-neutral-400 rounded-xl resize-none',
+        form: 'bg-white border-neutral-400 focus:border-main focus:ring-0',
+        chat: 'bg-[#f6f6f6] border-transparent placeholder:text-neutral-400 rounded-xl',
       },
     },
     defaultVariants: {
