@@ -1,9 +1,11 @@
+'use client';
+
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const textareaVariants = cva(
-  'w-full min-h-[2.5rem] resize-none rounded border px-3 py-2 transition-shadow focus:outline-none',
+  'w-full resize-none rounded border px-3 py-2 transition-shadow focus:outline-none',
   {
     variants: {
       variant: {
