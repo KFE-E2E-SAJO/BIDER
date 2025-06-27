@@ -24,36 +24,31 @@ const navItems: NavItems[] = [
     href: '/',
     label: '홈',
     icon: House,
-    matchPath: (pathname) =>
-      pathname === '/' ||
-      pathname === '/index' ||
-      pathname.includes('/') ||
-      pathname.includes('/index'),
+    matchPath: (pathname) => pathname === '/' || pathname === '/index',
   },
   {
     href: '/category',
     label: '카테고리',
     icon: LayoutGrid,
-    matchPath: (pathname) => pathname === '/category' || pathname.includes('/category'),
+    matchPath: (pathname) => pathname === '/category',
   },
   {
     href: '/product/registration',
     label: '출품하기',
     icon: CirclePlus,
-    matchPath: (pathname) =>
-      pathname === '/product/registration' || pathname.includes('/product/registration'),
+    matchPath: (pathname) => pathname === '/product/registration',
   },
   {
     href: '/chat',
     label: '채팅',
     icon: MessageSquareMore,
-    matchPath: (pathname) => pathname === '/chat' || pathname.includes('/chat'),
+    matchPath: (pathname) => pathname === '/chat',
   },
   {
     href: '/mypage',
     label: '마이페이지',
     icon: UserRound,
-    matchPath: (pathname) => pathname === '/mypage' || pathname.includes('/mypage'),
+    matchPath: (pathname) => pathname === '/mypage',
   },
 ];
 
