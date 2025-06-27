@@ -36,14 +36,19 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       const textarea = innerRef.current;
       if (!textarea) return;
 
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
+      if (variant === 'chat') {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+        setOverflowStyle('hidden');
+      } else if (variant === 'form') {
+        const hasExternalHeight = props.style?.height || className?.includes('h-');
 
-      if (variant === 'form') {
+        if (!hasExternalHeight) {
+          textarea.style.height = 'auto';
+          textarea.style.height = textarea.scrollHeight + 'px';
+        }
         const isFirstLine = textarea.scrollHeight <= textarea.clientHeight + 5;
         setOverflowStyle(isFirstLine ? 'hidden' : 'auto');
-      } else if (variant === 'chat') {
-        setOverflowStyle('hidden');
       }
     };
 
@@ -66,7 +71,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         rows={1}
         style={{
           overflow: overflowStyle,
-          ...(props.style || {}),
+          ...props.style,
         }}
       />
     );
