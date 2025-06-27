@@ -47,7 +47,7 @@ const ProductDetailPage = async ({ params }: { params: { shortId: string } }) =>
   };
 
   return (
-    <div className="flex flex-col gap-[25px]">
+    <div className="flex flex-col gap-[25px] pb-[50px]">
       {/* 이미지 슬라이더 */}
       <ProductImageSlider images={mapped.images} />
       {/* 경매 상품 내용 */}
