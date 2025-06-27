@@ -78,7 +78,7 @@ const ProductDetailPage = async ({ params }: { params: { shortId: string } }) =>
       {/* 입찰현황판 */}
       {/* <div className="h-[8px] w-full bg-neutral-100"></div> */}
       <div className="flex items-center gap-[19px]">
-        <Avatar className="size-[36px]" />
+        <Avatar src={mapped.exhibitUser?.profile_img || undefined} className="size-[36px]" />
         <div className="flex flex-col gap-[5px]">
           <div className="typo-body-medium">{mapped.exhibitUser.nickname}</div>
           <div className="typo-caption-regular">{mapped.exhibitUser.address}</div>
