@@ -26,11 +26,10 @@ export const SignUpForm = () => {
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDomain(e.target.value);
-    console.log(setDomain);
+
     if (e.target.value !== 'custom') {
-      setDomain(e.target.value);
-      // setCustomDomain('');
-      // setDomainError('');
+      setCustomDomain('');
+      setDomainError('');
     }
   };
 
