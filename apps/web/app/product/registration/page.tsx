@@ -77,7 +77,7 @@ const ProductRegistrationPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-[26px] pt-10">
+    <div className="flex flex-col gap-[26px] pt-[16px]">
       {/* 사진 업로드 */}
       <ImageUploadPreview onImagesChange={setImages} />
       {/* 사용자 입력 항목 */}
