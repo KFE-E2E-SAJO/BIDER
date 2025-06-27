@@ -34,27 +34,9 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <div id="container" className="pb-18 flex min-h-screen flex-col">
-          <header className="sticky top-0 h-20">헤더</header>
+          <header className="sticky top-0 h-20"></header>
           <main className="flex flex-1 flex-col">{children}</main>
-          <nav>
-            <ul className="fixed bottom-0 left-0 flex w-full gap-3">
-              <li className="h-18 flex basis-1/5 flex-col items-center justify-center bg-green-200">
-                네비1
-              </li>
-              <li className="h-18 flex basis-1/5 flex-col items-center justify-center bg-green-200">
-                네비2
-              </li>
-              <li className="h-18 flex basis-1/5 flex-col items-center justify-center bg-green-200">
-                네비3
-              </li>
-              <li className="h-18 flex basis-1/5 flex-col items-center justify-center bg-green-200">
-                네비4
-              </li>
-              <li className="h-18 flex basis-1/5 flex-col items-center justify-center bg-green-200">
-                네비5
-              </li>
-            </ul>
-          </nav>
+          <nav></nav>
         </div>
       </body>
     </html>
