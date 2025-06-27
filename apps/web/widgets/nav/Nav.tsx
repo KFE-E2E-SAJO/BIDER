@@ -62,7 +62,7 @@ const Nav = () => {
   const hasNewChat = true; //새로운 채팅 여부 받아오기
 
   return (
-    <nav className="bg-neutral-0 fixed bottom-0 left-0 flex w-full items-baseline justify-between border-t border-neutral-100 px-[25px] pb-[34px] pt-[13px]">
+    <nav className="bg-neutral-0 p-box fixed bottom-0 left-0 flex w-full items-baseline justify-between border-t border-neutral-100 pb-[34px] pt-[13px]">
       {navItems.map(({ href, label, icon: Icon, matchPath }) => {
         const isActive = matchPath(pathname);
         const isChat = href == '/chat';
@@ -71,13 +71,15 @@ const Nav = () => {
           <Link
             key={href}
             href={href}
-            className="relative flex flex-col items-center justify-center"
+            className="relative flex w-1/5 flex-col items-center justify-center"
           >
             <Icon
               className={`w-6 ${isActive ? 'fill-neutral-900 stroke-neutral-900' : 'fill-neutral-0 stroke-neutral-400'}`}
               strokeWidth={1.5}
             />
-            {isChat && hasNewChat && <AlertBadge />}
+            {isChat && hasNewChat && (
+              <AlertBadge placementClass="absolute left-[50%] top-[-2px] transform translate-x-0.5" />
+            )}
             <span
               className={`text-caption pt-1.5 font-[500] ${isActive ? 'text-neutral-900' : 'text-neutral-400'}`}
             >

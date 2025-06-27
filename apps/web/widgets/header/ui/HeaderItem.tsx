@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Bell, House, Search } from 'lucide-react';
+import { Bell, House, Search, Trash2 } from 'lucide-react';
 import BackBtn from '@/shared/ui/button/BackBtn';
-import TrashBtn from '@/shared/ui/button/TrashBtn';
 import Logo from '@/shared/ui/icon/Logo';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
 
@@ -55,7 +54,7 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
 
           <div className="flex items-center justify-end">
             {pathname === '/alert' ? (
-              <TrashBtn />
+              <Trash2 />
             ) : (
               <>
                 <Link href="/search">
@@ -63,7 +62,7 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
                 </Link>
                 <Link href="/alert" className="relative">
                   <Bell />
-                  {hasNewAlert && <AlertBadge />}
+                  {hasNewAlert && <AlertBadge placementClass="absolute right-0 top-0" />}
                 </Link>
               </>
             )}
