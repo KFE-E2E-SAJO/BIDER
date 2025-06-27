@@ -24,7 +24,11 @@ const navItems: NavItems[] = [
     href: '/',
     label: '홈',
     icon: House,
-    matchPath: (pathname) => pathname === '/' || pathname.includes('/'),
+    matchPath: (pathname) =>
+      pathname === '/' ||
+      pathname === '/index' ||
+      pathname.includes('/') ||
+      pathname.includes('/index'),
   },
   {
     href: '/category',

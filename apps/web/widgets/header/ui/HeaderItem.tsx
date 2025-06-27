@@ -11,6 +11,7 @@ import AlertBadge from '@/shared/ui/badge/AlertBadge';
 
 const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
   '/': <Logo />,
+  '/index': <Logo />,
   '/category': <span className="typo-subtitle-medium">카테고리</span>,
   '/chat': <span className="typo-subtitle-medium">채팅</span>,
   '/mypage': <span className="typo-subtitle-medium">마이페이지</span>,
