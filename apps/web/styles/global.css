@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+.p-box {
+  padding: 0 16px;
+}
+
 @theme {
   /* === 01.2.1 Neutral Colors === */
   --color-neutral-900: #252525; /* 텍스트 (title) */
