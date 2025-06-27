@@ -14,7 +14,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   showClearButton?: boolean;
 }
 
-const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
+const InputContent = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       status = 'default',
@@ -178,7 +178,7 @@ const inputContent = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-inputContent.displayName = 'InputContent';
+InputContent.displayName = 'InputContent';
 
-export { inputContent };
+export { InputContent };
 export type { InputProps };
