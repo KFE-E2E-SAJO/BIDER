@@ -32,7 +32,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <div id="container" className="pb-18 flex min-h-screen flex-col">
+          <header className="sticky top-0 h-20"></header>
+          <main className="flex flex-1 flex-col">{children}</main>
+          <nav></nav>
+        </div>
+      </body>
     </html>
   );
 }
