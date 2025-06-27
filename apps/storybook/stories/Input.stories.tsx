@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { inputContent } from '@repo/ui/components/Input/Input';
+import { Input } from '@repo/ui/components/Input/Input';
 
-const meta: Meta<typeof inputContent> = {
-  title: 'components/TextInput',
-  component: inputContent,
+const meta: Meta<typeof Input> = {
+  title: 'components/Input',
+  component: Input,
   parameters: {
     layout: 'centered',
   },
@@ -14,7 +14,7 @@ const meta: Meta<typeof inputContent> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof inputContent>;
+type Story = StoryObj<typeof Input>;
 
 export const Default: Story = {};
 

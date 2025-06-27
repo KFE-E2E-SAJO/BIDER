@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-subtitle-small font-semibold transition-all disabled:pointer-events-none disabled:bg-neutral-300 disabled:text-neutral-600 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-sm",
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap text-subtitle-small font-semibold transition-all disabled:pointer-events-none disabled:bg-neutral-300 disabled:text-neutral-600 [&_svg]:pointer-events-none shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-sm',
   {
     variants: {
       variant: {
@@ -24,7 +24,7 @@ const buttonVariants = cva(
         default: 'w-full h-13 px-4 py-2 has-[>svg]:px-3',
         lg: 'w-43 h-13 gap-1.5 px-6 has-[>svg]:px-4',
         sm: 'w-28 h-9 gap-1.5 px-3 has-[>svg]:px-2.5 text-caption font-normal',
-        icon: 'size-15 [&>svg.lucide]:size-[25px]',
+        icon: 'size-15',
         thin: 'w-full h-10 px-4 py-2 has-[>svg]:px-3 text-body font-medium',
         fit: 'w-fit',
       },
