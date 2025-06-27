@@ -107,11 +107,11 @@ export const WithIcon: Story = {
   render: (args) => (
     <div className="flex flex-col gap-4">
       <Button {...args}>
-        <Plus />
+        <Plus size={15} />
         글쓰기
       </Button>
       <Button {...args} variant="outline">
-        <Plus />
+        <Plus size={20} />
         글쓰기
       </Button>
       <Button {...args} variant="outline" size="sm">
@@ -210,8 +210,8 @@ export const IconOnly: Story = {
   },
   render: (args) => (
     <div className="flex gap-2">
-      <Button size="icon" {...args}>
-        <Plus />
+      <Button size="icon" {...args} className="size-30">
+        <Plus size={50} />
       </Button>
       <Button size="icon" {...args}>
         <MessageSquareMore />
