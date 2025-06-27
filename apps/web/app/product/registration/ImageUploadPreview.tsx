@@ -15,6 +15,7 @@ export interface UploadedImage {
   id: string;
   file: File;
   preview: string;
+  order_index: number;
 }
 
 interface ImageUploadPreviewProps {
@@ -43,6 +44,7 @@ const ImageUploadPreview = ({ onImagesChange }: ImageUploadPreviewProps) => {
           id: `${Date.now()}-${i}`,
           file,
           preview,
+          order_index: images.length === 0 && i === 0 ? 0 : 1,
         });
       }
     }
@@ -105,13 +107,18 @@ const ImageUploadPreview = ({ onImagesChange }: ImageUploadPreviewProps) => {
             </div>
           </div>
         </div>
-        {images.map((image) => (
+        {images.map((image, index) => (
           <div key={image.id} className="relative">
             <Avatar
               className="h-[60px] w-[60px] rounded-[5px]"
               src={image.preview}
-              alt="Uploaded"
+              alt={index === 0 ? '대표 이미지' : '업로드된 이미지'}
             />
+            {index === 0 && (
+              <div className="text-neutral-0 absolute bottom-0 left-0 right-0 flex h-[15px] items-center justify-center rounded-b-[5px] bg-neutral-800 text-[8px]">
+                대표 사진
+              </div>
+            )}
             <Button
               size="icon"
               shape="rounded"
