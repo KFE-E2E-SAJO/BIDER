@@ -62,7 +62,7 @@ const Nav = () => {
   const hasNewChat = true; //새로운 채팅 여부 받아오기
 
   return (
-    <nav className="bg-neutral-0 fixed bottom-0 left-0 flex w-full items-baseline justify-between px-[25px] pb-[34px] pt-[13px]">
+    <nav className="bg-neutral-0 fixed bottom-0 left-0 flex w-full items-baseline justify-between border-t border-neutral-100 px-[25px] pb-[34px] pt-[13px]">
       {navItems.map(({ href, label, icon: Icon, matchPath }) => {
         const isActive = matchPath(pathname);
         const isChat = href == '/chat';
