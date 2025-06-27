@@ -63,6 +63,35 @@
   --z-toast: 1080;
 }
 
+/* === Base Styles === */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--text-body); /* 기본 폰트 크기 */
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: var(--text-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-neutral-900);
+  background-color: white;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+@layer utilities {
+}
+
 /* === Typography Classes === */
 .typo-h1 {
   font-size: var(--text-h1);
@@ -123,30 +152,4 @@
   font-size: var(--text-caption);
   font-weight: 400;
   line-height: var(--line-height-relaxed);
-}
-
-/* === Base Styles === */
-* {
-  box-sizing: border-box;
-}
-
-html {
-  font-size: var(--text-body); /* 기본 폰트 크기 */
-}
-
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: var(--text-body);
-  line-height: var(--line-height-normal);
-  color: var(--color-neutral-700);
-  background-color: white;
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html,
-body {
-  height: 100%;
 }
