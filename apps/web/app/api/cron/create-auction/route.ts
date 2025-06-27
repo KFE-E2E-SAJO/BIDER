@@ -3,8 +3,6 @@ import { supabase } from '@/shared/lib/supabaseClient';
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('🕒 Cron job 실행 시각:', new Date().toISOString());
-
     // 현재 시간을 기준으로 생성해야 할 pending_auction 조회
     const now = new Date().toISOString();
 
@@ -18,8 +16,6 @@ export async function GET(request: NextRequest) {
       console.error('Pending auctions 조회 실패:', fetchError);
       return NextResponse.json({ success: false, error: fetchError.message }, { status: 500 });
     }
-
-    console.log(`📦 처리할 pending auction 개수: ${pendingAuctions?.length || 0}`);
 
     let successCount = 0;
     let failCount = 0;
@@ -42,21 +38,17 @@ export async function GET(request: NextRequest) {
           continue;
         }
 
-        // pending_auction 상태를 완료로 업데이트
-        const { error: updateError } = await supabase
+        // pending_auction 데이터 삭제
+        const { error: deleteError } = await supabase
           .from('pending_auction')
-          .update({
-            status: 'completed',
-            completed_at: new Date().toISOString(),
-          })
-          .eq('id', pending.id);
+          .delete()
+          .eq('pending_auction_id', pending.pending_auction_id);
 
-        if (updateError) {
-          console.error(`Pending auction ${pending.id} 상태 업데이트 실패:`, updateError);
+        if (deleteError) {
+          console.error(`Pending auction ${pending.pending_auction_id} 삭제 실패:`, deleteError);
         }
 
         successCount++;
-        console.log(`✅ Product ${pending.product_id} 경매 생성 완료`);
       } catch (error) {
         console.error(`Product ${pending.product_id} 처리 중 오류:`, error);
         failCount++;
