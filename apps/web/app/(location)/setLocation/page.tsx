@@ -1,7 +1,7 @@
-import { IntroWrapper } from '@/features/location/ui/IntroWrapper';
+import LocationWrapper from '@/features/location/ui/LocationWrapper';
 
 const SetLocationPage = () => {
-  return <IntroWrapper />;
+  return <LocationWrapper />;
 };
 
 export default SetLocationPage;

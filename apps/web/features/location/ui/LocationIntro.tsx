@@ -7,13 +7,13 @@ type Props = {
   onNext: () => void;
 };
 
-const Intro1 = ({ onNext }: Props) => (
+const LocationIntro = ({ onNext }: Props) => (
   <div className="flex h-full flex-col">
     <div className="flex flex-1 flex-col justify-center">
       <h2 className="typo-subtitle-medium mb-[16px] text-neutral-900">
         <span className="text-main">위치 설정</span>이 필요해요!
       </h2>
-      <div className="typo-body-regular mb-[29px]">
+      <div className="typo-body-regular mb-[29px] text-neutral-700">
         <p>Bider는 지역 기반 서비스예요.</p>
         <p>위치를 설정하고 근처 경매 정보를 확인해 보세요.</p>
       </div>
@@ -28,4 +28,4 @@ const Intro1 = ({ onNext }: Props) => (
   </div>
 );
 
-export default Intro1;
+export default LocationIntro;

@@ -1,17 +1,12 @@
-interface UpdateUserLocationProps {
+interface SetLocationProps {
   userId: string;
   lat: number;
   lng: number;
   address: string;
 }
 
-export const updateUserLocation = async ({
-  userId,
-  lat,
-  lng,
-  address,
-}: UpdateUserLocationProps) => {
-  const res = await fetch('/api/update-location', {
+export const SetLocation = async ({ userId, lat, lng, address }: SetLocationProps) => {
+  const res = await fetch('/api/location', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId, lat, lng, address }),

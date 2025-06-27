@@ -5,7 +5,7 @@ import { AdvancedMarker, APIProvider, Map, Pin } from '@vis.gl/react-google-maps
 import { Button } from '@repo/ui/components/Button/Button';
 import DotStepper from '@/features/location/ui/DotStepper';
 import { getAddressFromLatLng } from '@/features/location/lib/utils';
-import { updateUserLocation } from '@/features/location/model/updateLocation';
+import { SetLocation } from '@/features/location/model/setLocation';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
@@ -13,7 +13,7 @@ type Props = {
   onNext: () => void;
 };
 
-const Intro2 = ({ onNext }: Props) => {
+const LocationConfirm = ({ onNext }: Props) => {
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [address, setAddress] = useState('');
   const [error, setError] = useState(false);
@@ -25,7 +25,7 @@ const Intro2 = ({ onNext }: Props) => {
     if (!user || !position || !address) return;
 
     try {
-      await updateUserLocation({
+      await SetLocation({
         userId: user.id,
         lat: position.lat,
         lng: position.lng,
@@ -70,14 +70,14 @@ const Intro2 = ({ onNext }: Props) => {
         <h2 className="typo-subtitle-medium mb-[16px] text-neutral-900">
           <span className="text-main">현재 위치</span>가 맞으신가요?
         </h2>
-        <div className="typo-body-regular mb-[29px]">
+        <div className="typo-body-regular mb-[29px] text-neutral-700">
           <p>모든 회원은 거래를 위해</p>
           <p>사용자 위치를 설정해야 합니다.</p>
         </div>
 
         <DotStepper activeIndex={1} />
 
-        <div className="flex h-[200px] flex-col justify-center gap-[8px] bg-[#f7f7f7] p-[8px] pb-[12px]">
+        <div className="bg-neutral-050 flex h-[200px] flex-col justify-center gap-[8px] rounded-2xl p-[8px] pb-[12px]">
           <APIProvider apiKey={MAPAPIKEY}>
             {loading ? (
               <div className="typo-body-medium text-neutral-600">위치 정보를 불러오는 중...</div>
@@ -92,10 +92,14 @@ const Intro2 = ({ onNext }: Props) => {
               <>
                 <Map zoom={13} center={position!} disableDefaultUI={true} mapId="setLocation">
                   <AdvancedMarker position={position!} clickable={false}>
-                    <Pin background="#64b5f7" glyphColor="#fff" borderColor="#64b5f7" />
+                    <Pin
+                      background="var(--color-main)"
+                      glyphColor="var(--color-neutral-0)"
+                      borderColor="var(--color-main)"
+                    />
                   </AdvancedMarker>
                 </Map>
-                <div className="typo-body-medium text-caption text-neutral-600">{address}</div>
+                <div className="text-caption text-neutral-600">{address}</div>
               </>
             )}
           </APIProvider>
@@ -116,4 +120,4 @@ const Intro2 = ({ onNext }: Props) => {
   );
 };
 
-export default Intro2;
+export default LocationConfirm;
