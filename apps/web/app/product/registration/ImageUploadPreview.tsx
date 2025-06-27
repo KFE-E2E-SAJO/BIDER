@@ -69,11 +69,15 @@ const ImageUploadPreview = ({ onImagesChange }: ImageUploadPreviewProps) => {
 
   const removeImage = (id: string) => {
     setImages((prev) => {
-      const updated = prev.filter((img) => img.id !== id);
-      const imageToRemove = prev.find((img) => img.id === id);
-      if (imageToRemove) {
-        URL.revokeObjectURL(imageToRemove.preview);
-      }
+      const updated = prev
+        .filter((img) => img.id !== id)
+        .map((img, idx) => ({
+          ...img,
+          order_index: idx === 0 ? 0 : 1,
+        }));
+
+      const removed = prev.find((img) => img.id === id);
+      if (removed) URL.revokeObjectURL(removed.preview);
       return updated;
     });
   };
