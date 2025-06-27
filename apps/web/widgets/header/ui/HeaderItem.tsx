@@ -41,7 +41,9 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
             ) : (
               <div className="flex items-baseline">
                 <BackBtn />
-                <House className="ml-4" />
+                <Link href="/">
+                  <House className="ml-4" />
+                </Link>
               </div>
             )}
           </div>
