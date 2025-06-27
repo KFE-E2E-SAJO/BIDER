@@ -1,6 +1,7 @@
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { notFound } from 'next/navigation';
+import ProductImageSlider from './ProductImageSlider';
 
 const ProductDetailPage = async ({ params }: { params: { shortId: string } }) => {
   // test용 shorId  = uRMUuxqfyznoNTZhFmvhx4
@@ -38,9 +39,11 @@ const ProductDetailPage = async ({ params }: { params: { shortId: string } }) =>
     minPrice: auction.min_price,
   };
 
-  console.log(data);
-
-  return <main>{JSON.stringify(data)}</main>;
+  return (
+    <main>
+      <ProductImageSlider images={mapped.images} />
+    </main>
+  );
 };
 
 export default ProductDetailPage;
