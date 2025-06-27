@@ -1,4 +1,4 @@
-export default function HomePage() {
+const HomePage = () => {
   return (
     <main className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-6">
       <div className="mx-auto max-w-2xl text-center">
@@ -38,4 +38,6 @@ export default function HomePage() {
       </div>
     </main>
   );
-}
+};
+
+export default HomePage;
