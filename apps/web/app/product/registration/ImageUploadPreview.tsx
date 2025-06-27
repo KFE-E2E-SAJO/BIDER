@@ -11,13 +11,17 @@ import {
 import { Camera, Plus, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-interface UploadedImage {
+export interface UploadedImage {
   id: string;
   file: File;
   preview: string;
 }
 
-const ImageUploadPreview = () => {
+interface ImageUploadPreviewProps {
+  onImagesChange: (images: UploadedImage[]) => void;
+}
+
+const ImageUploadPreview = ({ onImagesChange }: ImageUploadPreviewProps) => {
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [showActionSheet, setShowActionSheet] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -45,6 +49,8 @@ const ImageUploadPreview = () => {
 
     setImages((prev) => [...prev, ...newImages]);
     setShowActionSheet(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
   const handleGallerySelect = () => {
@@ -69,6 +75,10 @@ const ImageUploadPreview = () => {
       return updated;
     });
   };
+
+  useEffect(() => {
+    onImagesChange(images);
+  }, [images, onImagesChange]);
 
   const openActionSheet = () => {
     if (images.length >= maxImages) return;
@@ -104,7 +114,8 @@ const ImageUploadPreview = () => {
             />
             <Button
               size="icon"
-              className="absolute right-0 top-0 h-[20px] w-[20px] -translate-y-1/2 translate-x-1/2 rounded-full bg-neutral-800"
+              shape="rounded"
+              className="absolute right-0 top-0 h-[20px] w-[20px] -translate-y-1/2 translate-x-1/2 bg-neutral-800"
               onClick={() => removeImage(image.id)}
             >
               <X size={12} />
