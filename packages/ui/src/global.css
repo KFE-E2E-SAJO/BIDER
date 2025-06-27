@@ -13,8 +13,6 @@
   --color-neutral-300: #dadada; /* disabled */
   --color-neutral-100: #f1f1f1; /* background */
   --color-neutral-0: #ffffff; /* pure white */
-  --color-chat-message: #f6f6f6; /* 채팅메시지 배경 */
-
 
   /* === 01.2.2 Primary Colors === */
   --color-main: #64b5f7;
@@ -72,67 +70,56 @@
   line-height: var(--line-height-tight);
 }
 .typo-h2 {
-  font-size: var(--font-size-h2);
   font-size: var(--text-h2);
   font-weight: 700;
   line-height: var(--line-height-normal);
 }
 .typo-h3 {
-  font-size: var(--font-size-h3);
   font-size: var(--text-h3);
   font-weight: 700;
   line-height: var(--line-height-normal);
 }
 .typo-subtitle-bold {
-  font-size: var(--font-size-subtitle);
   font-size: var(--text-subtitle);
   font-weight: 600;
   line-height: var(--line-height-normal);
 }
 .typo-subtitle-medium {
-  font-size: var(--font-size-subtitle);
   font-size: var(--text-subtitle);
   font-weight: 500;
   line-height: var(--line-height-normal);
 }
 .typo-subtitle-small-bold {
-  font-size: var(--font-size-subtitle-small);
   font-size: var(--text-subtitle-small);
   font-weight: 600;
   line-height: var(--line-height-normal);
 }
 .typo-subtitle-small-medium {
-  font-size: var(--font-size-subtitle-small);
   font-size: var(--text-subtitle-small);
   font-weight: 500;
   line-height: var(--line-height-normal);
 }
 .typo-body-bold {
-  font-size: var(--font-size-subtitle-small);
   font-size: var(--text-subtitle-small);
   font-weight: 600;
   line-height: var(--line-height-relaxed);
 }
 .typo-body-medium {
-  font-size: var(--font-size-body);
   font-size: var(--text-body);
   font-weight: 500;
   line-height: var(--line-height-relaxed);
 }
 .typo-body-regular {
-  font-size: var(--font-size-body);
   font-size: var(--text-body);
   font-weight: 400;
   line-height: var(--line-height-relaxed);
 }
 .typo-caption-medium {
-  font-size: var(--font-size-caption);
   font-size: var(--text-caption);
   font-weight: 500;
   line-height: var(--line-height-relaxed);
 }
 .typo-caption-regular {
-  font-size: var(--font-size-caption);
   font-size: var(--text-caption);
   font-weight: 400;
   line-height: var(--line-height-relaxed);
@@ -149,7 +136,6 @@ html {
 
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: var(--font-size-body);
   font-size: var(--text-body);
   line-height: var(--line-height-normal);
   color: var(--color-neutral-700);
@@ -158,4 +144,9 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
 }
