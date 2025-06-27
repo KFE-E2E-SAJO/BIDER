@@ -22,24 +22,28 @@ export default function ProductImageSlider({ images }: Props) {
   const swiperRef = useRef<SwiperType | null>(null);
 
   return (
-    <div className="h-[310px] w-full">
-      <Swiper
-        modules={[Pagination]}
-        spaceBetween={0}
-        slidesPerView={1}
-        pagination={{ clickable: true }}
-        onSwiper={(swiper) => (swiperRef.current = swiper)}
-        onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
-        className="h-full p-0"
-      >
-        {images.map((img) => (
-          <SwiperSlide key={img.image_id} className="relative">
-            <img src={img.image_url} alt="Product" className="h-full w-full object-cover" />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className="w-full">
+      {/* Main Swiper */}
+      <div className="h-[310px]">
+        <Swiper
+          modules={[Pagination]}
+          spaceBetween={0}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
+          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+          className="h-full p-0"
+        >
+          {images.map((img) => (
+            <SwiperSlide key={img.image_id} className="relative">
+              <img src={img.image_url} alt="Product" className="h-full w-full object-cover" />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+
       {/* Thumbnail Gallery */}
-      <div className="mt-4 flex justify-center gap-2">
+      <div className="mt-4 flex justify-between">
         {images.map((img, idx) => (
           <button
             key={img.image_id}
