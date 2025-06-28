@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import MyPageAuctionCard from './MyPageAuctionCard';
 
 const MyPageAuction = () => {
   return (
@@ -13,26 +14,8 @@ const MyPageAuction = () => {
       </div>
       {/* 각 개수 받아 숫자 세팅 */}
       <div className="flex items-center justify-between">
-        <ul className="flex w-[45%] rounded-md bg-[#f6f6f6]">
-          <li className="flex w-1/2 flex-col items-center py-[11px]">
-            <p className="text-[11px] text-neutral-600">입찰 전체</p>
-            <div className="pt-[3px] text-[18px] font-semibold">40</div>
-          </li>
-          <li className="flex w-1/2 flex-col items-center py-[11px]">
-            <p className="text-[11px] text-neutral-600">진행 중</p>
-            <div className="pt-[3px] text-[18px] font-semibold">2</div>
-          </li>
-        </ul>
-        <ul className="flex w-[45%] rounded-md bg-[#f6f6f6]">
-          <li className="flex w-1/2 flex-col items-center py-[11px]">
-            <p className="text-[11px] text-neutral-600">출품 전체</p>
-            <div className="pt-[3px] text-[18px] font-semibold">5</div>
-          </li>
-          <li className="flex w-1/2 flex-col items-center py-[11px]">
-            <p className="text-[11px] text-neutral-600">진행 중</p>
-            <div className="pt-[3px] text-[18px] font-semibold">2</div>
-          </li>
-        </ul>
+        <MyPageAuctionCard title1="입찰 전체" count1={40} title2="진행 중" count2={2} />
+        <MyPageAuctionCard title1="출품 전체" count1={5} title2="진행 중" count2={2} />
       </div>
     </div>
   );
