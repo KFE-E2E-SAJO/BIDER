@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
@@ -68,7 +69,7 @@ function DialogContent({
       >
         {showCloseButton && (
           <DialogClose className="absolute right-4 top-4 z-10 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none">
-            <XIcon className="h-5 w-5" />
+            <XIcon className="h-9 w-9" strokeWidth={1} />
             <span className="sr-only">Close</span>
           </DialogClose>
         )}
