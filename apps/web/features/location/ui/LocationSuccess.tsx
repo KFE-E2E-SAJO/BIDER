@@ -4,8 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const LocationSuccess = () => (
-  <div className="flex h-full flex-col">
-    <div className="flex flex-1 flex-col justify-center">
+  <>
+    <div className="p-box flex flex-1 flex-col justify-center">
       <h2 className="typo-subtitle-medium mb-[16px]">
         <span className="text-main">축하합니다!</span>
       </h2>
@@ -23,7 +23,7 @@ const LocationSuccess = () => (
         <Button>시작하기</Button>
       </Link>
     </div>
-  </div>
+  </>
 );
 
 export default LocationSuccess;
