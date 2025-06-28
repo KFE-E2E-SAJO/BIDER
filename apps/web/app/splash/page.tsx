@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Logo from '../../shared/ui/icon/Logo';
+import Logo from '@/shared/ui/icon/Logo';
 import { Button } from '@repo/ui/components/Button/Button';
 
 export default function SplashPage() {
@@ -17,6 +17,27 @@ export default function SplashPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  const checkIsAuthenticated = (): boolean => {
+    if (typeof window === 'undefined') return false;
+
+    const token = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+    return !!token;
+
+    // 다른 방법들:
+    // return document.cookie.includes('auth-token');
+    // return !!sessionStorage.getItem('user');
+  };
+
+  const handleStartClick = () => {
+    const isAuthenticated = checkIsAuthenticated();
+
+    if (isAuthenticated) {
+      router.push('/loca');
+    } else {
+      router.push('/sign');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="bg-main fixed inset-0 z-50 flex items-center justify-center">
@@ -26,10 +47,6 @@ export default function SplashPage() {
       </div>
     );
   }
-
-  const handleStartClick = () => {
-    router.push('../signup/');
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white">
@@ -48,7 +65,7 @@ export default function SplashPage() {
           </Button>
           <p className="text-center font-medium">
             이미 계정이 있나요?{' '}
-            <a href="../login" className="cursor-pointer text-blue-500 underline">
+            <a href="/login" className="cursor-pointer text-blue-500 underline">
               로그인
             </a>
           </p>
