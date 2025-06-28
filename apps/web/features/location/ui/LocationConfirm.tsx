@@ -65,8 +65,8 @@ const LocationConfirm = ({ onNext }: Props) => {
   }, []);
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex flex-1 flex-col justify-center">
+    <>
+      <div className="p-box flex flex-1 flex-col justify-center">
         <h2 className="typo-subtitle-medium mb-[16px] text-neutral-900">
           <span className="text-main">현재 위치</span>가 맞으신가요?
         </h2>
@@ -116,7 +116,7 @@ const LocationConfirm = ({ onNext }: Props) => {
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

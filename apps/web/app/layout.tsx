@@ -35,7 +35,8 @@ const RootLayout = ({
   return (
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div id="container" className="pb-18 flex min-h-screen flex-col">
+        <div id="container" className="pb-27 flex min-h-screen flex-col">
+          {/* 'pb-헤더높이'로 수정 */}
           <Header />
           <main className="flex flex-1 flex-col">{children}</main>
           <Nav />
