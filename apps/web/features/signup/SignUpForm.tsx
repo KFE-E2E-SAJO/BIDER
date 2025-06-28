@@ -1,10 +1,19 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Button } from '@repo/ui/components/Button/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import {
+  sendEmailVerification,
+  checkEmailVerification,
+  completeSignUp,
+} from '../../shared/lib/auth';
 import '@repo/ui/styles.css';
 
 export const SignUpForm = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const [email, setEmail] = useState<string>('');
   const [domain, setDomain] = useState<string>('');
   const [customDomain, setCustomDomain] = useState<string>('');
@@ -12,19 +21,51 @@ export const SignUpForm = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
 
-  // 이메일 인증 관련 변수
-  const [isEmailSent, setIsEmailSent] = useState<boolean>(false); // 이메일 보냈는지 여부
-  const [verificationCode, setVerificationCode] = useState<string>(''); // 사용자가 입력한 인증번호
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false); // 인증 완료됐는지 여부
+  const [isEmailSent, setIsEmailSent] = useState<boolean>(false); //이메일 보냇는지 여부
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false); //인증 완료 됬는지
+  const [verifiedEmail, setVerifiedEmail] = useState<string>(''); //인증완료된 이메일
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // 오류 관련 변수
   const [emailError, setEmailError] = useState<string>('');
   const [domainError, setDomainError] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
   const [confirmPasswordError, setConfirmPwError] = useState<string>('');
   const [nicknameError, setNicknameError] = useState<string>('');
 
+  useEffect(() => {
+    const checkVerificationStatus = async () => {
+      const isVerifiedFromCallback = searchParams.get('verified') === 'true';
+
+      if (isVerifiedFromCallback) {
+        const { isVerified, email: userEmail } = await checkEmailVerification();
+
+        if (isVerified && userEmail) {
+          setIsEmailVerified(true);
+          setVerifiedEmail(userEmail);
+          setIsEmailSent(true);
+
+          const [localPart, domainPart] = userEmail.split('@');
+          setEmail(localPart);
+
+          const predefinedDomains = ['gmail.com', 'naver.com', 'daum.net'];
+          if (predefinedDomains.includes(domainPart)) {
+            setDomain(domainPart);
+          } else {
+            setDomain('custom');
+            setCustomDomain(domainPart);
+          }
+
+          router.replace('/signup');
+        }
+      }
+    };
+
+    checkVerificationStatus();
+  }, [searchParams, router]);
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (isEmailVerified) return;
+
     setDomain(e.target.value);
 
     if (e.target.value !== 'custom') {
@@ -33,29 +74,25 @@ export const SignUpForm = () => {
     }
   };
 
-  //이메일 유효성 체크
   const isValidEmail = () => {
     let fullEmail;
 
-    if (!email) {
-      setEmailError('이메일을 입력해주세요');
+    if (!email || typeof email !== 'string') {
+      setEmailError('이메일을 다시 입력해주세요');
       return false;
     }
 
-    if (!domain) {
+    if (!domain || typeof domain !== 'string') {
       setDomainError('도메인을 선택해주세요');
       return false;
     }
 
     if (domain === 'custom') {
-      if (!customDomain) {
+      if (!customDomain || typeof customDomain !== 'string') {
         setDomainError('도메인을 직접 입력해주세요');
         return false;
       }
-      if (customDomain.length < 1 || customDomain.length > 255) {
-        setDomainError('올바른 도메인 형식이 아닙니다');
-        return false;
-      }
+
       if (
         customDomain.startsWith('-') ||
         customDomain.endsWith('-') ||
@@ -65,6 +102,7 @@ export const SignUpForm = () => {
         setDomainError('올바른 도메인 형식이 아닙니다');
         return false;
       }
+
       fullEmail = email + '@' + customDomain;
     } else {
       fullEmail = email + '@' + domain;
@@ -86,16 +124,19 @@ export const SignUpForm = () => {
       setEmailError('올바른 이메일 형식이 아닙니다');
       return false;
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
     if (!emailRegex.test(fullEmail)) {
       setEmailError('올바른 이메일 형식이 아닙니다');
       return false;
     }
 
+    setEmailError('');
+    setDomainError('');
+
     return true;
   };
 
-  //비밀번호 유효성 체크
   const isValidPassword = () => {
     if (!password) {
       setPasswordError('비밀번호를 입력해주세요');
@@ -118,10 +159,11 @@ export const SignUpForm = () => {
       return false;
     }
 
+    setPasswordError('');
+
     return true;
   };
 
-  //닉네임 유효성 체크
   const isValidNickname = () => {
     if (!nickname) {
       setNicknameError('닉네임을 입력해주세요');
@@ -138,10 +180,11 @@ export const SignUpForm = () => {
       return false;
     }
 
+    setNicknameError('');
+
     return true;
   };
 
-  // 이메일 인증하기 버튼 활성화
   const checkEmailInputs = () => {
     if (email.length < 1) return false;
     if (domain.length < 1) return false;
@@ -150,18 +193,26 @@ export const SignUpForm = () => {
     return true;
   };
 
-  // 이메일 인증번호 보내기
-  const sendVerificationEmail = () => {
+  //이메일 인증하기 버튼 클릭 시
+  const sendVerificationEmail = async () => {
+    if (!isValidEmail()) return;
+
+    setIsLoading(true);
+
     const fullEmail = domain === 'custom' ? `${email}@${customDomain}` : `${email}@${domain}`;
+    const result = await sendEmailVerification(fullEmail);
 
-    alert(`${fullEmail}로 인증번호를 보냈습니다! (아직 진짜로는 안 보내짐)`);
+    if (result.success) {
+      alert(`${fullEmail}로 인증 이메일을 보냈습니다! 이메일을 확인해주세요.`);
+      setIsEmailSent(true);
+    } else {
+      alert(`이메일 발송 실패: ${result.error}`);
+    }
 
-    // 3. 이메일 보냈다고 표시
-    setIsEmailSent(true);
+    setIsLoading(false);
   };
 
-  // 회원가입 완료버튼
-  const handleSubmitForm = (e: React.FormEvent) => {
+  const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setEmailError('');
@@ -183,8 +234,26 @@ export const SignUpForm = () => {
     }
     if (!isValidNickname()) return;
 
-    // API 호출은 나중에 추가
-    alert('회원가입이 완료되었습니다');
+    setIsLoading(true);
+
+    try {
+      const result = await completeSignUp({
+        email: email, // 1단계에서 인증된 이메일
+        password,
+        nickname,
+      });
+
+      if (result.success) {
+        alert('회원가입이 완료되었습니다!');
+        router.push('/login');
+      } else {
+        alert(`회원가입 실패: ${result.error}`);
+      }
+    } catch (error) {
+      alert('회원가입 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
