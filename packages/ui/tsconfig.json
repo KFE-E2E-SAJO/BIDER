@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@repo/ui/*": ["src/*"]
+      "@/*": ["src/*"]
     }
   },
   "extends": "@repo/typescript-config/react-library.json",

@@ -2,7 +2,7 @@
 
 import { Button } from '@repo/ui/components/Button/Button';
 import { Textarea } from '@repo/ui/components/Textarea/Textarea';
-import { toast } from '../../../packages/ui/dist/components/Toast/sonner';
+import { toast } from '@repo/ui/components/Toast/sonner';
 import { title } from 'process';
 
 const HomePage = () => {
