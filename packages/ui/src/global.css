@@ -2,7 +2,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@theme static {
+@theme {
   /* === 01.2.1 Neutral Colors === */
 
   --color-neutral-900: #252525; /* 텍스트 (title) */
