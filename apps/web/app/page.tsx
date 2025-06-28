@@ -1,8 +1,6 @@
-import { Textarea } from '@repo/ui/components/Textarea/textarea';
-
-export default function HomePage() {
+const HomePage = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-6">
+    <main className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-6">
       <div className="mx-auto max-w-2xl text-center">
         <h1 className="mb-6 text-5xl font-bold text-gray-900">🏺 지역기반 중고거래 경매</h1>
         <p className="mb-8 text-xl text-gray-600">우리 동네에서 안전하게 거래하는 경매 서비스</p>
@@ -38,8 +36,8 @@ export default function HomePage() {
           </button>
         </div>
       </div>
-      <br />
-      <Textarea placeholder="여기에 상품 설명을 입력하세요..." className="h-[204px] w-full" />
     </main>
   );
-}
+};
+
+export default HomePage;
