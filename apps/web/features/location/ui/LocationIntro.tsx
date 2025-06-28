@@ -8,8 +8,8 @@ type Props = {
 };
 
 const LocationIntro = ({ onNext }: Props) => (
-  <div className="flex h-full flex-col">
-    <div className="flex flex-1 flex-col justify-center">
+  <>
+    <div className="p-box flex flex-1 flex-col justify-center">
       <h2 className="typo-subtitle-medium mb-[16px] text-neutral-900">
         <span className="text-main">위치 설정</span>이 필요해요!
       </h2>
@@ -25,7 +25,7 @@ const LocationIntro = ({ onNext }: Props) => (
     <div className="bg-main h-24 pt-3">
       <Button onClick={onNext}>위치 설정 하러 가기</Button>
     </div>
-  </div>
+  </>
 );
 
 export default LocationIntro;
