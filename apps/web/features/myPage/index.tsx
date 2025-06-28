@@ -1,7 +1,10 @@
 import Footer from '@/widgets/footer/Footer';
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
-import { ChevronRight } from 'lucide-react';
+import { Button } from '@repo/ui/components/Button/Button';
+import { ChevronRight, Heart, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import MyPageAuction from './ui/MyPageAuction';
+import StatusBadge from '@/shared/ui/badge/StatusBadge';
 
 const MyPage = () => {
   return (
@@ -27,98 +30,95 @@ const MyPage = () => {
         </Link>
       </div>
 
-      <div className="p-box py-[25px]">
-        <div className="mb-[13px] flex w-full items-baseline justify-between">
-          <div className="typo-subtitle-small-medium">나의 경매</div>
-          <Link href="/auction" className="typo-caption-regular text-neutral-600">
-            전체 보기
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
-          </Link>
-        </div>
-        <div className="flex items-center justify-between">
-          <ul className="flex w-[45%] rounded-md bg-[#f6f6f6]">
-            <li className="flex w-1/2 flex-col items-center py-[11px]">
-              <p className="text-[11px] text-neutral-600">입찰 전체</p>
-              <div className="pt-[3px] text-[18px] font-semibold">40</div>
-            </li>
-            <li className="flex w-1/2 flex-col items-center py-[11px]">
-              <p className="text-[11px] text-neutral-600">진행 중</p>
-              <div className="pt-[3px] text-[18px] font-semibold">2</div>
-            </li>
-          </ul>
-          <ul className="flex w-[45%] rounded-md bg-[#f6f6f6]">
-            <li className="flex w-1/2 flex-col items-center py-[11px]">
-              <p className="text-[11px] text-neutral-600">출품 전체</p>
-              <div className="pt-[3px] text-[18px] font-semibold">5</div>
-            </li>
-            <li className="flex w-1/2 flex-col items-center py-[11px]">
-              <p className="text-[11px] text-neutral-600">진행 중</p>
-              <div className="pt-[3px] text-[18px] font-semibold">2</div>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <MyPageAuction />
 
       <div>
         <ul className="p-box border-t-8 border-neutral-100 py-[15px]">
           <Link
             href=""
-            className="flex items-center justify-between border-b border-neutral-100 py-[15px]"
+            className="relative flex items-center justify-between border-b border-neutral-100 px-[11px] py-[15px]"
           >
             <p>받은 후기</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            {/* 받은 후기 개수 세팅 */}
+            <StatusBadge
+              type="count-gray"
+              label="99+"
+              className="absolute right-11 top-[50%] translate-y-[-50%] transform"
+            />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
+
           <Link
             href=""
-            className="flex items-center justify-between border-b border-neutral-100 py-[15px]"
+            className="relative flex items-center justify-between border-b border-neutral-100 px-[11px] py-[15px]"
           >
             <p>관심 상품</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            <Heart className="fill-danger absolute right-11 top-[50%] translate-y-[-50%] transform stroke-0" />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
+
           <Link
             href=""
-            className="flex items-center justify-between border-b border-neutral-100 py-[15px]"
+            className="flex items-center justify-between border-b border-neutral-100 px-[11px] py-[15px]"
           >
             <p>최근 본 상품</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
+
           <Link
             href=""
-            className="flex items-center justify-between border-b border-neutral-100 py-[15px]"
+            className="relative flex items-center justify-between border-b border-neutral-100 px-[11px] py-[15px]"
           >
             <p>키워드 알림 설정</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            {/* 키워드 알림 개수 세팅 */}
+            <StatusBadge
+              type="count-gray"
+              label="5"
+              className="absolute right-11 top-[50%] translate-y-[-50%] transform"
+            />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
-          <Link href="" className="flex items-center justify-between py-[15px]">
+
+          <Link href="" className="relative flex items-center justify-between px-[11px] py-[15px]">
             <p>내 위치 수정</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            <Button
+              shape="rounded"
+              size="fit"
+              className="typo-caption-regular absolute right-11 top-[50%] h-[29px] translate-y-[-50%] transform gap-1 bg-neutral-900"
+            >
+              <MapPin className="size-5 stroke-1" /> 강남구 역삼동
+            </Button>
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
         </ul>
         <ul className="p-box border-t-8 border-neutral-100 py-[15px]">
           <Link
             href=""
-            className="flex items-center justify-between border-b border-neutral-100 py-[15px]"
+            className="flex items-center justify-between border-b border-neutral-100 px-[11px] py-[15px]"
           >
             <p>앱 설정</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
+
           <Link
             href=""
-            className="flex items-center justify-between border-b border-neutral-100 py-[15px]"
+            className="flex items-center justify-between border-b border-neutral-100 px-[11px] py-[15px]"
           >
             <p>공지사항</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
+
           <Link
             href=""
-            className="flex items-center justify-between border-b border-neutral-100 py-[15px]"
+            className="flex items-center justify-between border-b border-neutral-100 px-[11px] py-[15px]"
           >
             <p>고객센터</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
-          <Link href="" className="flex items-center justify-between py-[15px]">
+
+          <Link href="" className="flex items-center justify-between px-[11px] py-[15px]">
             <p>약관 및 정책</p>
-            <ChevronRight className="mt-[-3px] inline size-5 stroke-neutral-400 stroke-1" />
+            <ChevronRight className="mt-[-3px] inline size-6 stroke-neutral-400 stroke-[1.5]" />
           </Link>
         </ul>
       </div>

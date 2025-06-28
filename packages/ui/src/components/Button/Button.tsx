@@ -29,7 +29,7 @@ const buttonVariants = cva(
         fit: 'w-fit',
       },
       shape: {
-        rounded: 'rounded-full h-11 px-6 has-[>svg]:px-4 font-normal',
+        rounded: 'rounded-full h-11 px-6 has-[>svg]:pl-3 has-[>svg]:pr-4 font-normal',
       },
     },
     defaultVariants: {
