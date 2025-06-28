@@ -1,3 +1,10 @@
+'use client';
+
+import { Button } from '@repo/ui/components/Button/Button';
+import { Textarea } from '@repo/ui/components/Textarea/Textarea';
+import { toast } from '../../../packages/ui/dist/components/Toast/sonner';
+import { title } from 'process';
+
 const HomePage = () => {
   return (
     <main className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-6">
@@ -36,6 +43,10 @@ const HomePage = () => {
           </button>
         </div>
       </div>
+      <br />
+      <Textarea placeholder="여기에 상품 설명을 입력하세요..." className="h-[204px] w-full" />
+      <br />
+      <Button onClick={() => toast('저장되었습니다.')}>저장</Button>
     </main>
   );
 };

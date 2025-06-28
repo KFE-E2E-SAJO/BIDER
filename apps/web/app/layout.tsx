@@ -6,6 +6,8 @@ import '../styles/global.css';
 import Header from '@/widgets/header/Header';
 import Nav from '@/widgets/nav/Nav';
 
+import { ToasterClient } from '@repo/ui/components/Toast/ToasterClient';
+
 const geistSans = localFont({
   src: '../public/fonts/GeistVF.woff',
   variable: '--font-geist-sans',
@@ -41,6 +43,9 @@ const RootLayout = ({
           <main className="flex flex-1 flex-col">{children}</main>
           <Nav />
         </div>
+
+        {children}
+        <ToasterClient />
       </body>
     </html>
   );
