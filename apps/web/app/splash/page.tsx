@@ -27,6 +27,10 @@ export default function SplashPage() {
     );
   }
 
+  const handleStartClick = () => {
+    router.push('../signup/');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white">
       <div className="flex-1"></div>
@@ -39,10 +43,12 @@ export default function SplashPage() {
 
       <div className="flex flex-1 flex-col justify-end">
         <div className="flex flex-col items-center gap-4 px-3 pb-16">
-          <Button className="bg-main w-full">시작하기</Button>
+          <Button className="bg-main w-full" onClick={handleStartClick}>
+            시작하기
+          </Button>
           <p className="text-center font-medium">
             이미 계정이 있나요?{' '}
-            <a href="#" className="cursor-pointer text-blue-500 underline">
+            <a href="../login" className="cursor-pointer text-blue-500 underline">
               로그인
             </a>
           </p>
