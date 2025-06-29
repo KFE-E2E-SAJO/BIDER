@@ -45,8 +45,6 @@ export const LogInForm = () => {
         password: password,
       });
 
-      console.log(data, error);
-
       if (error) {
         setError(error.message);
         return;

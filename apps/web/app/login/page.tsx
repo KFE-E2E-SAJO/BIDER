@@ -13,7 +13,7 @@ export default function LogInPage() {
 
       <hr className="border-t-2 border-neutral-300"></hr>
       <div className="mt-9 flex flex-col items-center justify-center">
-        <span className="text-main-text mb-4 flex text-center font-medium">
+        <span className="font-main-text mb-4 flex text-center font-medium">
           SNS계정으로
           <br />
           간편 로그인/회원가입
@@ -26,7 +26,7 @@ export default function LogInPage() {
       <hr className="border-t-2 border-neutral-300"></hr>
 
       <div className="mt-8 flex items-center justify-center gap-1">
-        <span className="text-main-text font-medium">아직 회원이 아니신가요?</span>
+        <span className="font-main-text font-medium">아직 회원이 아니신가요?</span>
         <a href="../sign/" className="text-main flex font-medium underline">
           회원가입
         </a>
