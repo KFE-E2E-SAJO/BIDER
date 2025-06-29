@@ -3,6 +3,7 @@ import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
 interface ProductFromDB {
+  product_id: string;
   product: {
     title: string;
     category: string | null; // 카테고리 추후 수정
@@ -47,6 +48,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { data, error } = await supabase.from('auction').select(`
+  product_id,
   auction_status,
   min_price,
   auction_end_at,
@@ -89,6 +91,7 @@ export async function GET(req: NextRequest) {
       return within5km && matchSearch && matchCate;
     })
     .map((item) => ({
+      id: item.product_id,
       thumbnail:
         item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
         '/default.png',
