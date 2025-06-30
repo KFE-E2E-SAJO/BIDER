@@ -7,7 +7,7 @@ const MyPageAuction = () => {
     <div className="p-box py-[25px]">
       <div className="mb-[13px] flex w-full items-baseline justify-between">
         <div className="typo-subtitle-small-medium">나의 경매</div>
-        <Link href="/auction" className="typo-caption-regular text-neutral-600">
+        <Link href="/auction/bids" className="typo-caption-regular text-neutral-600">
           전체 보기
           <ChevronRight className="stroke-1.5 mt-[-3px] inline size-5 stroke-neutral-400" />
         </Link>
