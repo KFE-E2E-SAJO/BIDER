@@ -20,6 +20,9 @@
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "short-uuid": "^5.2.0",
+    "swiper": "^11.2.8",
+    "tailwind-merge": "^3.3.1"
     "tailwind-merge": "^3.3.1",
     "uuid": "^11.1.0"
   },
