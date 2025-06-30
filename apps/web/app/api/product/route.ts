@@ -95,6 +95,36 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export interface Auction {
+  auction_id: string;
+  product: {
+    title: string;
+    description: string;
+    category: string | null;
+    exhibit_user: {
+      user_id: string;
+      address: string;
+      profile_img: string | null;
+      nickname: string;
+    };
+    product_image: {
+      image_id: string;
+      image_url: string;
+      order_index: number;
+    }[];
+  };
+  auction_status: string;
+  min_price: number;
+  auction_end_at: string;
+  bid_history: {
+    bid_id: string;
+    bid_price: number;
+    bid_user_id: string;
+    bid_at: string;
+  }[];
+  current_highest_bid?: number; // 현재 최고 입찰가 (옵션)
+}
+
 interface ProductFromDB {
   product_id: string;
   product: {

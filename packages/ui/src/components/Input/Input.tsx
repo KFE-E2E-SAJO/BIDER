@@ -9,6 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   writeText?: React.ReactNode;
   icon?: React.ReactNode;
   errorMessage?: string;
+  inputStyle?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -27,6 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onBlur,
       onChange,
       value,
+      inputStyle,
       ...props
     },
     ref
@@ -105,7 +107,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             type={type}
             data-slot="input"
-            className={cn(getInputStyles(), icon && 'pl-10')}
+            className={cn(getInputStyles(), icon && 'pl-10', inputStyle)}
             ref={ref}
             disabled={disabled}
             value={value !== undefined ? value : inputValue}
