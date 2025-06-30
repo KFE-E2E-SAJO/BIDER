@@ -1,7 +1,7 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Button } from '@repo/ui/components/Button/Button';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import '@repo/ui/styles.css';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
@@ -12,14 +12,30 @@ export const LogInForm = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
+
+  // Supabase 에러 메시지를 한국어로 변환
+  const getKoreanErrorMessage = (errorMessage: string) => {
+    if (errorMessage.includes('Invalid login credentials')) {
+      return '이메일 또는 비밀번호가 올바르지 않습니다.';
+    }
+    if (errorMessage.includes('Email not confirmed')) {
+      return '이메일 인증을 완료해주세요.';
+    }
+    if (errorMessage.includes('Too many requests')) {
+      return '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
+    }
+    return '로그인 중 문제가 발생했습니다.';
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setSuccessMessage('');
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -38,22 +54,34 @@ export const LogInForm = () => {
       setIsLoading(false);
       return;
     }
+    if (password.length < 6) {
+      setError('비밀번호는 최소 6자 이상이어야 합니다');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
+        email: email.trim(),
         password: password,
       });
 
       if (error) {
-        setError(error.message);
+        setError(getKoreanErrorMessage(error.message));
         return;
-      } else if (data.user) {
+      }
+
+      if (data.user) {
         setUser({ id: data.user.id, email: data.user.email! });
-        router.push('/index'); //경로 수정해야함
+        setSuccessMessage('로그인에 성공했습니다!');
+
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
       }
     } catch (err) {
       setError('로그인 중 문제가 발생했습니다.');
+      console.error('Login error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -65,11 +93,12 @@ export const LogInForm = () => {
         <div className="mt-20 space-y-3">
           <div className="flex items-center gap-2">
             <Input
-              type="email"
+              type="text"
               placeholder="이메일"
               className="flex-1"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
               required
             />
           </div>
@@ -79,11 +108,16 @@ export const LogInForm = () => {
               placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
               required
             />
           </div>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="rounded bg-red-50 p-2 text-sm text-red-500">{error}</p>}
+
+          {successMessage && (
+            <p className="rounded bg-green-50 p-2 text-sm text-green-500">{successMessage}</p>
+          )}
 
           <Button
             type="submit"
@@ -96,11 +130,11 @@ export const LogInForm = () => {
       </form>
 
       <div className="m-5 flex items-center justify-center gap-2">
-        <a href="#" className="flex font-normal text-neutral-700">
+        <a href="#" className="font-normal text-neutral-700 hover:text-neutral-900">
           아이디 찾기
         </a>
-        <span className="flex font-normal text-neutral-700">|</span>
-        <a href="#" className="flex text-neutral-400 text-neutral-700">
+        <span className="font-normal text-neutral-700">|</span>
+        <a href="#" className="font-normal text-neutral-700 hover:text-neutral-900">
           비밀번호 찾기
         </a>
       </div>
