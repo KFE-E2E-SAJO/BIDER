@@ -39,8 +39,10 @@ jobs:
       - name: Build (all)
         run: pnpm turbo build
 
-      - name: Build Storybook (ui)
-        run: pnpm --filter=ui build-storybook
+      - name: Build Storybook (apps/storybook)
+        run: |
+          cd apps/storybook
+          pnpm build-storybook
 
       # Prisma, Supabase 백엔드 Step (주석 해제시)
       # - name: Prisma Format & Validate
