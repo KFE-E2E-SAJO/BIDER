@@ -6,6 +6,7 @@ import '@repo/ui/styles.css';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../../../../packages/shared/store/auth/authStore';
+import { Mail, LockKeyhole } from 'lucide-react';
 
 export const LogInForm = () => {
   const [email, setEmail] = useState('');
@@ -93,12 +94,14 @@ export const LogInForm = () => {
         <div className="mt-20 space-y-3">
           <div className="flex items-center gap-2">
             <Input
-              type="text"
+              type="email"
               placeholder="이메일"
               className="flex-1"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              icon={<Mail size={20} />}
+              inputStyle="pl-12 pr-11"
               required
             />
           </div>
@@ -109,19 +112,19 @@ export const LogInForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              icon={<LockKeyhole size={20} />}
+              inputStyle="pl-12 pr-11"
               required
             />
           </div>
 
-          {error && <p className="rounded bg-red-50 p-2 text-sm text-red-500">{error}</p>}
+          {error && <p className="rounded p-2 text-sm text-red-500">{error}</p>}
 
-          {successMessage && (
-            <p className="rounded bg-green-50 p-2 text-sm text-green-500">{successMessage}</p>
-          )}
+          {successMessage && <p className="rounded p-2 text-sm text-green-500">{successMessage}</p>}
 
           <Button
             type="submit"
-            className="bg-main hover:bg-main-text text-neutral-0 w-full py-3"
+            className="hover:bg-main-text text-neutral-0 w-full py-3"
             disabled={isLoading}
           >
             {isLoading ? '로그인 중...' : '로그인'}
@@ -130,11 +133,11 @@ export const LogInForm = () => {
       </form>
 
       <div className="m-5 flex items-center justify-center gap-2">
-        <a href="#" className="font-normal text-neutral-700 hover:text-neutral-900">
+        <a href="#" className="typo-body-regular text-neutral-700 hover:text-neutral-900">
           아이디 찾기
         </a>
-        <span className="font-normal text-neutral-700">|</span>
-        <a href="#" className="font-normal text-neutral-700 hover:text-neutral-900">
+        <span className="typo-body-regular text-neutral-700">|</span>
+        <a href="#" className="typo-body-regular text-neutral-700 hover:text-neutral-900">
           비밀번호 찾기
         </a>
       </div>
