@@ -3,7 +3,11 @@ import { Heart, MapPin } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
 import MyPageMenuItem from './MyPageMenuItem';
 
-const MyPageMenuList = () => {
+interface MyPageMenuListProps {
+  address: string;
+}
+
+const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
   return (
     <div>
       <ul className="p-box border-t-8 border-neutral-100 py-[15px]">
@@ -46,7 +50,8 @@ const MyPageMenuList = () => {
               size="fit"
               className="typo-caption-regular absolute right-11 top-[50%] h-[29px] translate-y-[-50%] gap-1 bg-neutral-900"
             >
-              <MapPin className="size-5 stroke-1" /> 강남구 역삼동
+              <MapPin className="size-5 stroke-1" />
+              {address}
             </Button>
           }
           withBorder={false}

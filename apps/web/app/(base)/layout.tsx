@@ -1,7 +1,7 @@
 import Header from '@/widgets/header/Header';
 import Nav from '@/widgets/nav/Nav';
 
-const NavLayout = ({ children }: { children: React.ReactNode }) => {
+const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
@@ -10,4 +10,4 @@ const NavLayout = ({ children }: { children: React.ReactNode }) => {
     </>
   );
 };
-export default NavLayout;
+export default BaseLayout;
