@@ -1,6 +1,6 @@
 'use client';
-import { useProductList } from '@/features/Product/model/useProductList';
-import ProductList from '@/features/Product/ui/ProductList';
+import { useProductList } from '@/features/product/model/useProductList';
+import ProductList from '@/features/product/ui/ProductList';
 import Loading from '@/shared/ui/Loading/Loading';
 import { Button } from '@repo/ui/components/Button/Button';
 import { MapPin } from 'lucide-react';
