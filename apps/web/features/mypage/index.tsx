@@ -1,7 +1,7 @@
 import Footer from '@/widgets/footer/Footer';
-import MyPageAuction from './ui/MyPageAuction';
-import MyPageProfileCard from './ui/MypageProfileCard';
-import MyPageMenuList from './ui/MyPageMenuList';
+import MyPageAuction from '@/features/mypage/ui/MyPageAuction';
+import MyPageProfileCard from '@/features/mypage/ui/MypageProfileCard';
+import MyPageMenuList from '@/features/mypage/ui/MyPageMenuList';
 import { redirect } from 'next/navigation';
 import { supabase } from '@/shared/lib/supabaseClient';
 
