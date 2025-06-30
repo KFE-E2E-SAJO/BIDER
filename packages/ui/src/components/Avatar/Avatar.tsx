@@ -11,12 +11,15 @@ interface AvatarProps extends React.ComponentProps<typeof AvatarPrimitive.Root> 
 }
 
 function Avatar({ className, src, alt = 'profile' }: AvatarProps) {
+  const isValidSrc = !!src && typeof src === 'string' && src.trim() !== '';
+
   return (
     <AvatarPrimitive.Root
       data-slot="avatar"
+      key={src ?? 'fallback'}
       className={cn('relative flex shrink-0 overflow-hidden rounded-full', className)}
     >
-      {src ? (
+      {isValidSrc ? (
         <AvatarPrimitive.Image src={src} alt={alt} className="aspect-square size-full" />
       ) : (
         <AvatarPrimitive.Fallback className="bg-muted flex size-full items-center justify-center">

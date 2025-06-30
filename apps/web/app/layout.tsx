@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import type { Viewport } from 'next';
 import '@repo/ui/styles.css';
 import '../styles/global.css';
+import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 
 const geistSans = localFont({
   src: '../public/fonts/GeistVF.woff',
@@ -25,14 +26,24 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="ko">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ReactQueryProvider>
+          <div id="container" className="flex min-h-screen flex-col">
+            {/* 'pb-헤더높이'로 수정 */}
+
+            {children}
+          </div>
+        </ReactQueryProvider>
+      </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

@@ -9,6 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   writeText?: React.ReactNode;
   icon?: React.ReactNode;
   errorMessage?: string;
+  inputStyle?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -27,6 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onBlur,
       onChange,
       value,
+      inputStyle,
       ...props
     },
     ref
@@ -54,7 +56,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         'placeholder:text-muted-foreground dark:bg-input/30',
         'border-neutral-400 flex h-13 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-xs',
         'transition-[color,box-shadow] outline-none',
-        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+
+        (type === 'date' || type === 'time') && 'letter-spacing-date-time'
       );
 
       if (disabled || status === 'disabled') {
@@ -103,7 +107,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             type={type}
             data-slot="input"
-            className={cn(getInputStyles(), icon && 'pl-10')}
+            className={cn(getInputStyles(), icon && 'pl-10', inputStyle)}
             ref={ref}
             disabled={disabled}
             value={value !== undefined ? value : inputValue}
@@ -111,6 +115,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             onBlur={handleBlur}
             onChange={handleChange}
             aria-invalid={status === 'error'}
+            style={
+              type == 'time' || type == 'date'
+                ? { letterSpacing: '0.2rem', fontSize: '1.1rem' }
+                : {}
+            }
             {...props}
           />
         </div>
