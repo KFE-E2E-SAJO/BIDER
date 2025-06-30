@@ -9,10 +9,13 @@ const LocationWrapper = () => {
   const [step, setStep] = useState(0);
   const goNext = () => setStep((prev) => prev + 1);
 
-  if (step === 0) return <LocationIntro onNext={goNext} />;
-  if (step === 1) return <LocationConfirm onNext={goNext} />;
-  if (step === 2) return <LocationSuccess />;
-  return null;
+  return (
+    <div className="flex flex-1 flex-col">
+      {step === 0 && <LocationIntro onNext={goNext} />}
+      {step === 1 && <LocationConfirm onNext={goNext} />}
+      {step === 2 && <LocationSuccess />}
+    </div>
+  );
 };
 
 export default LocationWrapper;
