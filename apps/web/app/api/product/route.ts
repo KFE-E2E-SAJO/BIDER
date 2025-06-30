@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
@@ -177,11 +176,8 @@ export async function GET(req: NextRequest) {
 
       const distance = getDistanceKm(lat, lng, user.latitude, user.longitude);
       const within5km = distance <= 5;
-      console.log('거리:', distance, '위치:', lat, lng, 'vs', user.latitude, user.longitude);
-
       const matchSearch = !search || product.title.toLowerCase().includes(search);
-      const matchCate = !cate || product.category === cate;
-
+      const matchCate = cate === '' || cate === 'all' || product.category === cate;
       return within5km && matchSearch && matchCate;
     })
     .map((item) => ({

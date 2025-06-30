@@ -18,7 +18,7 @@ const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
 
 const HEADER_CENTER_TEXT_MAP: Record<string, string> = {
   '/product/registration': '출품하기',
-  '/alert': '알림',
+  '/alarm': '알림',
 };
 
 const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {

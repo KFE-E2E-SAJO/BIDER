@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import { AlarmClock } from 'lucide-react';
-import { Product } from '@/features/product/types';
+import { ProductForList } from '@/features/product/types';
 import { getCountdownWithColor } from '@/features/product/lib/utils';
 
-export const ListItem = ({
+const ProductItem = ({
   thumbnail,
   title,
   location,
@@ -11,7 +11,7 @@ export const ListItem = ({
   minPrice,
   auctionEndAt,
   auctionStatus,
-}: Product) => {
+}: ProductForList) => {
   const { text, color } =
     auctionStatus === 'end'
       ? { text: '경매 종료', color: 'gray' }
@@ -51,3 +51,5 @@ export const ListItem = ({
     </div>
   );
 };
+
+export default ProductItem;

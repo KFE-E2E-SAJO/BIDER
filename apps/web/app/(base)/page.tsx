@@ -5,10 +5,12 @@ import Loading from '@/shared/ui/Loading/Loading';
 import { Button } from '@repo/ui/components/Button/Button';
 import { MapPin } from 'lucide-react';
 
+//유저정보 받아서 lat,lng,위치 넣어줘야함
+
 const HomePage = () => {
   const { data, isLoading, error } = useProductList({
-    lat: 37.4955804087497,
-    lng: 127.028843531841,
+    lat: 37.371017496651,
+    lng: 127.00463877897,
   });
 
   if (isLoading) return <Loading />;
