@@ -1,4 +1,4 @@
-import { Product } from '@/features/Product/types';
+import { Product } from '@/features/product/types';
 
 interface GetProductListParams {
   lat: number;

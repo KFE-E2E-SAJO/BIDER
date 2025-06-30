@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
-import { getDistanceKm } from '@/features/Product/lib/utils';
+import { getDistanceKm } from '@/features/product/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {

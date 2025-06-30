@@ -1,5 +1,5 @@
-import { Product } from '@/features/Product/types';
-import { ListItem } from '@/features/Product/ui/ListItem';
+import { Product } from '@/features/product/types';
+import { ListItem } from '@/features/product/ui/ListItem';
 import Line from '@/shared/ui/Line/Line';
 import Link from 'next/link';
 

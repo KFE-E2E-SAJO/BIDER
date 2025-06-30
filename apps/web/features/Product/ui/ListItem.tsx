@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { AlarmClock } from 'lucide-react';
-import { Product } from '@/features/Product/types';
-import { getCountdownWithColor } from '@/features/Product/lib/utils';
+import { Product } from '@/features/product/types';
+import { getCountdownWithColor } from '@/features/product/lib/utils';
 
 export const ListItem = ({
   thumbnail,
