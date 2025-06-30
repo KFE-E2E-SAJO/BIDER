@@ -1,39 +1,46 @@
-import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
-import { notFound } from 'next/navigation';
+'use client';
+
 import ProductImageSlider from './ProductImageSlider';
 import { AlarmClock, PencilLine } from 'lucide-react';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import BottomBar from './BottomBar';
+import { useEffect, useState, use } from 'react';
+import { Auction } from '@/app/api/product/route';
+import Loading from '@/shared/ui/Loading/Loading';
 
-const ProductDetailPage = async ({ params }: { params: { shortId: string } }) => {
-  // test용 shorId  = uRMUuxqfyznoNTZhFmvhx4
-  const param = await params;
-  const uuid = decodeShortId(param.shortId);
+const ProductDetailPage = ({ params }: { params: Promise<{ shortId: string }> }) => {
+  const resolvedParams = use(params);
+  const [data, setData] = useState<Auction | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const { data, error } = await supabase
-    .from('auction')
-    .select(
-      `
-            *,
-            product (
-            *,
-            exhibit_user:exhibit_user_id (
-                *
-            ),
-            product_image (
-                *
-            )
-            )
-        `
-    )
-    .eq('auction_id', uuid)
-    .single();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/product/${resolvedParams.shortId}`);
 
-  if (error || !data) return notFound();
-  console.log(data);
+        if (!response.ok) {
+          throw new Error('경매 정보를 가져올 수 없습니다.');
+        }
+
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [resolvedParams.shortId]);
+
+  if (loading) return <Loading />;
+  if (error) return <p>오류: {error}</p>;
+  if (!data) return <p>경매 정보를 찾을 수 없습니다.</p>;
 
   const auction = data;
   const mapped = {
@@ -44,18 +51,25 @@ const ProductDetailPage = async ({ params }: { params: { shortId: string } }) =>
     minPrice: auction.min_price,
     auctionEndAt: auction.auction_end_at,
     exhibitUser: auction.product?.exhibit_user,
+    currentHighestBid: auction.current_highest_bid || auction.min_price,
+    bidHistory: auction.bid_history,
   };
 
   return (
-    <div className="flex flex-col gap-[25px] pb-[50px]">
+    <div className="flex flex-col gap-[25px] pb-[112px]">
       {/* 이미지 슬라이더 */}
       <ProductImageSlider images={mapped.images} />
+
       {/* 경매 상품 내용 */}
       <div className="typo-subtitle-bold">{mapped.productTitle}</div>
+
       <div>
         <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
-        <div className="typo-subtitle-bold">{'20,000원'}</div>
+        <div className="typo-subtitle-bold">
+          {formatNumberWithComma(mapped.currentHighestBid)}원
+        </div>
       </div>
+
       <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
         <div className="flex items-center gap-[10px]">
           <div className="flex items-center gap-[3px]">
@@ -73,18 +87,37 @@ const ProductDetailPage = async ({ params }: { params: { shortId: string } }) =>
           <div className="typo-caption-medium">{formatTimestamptz(mapped.auctionEndAt)}</div>
         </div>
       </div>
+
       <div className="typo-body-regular">{mapped.productDescription}</div>
       <div className="h-[8px] w-full bg-neutral-100"></div>
-      {/* 입찰현황판 */}
-      {/* <div className="h-[8px] w-full bg-neutral-100"></div> */}
+
+      {/* 입찰 히스토리 (선택사항) */}
+      {/* {mapped.bidHistory.length > 0 && (
+        <div>
+          <div className="typo-subtitle-bold mb-[10px]">입찰 현황</div>
+          <div className="text-neutral-600 typo-caption-regular">
+            총 {mapped.bidHistory.length}건의 입찰
+          </div>
+        </div>
+      )}
+      
+      <div className="h-[8px] w-full bg-neutral-100"></div> */}
+
+      {/* 판매자 정보 */}
       <div className="flex items-center gap-[19px]">
         <Avatar src={mapped.exhibitUser?.profile_img || undefined} className="size-[36px]" />
         <div className="flex flex-col gap-[5px]">
-          <div className="typo-body-medium">{mapped.exhibitUser.nickname}</div>
-          <div className="typo-caption-regular">{mapped.exhibitUser.address}</div>
+          <div className="typo-body-medium">{mapped.exhibitUser?.nickname}</div>
+          <div className="typo-caption-regular">{mapped.exhibitUser?.address}</div>
         </div>
       </div>
-      <BottomBar auctionEndAt={mapped.auctionEndAt} />
+
+      <BottomBar
+        shortId={resolvedParams.shortId}
+        auctionEndAt={mapped.auctionEndAt}
+        title={mapped.productTitle}
+        lastPrice={String(mapped.currentHighestBid)}
+      />
     </div>
   );
 };
