@@ -14,6 +14,7 @@
   "dependencies": {
     "@repo/ui": "workspace:*",
     "@supabase/supabase-js": "^2.50.1",
+    "@tanstack/react-query": "^5.81.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.515.0",
@@ -30,6 +31,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@tanstack/eslint-plugin-query": "^5.81.2",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
