@@ -1,4 +1,4 @@
-import EditProfile from '@/features/tempMypage/edit';
+import EditProfile from '@/features/mypage/edit';
 
 const EditProfileRoute = () => {
   return <EditProfile />;

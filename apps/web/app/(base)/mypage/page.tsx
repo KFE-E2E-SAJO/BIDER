@@ -1,4 +1,4 @@
-import MyPage from '@/features/tempMypage';
+import MyPage from '@/features/mypage';
 
 const MyPageRoute = () => {
   return <MyPage />;
