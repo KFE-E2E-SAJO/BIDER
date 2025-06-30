@@ -1,0 +1,20 @@
+# 배포 후 도메인 설정 필요
+name: Create Scheduled Auctions
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # 5분마다 실행 (UTC 기준)
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  create-auctions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call auction creation endpoint
+        run: |
+          curl -X GET "https://your-domain.com/api/cron/create-auctions" \
+               -H "Content-Type: application/json" \
+               -H "User-Agent: GitHub-Actions-Cron" \
+               --fail-with-body \
+               --show-error \
+               --silent

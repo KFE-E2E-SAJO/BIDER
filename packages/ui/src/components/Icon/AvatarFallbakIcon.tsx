@@ -3,7 +3,7 @@ import * as React from 'react';
 function AvatarFallbackIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none">
-      <g clip-path="url(#clip0_509_569)">
+      <g clipPath="url(#clip0_509_569)">
         <rect width="60" height="60" fill="#DADADA" />
         <path
           d="M29.8459 31.9818C36.3207 31.9818 41.5695 27.061 41.5695 20.9909C41.5695 14.9208 36.3207 10 29.8459 10C23.3712 10 18.1223 14.9208 18.1223 20.9909C18.1223 27.061 23.3712 31.9818 29.8459 31.9818Z"

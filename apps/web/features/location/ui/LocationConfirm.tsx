@@ -5,7 +5,7 @@ import { AdvancedMarker, APIProvider, Map, Pin } from '@vis.gl/react-google-maps
 import { Button } from '@repo/ui/components/Button/Button';
 import DotStepper from '@/features/location/ui/DotStepper';
 import { getAddressFromLatLng } from '@/features/location/lib/utils';
-import { SetLocation } from '@/features/location/model/setLocation';
+import { SetLocation } from '@/features/location/api/setLocation';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
