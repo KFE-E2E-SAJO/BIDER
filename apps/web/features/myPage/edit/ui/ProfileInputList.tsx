@@ -5,6 +5,7 @@ import { Input } from '@repo/ui/components/Input/Input';
 import ProfilePreview, { UploadedImage } from './ProfilePreview';
 import { useState } from 'react';
 import { setUserInfo } from '../model/setUserInfo';
+import { redirect } from 'next/navigation';
 
 interface ProfileInputListProps {
   userId: string;
@@ -32,7 +33,7 @@ const ProfileInputList = ({ userId, nickname, profileImg }: ProfileInputListProp
 
     try {
       await setUserInfo(updatedUserData);
-      alert('정보가 성공적으로 저장되었습니다!');
+      redirect('/mypage');
     } catch (error) {
       alert((error as Error).message);
     }
