@@ -23,6 +23,8 @@
     "short-uuid": "^5.2.0",
     "swiper": "^11.2.8",
     "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@googlemaps/markerclusterer": "^2.5.3",
