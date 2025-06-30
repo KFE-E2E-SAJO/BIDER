@@ -1,4 +1,4 @@
-import { Product } from '@/features/Product/types';
+import { ProductForList } from '@/features/product/types';
 
 interface GetProductListParams {
   lat: number;
@@ -7,7 +7,7 @@ interface GetProductListParams {
   cate?: string;
 }
 
-export const getProductList = async (params: GetProductListParams): Promise<Product[]> => {
+export const getProductList = async (params: GetProductListParams): Promise<ProductForList[]> => {
   const { lat, lng, search, cate } = params;
 
   const query = new URLSearchParams({
