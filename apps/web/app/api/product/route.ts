@@ -96,7 +96,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-
 interface ProductFromDB {
   product_id: string;
   product: {
@@ -199,3 +198,4 @@ export async function GET(req: NextRequest) {
     }));
 
   return NextResponse.json(filtered);
+}
