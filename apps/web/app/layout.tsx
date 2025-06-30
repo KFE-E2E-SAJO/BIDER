@@ -3,8 +3,7 @@ import localFont from 'next/font/local';
 import type { Viewport } from 'next';
 import '@repo/ui/styles.css';
 import '../styles/global.css';
-import Header from '@/widgets/header/Header';
-import Nav from '@/widgets/nav/Nav';
+import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 
 const geistSans = localFont({
   src: '../public/fonts/GeistVF.woff',
@@ -35,12 +34,13 @@ const RootLayout = ({
   return (
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div id="container" className="pb-27 flex min-h-screen flex-col">
-          {/* 'pb-헤더높이'로 수정 */}
-          <Header />
-          <main className="flex flex-1 flex-col">{children}</main>
-          <Nav />
-        </div>
+        <ReactQueryProvider>
+          <div id="container" className="flex min-h-screen flex-col">
+            {/* 'pb-헤더높이'로 수정 */}
+
+            {children}
+          </div>
+        </ReactQueryProvider>
       </body>
     </html>
   );
