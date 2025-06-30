@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Logo from '@/shared/ui/icon/Logo';
 import { Button } from '@repo/ui/components/Button/Button';
+import Link from 'next/link';
 
 export default function SplashPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,10 +23,6 @@ export default function SplashPage() {
 
     const token = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
     return !!token;
-
-    // 다른 방법들:
-    // return document.cookie.includes('auth-token');
-    // return !!sessionStorage.getItem('user');
   };
 
   const handleStartClick = () => {
@@ -60,14 +57,14 @@ export default function SplashPage() {
 
       <div className="flex flex-1 flex-col justify-end">
         <div className="flex flex-col items-center gap-4 px-3 pb-16">
-          <Button className="bg-main w-full" onClick={handleStartClick}>
+          <Button className="w-full" onClick={handleStartClick}>
             시작하기
           </Button>
-          <p className="text-center font-medium">
+          <p className="typo-caption-regular text-center">
             이미 계정이 있나요?{' '}
-            <a href="/login" className="cursor-pointer text-blue-500 underline">
+            <Link href="/login" className="text-main cursor-pointer underline">
               로그인
-            </a>
+            </Link>
           </p>
         </div>
       </div>
