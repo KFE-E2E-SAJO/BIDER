@@ -1,7 +1,7 @@
 'use client';
 
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
-import { getCountdown } from '@/shared/lib/getCountDown';
+import { getCountdown } from '@/shared/lib/getCountdown';
 import { Button } from '@repo/ui/components/Button/Button';
 import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/DIalog/dialog';
 import { Input } from '@repo/ui/components/Input/Input';
@@ -58,7 +58,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
       }
 
       // 서버에 입찰 요청
-      const response = await fetch(`/api/product/${shortId}`, {
+      const response = await fetch(`/api/auction/${shortId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

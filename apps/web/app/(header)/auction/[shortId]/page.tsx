@@ -20,7 +20,7 @@ const ProductDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/product/${resolvedParams.shortId}`);
+        const response = await fetch(`/api/auction/${resolvedParams.shortId}`);
 
         if (!response.ok) {
           throw new Error('경매 정보를 가져올 수 없습니다.');
