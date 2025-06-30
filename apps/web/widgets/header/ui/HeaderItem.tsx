@@ -18,7 +18,7 @@ const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
 
 const HEADER_CENTER_TEXT_MAP: Record<string, string> = {
   '/product/registration': '출품하기',
-  '/alert': '알림',
+  '/alarm': '알림',
 };
 
 const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
@@ -53,14 +53,14 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
           )}
 
           <div className="flex items-center justify-end">
-            {pathname === '/alert' ? (
+            {pathname === '/alarm' ? (
               <Trash2 />
             ) : (
               <>
                 <Link href="/search">
                   <Search className="mr-4.5" />
                 </Link>
-                <Link href="/alert" className="relative">
+                <Link href="/alarm" className="relative">
                   <Bell />
                   {hasNewAlert && <AlertBadge placementClass="absolute right-0 top-0" />}
                 </Link>

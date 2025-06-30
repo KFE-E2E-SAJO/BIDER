@@ -1,4 +1,4 @@
-import { getCountdown } from '@/shared/lib/getCountDown';
+import { getCountdown } from '@/shared/lib/getCountdown';
 
 export const getCountdownWithColor = (
   endTime: string | Date
