@@ -166,7 +166,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: var(--text-body);
   line-height: var(--line-height-normal);
-  color: var(--color-neutral-700);
+  color: var(--color-neutral-900);
   background-color: white;
   margin: 0;
   padding: 0;

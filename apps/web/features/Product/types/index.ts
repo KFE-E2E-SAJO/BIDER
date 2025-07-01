@@ -1,8 +1,8 @@
-export interface Product {
+export interface ProductForList {
   id: string;
   thumbnail: string;
   title: string;
-  location: string;
+  // address: string;
   bidCount: number;
   minPrice: number;
   auctionEndAt: string;

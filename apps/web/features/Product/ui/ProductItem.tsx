@@ -1,17 +1,17 @@
 import Image from 'next/image';
 import { AlarmClock } from 'lucide-react';
-import { Product } from '@/features/Product/types';
-import { getCountdownWithColor } from '@/features/Product/lib/utils';
+import { ProductForList } from '@/features/product/types';
+import { getCountdownWithColor } from '@/features/product/lib/utils';
 
-export const ListItem = ({
+const ProductItem = ({
   thumbnail,
   title,
-  location,
+  // address,
   bidCount,
   minPrice,
   auctionEndAt,
   auctionStatus,
-}: Product) => {
+}: ProductForList) => {
   const { text, color } =
     auctionStatus === 'end'
       ? { text: '경매 종료', color: 'gray' }
@@ -32,7 +32,7 @@ export const ListItem = ({
         <div>
           <p className="typo-body-regular line-clamp-2">{title}</p>
           <span className="typo-caption-regular text-neutral-600">
-            {location} • 입찰 {bidCount}회
+            '역삼동' • 입찰 {bidCount}회{/* {address} */}
           </span>
         </div>
 
@@ -51,3 +51,5 @@ export const ListItem = ({
     </div>
   );
 };
+
+export default ProductItem;

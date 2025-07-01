@@ -9,7 +9,6 @@ import type { Swiper as SwiperType } from 'swiper';
 export interface ProductImage {
   image_id: string;
   image_url: string;
-  product_id: string;
   order_index: number;
 }
 

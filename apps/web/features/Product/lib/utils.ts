@@ -1,5 +1,3 @@
-import { getCountdown } from '@/shared/lib/getCountDown';
-
 export const getCountdownWithColor = (
   endTime: string | Date
 ): { text: string; color: 'gray' | 'orange' | 'blue' } => {
@@ -7,12 +5,34 @@ export const getCountdownWithColor = (
   const end = new Date(endTime);
   const diff = end.getTime() - now.getTime();
 
-  if (diff <= 0) return { text: getCountdown(endTime), color: 'gray' };
+  if (diff <= 0) return { text: '경매 종료', color: 'gray' };
 
-  const minutes = Math.floor(diff / 1000 / 60);
-  const color = minutes < 15 ? 'orange' : 'blue';
+  const totalSeconds = Math.floor(diff / 1000);
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const totalHours = Math.floor(totalMinutes / 60);
+  const totalDays = Math.floor(totalHours / 24);
 
-  return { text: getCountdown(endTime), color };
+  const days = totalDays;
+  const hours = totalHours % 24;
+  const minutes = totalMinutes % 60;
+  const seconds = totalSeconds % 60;
+
+  let timeText = '';
+
+  if (totalMinutes >= 1) {
+    if (days > 0) timeText += `${days}일 `;
+    if (hours > 0) timeText += `${hours}시간 `;
+    if (minutes > 0) timeText += `${minutes}분`;
+  } else {
+    timeText = `${seconds}초`;
+  }
+
+  const color = totalMinutes < 15 ? 'orange' : 'blue';
+
+  return {
+    text: `${timeText.trim()} 남음`,
+    color,
+  };
 };
 
 export function getDistanceKm(lat1: number, lng1: number, lat2: number, lng2: number): number {

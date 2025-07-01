@@ -1,5 +1,5 @@
-import { getProductList } from '@/features/Product/api/getProductList';
-import { Product } from '@/features/Product/types';
+import { getProductList } from '@/features/product/api/getProductList';
+import { ProductForList } from '@/features/product/types';
 import { useQuery } from '@tanstack/react-query';
 
 interface UseProductListParams {
@@ -10,7 +10,7 @@ interface UseProductListParams {
 }
 
 export const useProductList = (params: UseProductListParams) => {
-  return useQuery<Product[]>({
+  return useQuery<ProductForList[]>({
     queryKey: ['productList', params.lat, params.lng, params.search, params.cate],
     queryFn: () => getProductList(params),
     staleTime: 1000 * 60 * 1,
