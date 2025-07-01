@@ -7,40 +7,33 @@ export interface SignUpData {
 }
 
 export const sendEmailVerification = async (email: string) => {
-  try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password: 'temporary_password',
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password: 'temp_password',
+    options: {
+      emailRedirectTo: 'http://localhost:3000/auth/callback',
+    },
+  });
 
-    if (data?.user) {
-      console.log(data.user);
-      if (data.user.email_confirmed_at) {
-        return {
-          success: false,
-          error: '이미 가입된 이메일입니다. 로그인 해주세요.',
-        };
-      } else {
-        return {
-          success: false,
-          error: '이미 인증 이메일이 발송된 이메일입니다. 이메일을 확인해주세요.',
-        };
-      }
-    }
+  if (error) {
+    // 일반적인 에러 처리
+    return { success: false, error: error.message };
+  }
 
-    if (error) {
+  if (data?.user) {
+    // 가짜 사용자 체크 (이미 존재하는 이메일)
+    if (!data.user.identities || data.user.identities.length === 0) {
       return {
         success: false,
-        error: error.message || '이메일 인증 중 오류가 발생했습니다.',
+        error: '이미 가입된 이메일입니다.',
       };
     }
 
-    return { success: true };
-  } catch (error: any) {
-    return { success: false, error: error.message || '오류가 발생했습니다.' };
+    // 진짜 신규 사용자
+    return {
+      success: true,
+      message: '인증 메일이 발송되었습니다.',
+    };
   }
 };
 
@@ -74,15 +67,22 @@ export const completeSignUp = async ({
       return { success: false, error: updateError.message };
     }
 
-    const { error: insertError } = await supabase.from('user').insert([
-      {
-        email,
-        nickname,
-      },
-    ]);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (insertError) {
-      return { success: false, error: insertError.message };
+    if (user) {
+      const { error: insertError } = await supabase.from('user').insert([
+        {
+          user_id: user.id,
+          email,
+          nickname,
+        },
+      ]);
+
+      if (insertError) {
+        return { success: false, error: insertError.message };
+      }
     }
 
     return { success: true };

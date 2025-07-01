@@ -9,6 +9,7 @@ import {
   completeSignUp,
 } from '../../shared/lib/auth';
 import '@repo/ui/styles.css';
+import { Base } from '@repo/ui/components/Checkbox/Base';
 
 export const SignUpForm = () => {
   const searchParams = useSearchParams();
@@ -21,9 +22,9 @@ export const SignUpForm = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
 
-  const [isEmailSent, setIsEmailSent] = useState<boolean>(false); //이메일 보냇는지 여부
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false); //인증 완료 됬는지
-  const [verifiedEmail, setVerifiedEmail] = useState<string>(''); //인증완료된 이메일
+  const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
+  const [verifiedEmail, setVerifiedEmail] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [emailError, setEmailError] = useState<string>('');
@@ -33,34 +34,114 @@ export const SignUpForm = () => {
   const [nicknameError, setNicknameError] = useState<string>('');
 
   useEffect(() => {
+    // 기존 이메일 인증 여부 확인 코드
     const checkVerificationStatus = async () => {
       const isVerifiedFromCallback = searchParams.get('verified') === 'true';
 
       if (isVerifiedFromCallback) {
-        const { isVerified, email: userEmail } = await checkEmailVerification();
+        try {
+          const { isVerified, email: userEmail } = await checkEmailVerification();
 
-        if (isVerified && userEmail) {
-          setIsEmailVerified(true);
-          setVerifiedEmail(userEmail);
-          setIsEmailSent(true);
+          if (isVerified && userEmail) {
+            setIsEmailVerified(true);
+            setVerifiedEmail(userEmail);
+            setIsEmailSent(true);
 
-          const [localPart, domainPart] = userEmail.split('@');
-          setEmail(localPart);
+            if (typeof userEmail === 'string' && userEmail.includes('@')) {
+              const emailParts = userEmail.split('@');
 
-          const predefinedDomains = ['gmail.com', 'naver.com', 'daum.net'];
-          if (predefinedDomains.includes(domainPart)) {
-            setDomain(domainPart);
+              if (emailParts.length === 2) {
+                const [localPart, domainPart] = emailParts;
+
+                if (localPart && domainPart) {
+                  setEmail(localPart);
+
+                  const predefinedDomains = ['gmail.com', 'naver.com', 'daum.net'];
+                  if (predefinedDomains.includes(domainPart)) {
+                    setDomain(domainPart);
+                  } else {
+                    setDomain('custom');
+                    setCustomDomain(domainPart);
+                  }
+                } else {
+                  console.error('이메일 형식이 올바르지 않습니다:', userEmail);
+                  alert('이메일 형식이 올바르지 않습니다.');
+                  return;
+                }
+              } else {
+                console.error('이메일 형식이 올바르지 않습니다:', userEmail);
+                alert('이메일 형식이 올바르지 않습니다.');
+                return;
+              }
+            } else {
+              console.error('유효하지 않은 이메일:', userEmail);
+              alert('유효하지 않은 이메일입니다.');
+              return;
+            }
+
+            router.replace('/signup');
+
+            setTimeout(() => {
+              alert('이메일 인증이 완료되었습니다! 이제 회원가입을 계속 진행해주세요.');
+            }, 100);
           } else {
-            setDomain('custom');
-            setCustomDomain(domainPart);
+            console.log('이메일 인증 실패:', { isVerified, userEmail });
+            alert('이메일 인증이 완료되지 않았습니다. 다시 시도해주세요.');
           }
-
-          router.replace('/signup');
+        } catch (error) {
+          console.error('인증 확인 중 오류:', error);
+          alert('인증 확인 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
+      } else {
+        console.log('일반 페이지 로드 (인증 콜백 아님)');
       }
     };
 
+    // 새창에서 오는 메시지 리스너 추가
+    const handleMessage = (event: MessageEvent) => {
+      // 보안을 위해 origin 체크
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data.type === 'AUTH_SUCCESS') {
+        // 인증 성공 처리
+        setIsEmailVerified(true);
+        setVerifiedEmail(event.data.user.email);
+        setIsEmailSent(true);
+
+        // 이메일 필드 채우기
+        if (event.data.user.email) {
+          const emailParts = event.data.user.email.split('@');
+          if (emailParts.length === 2) {
+            const [localPart, domainPart] = emailParts;
+            setEmail(localPart);
+
+            const predefinedDomains = ['gmail.com', 'naver.com', 'daum.net'];
+            if (predefinedDomains.includes(domainPart)) {
+              setDomain(domainPart);
+            } else {
+              setDomain('custom');
+              setCustomDomain(domainPart);
+            }
+          }
+        }
+
+        // URL에서 verified 파라미터 제거
+        router.replace('/signup');
+      } else if (event.data.type === 'AUTH_ERROR') {
+        alert('인증 중 오류가 발생했습니다: ' + event.data.error);
+      }
+    };
+
+    // 이벤트 리스너 등록
+    window.addEventListener('message', handleMessage);
+
+    // 기존 인증 확인 실행
     checkVerificationStatus();
+
+    // 클린업 함수에서 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   }, [searchParams, router]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -193,23 +274,27 @@ export const SignUpForm = () => {
     return true;
   };
 
-  //이메일 인증하기 버튼 클릭 시
   const sendVerificationEmail = async () => {
     if (!isValidEmail()) return;
 
     setIsLoading(true);
 
     const fullEmail = domain === 'custom' ? `${email}@${customDomain}` : `${email}@${domain}`;
-    const result = await sendEmailVerification(fullEmail);
 
-    if (result.success) {
-      alert(`${fullEmail}로 인증 이메일을 보냈습니다! 이메일을 확인해주세요.`);
-      setIsEmailSent(true);
-    } else {
-      alert(`이메일 발송 실패: ${result.error}`);
+    try {
+      const result = await sendEmailVerification(fullEmail);
+
+      if (result?.success) {
+        alert(`${fullEmail}로 인증 이메일을 보냈습니다! 이메일을 확인해주세요.`);
+        setIsEmailSent(true);
+      } else {
+        alert(`${result?.error}`);
+      }
+    } catch (error) {
+      alert('이메일 발송 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleSubmitForm = async (e: React.FormEvent) => {
@@ -221,6 +306,14 @@ export const SignUpForm = () => {
     setConfirmPwError('');
     setNicknameError('');
 
+    if (!isEmailVerified) {
+      alert('이메일 인증을 완료해주세요.');
+      return;
+    }
+    if (!verifiedEmail) {
+      alert('인증된 이메일 정보가 없습니다. 다시 인증해주세요.');
+      return;
+    }
     if (!isValidEmail()) return;
     if (!isValidPassword()) return;
 
@@ -238,14 +331,14 @@ export const SignUpForm = () => {
 
     try {
       const result = await completeSignUp({
-        email: email, // 1단계에서 인증된 이메일
+        email: verifiedEmail,
         password,
         nickname,
       });
 
       if (result.success) {
         alert('회원가입이 완료되었습니다!');
-        router.push('/login');
+        router.push('/setLocation');
       } else {
         alert(`회원가입 실패: ${result.error}`);
       }
@@ -257,10 +350,10 @@ export const SignUpForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmitForm} className="m-3 space-y-6">
+    <form onSubmit={handleSubmitForm} className="space-y-6">
       <div className="space-y-3">
         <label htmlFor="email-id" className="typo-body-bold block text-neutral-800">
-          이메일
+          이메일 {isEmailVerified && <span className="text-sm text-green-600">✓ 인증완료</span>}
         </label>
         <div className="flex items-center gap-2">
           <Input
@@ -271,22 +364,29 @@ export const SignUpForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             status={emailError ? 'error' : 'default'}
+            disabled={isEmailVerified}
           />
           <span className="typo-body-medium text-neutral-600">@</span>
 
           {domain === 'custom' ? (
             <input
-              className={`typo-body-regular focus:ring-main focus:border-main flex-1 rounded-md border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${domainError ? 'border-red-500' : 'border-neutral-400'}`}
+              className={`typo-body-regular focus:ring-main focus:border-main flex-1 rounded-md border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${
+                domainError ? 'border-red-500' : 'border-neutral-400'
+              } ${isEmailVerified ? 'cursor-not-allowed bg-gray-100' : ''}`}
               type="text"
               placeholder="도메인을 입력해주세요"
               value={customDomain}
               onChange={(e) => setCustomDomain(e.target.value)}
+              disabled={isEmailVerified}
             />
           ) : (
             <select
-              className={`typo-body-regular focus:ring-main focus:border-main flex-1 rounded-md border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${domainError ? 'border-red-500' : 'border-neutral-400'}`}
+              className={`typo-body-regular focus:ring-main focus:border-main flex-1 rounded-md border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${
+                domainError ? 'border-red-500' : 'border-neutral-400'
+              } ${isEmailVerified ? 'cursor-not-allowed bg-gray-100' : ''}`}
               value={domain}
               onChange={handleSelectChange}
+              disabled={isEmailVerified}
             >
               <option value="">선택해주세요</option>
               <option value="gmail.com">gmail.com</option>
@@ -300,12 +400,16 @@ export const SignUpForm = () => {
         {domainError && <p className="text-sm text-red-500">{domainError}</p>}
 
         <Button
-          className="text-neutral-0 whitespace-nowrap bg-neutral-800 px-4 hover:bg-neutral-900"
+          className={`whitespace-nowrap px-4 ${
+            isEmailVerified
+              ? 'cursor-not-allowed bg-green-600 text-white'
+              : 'text-neutral-0 bg-neutral-800 hover:bg-neutral-900'
+          }`}
           type="button"
-          disabled={!checkEmailInputs() || isEmailVerified}
+          disabled={!checkEmailInputs() || isEmailVerified || isLoading}
           onClick={sendVerificationEmail}
         >
-          {isEmailVerified ? '인증 완료' : '이메일 인증하기'}
+          {isLoading ? '발송 중...' : isEmailVerified ? '✓ 인증 완료' : '이메일 인증하기'}
         </Button>
       </div>
 
@@ -348,8 +452,28 @@ export const SignUpForm = () => {
         />
       </div>
 
-      <Button type="submit" className="bg-main hover:bg-main-text text-neutral-0 mt-8 w-full py-3">
-        회원가입
+      <div className="solid space-y-3">
+        <label className="typo-body-bold block text-neutral-800">약관동의</label>
+
+        <div className="flex flex-col border border-neutral-400 pb-5 pl-6 pt-5">
+          <Base>전체 동의</Base>
+          <hr className="mb-5 mr-5 mt-5 border-neutral-400"></hr>
+
+          <div className="flex flex-col gap-5">
+            <Base>이용약관 동의 (필수)</Base>
+            <Base>개인정보 수집 및 이용 동의 (필수)</Base>
+            <Base>마케팅 정보 수신 동의 (선택)</Base>
+            <Base>이벤트 및 혜택 알림 동의 (선택)</Base>
+          </div>
+        </div>
+      </div>
+
+      <Button
+        type="submit"
+        className="bg-main hover:bg-main-dark text-neutral-0 mt-8 w-full py-3 disabled:cursor-not-allowed disabled:bg-neutral-400"
+        disabled={isLoading || !isEmailVerified}
+      >
+        {isLoading ? '처리 중...' : '회원가입'}
       </Button>
     </form>
   );
