@@ -15,7 +15,7 @@ const EditProfile = async () => {
   }
 
   const { data, error } = await supabase
-    .from('user')
+    .from('profiles')
     .select('user_id, nickname, profile_img')
     .eq('user_id', user.id)
     .single();

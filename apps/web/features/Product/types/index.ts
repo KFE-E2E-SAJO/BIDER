@@ -7,4 +7,6 @@ export interface ProductForList {
   minPrice: number;
   auctionEndAt: string;
   auctionStatus: string;
+  winnerId?: string | null;
+  sellerId: string;
 }

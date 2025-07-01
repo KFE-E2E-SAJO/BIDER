@@ -1,6 +1,6 @@
 'use client';
 
-import { getCountdown } from '@/shared/lib/getCountDown';
+import { getCountdown } from '@/shared/lib/getCountdown';
 import { Button } from '@repo/ui/components/Button/Button';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
