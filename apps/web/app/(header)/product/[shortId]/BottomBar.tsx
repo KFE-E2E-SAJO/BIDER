@@ -1,7 +1,7 @@
 'use client';
 
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
-import { getCountdown } from '@/shared/lib/getCountDown';
+import { getCountdown } from '@/shared/lib/getCountdownTemp';
 
 import { Button } from '@repo/ui/components/Button/Button';
 import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/DIalog/dialog';
