@@ -59,6 +59,30 @@ export async function POST(request: Request, { params }: { params: { shortId: st
   }
 
   try {
+    // STEP 0: 수정 제한 시간 체크
+    const { data: pending, error: pendingError } = await supabase
+      .from('pending_auction')
+      .select('scheduled_create_at')
+      .eq('product_id', productId)
+      .maybeSingle();
+
+    if (pendingError) {
+      throw new Error(`경매 제한 시간 조회 실패: ${pendingError.message}`);
+    }
+
+    if (!pending || !pending.scheduled_create_at) {
+      return NextResponse.json(
+        { error: '경매 제한 시간이 설정되어 있지 않습니다.' },
+        { status: 400 }
+      );
+    }
+
+    const scheduledTime = new Date(pending.scheduled_create_at);
+    const now = new Date();
+
+    if (now > scheduledTime) {
+      return NextResponse.json({ error: '상품 수정 가능 시간이 만료되었습니다.' }, { status: 403 });
+    }
     // STEP 1: 기존 이미지 데이터 조회
     const { data: existingImages, error: fetchError } = await supabase
       .from('product_image')
