@@ -1,4 +1,4 @@
-export const getCountdown = (endTime: string | Date): string => {
+export const getcountdownTemp = (endTime: string | Date): string => {
   const now = new Date();
   const end = new Date(endTime);
   const diff = end.getTime() - now.getTime();
