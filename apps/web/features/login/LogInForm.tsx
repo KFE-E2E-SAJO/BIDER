@@ -5,7 +5,7 @@ import { useState } from 'react';
 import '@repo/ui/styles.css';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '../../../../packages/shared/store/auth/authStore';
+import { useAuthStore } from '@/shared/model/authStore';
 import { Mail, LockKeyhole } from 'lucide-react';
 
 export const LogInForm = () => {
