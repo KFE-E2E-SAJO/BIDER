@@ -9,4 +9,6 @@ export interface ProductForList {
   auctionStatus: string;
   winnerId?: string | null;
   sellerId: string;
+  isAwarded: boolean;
+  isPending: boolean;
 }

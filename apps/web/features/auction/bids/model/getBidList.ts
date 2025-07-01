@@ -16,6 +16,7 @@ export interface BidHistoryFromDB {
     auction_status: string;
     auction_end_at: string;
     min_price: number;
+    is_pending: boolean;
     winning_bid_user_id: string | null;
     winner?: {
       user_id: string;
@@ -92,5 +93,7 @@ export const getFilteredBidList = async (filter: BidListProps['filter']) => {
     auctionStatus: item.auction.auction_status,
     winnerId: item.auction.winner?.user_id,
     sellerId: item.auction.product.seller?.user_id,
+    isAwarded: item.is_awarded,
+    isPending: item.auction.is_pending,
   }));
 };

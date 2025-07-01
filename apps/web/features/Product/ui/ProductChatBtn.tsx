@@ -6,9 +6,11 @@ import { usePathname, useRouter } from 'next/navigation';
 interface ProductChatBtnProps {
   winnerId?: string | null;
   sellerId: string;
+  auctionStatus: string;
+  isAwarded: boolean;
 }
 
-const ProductChatBtn = ({ winnerId, sellerId }: ProductChatBtnProps) => {
+const ProductChatBtn = ({ winnerId, sellerId, auctionStatus, isAwarded }: ProductChatBtnProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const isBidPage = pathname === '/auction/bids';
@@ -20,7 +22,9 @@ const ProductChatBtn = ({ winnerId, sellerId }: ProductChatBtnProps) => {
 
   return (
     <>
-      {isBidPage || isListingsPage ? (
+      {(isBidPage && auctionStatus == '경매 중') ||
+      (isBidPage && isAwarded) ||
+      (isListingsPage && auctionStatus == '종료' && winnerId) ? (
         <Button
           onClick={handleChatClick}
           variant="secondary"

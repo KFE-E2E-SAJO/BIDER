@@ -8,8 +8,9 @@ interface ProductListProps {
 }
 const ProductList = ({ data }: ProductListProps) => {
   if (data.length === 0) {
-    return <p className="mt-10 text-center text-neutral-500">등록된 상품이 없습니다.</p>;
+    return <p className="mt-10 text-center text-neutral-500">상품이 존재하지 않습니다.</p>;
   }
+
   return (
     <ul>
       {data.map((item) => (
@@ -17,9 +18,15 @@ const ProductList = ({ data }: ProductListProps) => {
           <Link href={`/product/${item.id}`}>
             <ProductItem {...item} />
           </Link>
-
           <div>
-            <ProductChatBtn winnerId={item.winnerId} sellerId={item.sellerId} />
+            <ProductChatBtn
+              {...{
+                auctionStatus: item.auctionStatus,
+                isAwarded: item.isAwarded,
+                winnerId: item.winnerId,
+                sellerId: item.sellerId,
+              }}
+            />
           </div>
         </li>
       ))}
