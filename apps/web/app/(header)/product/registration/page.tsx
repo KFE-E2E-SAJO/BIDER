@@ -80,79 +80,85 @@ const ProductRegistrationPage = () => {
 
   return (
     <div className="flex flex-col gap-[26px] pt-[16px]">
-      {/* 사진 업로드 */}
-      <ImageUploadPreview exImages={[]} onImagesChange={setImages} />
-      {/* 사용자 입력 항목 */}
-      <div className="flex flex-col gap-[13px]">
-        <div className="typo-subtitle-small-medium">
-          상품 제목<span className="text-main">*</span>
-        </div>
-        <Input
-          placeholder="상품 제목을 입력해 주세요."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
-      <div className="flex flex-col gap-[13px]">
-        <div className="typo-subtitle-small-medium">
-          자세한 설명<span className="text-main">*</span>
-        </div>
-        <Textarea
-          className="h-[204px]"
-          placeholder="상품의 상태, 구매 시기, 사용감 등을 자세히 설명해 주세요."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-      </div>
-      <div className="h-[8px] w-full bg-neutral-100"></div>
-      <div className="flex flex-col gap-[13px]">
-        <div className="typo-subtitle-small-medium">
-          입찰 시작가<span className="text-main">*</span>
-        </div>
-        <div className="flex items-end">
+      <div className="p-box flex flex-col gap-[26px]">
+        {/* 사진 업로드 */}
+        <ImageUploadPreview exImages={[]} onImagesChange={setImages} />
+        {/* 사용자 입력 항목 */}
+        <div className="flex flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">
+            상품 제목<span className="text-main">*</span>
+          </div>
           <Input
-            value={minPrice}
-            onChange={handleMinPriceChange}
-            placeholder="희망하는 최소 입찰가를 적어주세요."
+            placeholder="상품 제목을 입력해 주세요."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             required
           />
-          <div className="typo-body-medium ml-[8px]">원</div>
+        </div>
+        <div className="flex flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">
+            자세한 설명<span className="text-main">*</span>
+          </div>
+          <Textarea
+            className="h-[204px]"
+            placeholder="상품의 상태, 구매 시기, 사용감 등을 자세히 설명해 주세요."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
         </div>
       </div>
-      <div className="flex flex-col gap-[13px]">
-        <div className="typo-subtitle-small-medium">
-          경매 종료 일자<span className="text-main">*</span>
-        </div>
-        <div className="flex w-full gap-[16px]">
-          <div className="flex flex-1 basis-[0] flex-col">
-            <div className="typo-caption-regular mb-[6px]">종료 날짜</div>
+
+      <div className="h-[8px] w-full bg-neutral-100"></div>
+
+      <div className="p-box flex flex-col gap-[26px]">
+        <div className="flex flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">
+            입찰 시작가<span className="text-main">*</span>
+          </div>
+          <div className="flex items-end">
             <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={minPrice}
+              onChange={handleMinPriceChange}
+              placeholder="희망하는 최소 입찰가를 적어주세요."
               required
             />
-          </div>
-          <div className="flex flex-1 basis-[0] flex-col">
-            <div className="typo-caption-regular mb-[6px]">종료 시간</div>
-            <Input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              required
-            />
+            <div className="typo-body-medium ml-[8px]">원</div>
           </div>
         </div>
+        <div className="flex w-full flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">
+            경매 종료 일자<span className="text-main">*</span>
+          </div>
+          <div className="flex w-full gap-[16px]">
+            <div className="flex w-[calc(50%-8px)] flex-1 basis-[0] flex-col">
+              <div className="typo-caption-regular mb-[6px]">종료 날짜</div>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+              />
+            </div>
+            <div className="flex w-[calc(50%-8px)] flex-1 basis-[0] flex-col">
+              <div className="typo-caption-regular mb-[6px]">종료 시간</div>
+              <Input
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+        </div>
+        <Button
+          onClick={handleSubmit}
+          variant={isSubmitting ? 'loading' : 'default'}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? '출품 중...' : '출품하기'}
+        </Button>
       </div>
-      <Button
-        onClick={handleSubmit}
-        variant={isSubmitting ? 'loading' : 'default'}
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? '출품 중...' : '출품하기'}
-      </Button>
     </div>
   );
 };

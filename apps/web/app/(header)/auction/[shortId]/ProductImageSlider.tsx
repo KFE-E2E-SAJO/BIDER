@@ -37,7 +37,7 @@ export default function ProductImageSlider({ images }: Props) {
       </div>
 
       {/* Thumbnail Gallery */}
-      <div className="mt-4 flex justify-between">
+      <div className="p-box mt-4 flex justify-between">
         {images.map((img, idx) => (
           <button
             key={img.image_id}
