@@ -73,7 +73,24 @@ export const LogInForm = () => {
       }
 
       if (data.user) {
-        setUser({ id: data.user.id, email: data.user.email! });
+        const { data: profile, error: profileError } = await supabase
+          .from(`profiles`)
+          .select('*')
+          .eq('user_id', data.user.id)
+          .single();
+
+        if (profileError) {
+          console.error('nickNam, address 정보 가져오기 실패');
+          return;
+        }
+
+        setUser({
+          id: data.user.id,
+          email: data.user.email!,
+          nickName: profile.nickname,
+          address: profile.address,
+        });
+
         setSuccessMessage('로그인에 성공했습니다!');
 
         setTimeout(() => {
