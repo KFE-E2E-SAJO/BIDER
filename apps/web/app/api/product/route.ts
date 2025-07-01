@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { getDistanceKm } from '@/features/product/lib/utils';
+import { searcher } from '@/features/search/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {
@@ -198,7 +199,8 @@ export async function GET(req: NextRequest) {
       const { product } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
-      const matchSearch = !search || product.title.toLowerCase().includes(search);
+      // const matchSearch = !search || product.title.toLowerCase().includes(search);
+      const matchSearch = !search || searcher(product.title, search);
       const matchCate = cate === '' || cate === 'all' || product.category === cate;
       return within5km && matchSearch && matchCate;
     })
