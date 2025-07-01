@@ -5,12 +5,7 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Swiper as SwiperType } from 'swiper';
-
-export interface ProductImage {
-  image_id: string;
-  image_url: string;
-  order_index: number;
-}
+import { ProductImage } from '@/app/api/product/route';
 
 interface Props {
   images: ProductImage[];
