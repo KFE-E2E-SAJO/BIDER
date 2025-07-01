@@ -7,7 +7,7 @@ import ProductChatBtn from './ProductChatBtn';
 const ProductItem = ({
   thumbnail,
   title,
-  location,
+  // address,
   bidCount,
   minPrice,
   auctionEndAt,
@@ -25,7 +25,7 @@ const ProductItem = ({
           <Image src={thumbnail} alt={title} fill objectFit="cover" objectPosition="center" />
         </div>
 
-        <ul>
+        <ul className="flex flex-1 flex-col justify-between text-neutral-900">
           <li>
             <p className="typo-body-regular line-clamp-2">{title}</p>
             <span className="typo-caption-regular text-neutral-600">
