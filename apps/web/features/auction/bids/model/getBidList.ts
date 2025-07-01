@@ -60,7 +60,7 @@ const getBidList = async (filter: BidListProps['filter']) => {
     const isProgress = filter === 'progress' && auction.auction_status === '경매 중';
     const isWin = filter === 'win' && item.is_awarded === true;
     const isFail =
-      filter === 'fail' && item.is_awarded === false && auction.auction_status === '종료';
+      filter === 'fail' && item.is_awarded === false && auction.auction_status === '경매 종료';
 
     return filter === 'all' || isProgress || isWin || isFail;
   });

@@ -63,7 +63,7 @@ const ProductChatBtn = ({
     <>
       {(isBidPage && auctionStatus == '경매 중') ||
       (isBidPage && isAwarded) ||
-      (isListingsPage && auctionStatus == '종료' && winnerId) ? (
+      (isListingsPage && auctionStatus == '경매 종료' && winnerId) ? (
         <Button
           onClick={handleChatClick}
           variant="secondary"
