@@ -1,7 +1,8 @@
 'use client';
 
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
-import { getcountdownTemp } from '@/shared/lib/getCountdownTemp';
+import { getCountdown } from '@/shared/lib/getCountDown';
+
 import { Button } from '@repo/ui/components/Button/Button';
 import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/DIalog/dialog';
 import { Input } from '@repo/ui/components/Input/Input';
@@ -26,7 +27,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
   useEffect(() => {
     setHasMounted(true);
 
-    const update = () => setCountdown(getcountdownTemp(auctionEndAt));
+    const update = () => setCountdown(getCountdown(auctionEndAt));
     update(); // 초기 렌더
     const timer = setInterval(update, 1000);
 
