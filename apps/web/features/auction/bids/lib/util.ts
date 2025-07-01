@@ -1,6 +1,6 @@
 import { supabase } from '@/shared/lib/supabaseClient';
 
-export const fetchBidList = async (userId: string) => {
+const fetchBidList = async (userId: string) => {
   const { data, error } = await supabase
     .from('bid_history')
     .select(
@@ -49,9 +49,11 @@ export const fetchBidList = async (userId: string) => {
     .eq('bid_user_id', userId);
 
   if (error || !data) {
-    console.error('❌ 입찰 데이터 로딩 실패:', error);
+    console.error('입찰 데이터 로딩 실패:', error);
     return null;
   }
 
   return data;
 };
+
+export default fetchBidList;

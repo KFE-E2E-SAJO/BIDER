@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import { fetchBidList } from '../lib/util';
+import fetchBidList from '../lib/util';
 
 interface BidListProps {
   filter: 'all' | 'progress' | 'win' | 'fail';
@@ -42,7 +42,7 @@ export interface BidHistoryFromDB {
   };
 }
 
-export const getFilteredBidList = async (filter: BidListProps['filter']) => {
+const getBidList = async (filter: BidListProps['filter']) => {
   const user = { id: '0f521e94-ed27-479f-ab3f-e0c9255886c5' };
   if (!user) return null;
 
@@ -95,5 +95,8 @@ export const getFilteredBidList = async (filter: BidListProps['filter']) => {
     sellerId: item.auction.product.seller?.user_id,
     isAwarded: item.is_awarded,
     isPending: item.auction.is_pending,
+    productId: item.auction.product.product_id,
   }));
 };
+
+export default getBidList;

@@ -35,14 +35,14 @@ const ProductBadge = ({
   let stateBadge: { type: StatusType; label: string } | null = null;
 
   if (isAuctionPage) {
-    if (auctionStatus == '종료' && !isAwarded) {
+    if (auctionStatus == '경매 종료' && !isAwarded) {
       stateBadge = { type: 'state-gray', label: '패찰' };
-    } else if (auctionStatus == '종료' && isAwarded) {
+    } else if (auctionStatus == '경매 종료' && isAwarded) {
       stateBadge = { type: 'state-green', label: '낙찰' };
     } else if (isPending) {
-      stateBadge = { type: 'state-green', label: '대기' };
-    } else if (auctionStatus == '종료' && bidCount == 0) {
-      stateBadge = { type: 'state-green', label: '유찰' };
+      stateBadge = { type: 'state-orange', label: '대기' };
+    } else if (auctionStatus == '경매 종료' && bidCount == 0) {
+      stateBadge = { type: 'state-gray', label: '유찰' };
     }
   }
   //대기 낙찰 유찰 패찰
