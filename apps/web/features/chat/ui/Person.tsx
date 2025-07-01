@@ -1,12 +1,21 @@
+'use client';
+
 import { getRandomImage } from '@/features/lib/random';
+import TimeAgo from 'javascript-time-ago';
+import ko from 'javascript-time-ago/locale/ko';
+
+TimeAgo.addDefaultLocale(ko);
+
+const timeAgo = new TimeAgo('ko-KR');
 
 export default function Person({
   index,
   userId,
   name,
   onlineAt,
-  isActive,
-  onChatScreen,
+  isActive = false,
+  onChatScreen = false,
+  onClick = null,
 }: {
   index: number;
   userId: string;
@@ -14,15 +23,17 @@ export default function Person({
   onlineAt: string;
   isActive: boolean;
   onChatScreen: boolean;
+  onClick: (() => void) | null;
 }) {
   return (
     <div
-      className={`flex items-center p-4 ${isActive && 'bg-light-blue-200'} ${onChatScreen ? 'bg-gray-500' : 'bg-light-blue-50'}`}
+      className={`flex w-full min-w-60 ${onClick && 'cursor-pointer'} items-center gap-4 p-4 ${!onChatScreen && isActive && 'bg-light-blue-50'} ${!onChatScreen && !isActive && 'bg-gray-50'} ${onChatScreen && 'bg-gray-50'}`}
+      onClick={onClick || undefined}
     >
-      <img src={getRandomImage(index)} alt={name} className="h-4 w-4 rounded-full" />
+      <img src={getRandomImage(index)} alt={name} className="h-10 w-10 rounded-full" />
       <div>
         <p className="text-lg font-bold text-black">{name}</p>
-        <p className="text-gray-500">{onlineAt}</p>
+        <p className="text-gray-500">{timeAgo.format(Date.parse(onlineAt))}</p>
       </div>
     </div>
   );

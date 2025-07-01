@@ -1,16 +1,11 @@
-import Person from '@/features/chat/ui/Person';
+'use client';
+
+import ChatList from '@/features/chat/ui/ChatList';
 
 export default function ChatPage() {
   return (
     <div className="flex h-screen w-full justify-center">
-      <Person
-        index={0}
-        userId={'iasdonfiodasn'}
-        name={'Lopun'}
-        onlineAt={new Date().toISOString()}
-        isActive={false}
-        onChatScreen={false}
-      />
+      <ChatList />
     </div>
   );
 }

@@ -17,7 +17,8 @@
     "prepare": "lefthook install",
     "hooks:install": "lefthook install",
     "hooks:uninstall": "lefthook uninstall",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate-types": "npx supabase gen types typescript --project-id nrxemenkpeejarhejbbk --schema public > types_db.ts"
   },
   "dependencies": {
     "@repo/tailwind-config": "workspace:*",
