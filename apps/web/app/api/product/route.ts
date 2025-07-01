@@ -135,11 +135,9 @@ interface ProductFromDB {
       image_url: string;
       order_index: number;
     }[];
-    user: {
-      address: string;
-      latitude: number;
-      longitude: number;
-    };
+    latitude: number;
+    longitude: number;
+    //address :string >> db테이블추가 해야함
   };
   auction_status: string;
   min_price: number;
@@ -152,7 +150,7 @@ interface ProductFromDB {
 interface ProductResponse {
   thumbnail: string;
   title: string;
-  location: string;
+  // address: string;
   bidCount: number;
   minPrice: number;
   auctionEndAt: string;
@@ -178,15 +176,12 @@ export async function GET(req: NextRequest) {
   product:product_id (
     title,
     category,
+    latitude,
+    longitude,
     exhibit_user_id,
     product_image (
       image_url,
       order_index
-    ),
-    user:exhibit_user_id (
-      address,
-      latitude,
-      longitude
     )
   ),
   bid_history!auction_id (
@@ -201,10 +196,7 @@ export async function GET(req: NextRequest) {
   const filtered: ProductResponse[] = (data as unknown as ProductFromDB[])
     .filter((item) => {
       const { product } = item;
-      const user = product?.user;
-      if (!user?.latitude || !user?.longitude) return false;
-
-      const distance = getDistanceKm(lat, lng, user.latitude, user.longitude);
+      const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
       const matchSearch = !search || product.title.toLowerCase().includes(search);
       const matchCate = cate === '' || cate === 'all' || product.category === cate;
@@ -216,7 +208,7 @@ export async function GET(req: NextRequest) {
         item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
         '/default.png',
       title: item.product.title,
-      location: item.product.user.address,
+      // address: item.product.address,
       bidCount: item.bid_history?.length ?? 0,
       minPrice: item.min_price,
       auctionEndAt: item.auction_end_at,
