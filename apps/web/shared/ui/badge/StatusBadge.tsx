@@ -7,7 +7,7 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-type StatusType =
+export type StatusType =
   | 'time-orange'
   | 'time-blue'
   | 'time-gray'
@@ -15,7 +15,7 @@ type StatusType =
   | 'count-gray'
   | 'count-green'
   | 'state-gray'
-  | 'state-yellow'
+  | 'state-orange'
   | 'state-green';
 
 const baseStyle =
@@ -32,7 +32,7 @@ const colorStyles: Record<StatusType, string> = {
   'count-green': 'text-neutral-0 bg-alert',
 
   'state-gray': 'text-neutral-0 bg-neutral-700',
-  'state-yellow': 'text-neutral-0 bg-warning',
+  'state-orange': 'text-neutral-0 bg-warning',
   'state-green': 'text-neutral-0 bg-alert',
 };
 
