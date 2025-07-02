@@ -14,7 +14,7 @@ const MyPageAuction = () => {
       </div>
       {/* 각 개수 받아 숫자 세팅 */}
       <div className="flex items-center justify-between">
-        <MyPageAuctionCard title1="입찰 전체" count1={40} title2="진행 중" count2={2} />
+        <MyPageAuctionCard title1="입찰 전체" count1={4} title2="진행 중" count2={2} />
         <MyPageAuctionCard title1="출품 전체" count1={5} title2="진행 중" count2={2} />
       </div>
     </div>

@@ -33,7 +33,6 @@ const MyPage = async () => {
         profileImg={data.profile_img}
       />
       <MyPageAuction />
-      {/* 경매 개수 받기 */}
       <MyPageMenuList address={data.address} />
       <Footer />
     </div>
