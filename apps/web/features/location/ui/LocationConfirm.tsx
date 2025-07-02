@@ -7,6 +7,7 @@ import DotStepper from '@/features/location/ui/DotStepper';
 import { getAddressFromLatLng } from '@/features/location/api/getAddressFromLatLng';
 import { SetLocation } from '@/features/location/api/setLocation';
 import { useAuthStore } from '@/shared/model/authStore';
+import { useRouter } from 'next/navigation';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
@@ -15,15 +16,18 @@ type LocationConfirmProps = {
 };
 
 const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
+  const router = useRouter();
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [address, setAddress] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const userId = useAuthStore((state) => state.user?.id);
+  const updateAddress = useAuthStore((state) => state.updateAddress);
 
   const handleNext = async () => {
     if (!userId) {
-      alert('유저 정보가 없습니다.');
+      alert('로그인이 필요합니다.');
+      router.replace('/login');
       return;
     }
 
@@ -36,6 +40,7 @@ const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
       alert('주소 정보가 없습니다.');
       return;
     }
+    updateAddress(address);
 
     try {
       await SetLocation({
@@ -44,6 +49,7 @@ const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
         lng: position.lng,
         address,
       });
+
       onNext();
     } catch (err) {
       console.error('위치 저장 실패:', err);

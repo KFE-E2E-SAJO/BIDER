@@ -130,6 +130,7 @@ export interface ProductImage {
 }
 
 interface ProductFromDB {
+  auction_id: string;
   product_id: string;
   product: {
     title: string;
@@ -152,6 +153,7 @@ interface ProductFromDB {
 }
 
 interface ProductResponse {
+  id: string;
   thumbnail: string;
   title: string;
   address: string;
@@ -167,21 +169,29 @@ export async function GET(req: NextRequest) {
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
 
-  // 유저 위치 정보 가져오기
+  if (!userId) {
+    return NextResponse.json({ error: 'userId가 없습니다' }, { status: 400 });
+  }
+
   const { data: userData, error: userError } = await supabase
     .from('profiles')
     .select('latitude, longitude')
     .eq('user_id', userId)
     .single();
 
-  if (userError || !userData?.latitude || !userData?.longitude) {
-    return NextResponse.json({ error: '사용자 위치 정보가 없습니다.' }, { status: 400 });
+  if (!userData?.latitude || !userData?.longitude) {
+    return NextResponse.json({ error: '유저 위치 정보가 없습니다.' }, { status: 400 });
+  }
+
+  if (userError) {
+    return NextResponse.json({ error: '유저 정보 조회 실패' }, { status: 500 });
   }
 
   const lat = userData.latitude;
   const lng = userData.longitude;
 
-  const { data, error } = await supabase.from('auction').select(`
+  const { data: auctionData, error } = await supabase.from('auction').select(`
+  auction_id,
   product_id,
   auction_status,
   min_price,
@@ -207,7 +217,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const filtered: ProductResponse[] = (data as unknown as ProductFromDB[])
+  const filtered: ProductResponse[] = (auctionData as unknown as ProductFromDB[])
     .filter((item) => {
       const { product } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
@@ -217,7 +227,7 @@ export async function GET(req: NextRequest) {
       return within5km && matchSearch && matchCate;
     })
     .map((item) => ({
-      id: item.product_id,
+      id: item.auction_id,
       thumbnail:
         item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
         '/default.png',

@@ -15,7 +15,7 @@ const ProductList = ({ data }: ProductListProps) => {
     <ul>
       {data.map((item) => (
         <li key={item.id}>
-          <Link href={`/product/${encodeUUID(item.id)}`}>
+          <Link href={`/auction/${encodeUUID(item.id)}`}>
             <ProductItem {...item} />
           </Link>
           <Line className="my-[20px]" />

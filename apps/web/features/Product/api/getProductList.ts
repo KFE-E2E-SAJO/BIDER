@@ -16,6 +16,9 @@ export const getProductList = async (params: GetProductListParams): Promise<Prod
   });
 
   const res = await fetch(`/api/product?${query.toString()}`);
-  if (!res.ok) throw new Error('Failed to fetch product list');
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to fetch product list');
+  }
   return res.json();
 };

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { error } = await supabase
-    .from('user')
+    .from('profiles')
     .update({
       latitude: lat,
       longitude: lng,

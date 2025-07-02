@@ -12,6 +12,7 @@ export const useProductList = (params: UseProductListParams) => {
   return useQuery<ProductForList[]>({
     queryKey: ['productList', params.userId, params.search, params.cate],
     queryFn: () => getProductList(params),
+    enabled: !!params.userId,
     staleTime: 1000 * 60 * 1,
   });
 };

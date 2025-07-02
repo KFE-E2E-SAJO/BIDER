@@ -32,7 +32,7 @@ const ProductItem = ({
         <div>
           <p className="typo-body-regular line-clamp-2">{title}</p>
           <span className="typo-caption-regular text-neutral-600">
-            ${address} • 입찰 {bidCount}회
+            {address} • 입찰 {bidCount}회
           </span>
         </div>
 
