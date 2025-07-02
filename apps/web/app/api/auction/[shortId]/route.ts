@@ -8,7 +8,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
   const id = decodeShortId(resolvedParams.shortId);
 
   try {
-    // 1. 먼저 경매 정보만 가져오기
+    // 1. 경매 정보 조회
     const { data: auctionData, error: auctionError } = await supabase
       .from('auction')
       .select(
@@ -29,23 +29,19 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
       .single();
 
     if (auctionError || !auctionData) {
-      return NextResponse.json(
-        {
-          error: 'Auction not found',
-          details: auctionError?.message,
-          shortId: resolvedParams.shortId,
-          decodedId: id,
-        },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '경매 조회 실패' }, { status: 500 });
     }
 
-    // 2. 입찰 히스토리 별도로 가져오기
+    // 2. 입찰 내역 조회
     const { data: bidHistory, error: bidError } = await supabase
       .from('bid_history')
       .select('bid_id, bid_price, bid_user_id, bid_at')
       .eq('auction_id', id)
       .order('bid_price', { ascending: false });
+
+    if (bidError) {
+      return NextResponse.json({ error: '입찰 내역 조회 실패' }, { status: 500 });
+    }
 
     // 3. 입찰 히스토리가 없어도 괜찮음 (빈 배열로 처리)
     const sortedBidHistory = bidHistory || [];
@@ -79,15 +75,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching auction data:', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to retrieve auction data',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        shortId: resolvedParams.shortId,
-        decodedId: id,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '경매 정보 조회 실패' }, { status: 500 });
   }
 }
 
@@ -98,6 +86,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sho
 
     // 요청 본문에서 입찰 데이터 추출
     const { bidPrice, userId } = await req.json();
+
+    // 0. 회원 정보 조회
+    const { data: userData, error: userError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId);
+
+    if (userError || !userData) {
+      return NextResponse.json({ error: '회원 정보 조회 실패' }, { status: 500 });
+    }
 
     // 1. 입찰가 유효성 검증
     if (!bidPrice || bidPrice <= 0) {
