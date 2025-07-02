@@ -83,7 +83,6 @@ export const LogInForm = () => {
           console.error('nickNam, address 정보 가져오기 실패');
           return;
         }
-        console.log(data.user);
 
         setUser({
           id: data.user.id,
