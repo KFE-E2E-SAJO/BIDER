@@ -25,7 +25,11 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
   const pathname = usePathname();
 
   const headerTitle = HEADER_TITLE_MAP[pathname];
-  const centerLabel = HEADER_CENTER_TEXT_MAP[pathname];
+  let centerLabel = HEADER_CENTER_TEXT_MAP[pathname];
+
+  if (pathname.startsWith('/product/edit/')) {
+    centerLabel = '상품 수정';
+  }
 
   return (
     <>
