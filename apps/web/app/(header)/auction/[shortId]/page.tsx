@@ -20,7 +20,7 @@ const ProductDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/product/${resolvedParams.shortId}`);
+        const response = await fetch(`/api/auction/${resolvedParams.shortId}`);
 
         if (!response.ok) {
           throw new Error('경매 정보를 가져올 수 없습니다.');
@@ -61,54 +61,57 @@ const ProductDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
       <ProductImageSlider images={mapped.images} />
 
       {/* 경매 상품 내용 */}
-      <div className="typo-subtitle-bold">{mapped.productTitle}</div>
+      <div className="p-box flex flex-col gap-[25px]">
+        <div className="typo-subtitle-bold">{mapped.productTitle}</div>
 
-      <div>
-        <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
-        <div className="typo-subtitle-bold">
-          {formatNumberWithComma(mapped.currentHighestBid)}원
-        </div>
-      </div>
-
-      <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
-        <div className="flex items-center gap-[10px]">
-          <div className="flex items-center gap-[3px]">
-            <PencilLine size={12} className="text-neutral-600" />
-            <div className="text-[10px] text-neutral-600">입찰 시작가</div>
-          </div>
-          <div className="typo-caption-medium">{formatNumberWithComma(mapped.minPrice)}원</div>
-        </div>
-        <div className="h-[12px] w-[1px] bg-neutral-300"></div>
-        <div className="flex items-center gap-[10px]">
-          <div className="flex items-center gap-[3px]">
-            <AlarmClock size={12} className="text-neutral-600" />
-            <div className="text-[10px] text-neutral-600">입찰 마감 일자</div>
-          </div>
-          <div className="typo-caption-medium">{formatTimestamptz(mapped.auctionEndAt)}</div>
-        </div>
-      </div>
-
-      <div className="typo-body-regular">{mapped.productDescription}</div>
-      <div className="h-[8px] w-full bg-neutral-100"></div>
-
-      {/* 입찰 히스토리 (선택사항) */}
-      {/* {mapped.bidHistory.length > 0 && (
         <div>
-          <div className="typo-subtitle-bold mb-[10px]">입찰 현황</div>
-          <div className="text-neutral-600 typo-caption-regular">
-            총 {mapped.bidHistory.length}건의 입찰
+          <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
+          <div className="typo-subtitle-bold">
+            {formatNumberWithComma(mapped.currentHighestBid)}원
           </div>
         </div>
-      )}
-      
-      <div className="h-[8px] w-full bg-neutral-100"></div> */}
 
-      {/* 판매자 정보 */}
-      <div className="flex items-center gap-[19px]">
-        <Avatar src={mapped.exhibitUser?.profile_img || undefined} className="size-[36px]" />
-        <div className="flex flex-col gap-[5px]">
-          <div className="typo-body-medium">{mapped.exhibitUser?.nickname}</div>
-          <div className="typo-caption-regular">{mapped.exhibitUser?.address}</div>
+        <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
+          <div className="flex items-center gap-[10px]">
+            <div className="flex items-center gap-[3px]">
+              <PencilLine size={12} className="text-neutral-600" />
+              <div className="text-[10px] text-neutral-600">입찰 시작가</div>
+            </div>
+            <div className="typo-caption-medium">{formatNumberWithComma(mapped.minPrice)}원</div>
+          </div>
+          <div className="h-[12px] w-[1px] bg-neutral-300"></div>
+          <div className="flex items-center gap-[10px]">
+            <div className="flex items-center gap-[3px]">
+              <AlarmClock size={12} className="text-neutral-600" />
+              <div className="text-[10px] text-neutral-600">입찰 마감 일자</div>
+            </div>
+            <div className="typo-caption-medium">{formatTimestamptz(mapped.auctionEndAt)}</div>
+          </div>
+        </div>
+
+        <div className="typo-body-regular">{mapped.productDescription}</div>
+      </div>
+      <div className="h-[8px] w-full bg-neutral-100"></div>
+      <div className="p-box">
+        {/* 입찰 히스토리 (선택사항) */}
+        {/* {mapped.bidHistory.length > 0 && (
+          <div>
+            <div className="typo-subtitle-bold mb-[10px]">입찰 현황</div>
+            <div className="text-neutral-600 typo-caption-regular">
+              총 {mapped.bidHistory.length}건의 입찰
+            </div>
+          </div>
+        )}
+        
+        <div className="h-[8px] w-full bg-neutral-100"></div> */}
+
+        {/* 판매자 정보 */}
+        <div className="flex items-center gap-[19px]">
+          <Avatar src={mapped.exhibitUser?.profile_img || undefined} className="size-[36px]" />
+          <div className="flex flex-col gap-[5px]">
+            <div className="typo-body-medium">{mapped.exhibitUser?.nickname}</div>
+            <div className="typo-caption-regular">{mapped.exhibitUser?.address}</div>
+          </div>
         </div>
       </div>
 
