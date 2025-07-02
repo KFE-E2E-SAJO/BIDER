@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import { ProductForList } from '@/features/product/types';
-import ProductBadge from '@/features/Product/ui/ProductBadge';
+import ProductBadge from '@/features/product/ui/ProductBadge';
 import { getCountdownWithColor } from '@/features/Product/lib/utils';
 
 const ProductItem = ({
   thumbnail,
   title,
-  // address,
+  address,
   bidCount,
   minPrice,
   auctionEndAt,
@@ -22,28 +22,26 @@ const ProductItem = ({
   const badgeProps = { text, color, auctionStatus, isAwarded, isPending, bidCount };
 
   return (
-    <div>
-      <div className="flex gap-[19px]">
-        <div className="relative h-[140px] w-[140px] overflow-hidden rounded">
-          <Image src={thumbnail} alt={title} fill objectFit="cover" objectPosition="center" />
-        </div>
-
-        <ul className="flex flex-1 flex-col justify-between text-neutral-900">
-          <li>
-            <p className="typo-body-regular line-clamp-2">{title}</p>
-            <span className="typo-caption-regular text-neutral-600">
-              역삼동 • 입찰 {bidCount}회
-            </span>
-          </li>
-
-          <li className="mt-[30px]">
-            <p className="typo-body-bold mb-[8px]">
-              {minPrice.toLocaleString()} <span className="typo-body-regular">원</span>
-            </p>
-            <ProductBadge {...badgeProps} />
-          </li>
-        </ul>
+    <div className="flex gap-[19px]">
+      <div className="relative h-[140px] w-[140px] overflow-hidden rounded">
+        <Image src={thumbnail} alt={title} fill objectFit="cover" objectPosition="center" />
       </div>
+
+      <ul className="flex flex-1 flex-col justify-between text-neutral-900">
+        <li>
+          <p className="typo-body-regular line-clamp-2">{title}</p>
+          <span className="typo-caption-regular text-neutral-600">
+            {address} • 입찰 {bidCount}회
+          </span>
+        </li>
+
+        <li className="mt-[30px]">
+          <p className="typo-body-bold mb-[8px]">
+            {minPrice.toLocaleString()} <span className="typo-body-regular">원</span>
+          </p>
+          <ProductBadge {...badgeProps} />
+        </li>
+      </ul>
     </div>
   );
 };

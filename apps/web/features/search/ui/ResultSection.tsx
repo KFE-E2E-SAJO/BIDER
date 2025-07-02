@@ -1,26 +1,29 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useProductList } from '@/features/product/model/useProductList';
 import LocationPin from '@/features/product/ui/LocationPin';
 import ProductList from '@/features/product/ui/ProductList';
-import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-const HomePage = () => {
+interface ResultSectionProps {
+  search: string;
+  userId?: string;
+}
+
+const ResultSection = ({ search, userId }: ResultSectionProps) => {
   const router = useRouter();
-  const userId = useAuthStore((state) => state.user?.id);
 
   const { data, isLoading, error } = useProductList({
     userId: userId as string,
+    search,
   });
 
   useEffect(() => {
     if (!error) return;
 
     const message = (error as Error).message;
-
     if (message === '유저 위치 정보가 없습니다.') {
       alert(message);
       router.replace('/setLocation');
@@ -30,16 +33,22 @@ const HomePage = () => {
     }
   }, [error, router]);
 
-  if (isLoading || error || !data) {
-    return <Loading />;
+  if (isLoading && !data) return <Loading />;
+
+  if (!search.trim()) {
+    return <p className="mt-10 text-center text-neutral-500">검색어를 입력해주세요.</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500">에러 발생: {(error as Error).message}</p>;
   }
 
   return (
-    <div className="p-box">
+    <>
       <LocationPin />
-      <ProductList data={data} />
-    </div>
+      <ProductList data={data ?? []} />
+    </>
   );
 };
 
-export default HomePage;
+export default ResultSection;

@@ -1,7 +1,8 @@
 import { ProductForList } from '@/features/product/types';
-import ProductItem from '@/features/Product/ui/ProductItem';
+import { encodeUUID } from '@/shared/lib/shortUuid';
+import ProductItem from '@/features/product/ui/ProductItem';
 import Link from 'next/link';
-import ProductActionBtn from '@/features/Product/ui/ProductActionBtn';
+import ProductActionBtn from '@/features/product/ui/ProductActionBtn';
 
 interface ProductListProps {
   data: ProductForList[];
@@ -15,7 +16,7 @@ const ProductList = ({ data }: ProductListProps) => {
     <ul>
       {data.map((item) => (
         <li key={item.id} className="border-b border-neutral-100 py-[20px] last:border-none">
-          <Link href={`/product/${item.id}`}>
+          <Link href={`/auction/${encodeUUID(item.id)}`}>
             <ProductItem {...item} />
           </Link>
           <div>
