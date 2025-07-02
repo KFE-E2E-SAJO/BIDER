@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '../../../../../packages/ui/dist/components/Dialog/Dialog';
 import { useState } from 'react';
+import { encodeUUID } from '@/shared/lib/shortUuid';
 
 interface ProductActionBtnProps {
   winnerId?: string | null;
@@ -38,7 +39,7 @@ const ProductActionBtn = ({
     isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
   };
   const handleEditClick = () => {
-    router.push(`/product/edit/${productId}`);
+    router.push(`/product/edit/${encodeUUID(productId)}`);
   };
   const handleDialogClick = async () => {
     setOpen(true);
