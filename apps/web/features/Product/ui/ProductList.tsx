@@ -26,7 +26,7 @@ const ProductList = ({ data }: ProductListProps) => {
                 winnerId: item.winnerId,
                 sellerId: item.sellerId,
                 isPending: item.isPending,
-                shortId: item.id,
+                productId: item.id,
               }}
             />
           </div>

@@ -14,7 +14,7 @@ const AuctionListings = () => {
   ];
 
   return (
-    <div>
+    <div className="h-screen overflow-y-scroll">
       <AuctionTopTabs />
       <Tabs defaultValue="all" items={items} className="py-[16px]" />
     </div>

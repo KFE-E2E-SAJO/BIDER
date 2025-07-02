@@ -10,5 +10,5 @@ export interface ProductForList {
   winnerId?: string | null;
   sellerId: string;
   isAwarded: boolean;
-  isPending: boolean;
+  isPending?: boolean;
 }

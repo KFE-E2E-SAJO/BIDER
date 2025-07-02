@@ -5,43 +5,12 @@ const fetchBidList = async (userId: string) => {
     .from('bid_history')
     .select(
       `
-      is_awarded,
-      bid_user_id,
-      bid_id,
-      bid_at,
-      bid_price,
-
-      auction:auction_id (
-        auction_id,
-        auction_status,
-        auction_end_at,
-        min_price,
-
-        winning_bid_user_id,
-        winner:winning_bid_user_id (
-          user_id
-        ),
-
-        product:product_id (
-          product_id,
-          title,
-          category,
-          exhibit_user_id,
-
-          seller:exhibit_user_id (
-            user_id
-          ),
-
-          product_image (
-            image_url,
-            order_index
-          ),
-          
-          profiles (
-            address,
-            latitude,
-            longitude
-          )
+      *,
+      auction:auction_id(
+        *,
+        product:product_id(
+          *,
+          product_image:product_image!product_image_product_id_fkey(*)
         )
       )
     `

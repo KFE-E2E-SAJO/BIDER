@@ -16,8 +16,8 @@ interface ProductChatBtnProps {
   sellerId: string;
   auctionStatus: string;
   isAwarded: boolean;
-  isPending: boolean;
-  shortId: string;
+  isPending?: boolean;
+  productId: string;
 }
 
 const ProductChatBtn = ({
@@ -26,7 +26,7 @@ const ProductChatBtn = ({
   auctionStatus,
   isAwarded,
   isPending,
-  shortId,
+  productId,
 }: ProductChatBtnProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -38,7 +38,7 @@ const ProductChatBtn = ({
     isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
   };
   const handleEditClick = () => {
-    router.push(`/product/edit/${shortId}`);
+    router.push(`/product/edit/${productId}`);
   };
   const handleDialogClick = async () => {
     setOpen(true);
@@ -48,7 +48,7 @@ const ProductChatBtn = ({
     const confirmDelete = confirm('정말 삭제하시겠습니까?');
     if (!confirmDelete) return;
 
-    const { error } = await supabase.from('product').delete().eq('product_id', shortId);
+    const { error } = await supabase.from('product').delete().eq('product_id', productId);
 
     if (error) {
       alert('삭제 중 오류가 발생했습니다.');

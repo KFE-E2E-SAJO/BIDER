@@ -10,7 +10,7 @@ const AuctionTopTabs = () => {
   const isListings = pathname === '/auction/listings';
 
   return (
-    <div className="p-box flex items-baseline justify-between">
+    <div className="p-box flex items-baseline justify-between bg-white">
       <Link
         href="/auction/bids"
         className={cn(
