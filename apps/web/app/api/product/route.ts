@@ -20,6 +20,10 @@ export async function POST(req: NextRequest) {
       .select('*')
       .eq('user_id', exhibitUserId);
 
+    if (userError || !userData) {
+      return NextResponse.json({ error: '회원 정보 조회 실패' }, { status: 500 });
+    }
+
     const user = userData?.[0];
     const latitude = user.latitude;
     const longitude = user.longitude;
