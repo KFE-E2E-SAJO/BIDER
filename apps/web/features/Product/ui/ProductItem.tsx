@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import { AlarmClock } from 'lucide-react';
 import { ProductForList } from '@/features/product/types';
-import { getCountdownWithColor } from '@/features/product/lib/utils';
+import ProductBadge from './ProductBadge';
+import { getCountdownWithColor } from '../lib/utils';
 
 const ProductItem = ({
   thumbnail,
@@ -11,42 +11,39 @@ const ProductItem = ({
   minPrice,
   auctionEndAt,
   auctionStatus,
+  isAwarded,
+  winnerId,
+  isPending,
 }: ProductForList) => {
   const { text, color } =
     auctionStatus === 'end'
       ? { text: '경매 종료', color: 'gray' }
       : getCountdownWithColor(auctionEndAt);
-  const statusClass = {
-    gray: 'bg-neutral-100 text-neutral-700',
-    orange: 'bg-warning-light text-warning-medium',
-    blue: 'bg-main-lightest text-main',
-  }[color];
+
+  const badgeProps = { text, color, auctionStatus, isAwarded, winnerId, isPending, bidCount };
 
   return (
-    <div className="flex gap-[19px]">
-      <div className="relative h-[140px] w-[140px] overflow-hidden rounded">
-        <Image src={thumbnail} alt={title} fill objectFit="cover" objectPosition="center" />
-      </div>
-
-      <div className="flex flex-1 flex-col justify-between text-neutral-900">
-        <div>
-          <p className="typo-body-regular line-clamp-2">{title}</p>
-          <span className="typo-caption-regular text-neutral-600">
-            '역삼동' • 입찰 {bidCount}회{/* {address} */}
-          </span>
+    <div>
+      <div className="flex gap-[19px]">
+        <div className="relative h-[140px] w-[140px] overflow-hidden rounded">
+          <Image src={thumbnail} alt={title} fill objectFit="cover" objectPosition="center" />
         </div>
 
-        <div>
-          <p className="typo-body-bold mb-[8px]">
-            {minPrice.toLocaleString()} <span className="typo-body-regular">원</span>
-          </p>
-          <div
-            className={`flex w-fit items-center gap-[4px] px-[5px] py-[4px] text-[10px] ${statusClass}`}
-          >
-            <AlarmClock size={12} />
-            {text}
-          </div>
-        </div>
+        <ul className="flex flex-1 flex-col justify-between text-neutral-900">
+          <li>
+            <p className="typo-body-regular line-clamp-2">{title}</p>
+            <span className="typo-caption-regular text-neutral-600">
+              역삼동 • 입찰 {bidCount}회
+            </span>
+          </li>
+
+          <li className="mt-[30px]">
+            <p className="typo-body-bold mb-[8px]">
+              {minPrice.toLocaleString()} <span className="typo-body-regular">원</span>
+            </p>
+            <ProductBadge {...badgeProps} />
+          </li>
+        </ul>
       </div>
     </div>
   );

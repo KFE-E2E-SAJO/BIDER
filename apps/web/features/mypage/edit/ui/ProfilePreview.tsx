@@ -2,14 +2,14 @@
 
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { Button } from '@repo/ui/components/Button/Button';
-import { Camera, Plus } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@repo/ui/components/Dialog/Dialog';
+import { Camera, Plus } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ProfilePreviewProps {
   profileImg?: string | null;
