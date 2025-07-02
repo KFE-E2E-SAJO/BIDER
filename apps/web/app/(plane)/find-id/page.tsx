@@ -77,7 +77,7 @@ export default function FindAccountPage() {
     if (result.success) {
       try {
         const { error } = await supabase.auth.resetPasswordForEmail(inputValue.trim(), {
-          redirectTo: `${window.location.origin}/reset-password`,
+          redirectTo: `http://localhost:3000/reset-pw`,
         });
 
         if (error) {
