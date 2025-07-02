@@ -35,6 +35,10 @@ export default function FindAccountPage() {
   // 이메일 마스킹 함수
   const maskEmail = (email: string): string => {
     const [localPart, domain] = email.split('@');
+
+    if (!localPart || !domain) {
+      throw new Error('Invalid email format');
+    }
     if (localPart.length <= 3) {
       return `${localPart[0]}***@${domain}`;
     }
