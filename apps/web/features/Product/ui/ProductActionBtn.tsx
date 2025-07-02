@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '../../../../../packages/ui/dist/components/Dialog/Dialog';
+} from '@repo/ui/components/Dialog/Dialog';
 import { useState } from 'react';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { ProductForList } from '@/features/product/types';
-import ProductBadge from './ProductBadge';
+import ProductBadge from '@/features/Product/ui/ProductBadge';
 import { getCountdownWithColor } from '../lib/utils';
 
 const ProductItem = ({
@@ -12,7 +12,6 @@ const ProductItem = ({
   auctionEndAt,
   auctionStatus,
   isAwarded,
-  winnerId,
   isPending,
 }: ProductForList) => {
   const { text, color } =
@@ -20,7 +19,7 @@ const ProductItem = ({
       ? { text: '경매 종료', color: 'gray' }
       : getCountdownWithColor(auctionEndAt);
 
-  const badgeProps = { text, color, auctionStatus, isAwarded, winnerId, isPending, bidCount };
+  const badgeProps = { text, color, auctionStatus, isAwarded, isPending, bidCount };
 
   return (
     <div>

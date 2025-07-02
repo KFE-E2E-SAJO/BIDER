@@ -8,8 +8,7 @@ interface ProductBadgeProps {
   color: string;
   auctionStatus: string;
   isAwarded: boolean;
-  winnerId?: string | null;
-  isPending: boolean;
+  isPending?: boolean;
   bidCount: number;
 }
 
@@ -18,7 +17,6 @@ const ProductBadge = ({
   color,
   auctionStatus,
   isAwarded,
-  winnerId,
   isPending,
   bidCount,
 }: ProductBadgeProps) => {
@@ -45,7 +43,7 @@ const ProductBadge = ({
       stateBadge = { type: 'state-gray', label: '유찰' };
     }
   }
-  //대기 낙찰 유찰 패찰
+
   return (
     <div className="align-center flex flex-wrap gap-1">
       <StatusBadge type={timeBadgeType} label={text} />
