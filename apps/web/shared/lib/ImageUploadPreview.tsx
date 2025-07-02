@@ -2,12 +2,7 @@
 
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { Button } from '@repo/ui/components/Button/Button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@repo/ui/components/DIalog/dialog';
+import { Abcd, DialogContent, DialogHeader, DialogTitle } from '@repo/ui/components/Abcd/Abcd';
 import { Camera, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
