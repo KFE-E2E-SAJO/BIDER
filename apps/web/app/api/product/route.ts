@@ -141,7 +141,7 @@ interface ProductFromDB {
     }[];
     latitude: number;
     longitude: number;
-    //address :string >> db테이블추가 해야함
+    address: string;
   };
   auction_status: string;
   min_price: number;
@@ -154,7 +154,7 @@ interface ProductFromDB {
 interface ProductResponse {
   thumbnail: string;
   title: string;
-  // address: string;
+  address: string;
   bidCount: number;
   minPrice: number;
   auctionEndAt: string;
@@ -195,7 +195,8 @@ export async function GET(req: NextRequest) {
     product_image (
       image_url,
       order_index
-    )
+    ),
+    address
   ),
   bid_history!auction_id (
     bid_id
@@ -211,7 +212,6 @@ export async function GET(req: NextRequest) {
       const { product } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
-      // const matchSearch = !search || product.title.toLowerCase().includes(search);
       const matchSearch = !search || searcher(product.title, search);
       const matchCate = cate === '' || cate === 'all' || product.category === cate;
       return within5km && matchSearch && matchCate;
@@ -222,7 +222,7 @@ export async function GET(req: NextRequest) {
         item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
         '/default.png',
       title: item.product.title,
-      // address: item.product.address,
+      address: item.product.address,
       bidCount: item.bid_history?.length ?? 0,
       minPrice: item.min_price,
       auctionEndAt: item.auction_end_at,

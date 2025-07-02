@@ -6,7 +6,7 @@ import { getCountdownWithColor } from '@/features/product/lib/utils';
 const ProductItem = ({
   thumbnail,
   title,
-  // address,
+  address,
   bidCount,
   minPrice,
   auctionEndAt,
@@ -32,7 +32,7 @@ const ProductItem = ({
         <div>
           <p className="typo-body-regular line-clamp-2">{title}</p>
           <span className="typo-caption-regular text-neutral-600">
-            '역삼동' • 입찰 {bidCount}회{/* {address} */}
+            ${address} • 입찰 {bidCount}회
           </span>
         </div>
 
