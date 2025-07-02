@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
-import { getDistanceKm } from '@/features/Product/lib/utils';
+
 import { searcher } from '@/features/search/lib/utils';
+import { getDistanceKm } from '@/features/tempProduct/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {
