@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
-import { getDistanceKm } from '@/features/Product/lib/utils';
+import { getDistanceKm } from '@/features/product/lib/utils';
 import { searcher } from '@/features/search/lib/utils';
 
 export async function POST(req: NextRequest) {
@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const files = formData.getAll('images') as File[];
     const title = formData.get('title') as string;
+    const category = formData.get('category') as string;
     const description = formData.get('description') as string;
     const minPrice = parseInt(formData.get('min_price') as string, 10);
     const endAt = formData.get('end_at') as string;
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
         created_at: new Date().toISOString(),
         latitude,
         longitude,
+        category,
       })
       .select('product_id')
       .single();

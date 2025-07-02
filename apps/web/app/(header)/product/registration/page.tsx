@@ -6,10 +6,12 @@ import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useRouter } from 'next/navigation';
 import ImageUploadPreview, { UploadedImage } from '@/shared/lib/ImageUploadPreview';
+import { categories, CategoryValue } from '@/features/category/types';
 
 const ProductRegistrationPage = () => {
   const router = useRouter();
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [images, setImages] = useState<UploadedImage[]>([]);
@@ -46,6 +48,7 @@ const ProductRegistrationPage = () => {
     formData.append('description', description);
     formData.append('min_price', numericPrice.toString());
     formData.append('end_at', endAt.toISOString());
+    formData.append('category', category);
 
     images.forEach((img) => {
       if (img.file) {
@@ -94,6 +97,18 @@ const ProductRegistrationPage = () => {
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+        </div>
+        <div className="flex flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">
+            카테고리<span className="text-main">*</span>
+          </div>
+          <select value={category} onChange={(e) => setCategory(e.target.value as CategoryValue)}>
+            {categories.map((category) => (
+              <option key={category.value} value={category.value}>
+                {category.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex flex-col gap-[13px]">
           <div className="typo-subtitle-small-medium">
