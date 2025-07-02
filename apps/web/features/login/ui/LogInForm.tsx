@@ -7,6 +7,7 @@ import { supabase } from '@/shared/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/shared/model/authStore';
 import { Mail, LockKeyhole } from 'lucide-react';
+import Link from 'next/link';
 
 export const LogInForm = () => {
   const [email, setEmail] = useState('');
@@ -150,13 +151,19 @@ export const LogInForm = () => {
       </form>
 
       <div className="m-5 flex items-center justify-center gap-2">
-        <a href="#" className="typo-body-regular text-neutral-700 hover:text-neutral-900">
+        <Link
+          href="/find-id?type=email"
+          className="typo-body-regular text-neutral-700 hover:text-neutral-900"
+        >
           아이디 찾기
-        </a>
+        </Link>
         <span className="typo-body-regular text-neutral-700">|</span>
-        <a href="#" className="typo-body-regular text-neutral-700 hover:text-neutral-900">
+        <Link
+          href="/find-id?type=password"
+          className="typo-body-regular text-neutral-700 hover:text-neutral-900"
+        >
           비밀번호 찾기
-        </a>
+        </Link>
       </div>
     </div>
   );

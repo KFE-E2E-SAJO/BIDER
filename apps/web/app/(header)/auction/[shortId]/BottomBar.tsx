@@ -1,10 +1,10 @@
 'use client';
 
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
-import { getCountdown } from '@/shared/lib/getCountdownTemp';
-
+import { getCountdown } from '@/shared/lib/getCountdown';
 import { Button } from '@repo/ui/components/Button/Button';
-import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/DIalog/dialog';
+import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/Dialog/Dialog';
+
 import { Input } from '@repo/ui/components/Input/Input';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -59,7 +59,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
       }
 
       // 서버에 입찰 요청
-      const response = await fetch(`/api/product/${shortId}`, {
+      const response = await fetch(`/api/auction/${shortId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

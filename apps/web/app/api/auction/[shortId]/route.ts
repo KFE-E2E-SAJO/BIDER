@@ -1,7 +1,7 @@
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
-import { Auction } from '../route';
+import { Auction } from '../../product/route';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
   const resolvedParams = await params;

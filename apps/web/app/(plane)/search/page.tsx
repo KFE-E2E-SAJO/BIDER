@@ -10,7 +10,6 @@ import { debounce } from 'lodash';
 import { Search } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
-//LocationPin, BottomBar
 const SearchPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [search, setSearch] = useState('');
@@ -44,22 +43,25 @@ const SearchPage = () => {
   const { data, isLoading, error } = useProductList({
     lat: 37.371,
     lng: 127.0046,
-    search,
+    search: search.trim() !== '' ? search : undefined,
   });
 
   const products = data ?? [];
+
   let content = null;
 
-  if (isLoading) {
+  if (search.trim() === '') {
+    content = <p className="mt-10 text-center text-neutral-500">검색어를 입력해주세요.</p>;
+  } else if (isLoading) {
     content = <Loading />;
   } else if (error) {
-    content = <p>에러 발생: {(error as Error).message}</p>;
+    content = <p className="text-center text-red-500">에러 발생: {(error as Error).message}</p>;
   } else {
     content = <ProductList data={products} />;
   }
 
   return (
-    <div className="p-box flex-1">
+    <div className="p-box flex flex-1 flex-col">
       <div className="flex items-center gap-[14px] pt-[22px]">
         <BackBtn />
         <Input

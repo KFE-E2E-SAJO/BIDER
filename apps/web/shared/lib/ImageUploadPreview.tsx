@@ -7,27 +7,47 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@repo/ui/components/DIalog/dialog';
+} from '@repo/ui/components/Dialog/Dialog';
 import { Camera, Plus, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface UploadedImage {
   id: string;
-  file: File;
+  file: File | null;
   preview: string;
   order_index: number;
 }
 
 interface ImageUploadPreviewProps {
+  exImages: UploadedImage[] | [];
   onImagesChange: (images: UploadedImage[]) => void;
 }
 
-const ImageUploadPreview = ({ onImagesChange }: ImageUploadPreviewProps) => {
-  const [images, setImages] = useState<UploadedImage[]>([]);
+const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProps) => {
+  const [images, setImages] = useState<UploadedImage[]>(exImages);
   const [showActionSheet, setShowActionSheet] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const maxImages = 5;
+
+  useEffect(() => {
+    if (exImages && exImages.length > 0) {
+      setImages(exImages);
+    }
+  }, [exImages]);
+
+  const notifyParent = useCallback(
+    (updatedImages: UploadedImage[]) => {
+      onImagesChange(updatedImages);
+    },
+    [onImagesChange]
+  );
+
+  useEffect(() => {
+    if (images.length > 0 || exImages.length === 0) {
+      notifyParent(images);
+    }
+  }, [images, notifyParent, exImages.length]);
 
   const handleFileSelect = (files: FileList | null) => {
     if (!files) return;
@@ -48,7 +68,6 @@ const ImageUploadPreview = ({ onImagesChange }: ImageUploadPreviewProps) => {
         });
       }
     }
-
     setImages((prev) => [...prev, ...newImages]);
     setShowActionSheet(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
@@ -77,7 +96,7 @@ const ImageUploadPreview = ({ onImagesChange }: ImageUploadPreviewProps) => {
         }));
 
       const removed = prev.find((img) => img.id === id);
-      if (removed) URL.revokeObjectURL(removed.preview);
+      if (removed && removed.file) URL.revokeObjectURL(removed.preview);
       return updated;
     });
   };
