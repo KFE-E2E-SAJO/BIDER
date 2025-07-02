@@ -3,7 +3,8 @@
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { getCountdown } from '@/shared/lib/getCountdown';
 import { Button } from '@repo/ui/components/Button/Button';
-import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/DIalog/dialog';
+import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/Dialog/Dialog';
+
 import { Input } from '@repo/ui/components/Input/Input';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';

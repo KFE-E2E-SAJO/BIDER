@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@repo/ui/components/DIalog/dialog';
+} from '@repo/ui/components/Dialog/Dialog';
 
 interface ProfilePreviewProps {
   profileImg?: string | null;
