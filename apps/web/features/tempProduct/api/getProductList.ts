@@ -1,4 +1,4 @@
-import { ProductForList } from '@/features/product/types';
+import { ProductForList } from '@/features/tempProduct/types';
 
 interface GetProductListParams {
   userId: string;

@@ -1,5 +1,5 @@
-import { getProductList } from '@/features/product/api/getProductList';
-import { ProductForList } from '@/features/product/types';
+import { getProductList } from '@/features/tempProduct/api/getProductList';
+import { ProductForList } from '@/features/tempProduct/types';
 import { useQuery } from '@tanstack/react-query';
 
 interface UseProductListParams {

@@ -1,8 +1,8 @@
-import { ProductForList } from '@/features/product/types';
+import { ProductForList } from '@/features/tempProduct/types';
+import ProductActionBtn from '@/features/tempProduct/ui/ProductActionBtn';
+import ProductItem from '@/features/tempProduct/ui/ProductItem';
 import { encodeUUID } from '@/shared/lib/shortUuid';
-import ProductItem from '@/features/product/ui/ProductItem';
 import Link from 'next/link';
-import ProductActionBtn from '@/features/product/ui/ProductActionBtn';
 
 interface ProductListProps {
   data: ProductForList[];
