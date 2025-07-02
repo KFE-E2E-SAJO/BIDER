@@ -8,7 +8,6 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const files = formData.getAll('images') as File[];
-
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const minPrice = parseInt(formData.get('min_price') as string, 10);
@@ -16,6 +15,7 @@ export async function POST(req: NextRequest) {
     const exhibitUserId = '0f521e94-ed27-479f-ab3f-e0c9255886c5'; // 임시
     const latitude = 37.4955804087497;
     const longitude = 127.028843531841;
+    const address = '역삼동';
 
     const uploadedImageUrls: string[] = [];
 
@@ -108,11 +108,7 @@ export interface Auction {
       profile_img: string | null;
       nickname: string;
     };
-    product_image: {
-      image_id: string;
-      image_url: string;
-      order_index: number;
-    }[];
+    product_image: ProductImage[];
   };
   auction_status: string;
   min_price: number;
@@ -124,6 +120,13 @@ export interface Auction {
     bid_at: string;
   }[];
   current_highest_bid?: number; // 현재 최고 입찰가 (옵션)
+}
+
+export interface ProductImage {
+  image_id: string;
+  image_url: string;
+  order_index: number;
+  product_id: string;
 }
 
 interface ProductFromDB {
