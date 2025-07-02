@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
-import { getDistanceKm } from '@/features/product/lib/utils';
+import { getDistanceKm } from '@/features/Product/lib/utils';
 import { searcher } from '@/features/search/lib/utils';
 
 export async function POST(req: NextRequest) {
@@ -12,10 +12,18 @@ export async function POST(req: NextRequest) {
     const description = formData.get('description') as string;
     const minPrice = parseInt(formData.get('min_price') as string, 10);
     const endAt = formData.get('end_at') as string;
-    const exhibitUserId = '0f521e94-ed27-479f-ab3f-e0c9255886c5'; // 임시
-    const latitude = 37.4955804087497;
-    const longitude = 127.028843531841;
-    const address = '역삼동';
+    const exhibitUserId = formData.get('user_id') as string;
+
+    // STEP 0: 로그인한 회원 정보 조회
+    const { data: userData, error: userError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', exhibitUserId);
+
+    const user = userData?.[0];
+    const latitude = user.latitude;
+    const longitude = user.longitude;
+    const address = user.address;
 
     const uploadedImageUrls: string[] = [];
 
@@ -51,6 +59,7 @@ export async function POST(req: NextRequest) {
         created_at: new Date().toISOString(),
         latitude,
         longitude,
+        address,
       })
       .select('product_id')
       .single();
