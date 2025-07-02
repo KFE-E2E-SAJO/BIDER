@@ -8,10 +8,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@repo/ui/components/DIalog/dialog';
+} from '../../../../../packages/ui/dist/components/Dialog/Dialog';
 import { useState } from 'react';
 
-interface ProductChatBtnProps {
+interface ProductActionBtnProps {
   winnerId?: string | null;
   sellerId: string;
   auctionStatus: string;
@@ -20,14 +20,14 @@ interface ProductChatBtnProps {
   productId: string;
 }
 
-const ProductChatBtn = ({
+const ProductActionBtn = ({
   winnerId,
   sellerId,
   auctionStatus,
   isAwarded,
   isPending,
   productId,
-}: ProductChatBtnProps) => {
+}: ProductActionBtnProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const isBidPage = pathname === '/auction/bids';
@@ -115,4 +115,4 @@ const ProductChatBtn = ({
   );
 };
 
-export default ProductChatBtn;
+export default ProductActionBtn;

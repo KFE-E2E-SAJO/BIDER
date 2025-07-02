@@ -1,7 +1,7 @@
 import { ProductForList } from '@/features/product/types';
 import ProductItem from '@/features/product/ui/ProductItem';
 import Link from 'next/link';
-import ProductChatBtn from './ProductChatBtn';
+import ProductActionBtn from './ProductActionBtn';
 
 interface ProductListProps {
   data: ProductForList[];
@@ -19,7 +19,7 @@ const ProductList = ({ data }: ProductListProps) => {
             <ProductItem {...item} />
           </Link>
           <div>
-            <ProductChatBtn
+            <ProductActionBtn
               {...{
                 auctionStatus: item.auctionStatus,
                 isAwarded: item.isAwarded,
