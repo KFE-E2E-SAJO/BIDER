@@ -4,9 +4,9 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Loading from '@/shared/ui/Loading/Loading';
-import { useProductList } from '@/features/tempProduct/model/useProductList';
-import LocationPin from '@/features/tempProduct/ui/LocationPin';
-import ProductList from '@/features/tempProduct/ui/ProductList';
+import { useProductList } from '@/features/product/model/useProductList';
+import LocationPin from '@/features/product/ui/LocationPin';
+import ProductList from '@/features/product/ui/ProductList';
 
 interface ResultSectionProps {
   search: string;
