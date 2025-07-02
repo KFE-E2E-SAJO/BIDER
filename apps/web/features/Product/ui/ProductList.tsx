@@ -1,5 +1,6 @@
 import { ProductForList } from '@/features/product/types';
 import ProductItem from '@/features/product/ui/ProductItem';
+import { encodeUUID } from '@/shared/lib/shortUuid';
 import Line from '@/shared/ui/Line/Line';
 import Link from 'next/link';
 
@@ -14,7 +15,7 @@ const ProductList = ({ data }: ProductListProps) => {
     <ul>
       {data.map((item) => (
         <li key={item.id}>
-          <Link href={`/product/${item.id}`}>
+          <Link href={`/product/${encodeUUID(item.id)}`}>
             <ProductItem {...item} />
           </Link>
           <Line className="my-[20px]" />

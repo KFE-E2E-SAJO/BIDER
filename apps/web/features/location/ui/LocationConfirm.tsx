@@ -4,29 +4,42 @@ import { useEffect, useState } from 'react';
 import { AdvancedMarker, APIProvider, Map, Pin } from '@vis.gl/react-google-maps';
 import { Button } from '@repo/ui/components/Button/Button';
 import DotStepper from '@/features/location/ui/DotStepper';
-import { getAddressFromLatLng } from '@/features/location/lib/utils';
+import { getAddressFromLatLng } from '@/features/location/api/getAddressFromLatLng';
 import { SetLocation } from '@/features/location/api/setLocation';
+import { useAuthStore } from '@/shared/model/authStore';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
-type Props = {
+type LocationConfirmProps = {
   onNext: () => void;
 };
 
-const LocationConfirm = ({ onNext }: Props) => {
+const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [address, setAddress] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  // const user = useUser(); >> 로그인 스토어 생기면 대체 예정
-  const user = { id: 'c6d80a1e-b154-4cd0-b17d-c7308c46ebaa' };
+  const userId = useAuthStore((state) => state.user?.id);
 
   const handleNext = async () => {
-    if (!user || !position || !address) return;
+    if (!userId) {
+      alert('유저 정보가 없습니다.');
+      return;
+    }
+
+    if (!position) {
+      alert('위치 정보가 없습니다.');
+      return;
+    }
+
+    if (!address) {
+      alert('주소 정보가 없습니다.');
+      return;
+    }
 
     try {
       await SetLocation({
-        userId: user.id,
+        userId,
         lat: position.lat,
         lng: position.lng,
         address,
@@ -48,7 +61,7 @@ const LocationConfirm = ({ onNext }: Props) => {
           lng: pos.coords.longitude,
         };
         setPosition(coords);
-        const fullAddress = await getAddressFromLatLng(coords, MAPAPIKEY);
+        const fullAddress = await getAddressFromLatLng(coords);
         if (fullAddress) setAddress(fullAddress);
         setLoading(false);
       },

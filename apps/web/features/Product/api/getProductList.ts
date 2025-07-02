@@ -1,18 +1,16 @@
 import { ProductForList } from '@/features/product/types';
 
 interface GetProductListParams {
-  lat: number;
-  lng: number;
+  userId: string;
   search?: string;
   cate?: string;
 }
 
 export const getProductList = async (params: GetProductListParams): Promise<ProductForList[]> => {
-  const { lat, lng, search, cate } = params;
+  const { userId, search, cate } = params;
 
   const query = new URLSearchParams({
-    lat: lat.toString(),
-    lng: lng.toString(),
+    userId,
     ...(search ? { search } : {}),
     ...(cate ? { cate } : {}),
   });

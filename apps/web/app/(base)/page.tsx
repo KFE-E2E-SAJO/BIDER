@@ -2,14 +2,25 @@
 import { useProductList } from '@/features/product/model/useProductList';
 import LocationPin from '@/features/product/ui/LocationPin';
 import ProductList from '@/features/product/ui/ProductList';
+import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-
-//유저정보 받아서 lat,lng대신 유저 id 넣는걸로 수정예정
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const HomePage = () => {
+  const router = useRouter();
+  const userId = useAuthStore((state) => state.user?.id);
+
+  useEffect(() => {
+    if (userId === null) {
+      router.replace('/login');
+    }
+  }, [userId, router]);
+
+  if (!userId) return null;
+
   const { data, isLoading, error } = useProductList({
-    lat: 37.371017496651,
-    lng: 127.00463877897,
+    userId,
   });
 
   if (isLoading) return <Loading />;

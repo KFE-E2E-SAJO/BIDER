@@ -159,14 +159,23 @@ interface ProductResponse {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const lat = parseFloat(searchParams.get('lat') || '');
-  const lng = parseFloat(searchParams.get('lng') || '');
+  const userId = searchParams.get('userId');
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
 
-  if (isNaN(lat) || isNaN(lng)) {
-    return NextResponse.json({ error: 'Missing lat/lng' }, { status: 400 });
+  // 유저 위치 정보 가져오기
+  const { data: userData, error: userError } = await supabase
+    .from('profiles')
+    .select('latitude, longitude')
+    .eq('user_id', userId)
+    .single();
+
+  if (userError || !userData?.latitude || !userData?.longitude) {
+    return NextResponse.json({ error: '사용자 위치 정보가 없습니다.' }, { status: 400 });
   }
+
+  const lat = userData.latitude;
+  const lng = userData.longitude;
 
   const { data, error } = await supabase.from('auction').select(`
   product_id,
