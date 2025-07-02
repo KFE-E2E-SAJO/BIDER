@@ -4,7 +4,12 @@ import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { Button } from '@repo/ui/components/Button/Button';
 import { Camera, Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Abcd, DialogContent, DialogHeader, DialogTitle } from '@repo/ui/components/Abcd/Abcd';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@repo/ui/components/Dialog/Dialog';
 
 interface ProfilePreviewProps {
   profileImg?: string | null;

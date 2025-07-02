@@ -115,7 +115,7 @@ function DialogDescription({
   );
 }
 
-const Abcd: React.FC<DialogProps> = ({
+const Dialog: React.FC<DialogProps> = ({
   open = false,
   onOpenChange,
   title,
@@ -175,7 +175,7 @@ const Abcd: React.FC<DialogProps> = ({
 };
 
 export {
-  Abcd,
+  Dialog,
   DialogRoot,
   DialogTrigger,
   DialogContent,

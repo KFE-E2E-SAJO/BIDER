@@ -3,7 +3,8 @@
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { getCountdown } from '@/shared/lib/getCountdown';
 import { Button } from '@repo/ui/components/Button/Button';
-// import { Abcd, DialogHeader, DialogTitle } from '@repo/ui/components/Abcd/Abcd';
+import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/Dialog/Dialog';
+
 import { Input } from '@repo/ui/components/Input/Input';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -112,7 +113,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
         </div>
       </div>
 
-      <Abcd open={openBiddingSheet} onOpenChange={setOpenBiddingSheet}>
+      <Dialog open={openBiddingSheet} onOpenChange={setOpenBiddingSheet}>
         {/* 타이틀 (공통컴포넌트 설정과 달라서 화면에서 안 보이게 처리) */}
         <DialogHeader className="sr-only">
           <DialogTitle>{title}</DialogTitle>
@@ -135,7 +136,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
         <Button className="mt-[33px]" onClick={handleBidSubmit} disabled={isSubmitting}>
           {isSubmitting ? '입찰 중...' : '입찰하기'}
         </Button>
-      </Abcd>
+      </Dialog>
     </div>
   );
 };
