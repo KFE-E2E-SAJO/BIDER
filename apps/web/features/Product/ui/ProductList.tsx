@@ -1,7 +1,7 @@
 import { ProductForList } from '@/features/product/types';
-import ProductItem from '@/features/product/ui/ProductItem';
+import ProductItem from '@/features/Product/ui/ProductItem';
 import Link from 'next/link';
-import ProductActionBtn from '@/features/Product/ui/ProductActionBtnssss';
+import ProductActionBtn from '@/features/Product/ui/ProductActionBtn';
 
 interface ProductListProps {
   data: ProductForList[];
