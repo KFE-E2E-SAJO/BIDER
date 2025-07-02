@@ -2,9 +2,9 @@
 
 import { useCategoryStore } from '@/features/category/model/useCategoryStore';
 import Category from '@/features/category/ui/Category';
-import { useProductList } from '@/features/tempProduct/model/useProductList';
-import LocationPin from '@/features/tempProduct/ui/LocationPin';
-import ProductList from '@/features/tempProduct/ui/ProductList';
+import { useProductList } from '@/features/product/model/useProductList';
+import LocationPin from '@/features/product/ui/LocationPin';
+import ProductList from '@/features/product/ui/ProductList';
 
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';

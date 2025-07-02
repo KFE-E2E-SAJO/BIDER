@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 
 import { searcher } from '@/features/search/lib/utils';
-import { getDistanceKm } from '@/features/tempProduct/lib/utils';
+import { getDistanceKm } from '@/features/product/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {
