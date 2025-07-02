@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { ProductForList } from '@/features/product/types';
 import ProductBadge from '@/features/Product/ui/ProductBadge';
-import { getCountdownWithColor } from '../lib/utils';
+import { getCountdownWithColor } from '@/features/Product/lib/utils';
 
 const ProductItem = ({
   thumbnail,
