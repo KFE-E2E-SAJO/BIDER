@@ -1,6 +1,14 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Button } from '@repo/ui/components/Button/Button';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@repo/ui/components/Select/Select';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
@@ -11,8 +19,6 @@ import {
 import '@repo/ui/styles.css';
 import { signupSchema } from '../../shared/lib/validation/signupSchema';
 import { emailSchema } from '@/shared/lib/validation/email';
-import { z } from 'zod';
-import { Base } from '@repo/ui/components/Checkbox/Base';
 
 export const SignUpForm = () => {
   const searchParams = useSearchParams();
@@ -144,12 +150,12 @@ export const SignUpForm = () => {
     };
   }, [searchParams, router]);
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectChange = (value: string) => {
     if (isEmailVerified) return;
 
-    setDomain(e.target.value);
+    setDomain(value);
 
-    if (e.target.value !== 'custom') {
+    if (value !== 'custom') {
       setCustomDomain('');
       setDomainError('');
     }
@@ -286,34 +292,42 @@ export const SignUpForm = () => {
           />
           <span className="typo-body-medium text-neutral-600">@</span>
 
-          {domain === 'custom' ? (
-            <input
-              className={`typo-body-regular focus:ring-main focus:border-main flex-1 rounded-md border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${
+          <Select
+            defaultValue="default"
+            onValueChange={handleSelectChange}
+            disabled={isEmailVerified}
+          >
+            <SelectTrigger
+              className={`h-13 focus:ring-main focus:border-main flex-1 rounded-sm border focus:outline-none focus:ring-2 ${
                 domainError ? 'border-red-500' : 'border-neutral-400'
               } ${isEmailVerified ? 'cursor-not-allowed bg-gray-100' : ''}`}
-              type="text"
-              placeholder="도메인을 입력해주세요"
-              value={customDomain}
-              onChange={(e) => setCustomDomain(e.target.value)}
-              disabled={isEmailVerified}
-            />
-          ) : (
-            <select
-              className={`typo-body-regular focus:ring-main focus:border-main flex-1 rounded-md border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${
-                domainError ? 'border-red-500' : 'border-neutral-400'
-              } ${isEmailVerified ? 'cursor-not-allowed bg-gray-100' : ''}`}
-              value={domain}
-              onChange={handleSelectChange}
-              disabled={isEmailVerified}
             >
-              <option value="">선택해주세요</option>
-              <option value="gmail.com">gmail.com</option>
-              <option value="naver.com">naver.com</option>
-              <option value="daum.net">daum.net</option>
-              <option value="custom">직접 입력</option>
-            </select>
-          )}
+              <SelectValue placeholder="과일을 선택하세요" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="default">선택해주세요.</SelectItem>
+                <SelectItem value="gmail.com">gmail.com</SelectItem>
+                <SelectItem value="naver.com">naver.com</SelectItem>
+                <SelectItem value="daum.net">daum.net</SelectItem>
+                <SelectItem value="custom">직접 입력</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
+
+        {domain === 'custom' && (
+          <input
+            className={`typo-body-regular h-13 focus:ring-main focus:border-main w-full rounded-sm border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${
+              domainError ? 'border-red-500' : 'border-neutral-400'
+            } ${isEmailVerified ? 'cursor-not-allowed bg-gray-100' : ''}`}
+            type="text"
+            placeholder="도메인을 입력해주세요"
+            value={customDomain}
+            onChange={(e) => setCustomDomain(e.target.value)}
+            disabled={isEmailVerified}
+          />
+        )}
         {emailError && <p className="text-sm text-red-500">{emailError}</p>}
         {domainError && <p className="text-sm text-red-500">{domainError}</p>}
 
