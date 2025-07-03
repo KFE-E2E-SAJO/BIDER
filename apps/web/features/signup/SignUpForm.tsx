@@ -370,7 +370,7 @@ export const SignUpForm = () => {
         />
       </div>
 
-      <div className="solid space-y-3">
+      {/* <div className="solid space-y-3">
         <label className="typo-body-bold block text-neutral-800">약관동의</label>
 
         <div className="flex flex-col border border-neutral-400 pb-5 pl-6 pt-5">
@@ -384,7 +384,7 @@ export const SignUpForm = () => {
             <Base>이벤트 및 혜택 알림 동의 (선택)</Base>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Button
         type="submit"
