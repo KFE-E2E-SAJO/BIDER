@@ -17,8 +17,9 @@ interface ProductActionBtnProps {
   sellerId: string;
   auctionStatus: string;
   isAwarded: boolean;
+  itemId: string;
   isPending?: boolean;
-  productId: string;
+  pendingId?: string | null;
 }
 
 const ProductActionBtn = ({
@@ -26,8 +27,9 @@ const ProductActionBtn = ({
   sellerId,
   auctionStatus,
   isAwarded,
+  itemId,
   isPending,
-  productId,
+  pendingId,
 }: ProductActionBtnProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,25 +41,44 @@ const ProductActionBtn = ({
     isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
   };
   const handleEditClick = () => {
-    router.push(`/product/edit/${encodeUUID(productId)}`);
+    router.push(`/product/edit/${encodeUUID(itemId)}`);
   };
   const handleDialogClick = async () => {
     setOpen(true);
   };
 
   const handleDeleteClick = async () => {
-    const confirmDelete = confirm('정말 삭제하시겠습니까?');
-    if (!confirmDelete) return;
+    try {
+      console.log('//// productId = ', itemId);
 
-    const { error } = await supabase.from('product').delete().eq('product_id', productId);
+      const { data, error } = await supabase
+        .from('product')
+        .delete()
+        .eq('product_id', itemId)
+        .select(); // 👈 중요! 삭제된 row를 반환하게 강제함
 
-    if (error) {
-      alert('삭제 중 오류가 발생했습니다.');
-      return;
+      if (error) {
+        console.error('[삭제 에러]', error);
+        alert('삭제 중 오류: ' + error.message);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.warn('[삭제 실패] 조건에 맞는 row가 존재하지 않습니다.');
+        alert('삭제 대상이 존재하지 않거나 이미 삭제되었습니다.');
+        return;
+      }
+
+      console.log(data);
+
+      alert('삭제가 완료되었습니다.');
+      setOpen(false);
+      router.push('/auction/listings');
+      router.refresh();
+    } catch (err) {
+      console.error('[삭제 실패]', err);
+      alert('삭제 중 오류가 발생했습니다: ' + (err as Error).message);
     }
-
-    alert('삭제가 완료되었습니다.');
-    router.push('/auction/listings');
   };
 
   return (

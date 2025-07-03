@@ -29,7 +29,7 @@ const getListingList = async (filter: ListingListProps['filter']) => {
         filter === 'win' &&
         auction &&
         auction.auction_status === '경매 종료' &&
-        auction.winning_bid_user_id === user.id;
+        auction.winning_bid_user_id;
       const isFail =
         filter === 'fail' &&
         auction &&
@@ -62,11 +62,11 @@ const getListingList = async (filter: ListingListProps['filter']) => {
 
   //4. 최종 가공 데이터 반환
   return filtered.map(({ product, auction, pending, myBid }) => ({
-    id: myBid?.bid_id ?? auction?.auction_id ?? pending?.pending_auction_id ?? product.product_id,
+    id: pending ? product.product_id : auction?.auction_id,
     thumbnail:
       product.product_image?.find((img: any) => img.order_index === 0)?.image_url ?? '/default.png',
     title: product.title,
-    location: product.address ?? '위치 정보 없음',
+    address: product.address ?? '위치 정보 없음',
     bidCount: auction?.auction_id ? (bidCountMap[auction.auction_id] ?? 0) : 0,
     price: myBid?.bid_price ?? 0,
     minPrice: auction?.min_price ?? pending?.min_price ?? 0,
@@ -76,6 +76,7 @@ const getListingList = async (filter: ListingListProps['filter']) => {
     sellerId: product.exhibit_user_id,
     isAwarded: myBid?.is_awarded ?? false,
     isPending: !!pending?.pending_auction_id,
+    pendingId: pending?.pending_auction_id,
   }));
 };
 

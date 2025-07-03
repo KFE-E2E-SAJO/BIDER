@@ -11,4 +11,5 @@ export interface ProductForList {
   sellerId: string;
   isAwarded: boolean;
   isPending?: boolean;
+  pendingId?: string;
 }

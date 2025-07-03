@@ -75,12 +75,12 @@ const getBidList = async (filter: BidListProps['filter']) => {
   }
 
   return filtered.map((item) => ({
-    id: item.bid_id,
+    id: item.auction.auction_id,
     thumbnail:
       item.auction.product.product_image.find((img) => img.order_index === 0)?.image_url ??
       '/default.png',
     title: item.auction.product.title,
-    location: item.auction.product.address ?? '위치 정보 없음',
+    address: item.auction.product.address ?? '위치 정보 없음',
     bidCount: bidCountMap[item.auction.auction_id] ?? 0,
     price: item.bid_price,
     minPrice: item.auction.min_price ?? 0,
