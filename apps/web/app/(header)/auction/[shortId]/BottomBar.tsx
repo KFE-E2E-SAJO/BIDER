@@ -2,8 +2,14 @@
 
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { getCountdown } from '@/shared/lib/getCountdown';
+import { useAuthStore } from '@/shared/model/authStore';
 import { Button } from '@repo/ui/components/Button/Button';
-// import { Abcd, DialogHeader, DialogTitle } from '@repo/ui/components/Abcd/Abcd';
+import {
+  Dialog,
+  DialogHeader,
+  DialogTitle,
+} from '../../../../../../packages/ui/dist/components/Dialog/Dialog';
+
 import { Input } from '@repo/ui/components/Input/Input';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -16,6 +22,7 @@ interface BottomBarProps {
 }
 
 const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) => {
+  const user = useAuthStore();
   const [countdown, setCountdown] = useState('');
   const [hasMounted, setHasMounted] = useState(false);
   const [openBiddingSheet, setOpenBiddingSheet] = useState(false);
@@ -65,7 +72,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
         },
         body: JSON.stringify({
           bidPrice: bidPriceNumber,
-          userId: '0f521e94-ed27-479f-ab3f-e0c9255886c5', // 임시 사용자 ID
+          userId: user.user?.id,
         }),
       });
 
@@ -112,7 +119,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
         </div>
       </div>
 
-      <Abcd open={openBiddingSheet} onOpenChange={setOpenBiddingSheet}>
+      <Dialog open={openBiddingSheet} onOpenChange={setOpenBiddingSheet}>
         {/* 타이틀 (공통컴포넌트 설정과 달라서 화면에서 안 보이게 처리) */}
         <DialogHeader className="sr-only">
           <DialogTitle>{title}</DialogTitle>
@@ -135,7 +142,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
         <Button className="mt-[33px]" onClick={handleBidSubmit} disabled={isSubmitting}>
           {isSubmitting ? '입찰 중...' : '입찰하기'}
         </Button>
-      </Abcd>
+      </Dialog>
     </div>
   );
 };

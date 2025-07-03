@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
-import { getDistanceKm } from '@/features/product/lib/utils';
+
 import { searcher } from '@/features/search/lib/utils';
+import { getDistanceKm } from '@/features/product/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,10 +13,22 @@ export async function POST(req: NextRequest) {
     const description = formData.get('description') as string;
     const minPrice = parseInt(formData.get('min_price') as string, 10);
     const endAt = formData.get('end_at') as string;
-    const exhibitUserId = '0f521e94-ed27-479f-ab3f-e0c9255886c5'; // 임시
-    const latitude = 37.4955804087497;
-    const longitude = 127.028843531841;
-    const address = '역삼동';
+    const exhibitUserId = formData.get('user_id') as string;
+
+    // STEP 0: 로그인한 회원 정보 조회
+    const { data: userData, error: userError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', exhibitUserId);
+
+    if (userError || !userData) {
+      return NextResponse.json({ error: '회원 정보 조회 실패' }, { status: 500 });
+    }
+
+    const user = userData?.[0];
+    const latitude = user.latitude;
+    const longitude = user.longitude;
+    const address = user.address;
 
     const uploadedImageUrls: string[] = [];
 
@@ -51,6 +64,7 @@ export async function POST(req: NextRequest) {
         created_at: new Date().toISOString(),
         latitude,
         longitude,
+        address,
       })
       .select('product_id')
       .single();
@@ -130,6 +144,7 @@ export interface ProductImage {
 }
 
 interface ProductFromDB {
+  auction_id: string;
   product_id: string;
   product: {
     title: string;
@@ -141,7 +156,7 @@ interface ProductFromDB {
     }[];
     latitude: number;
     longitude: number;
-    //address :string >> db테이블추가 해야함
+    address: string;
   };
   auction_status: string;
   min_price: number;
@@ -152,9 +167,10 @@ interface ProductFromDB {
 }
 
 interface ProductResponse {
+  id: string;
   thumbnail: string;
   title: string;
-  // address: string;
+  address: string;
   bidCount: number;
   minPrice: number;
   auctionEndAt: string;
@@ -163,16 +179,33 @@ interface ProductResponse {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const lat = parseFloat(searchParams.get('lat') || '');
-  const lng = parseFloat(searchParams.get('lng') || '');
+  const userId = searchParams.get('userId');
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
 
-  if (isNaN(lat) || isNaN(lng)) {
-    return NextResponse.json({ error: 'Missing lat/lng' }, { status: 400 });
+  if (!userId) {
+    return NextResponse.json({ error: 'userId가 없습니다' }, { status: 400 });
   }
 
-  const { data, error } = await supabase.from('auction').select(`
+  const { data: userData, error: userError } = await supabase
+    .from('profiles')
+    .select('latitude, longitude')
+    .eq('user_id', userId)
+    .single();
+
+  if (!userData?.latitude || !userData?.longitude) {
+    return NextResponse.json({ error: '유저 위치 정보가 없습니다.' }, { status: 400 });
+  }
+
+  if (userError) {
+    return NextResponse.json({ error: '유저 정보 조회 실패' }, { status: 500 });
+  }
+
+  const lat = userData.latitude;
+  const lng = userData.longitude;
+
+  const { data: auctionData, error } = await supabase.from('auction').select(`
+  auction_id,
   product_id,
   auction_status,
   min_price,
@@ -186,7 +219,8 @@ export async function GET(req: NextRequest) {
     product_image (
       image_url,
       order_index
-    )
+    ),
+    address
   ),
   bid_history!auction_id (
     bid_id
@@ -197,23 +231,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const filtered: ProductResponse[] = (data as unknown as ProductFromDB[])
+  const filtered: ProductResponse[] = (auctionData as unknown as ProductFromDB[])
     .filter((item) => {
       const { product } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
-      // const matchSearch = !search || product.title.toLowerCase().includes(search);
       const matchSearch = !search || searcher(product.title, search);
       const matchCate = cate === '' || cate === 'all' || product.category === cate;
       return within5km && matchSearch && matchCate;
     })
     .map((item) => ({
-      id: item.product_id,
+      id: item.auction_id,
       thumbnail:
         item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
         '/default.png',
       title: item.product.title,
-      // address: item.product.address,
+      address: item.product.address,
       bidCount: item.bid_history?.length ?? 0,
       minPrice: item.min_price,
       auctionEndAt: item.auction_end_at,

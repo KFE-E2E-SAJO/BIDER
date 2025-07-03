@@ -1,56 +1,86 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import * as React from 'react';
-import { Toaster as Toast } from '@repo/ui/components/Toast/Toast';
-import { toast, Toaster } from '@repo/ui/components/Toast/Sonner';
+import { CustomToastOptions, toast, Toaster } from '@repo/ui/components/Toast/Sonner';
+import { Button } from '@repo/ui/components/Button/Button';
+
+const ToastStory = ({ content, duration }: CustomToastOptions) => {
+  return (
+    <Button
+      onClick={() => toast({ content, duration })}
+      className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+    >
+      Show Toast
+    </Button>
+  );
+};
 
 // 메타 정보
-const meta: Meta<typeof Toaster> = {
-  title: 'COMPONENTS/Toaster',
-  component: Toaster,
-};
-export default meta;
-
-type Story = StoryObj<typeof Toaster>;
-
-// Playground 스토리: 버튼 클릭 시 실제로 토스트 뜨는 예시
-export const Playground: Story = {
-  render: () => (
-    <div className="flex min-h-[240px] flex-col items-center justify-center gap-4">
-      {/* Toast는 반드시 한 번만! */}
-      <Toaster />
-
-      <button
-        className="rounded bg-blue-600 px-4 py-2 text-white"
-        onClick={() => toast('저장되었습니다.')}
-      >
-        저장 토스트 띄우기
-      </button>
-      <button
-        className="rounded bg-neutral-700 px-4 py-2 text-white"
-        onClick={() => toast('삭제되었습니다.')}
-      >
-        삭제 토스트 띄우기
-      </button>
-    </div>
-  ),
-  name: 'Playground (버튼 클릭시 Toast)',
-};
-
-// Visible 스토리: 항상 떠있는 모습만 미리보기 (props로 컨트롤)
-export const Visible: Story = {
-  render: (args) => (
-    <div className="flex min-h-[240px] flex-col items-center justify-center gap-4">
-      <Toaster {...args} />
-      <div className="text-center text-gray-600">
-        <p>실제 토스트를 보려면 Playground 스토리의 버튼을 클릭하세요.</p>
-        <button
-          className="mt-2 rounded bg-green-600 px-4 py-2 text-white"
-          onClick={() => toast('미리보기 토스트입니다!')}
-        >
-          미리보기 토스트
-        </button>
+const meta: Meta<typeof ToastStory> = {
+  title: 'Components/Toast',
+  component: ToastStory,
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Custom toast notification system built with Sonner and next-themes integration. Use the controls to customize the toast message and duration.',
+      },
+    },
+  },
+  argTypes: {
+    content: {
+      control: 'text',
+      description: 'The message content to display in the toast',
+    },
+    duration: {
+      control: {
+        type: 'range',
+        min: 1000,
+        max: 10000,
+        step: 500,
+      },
+      description: 'Duration in milliseconds before the toast auto-dismisses',
+    },
+  },
+  decorators: [
+    (Story) => (
+      <div>
+        <Story />
+        <Toaster />
       </div>
-    </div>
-  ),
-  name: 'Always Visible (스타일 미리보기)',
+    ),
+  ],
+};
+
+export default meta;
+type Story = StoryObj<typeof ToastStory>;
+
+// 기본 스토리 - controls로 조정 가능
+export const Interactive: Story = {
+  args: {
+    content: '저장되었습니다.',
+    duration: 3000,
+  },
+};
+
+// 프리셋 스토리들
+export const ShortMessage: Story = {
+  args: {
+    content: 'Quick message',
+    duration: 1000,
+  },
+};
+
+export const LongMessage: Story = {
+  args: {
+    content:
+      'This is a much longer toast message that demonstrates how the component handles extended content with proper text wrapping and layout.',
+    duration: 5000,
+  },
+};
+
+export const MultilineMessage: Story = {
+  args: {
+    content: 'First line of the message\nSecond line of the message\nThird line of the message',
+    duration: 4000,
+  },
 };

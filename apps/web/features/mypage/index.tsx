@@ -13,12 +13,10 @@ const MyPage = async () => {
 
   const user = { id: 'c6d80a1e-b154-4cd0-b17d-c7308c46ebaa' };
 
-  if (!user) {
-    redirect('/splash');
-  }
+  if (!user) redirect('/splash');
 
   const { data, error } = await supabase
-    .from('user')
+    .from('profiles')
     .select('user_id, email, nickname, profile_img, address')
     .eq('user_id', user.id)
     .single();
@@ -35,7 +33,6 @@ const MyPage = async () => {
         profileImg={data.profile_img}
       />
       <MyPageAuction />
-      {/* 경매 개수 받기 */}
       <MyPageMenuList address={data.address} />
       <Footer />
     </div>

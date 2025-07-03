@@ -2,7 +2,12 @@
 
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { Button } from '@repo/ui/components/Button/Button';
-import { Abcd, DialogContent, DialogHeader, DialogTitle } from '@repo/ui/components/Abcd/Abcd';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '../../../../packages/ui/dist/components/Dialog/Dialog';
 import { Camera, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -139,8 +144,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
             )}
             <Button
               size="icon"
-              shape="rounded"
-              className="absolute right-0 top-0 h-[20px] w-[20px] -translate-y-1/2 translate-x-1/2 bg-neutral-800"
+              className="absolute right-0 top-0 h-[20px] w-[20px] -translate-y-1/2 translate-x-1/2 rounded-full bg-neutral-800"
               onClick={() => removeImage(image.id)}
             >
               <X size={12} />
