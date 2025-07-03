@@ -58,7 +58,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
         id: img.image_id,
         file: null,
         preview: img.image_url,
-        order_index: index,
+        order_index: index === 0 ? 0 : 1,
       }));
   }, [data]);
 
@@ -154,7 +154,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
         formData.append(`image_order_${index}`, `NEW_IMAGE_${index}`);
       } else {
         // 기존 이미지
-        formData.append(`image_order_${index}`, img.id);
+        formData.append(`image_order_${index}`, img.id.toString());
       }
     });
     try {
