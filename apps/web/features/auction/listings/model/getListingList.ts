@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import fetchListingList from '../lib/util';
+import fetchListingList from '@/features/auction/listings/lib/util';
 
 interface ListingListProps {
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';

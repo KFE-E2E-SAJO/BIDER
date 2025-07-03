@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
-import AvatarFallbackIcon from '../Icon/AvatarFallbakIcon';
+import AvatarFallbackIcon from '@repo/ui/src/components/Icon/AvatarFallbakIcon';
 
 import { cn } from '@/lib/utils';
 

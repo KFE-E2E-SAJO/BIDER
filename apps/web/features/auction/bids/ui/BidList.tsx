@@ -1,5 +1,5 @@
 import ProductList from '@/features/product/ui/ProductList';
-import getBidList from '../model/getBidList';
+import getBidList from '@/features/auction/bids/model/getBidList';
 
 interface BidListProps {
   filter: 'all' | 'progress' | 'win' | 'fail';

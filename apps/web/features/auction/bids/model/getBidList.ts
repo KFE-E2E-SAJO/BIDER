@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import fetchBidList from '../lib/util';
+import fetchBidList from '@/features/auction/bids/lib/util';
 
 interface BidListProps {
   filter: 'all' | 'progress' | 'win' | 'fail';
