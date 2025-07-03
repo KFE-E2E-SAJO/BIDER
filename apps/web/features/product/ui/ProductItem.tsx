@@ -13,13 +13,14 @@ const ProductItem = ({
   auctionStatus,
   isAwarded,
   isPending,
+  winnerId,
 }: ProductForList) => {
   const { text, color } =
     auctionStatus === 'end'
       ? { text: '경매 종료', color: 'gray' }
       : getCountdownWithColor(auctionEndAt);
 
-  const badgeProps = { text, color, auctionStatus, isAwarded, isPending, bidCount };
+  const badgeProps = { text, color, auctionStatus, isAwarded, isPending, bidCount, winnerId };
 
   return (
     <div className="flex gap-[19px]">
@@ -31,7 +32,7 @@ const ProductItem = ({
         <li>
           <p className="typo-body-regular line-clamp-2">{title}</p>
           <span className="typo-caption-regular text-neutral-600">
-            {address} • 입찰 {bidCount}회
+            {address} {bidCount ? `• 입찰 ${bidCount}회` : null}
           </span>
         </li>
 

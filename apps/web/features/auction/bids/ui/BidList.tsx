@@ -1,14 +1,25 @@
+'use client';
+
 import ProductList from '@/features/product/ui/ProductList';
-import getBidList from '../model/getBidList';
+import { useGetBidList } from '@/features/auction/bids/model/useGetBidList';
+import { useAuthStore } from '@/shared/model/authStore';
+import Loading from '@/shared/ui/Loading/Loading';
 
 interface BidListProps {
   filter: 'all' | 'progress' | 'win' | 'fail';
 }
 
-const BidList = async ({ filter }: BidListProps) => {
-  const data = await getBidList(filter);
+const BidList = ({ filter }: BidListProps) => {
+  const userId = useAuthStore((state) => state.user?.id) as string;
 
-  if (!data) return <div>입찰 내역을 불러오는 중 오류가 발생했어요.</div>;
+  const { data, isLoading, error } = useGetBidList({
+    userId,
+    filter,
+  });
+
+  if (isLoading || error || !data) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col gap-4 px-4">

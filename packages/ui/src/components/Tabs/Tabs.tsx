@@ -17,7 +17,7 @@ function Tabs({ className, items, ...props }: CustomTabsProps) {
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
-      className={cn('flex flex-col gap-2', className)}
+      className={cn('flex flex-col gap-2 overflow-x-hidden', className)}
       {...props}
     >
       <TabsPrimitive.List

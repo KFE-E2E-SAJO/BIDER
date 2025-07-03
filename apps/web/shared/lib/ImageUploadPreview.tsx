@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '../../../../packages/ui/dist/components/Dialog/Dialog';
+} from '@repo/ui/components/Dialog/Dialog';
 import { Camera, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 

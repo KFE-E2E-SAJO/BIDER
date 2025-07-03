@@ -9,6 +9,14 @@ import ImageUploadPreview, { UploadedImage } from '@/shared/lib/ImageUploadPrevi
 import Loading from '@/shared/ui/Loading/Loading';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { ProductImage } from '@/app/api/product/route';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@repo/ui/components/Select/Select';
+import { categories, CategoryValue } from '@/features/category/types';
 
 type PendingAuction = {
   min_price: number;
@@ -19,6 +27,7 @@ type PendingAuction = {
 type ProductData = {
   product_id: string;
   title: string;
+  category: string;
   description: string;
   latitude: number;
   longitude: number;
@@ -33,6 +42,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [images, setImages] = useState<UploadedImage[]>([]);
@@ -48,7 +58,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
         id: img.image_id,
         file: null,
         preview: img.image_url,
-        order_index: index,
+        order_index: index === 0 ? 0 : 1,
       }));
   }, [data]);
 
@@ -78,6 +88,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
     if (data) {
       const auction = data.pending_auction?.[0];
       setTitle(data.title || '');
+      setCategory(data.category || '');
       setDescription(data.description || '');
       setMinPrice(auction?.min_price ? formatNumberWithComma(auction.min_price.toString()) : '');
 
@@ -111,7 +122,15 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
       return;
     }
 
-    if (!title || !description || !minPrice || !endDate || !endTime || images.length === 0) {
+    if (
+      !title ||
+      !category ||
+      !description ||
+      !minPrice ||
+      !endDate ||
+      !endTime ||
+      images.length === 0
+    ) {
       alert('모든 필수 항목을 입력해 주세요');
       return;
     }
@@ -125,6 +144,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
     formData.append('title', title);
     formData.append('description', description);
     formData.append('min_price', numericPrice.toString());
+    formData.append('category', category);
     formData.append('end_at', endAt.toISOString());
 
     images.forEach((img, index) => {
@@ -134,7 +154,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
         formData.append(`image_order_${index}`, `NEW_IMAGE_${index}`);
       } else {
         // 기존 이미지
-        formData.append(`image_order_${index}`, img.id);
+        formData.append(`image_order_${index}`, img.id.toString());
       }
     });
     try {
@@ -151,8 +171,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
 
       alert('수정이 완료되었습니다!');
       setTimeout(() => {
-        // 마이페이지 등록한 상품내역 화면으로 이동 예정(아직 미구현됨)
-        router.push('/');
+        router.push('/auction/listings');
       }, 0);
     } catch (err) {
       console.error('수정 에러', err);
@@ -178,6 +197,25 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+        </div>
+        <div className="flex flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">
+            카테고리<span className="text-main">*</span>
+          </div>
+          <Select value={category} onValueChange={(value) => setCategory(value as CategoryValue)}>
+            <SelectTrigger className="typo-body-regular rounded-sm px-[10.5px]">
+              <SelectValue placeholder="카테고리를 선택해 주세요." />
+            </SelectTrigger>
+            <SelectContent>
+              {categories
+                .filter((category) => category.value !== 'all')
+                .map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-[13px]">
           <div className="typo-subtitle-small-medium">

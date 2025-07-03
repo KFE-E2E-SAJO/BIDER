@@ -10,6 +10,7 @@ interface ProductBadgeProps {
   isAwarded: boolean;
   isPending?: boolean;
   bidCount: number;
+  winnerId?: string | null;
 }
 
 const ProductBadge = ({
@@ -19,6 +20,7 @@ const ProductBadge = ({
   isAwarded,
   isPending,
   bidCount,
+  winnerId,
 }: ProductBadgeProps) => {
   const pathname = usePathname();
   const isAuctionPage =
@@ -33,13 +35,21 @@ const ProductBadge = ({
   let stateBadge: { type: StatusType; label: string } | null = null;
 
   if (isAuctionPage) {
-    if (auctionStatus == '경매 종료' && !isAwarded) {
+    if (pathname === '/auction/bids' && auctionStatus == '경매 종료' && !isAwarded) {
       stateBadge = { type: 'state-gray', label: '패찰' };
-    } else if (auctionStatus == '경매 종료' && isAwarded) {
+    } else if (
+      (auctionStatus == '경매 종료' && isAwarded) ||
+      (auctionStatus == '경매 종료' && winnerId)
+    ) {
       stateBadge = { type: 'state-green', label: '낙찰' };
     } else if (isPending) {
       stateBadge = { type: 'state-orange', label: '대기' };
-    } else if (auctionStatus == '경매 종료' && bidCount == 0) {
+    } else if (
+      pathname === '/auction/listings' &&
+      auctionStatus == '경매 종료' &&
+      bidCount == 0 &&
+      winnerId === null
+    ) {
       stateBadge = { type: 'state-gray', label: '유찰' };
     }
   }

@@ -17,8 +17,8 @@ interface ProductActionBtnProps {
   sellerId: string;
   auctionStatus: string;
   isAwarded: boolean;
+  itemId: string;
   isPending?: boolean;
-  productId: string;
 }
 
 const ProductActionBtn = ({
@@ -26,8 +26,8 @@ const ProductActionBtn = ({
   sellerId,
   auctionStatus,
   isAwarded,
+  itemId,
   isPending,
-  productId,
 }: ProductActionBtnProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,25 +39,37 @@ const ProductActionBtn = ({
     isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
   };
   const handleEditClick = () => {
-    router.push(`/product/edit/${encodeUUID(productId)}`);
+    router.push(`/product/edit/${encodeUUID(itemId)}`);
   };
   const handleDialogClick = async () => {
     setOpen(true);
   };
 
   const handleDeleteClick = async () => {
-    const confirmDelete = confirm('정말 삭제하시겠습니까?');
-    if (!confirmDelete) return;
+    try {
+      const res = await fetch('/api/auction/listings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: itemId }),
+      });
 
-    const { error } = await supabase.from('product').delete().eq('product_id', productId);
+      const result = await res.json();
 
-    if (error) {
-      alert('삭제 중 오류가 발생했습니다.');
-      return;
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || '삭제 실패');
+      }
+
+      alert('삭제가 완료되었습니다.');
+      setOpen(false);
+
+      router.push('/auction/listings');
+      router.refresh();
+    } catch (err) {
+      console.error('[삭제 실패]', err);
+      alert('삭제 중 오류가 발생했습니다: ' + (err as Error).message);
     }
-
-    alert('삭제가 완료되었습니다.');
-    router.push('/auction/listings');
   };
 
   return (

@@ -11,7 +11,7 @@ export default function LogInPage() {
 
       <LogInForm />
 
-      <hr className="border-t-2 border-neutral-300"></hr>
+      {/* <hr className="border-t-2 border-neutral-300"></hr>
       <div className="mt-9 flex flex-col items-center justify-center">
         <span className="font-main-text mb-4 flex text-center font-medium">
           SNS계정으로
@@ -23,7 +23,7 @@ export default function LogInPage() {
           <Button className="flex-1" />
         </div>
       </div>
-      <hr className="border-t-2 border-neutral-300"></hr>
+      <hr className="border-t-2 border-neutral-300"></hr> */}
 
       <div className="mt-8 flex items-center justify-center gap-1">
         <span className="font-main-text font-medium">아직 회원이 아니신가요?</span>
