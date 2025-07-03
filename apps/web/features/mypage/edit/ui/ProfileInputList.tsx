@@ -2,11 +2,11 @@
 
 import { Button } from '@repo/ui/components/Button/Button';
 import { Input } from '@repo/ui/components/Input/Input';
-import ProfilePreview, { UploadedImage } from './ProfilePreview';
+import ProfilePreview, { UploadedImage } from '@/features/mypage/edit/ui/ProfilePreview';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-import { useGetEditProfile } from '../model/useGetEditProfile';
+import { useGetEditProfile } from '@/features/mypage/edit/model/useGetEditProfile';
 import { useRouter } from 'next/navigation';
 
 const ProfileInputList = () => {

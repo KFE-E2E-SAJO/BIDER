@@ -1,6 +1,6 @@
 import { ProductForList } from '@/features/product/types';
 import { useQuery } from '@tanstack/react-query';
-import getBidList from './getBidList';
+import getBidList from '@/features/auction/bids/model/getBidList';
 
 interface useGetBidListParams {
   userId: string;

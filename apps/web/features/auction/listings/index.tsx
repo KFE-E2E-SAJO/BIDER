@@ -1,6 +1,6 @@
 import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import AuctionTopTabs from '@/features/auction/shared/ui/AuctionTaopTabs';
-import ListingList from './ui/ListingList';
+import ListingList from '@/features/auction/listings/ui/ListingList';
 
 // 출품내역
 

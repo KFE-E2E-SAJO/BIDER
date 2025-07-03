@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProfile } from '../lib/getProfile';
+import { getProfile } from '@/features/mypage/lib/getProfile';
 
 interface UseGetProfileParams {
   userId: string;

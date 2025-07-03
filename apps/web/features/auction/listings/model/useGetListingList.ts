@@ -1,6 +1,6 @@
 import { ProductForList } from '@/features/product/types';
 import { useQuery } from '@tanstack/react-query';
-import getListingList from './getListingList';
+import getListingList from '@/features/auction/listings/model/getListingList';
 
 interface useGetListingListParams {
   userId: string;

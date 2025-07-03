@@ -1,4 +1,4 @@
-import ProfileInputList from './ui/ProfileInputList';
+import ProfileInputList from '@/features/mypage/edit/ui/ProfileInputList';
 
 const EditProfile = async () => {
   return (
