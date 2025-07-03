@@ -3,16 +3,16 @@ import { ProductForList } from '@/features/product/types';
 import { useQuery } from '@tanstack/react-query';
 
 interface UseProductListParams {
-  lat: number;
-  lng: number;
+  userId: string;
   search?: string;
   cate?: string;
 }
 
 export const useProductList = (params: UseProductListParams) => {
   return useQuery<ProductForList[]>({
-    queryKey: ['productList', params.lat, params.lng, params.search, params.cate],
+    queryKey: ['productList', params.userId, params.search, params.cate],
     queryFn: () => getProductList(params),
+    enabled: !!params.userId,
     staleTime: 1000 * 60 * 1,
   });
 };
