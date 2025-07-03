@@ -1,25 +1,51 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import fetchListingList from '@/features/auction/listings/lib/util';
+import { ProductForList } from '@/features/product/types';
 
-interface ListingListProps {
+interface ListingListParams {
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';
+  userId: string;
 }
 
-const getListingList = async (filter: ListingListProps['filter']) => {
-  const user = { id: 'c6d80a1e-b154-4cd0-b17d-c7308c46ebaa' };
-  if (!user) return null;
+interface ListingData {
+  product_id: string;
+  created_at: string;
+  exhibit_user_id: string;
+  title: string;
+  description: string;
+  updated_at: string | null;
+  latitude: number;
+  longitude: number;
+  category: string;
+  address: string;
+  product_image: {
+    [key: string]: string;
+  }[];
+  pending_auction: {
+    [key: string]: any;
+  }[];
+  auction: {
+    [key: string]: any;
+  }[];
+}
+const getListingList = async (params: ListingListParams): Promise<ProductForList[]> => {
+  const { filter, userId } = params;
 
-  const listingData = await fetchListingList(user.id);
-  if (!listingData) return null;
+  const res = await fetch(`/api/auction/listings?userId=${userId}`);
+  const result = await res.json();
 
-  // 2. 내가 입찰한 경매만 필터링
+  if (!res.ok || !result.success) {
+    throw new Error(result.error || 'Failed to fetch product list');
+  }
+
+  const listingData: ListingData[] = result.data;
+
   const filtered = listingData
     .map((product) => {
       const auction = Array.isArray(product.auction) ? product.auction[0] : product.auction;
       const pending = Array.isArray(product.pending_auction)
         ? product.pending_auction[0]
         : product.pending_auction;
-      const myBid = auction?.bid_history?.find((b: any) => b.bid_user_id === user.id);
+      const myBid = auction?.bid_history?.find((b: any) => b.bid_user_id === userId);
 
       const hasLocation = product.latitude && product.longitude;
 
@@ -46,7 +72,6 @@ const getListingList = async (filter: ListingListProps['filter']) => {
     myBid?: any;
   }[];
 
-  // 3. 입찰 수 계산
   const auctionIds = filtered.map(({ auction }) => auction?.auction_id).filter(Boolean);
 
   const { data: bidCountRaw } = await supabase
@@ -60,7 +85,6 @@ const getListingList = async (filter: ListingListProps['filter']) => {
     bidCountMap[auctionId] = (bidCountMap[auctionId] ?? 0) + 1;
   }
 
-  //4. 최종 가공 데이터 반환
   return filtered.map(({ product, auction, pending, myBid }) => ({
     id: pending ? product.product_id : auction?.auction_id,
     thumbnail:

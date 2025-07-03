@@ -12,3 +12,34 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ success: true });
 }
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get('userId');
+
+  if (!userId) {
+    return NextResponse.json({ success: false, message: 'userId is required' }, { status: 400 });
+  }
+
+  const { data, error } = await supabase.from('product').select(`
+    *,
+    product_image:product_image!product_image_product_id_fkey(*),
+    pending_auction:pending_auction!pending_auction_product_id_fkey(*),
+    auction:auction!auction_product_id_fkey(
+      *,
+      bid_history:BidHistory_auction_id_fkey(*)
+    )
+  `);
+
+  if (error || !data) {
+    console.error('출품 데이터 로딩 실패:', error);
+    return NextResponse.json(
+      { success: false, message: '데이터 로딩 실패', error },
+      { status: 500 }
+    );
+  }
+
+  const filtered = data.filter((product) => product.exhibit_user_id === userId);
+
+  return NextResponse.json({ success: true, data: filtered });
+}

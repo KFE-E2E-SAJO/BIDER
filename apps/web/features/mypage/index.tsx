@@ -1,28 +1,20 @@
+'use client';
+
 import Footer from '@/widgets/footer/Footer';
 import MyPageAuction from '@/features/mypage/ui/MyPageAuction';
 import MyPageProfileCard from '@/features/mypage/ui/MypageProfileCard';
 import MyPageMenuList from '@/features/mypage/ui/MyPageMenuList';
-import { redirect } from 'next/navigation';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { useAuthStore } from '@/shared/model/authStore';
+import Loading from '@/shared/ui/Loading/Loading';
+import { useGetProfile } from '@/features/mypage/model/useGetProfile';
 
-const MyPage = async () => {
-  // 로그인 세션 정보 받아서 재수정
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
+const MyPage = () => {
+  const user = useAuthStore((state) => state.user);
 
-  const user = { id: 'c6d80a1e-b154-4cd0-b17d-c7308c46ebaa' };
+  const { data, isLoading, error } = useGetProfile({ userId: user?.id ?? '' });
 
-  if (!user) redirect('/splash');
-
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('user_id, email, nickname, profile_img, address')
-    .eq('user_id', user.id)
-    .single();
-
-  if (error || !data) {
-    redirect('/splash');
+  if (!user?.id || error || isLoading || !data) {
+    return <Loading />;
   }
 
   return (

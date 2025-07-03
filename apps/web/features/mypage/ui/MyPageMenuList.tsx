@@ -1,7 +1,7 @@
 import StatusBadge from '@/shared/ui/badge/StatusBadge';
 import { Heart, MapPin } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
-import MyPageMenuItem from './MyPageMenuItem';
+import MyPageMenuItem from '@/features/mypage/ui/MyPageMenuItem';
 
 interface MyPageMenuListProps {
   address: string;
