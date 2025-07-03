@@ -1,6 +1,6 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
-import { User, Mail } from 'lucide-react';
+import { User, Mail, ChevronLeft } from 'lucide-react';
 import '@repo/ui/styles.css';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useState, useEffect } from 'react';
@@ -147,7 +147,7 @@ export default function FindAccountPage() {
         title: '비밀번호 찾기',
         placeholder: '이메일 주소',
         icon: <Mail />,
-        inputType: 'email' as const,
+        inputType: 'text' as const,
         buttonText: '재설정 이메일 발송',
         resultPrefix: '',
         description: '입력하신 이메일로 재설정 링크를 확인해주세요.',
@@ -158,7 +158,8 @@ export default function FindAccountPage() {
   const config = getConfig();
 
   return (
-    <div className="m-3">
+    <div className="p-box">
+      <ChevronLeft className="mt-[30px]" />
       <p className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]">
         {config.title}
       </p>

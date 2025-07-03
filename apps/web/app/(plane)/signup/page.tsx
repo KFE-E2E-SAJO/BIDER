@@ -1,10 +1,12 @@
-import { SignUpForm } from '../../features/signup/SignUpForm';
+import { SignUpForm } from '../../../features/signup/SignUpForm';
 import { Button } from '@repo/ui/components/Button/Button';
 import '@repo/ui/styles.css';
+import { ChevronLeft } from 'lucide-react';
 
 export default function SignUpPage() {
   return (
-    <div className="m-3">
+    <div className="p-box">
+      <ChevronLeft className="mt-[30px]" />
       <h1 className="typo-h3 mb-8 mt-28 text-center leading-[2.6rem]">회원가입</h1>
       {/* <p className="">SNS 계정으로 간편하게 회원가입</p>
 

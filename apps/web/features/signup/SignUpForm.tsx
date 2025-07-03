@@ -18,7 +18,7 @@ import {
 } from '../../shared/lib/auth';
 import '@repo/ui/styles.css';
 import { signupSchema } from '../../shared/lib/validation/signupSchema';
-import { emailSchema } from '@/shared/lib/validation/email';
+import { emailSchema } from '@/shared/lib/validation/signupSchema';
 import { Check, CheckIcon, CheckLine } from 'lucide-react';
 
 export const SignUpForm = () => {
