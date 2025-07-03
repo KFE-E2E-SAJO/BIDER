@@ -8,6 +8,13 @@ import { useRouter } from 'next/navigation';
 import ImageUploadPreview, { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 import { categories, CategoryValue } from '@/features/category/types';
 import { useAuthStore } from '@/shared/model/authStore';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@repo/ui/components/Select/Select';
 
 const ProductRegistrationPage = () => {
   const router = useRouter();
@@ -107,13 +114,20 @@ const ProductRegistrationPage = () => {
           <div className="typo-subtitle-small-medium">
             카테고리<span className="text-main">*</span>
           </div>
-          <select value={category} onChange={(e) => setCategory(e.target.value as CategoryValue)}>
-            {categories.map((category) => (
-              <option key={category.value} value={category.value}>
-                {category.label}
-              </option>
-            ))}
-          </select>
+          <Select value={category} onValueChange={(value) => setCategory(value as CategoryValue)}>
+            <SelectTrigger className="typo-body-regular rounded-sm px-[10.5px]">
+              <SelectValue placeholder="카테고리를 선택해 주세요." />
+            </SelectTrigger>
+            <SelectContent>
+              {categories
+                .filter((category) => category.value !== 'all')
+                .map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-[13px]">
           <div className="typo-subtitle-small-medium">
