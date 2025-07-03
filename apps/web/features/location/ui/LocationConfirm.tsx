@@ -72,7 +72,8 @@ const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
         setLoading(false);
       },
       (err) => {
-        console.error('위치 정보 실패:', err);
+        alert('지도를 불러오는 데 문제가 발생했습니다.');
+        console.error('지도를 불러오는 데 문제가 발생했습니다.', err);
         setError(true);
         setLoading(false);
       }

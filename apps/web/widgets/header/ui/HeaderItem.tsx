@@ -53,14 +53,14 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
       )}
 
       <div className="flex items-center justify-end">
-        {pathname === '/alert' ? (
+        {pathname === '/alarm' ? (
           <Trash2 />
         ) : pathname === '/mypage/edit' ? null : (
           <>
             <Link href="/search">
               <Search className="mr-4.5" />
             </Link>
-            <Link href="/alert" className="relative">
+            <Link href="/alarm" className="relative">
               <Bell />
               {hasNewAlert && <AlertBadge placementClass="absolute right-0 top-0" />}
             </Link>
