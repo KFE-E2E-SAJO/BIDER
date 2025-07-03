@@ -162,7 +162,7 @@ interface ProductFromDB {
   min_price: number;
   auction_end_at: string;
   bid_history: {
-    bid_id: string;
+    bid_price: number;
   }[];
 }
 
@@ -223,14 +223,14 @@ export async function GET(req: NextRequest) {
     address
   ),
   bid_history!auction_id (
-    bid_id
+    bid_price
   )
 `);
 
   if (error) {
+    console.error('리스트 데이터 조회 실패:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
   const filtered: ProductResponse[] = (auctionData as unknown as ProductFromDB[])
     .filter((item) => {
       const { product } = item;
@@ -240,18 +240,22 @@ export async function GET(req: NextRequest) {
       const matchCate = cate === '' || cate === 'all' || product.category === cate;
       return within5km && matchSearch && matchCate;
     })
-    .map((item) => ({
-      id: item.auction_id,
-      thumbnail:
-        item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
-        '/default.png',
-      title: item.product.title,
-      address: item.product.address,
-      bidCount: item.bid_history?.length ?? 0,
-      minPrice: item.min_price,
-      auctionEndAt: item.auction_end_at,
-      auctionStatus: item.auction_status,
-    }));
+    .map((item) => {
+      const bidPrices = item.bid_history?.map((b) => b.bid_price) ?? [];
+      const highestBid = bidPrices.length > 0 ? Math.max(...bidPrices) : null;
+      return {
+        id: item.auction_id,
+        thumbnail:
+          item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
+          '/default.png',
+        title: item.product.title,
+        address: item.product.address,
+        bidCount: item.bid_history?.length ?? 0,
+        minPrice: highestBid ?? item.min_price,
+        auctionEndAt: item.auction_end_at,
+        auctionStatus: item.auction_status,
+      };
+    });
 
   return NextResponse.json(filtered);
 }
