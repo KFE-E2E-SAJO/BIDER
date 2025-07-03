@@ -85,12 +85,7 @@ export const SignUpForm = () => {
               console.error('유효하지 않은 이메일:', userEmail);
               return;
             }
-
             router.replace('/signup');
-
-            setTimeout(() => {
-              alert('이메일 인증이 완료되었습니다! 이제 회원가입을 계속 진행해주세요.');
-            }, 100);
           } else {
             console.log('이메일 인증 실패:', { isVerified, userEmail });
             alert('이메일 인증이 완료되지 않았습니다. 다시 시도해주세요.');
@@ -218,7 +213,6 @@ export const SignUpForm = () => {
       alert('이메일 인증을 완료해주세요.');
       return;
     }
-    const fullEmail = domain === 'custom' ? `${email}@${customDomain}` : `${email}@${domain}`;
 
     const result = signupSchema.safeParse({
       email,
@@ -263,7 +257,7 @@ export const SignUpForm = () => {
 
       if (result.success) {
         alert('회원가입이 완료되었습니다!');
-        router.push('/setLocation');
+        router.push('/login');
       } else {
         alert(`회원가입 실패: ${result.error}`);
       }

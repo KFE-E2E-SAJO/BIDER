@@ -18,6 +18,8 @@ export default function AuthCallback() {
         const error = searchParams.get('error');
         const errorDescription = searchParams.get('error_description');
 
+        console.log(accessToken, refreshToken, error, errorDescription);
+
         // 에러가 있는 경우
         if (error) {
           console.error('Auth error:', error, errorDescription);
