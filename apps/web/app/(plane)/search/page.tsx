@@ -1,23 +1,21 @@
 'use client';
-
-import { useProductList } from '@/features/product/model/useProductList';
-import LocationPin from '@/features/product/ui/LocationPin';
-import ProductList from '@/features/product/ui/ProductList';
+import { useAuthStore } from '@/shared/model/authStore';
 import BackBtn from '@/shared/ui/button/BackBtn';
-import Loading from '@/shared/ui/Loading/Loading';
 import { Input } from '@repo/ui/components/Input/Input';
 import { debounce } from 'lodash';
 import { Search } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import ResultSection from '@/features/search/ui/ResultSection';
 
 const SearchPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [search, setSearch] = useState('');
+  const userId = useAuthStore((state) => state.user?.id);
 
   const updateSearch = useCallback(
     debounce((value: string) => {
       setSearch(value);
-    }, 1000),
+    }, 300),
     []
   );
 
@@ -40,26 +38,6 @@ const SearchPage = () => {
     }
   };
 
-  const { data, isLoading, error } = useProductList({
-    lat: 37.371,
-    lng: 127.0046,
-    search: search.trim() !== '' ? search : undefined,
-  });
-
-  const products = data ?? [];
-
-  let content = null;
-
-  if (search.trim() === '') {
-    content = <p className="mt-10 text-center text-neutral-500">검색어를 입력해주세요.</p>;
-  } else if (isLoading) {
-    content = <Loading />;
-  } else if (error) {
-    content = <p className="text-center text-red-500">에러 발생: {(error as Error).message}</p>;
-  } else {
-    content = <ProductList data={products} />;
-  }
-
   return (
     <div className="p-box flex flex-1 flex-col">
       <div className="flex items-center gap-[14px] pt-[22px]">
@@ -73,9 +51,9 @@ const SearchPage = () => {
         />
         <Search />
       </div>
+
       <div className="flex flex-1 flex-col">
-        <LocationPin />
-        {content}
+        <ResultSection search={search} userId={userId} />
       </div>
     </div>
   );
