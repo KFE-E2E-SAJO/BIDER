@@ -9,6 +9,9 @@ import {
   completeSignUp,
 } from '../../shared/lib/auth';
 import '@repo/ui/styles.css';
+import { signupSchema } from '../../shared/lib/validation/signupSchema';
+import { emailSchema } from '@/shared/lib/validation/email';
+import { z } from 'zod';
 import { Base } from '@repo/ui/components/Checkbox/Base';
 
 export const SignUpForm = () => {
@@ -65,17 +68,14 @@ export const SignUpForm = () => {
                   }
                 } else {
                   console.error('이메일 형식이 올바르지 않습니다:', userEmail);
-                  alert('이메일 형식이 올바르지 않습니다.');
                   return;
                 }
               } else {
                 console.error('이메일 형식이 올바르지 않습니다:', userEmail);
-                alert('이메일 형식이 올바르지 않습니다.');
                 return;
               }
             } else {
               console.error('유효하지 않은 이메일:', userEmail);
-              alert('유효하지 않은 이메일입니다.');
               return;
             }
 
@@ -93,7 +93,7 @@ export const SignUpForm = () => {
           alert('인증 확인 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
       } else {
-        console.log('일반 페이지 로드 (인증 콜백 아님)');
+        return;
       }
     };
 
@@ -155,131 +155,32 @@ export const SignUpForm = () => {
     }
   };
 
-  const isValidEmail = () => {
-    let fullEmail;
-
-    if (!email || typeof email !== 'string') {
-      setEmailError('이메일을 다시 입력해주세요');
-      return false;
-    }
-
-    if (!domain || typeof domain !== 'string') {
-      setDomainError('도메인을 선택해주세요');
-      return false;
-    }
-
-    if (domain === 'custom') {
-      if (!customDomain || typeof customDomain !== 'string') {
-        setDomainError('도메인을 직접 입력해주세요');
-        return false;
-      }
-
-      if (
-        customDomain.startsWith('-') ||
-        customDomain.endsWith('-') ||
-        customDomain.includes('..') ||
-        !customDomain.includes('.')
-      ) {
-        setDomainError('올바른 도메인 형식이 아닙니다');
-        return false;
-      }
-
-      fullEmail = email + '@' + customDomain;
-    } else {
-      fullEmail = email + '@' + domain;
-    }
-
-    if (fullEmail.length > 254) {
-      setEmailError('이메일이 너무 깁니다');
-      return false;
-    }
-    if (email.indexOf('@') !== -1) {
-      setEmailError('올바른 이메일 형식이 아닙니다');
-      return false;
-    }
-    if (email.length < 1 || email.length > 64) {
-      setEmailError('올바른 이메일 형식이 아닙니다');
-      return false;
-    }
-    if (email.startsWith('.') || email.endsWith('.') || email.includes('..')) {
-      setEmailError('올바른 이메일 형식이 아닙니다');
-      return false;
-    }
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(fullEmail)) {
-      setEmailError('올바른 이메일 형식이 아닙니다');
-      return false;
-    }
-
-    setEmailError('');
-    setDomainError('');
-
-    return true;
-  };
-
-  const isValidPassword = () => {
-    if (!password) {
-      setPasswordError('비밀번호를 입력해주세요');
-      return false;
-    }
-    if (password.length < 8 || password.length > 20) {
-      setPasswordError('비밀번호 8자 이상 20자 이하로 입력해주세요');
-      return false;
-    }
-
-    const hasLower = /[a-z]/.test(password);
-    const hasUpper = /[A-Z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password);
-
-    const typeCount = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
-
-    if (typeCount < 2) {
-      setPasswordError('비밀번호는 영문, 숫자, 특수문자 중 2종류 이상 포함해야 합니다');
-      return false;
-    }
-
-    setPasswordError('');
-
-    return true;
-  };
-
-  const isValidNickname = () => {
-    if (!nickname) {
-      setNicknameError('닉네임을 입력해주세요');
-      return false;
-    }
-    if (nickname.length < 2 || nickname.length > 10) {
-      setNicknameError('2자 이상 10자 이하로 적어주세요');
-      return false;
-    }
-    const nicknameRegex = /^[가-힣a-zA-Z0-9]+$/;
-
-    if (!nicknameRegex.test(nickname)) {
-      setNicknameError('닉네임은 한글, 영문, 숫자만 사용 가능합니다');
-      return false;
-    }
-
-    setNicknameError('');
-
-    return true;
-  };
-
   const checkEmailInputs = () => {
     if (email.length < 1) return false;
     if (domain.length < 1) return false;
-    if (domain == 'custom' && customDomain.length < 1) return false;
+    if (domain === 'custom' && customDomain.length < 1) return false;
 
     return true;
   };
 
+  //이메일 인증하기 버튼 클릭 시
   const sendVerificationEmail = async () => {
-    if (!isValidEmail()) return;
+    setEmailError('');
+    setDomainError('');
 
-    setIsLoading(true);
+    const isValid = emailSchema.safeParse({ email, domain, customDomain });
+    if (!isValid.success) {
+      isValid.error.issues.forEach((issue) => {
+        if (issue.path[0] === 'email') setEmailError(issue.message);
+        if (issue.path[0] === 'domain' || issue.path[0] === 'customDomain')
+          setDomainError(issue.message);
+      });
+      return;
+    }
 
     const fullEmail = domain === 'custom' ? `${email}@${customDomain}` : `${email}@${domain}`;
+
+    setIsLoading(true);
 
     try {
       const result = await sendEmailVerification(fullEmail);
@@ -306,27 +207,44 @@ export const SignUpForm = () => {
     setConfirmPwError('');
     setNicknameError('');
 
-    if (!isEmailVerified) {
+    if (!isEmailVerified || !verifiedEmail) {
       alert('이메일 인증을 완료해주세요.');
       return;
     }
-    if (!verifiedEmail) {
-      alert('인증된 이메일 정보가 없습니다. 다시 인증해주세요.');
-      return;
-    }
-    if (!isValidEmail()) return;
-    if (!isValidPassword()) return;
+    const fullEmail = domain === 'custom' ? `${email}@${customDomain}` : `${email}@${domain}`;
 
-    if (!confirmPassword) {
-      setConfirmPwError('비밀번호 확인을 입력해주세요');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setConfirmPwError('비밀번호가 일치하지 않습니다');
-      return;
-    }
-    if (!isValidNickname()) return;
+    const result = signupSchema.safeParse({
+      email,
+      domain,
+      customDomain,
+      password,
+      confirmPassword,
+      nickname,
+    });
 
+    if (!result.success) {
+      result.error.issues.forEach((issue) => {
+        switch (issue.path[0]) {
+          case 'email':
+            setEmailError(issue.message);
+            break;
+          case 'domain':
+          case 'customDomain':
+            setDomainError(issue.message);
+            break;
+          case 'password':
+            setPasswordError(issue.message);
+            break;
+          case 'confirmPassword':
+            setConfirmPwError(issue.message);
+            break;
+          case 'nickname':
+            setNicknameError(issue.message);
+            break;
+        }
+      });
+      return;
+    }
     setIsLoading(true);
 
     try {

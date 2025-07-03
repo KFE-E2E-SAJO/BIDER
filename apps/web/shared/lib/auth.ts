@@ -72,7 +72,7 @@ export const completeSignUp = async ({
     } = await supabase.auth.getUser();
 
     if (user) {
-      const { error: insertError } = await supabase.from('user').insert([
+      const { error: insertError } = await supabase.from('profiles').insert([
         {
           user_id: user.id,
           email,
