@@ -56,7 +56,7 @@ export type Database = {
             foreignKeyName: 'auction_winning_bid_user_id_fkey';
             columns: ['winning_bid_user_id'];
             isOneToOne: false;
-            referencedRelation: 'user';
+            referencedRelation: 'profiles';
             referencedColumns: ['user_id'];
           },
         ];
@@ -91,7 +91,7 @@ export type Database = {
             foreignKeyName: 'bid_history_bid_user_id_fkey';
             columns: ['bid_user_id'];
             isOneToOne: false;
-            referencedRelation: 'user';
+            referencedRelation: 'profiles';
             referencedColumns: ['user_id'];
           },
           {
@@ -106,23 +106,35 @@ export type Database = {
       chat_room: {
         Row: {
           auction_id: string;
+          badge: string | null;
           bid_user_id: string;
           chatroom_id: string;
-          created_at: string;
+          exhibit_user_id: string;
+          message: string | null;
+          type: string;
+          unread: number | null;
           updated_at: string | null;
         };
         Insert: {
           auction_id: string;
+          badge?: string | null;
           bid_user_id: string;
           chatroom_id?: string;
-          created_at?: string;
+          exhibit_user_id?: string;
+          message?: string | null;
+          type: string;
+          unread?: number | null;
           updated_at?: string | null;
         };
         Update: {
           auction_id?: string;
+          badge?: string | null;
           bid_user_id?: string;
           chatroom_id?: string;
-          created_at?: string;
+          exhibit_user_id?: string;
+          message?: string | null;
+          type?: string;
+          unread?: number | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -130,7 +142,14 @@ export type Database = {
             foreignKeyName: 'chat_room_bid_user_id_fkey';
             columns: ['bid_user_id'];
             isOneToOne: false;
-            referencedRelation: 'user';
+            referencedRelation: 'profiles';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'chat_room_exhibit_user_id_fkey';
+            columns: ['exhibit_user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
             referencedColumns: ['user_id'];
           },
           {
@@ -150,6 +169,7 @@ export type Database = {
           is_read: boolean;
           message_id: string;
           message_type: string;
+          receiver_id: string | null;
           sender_id: string;
         };
         Insert: {
@@ -159,6 +179,7 @@ export type Database = {
           is_read?: boolean;
           message_id?: string;
           message_type: string;
+          receiver_id?: string | null;
           sender_id: string;
         };
         Update: {
@@ -168,6 +189,7 @@ export type Database = {
           is_read?: boolean;
           message_id?: string;
           message_type?: string;
+          receiver_id?: string | null;
           sender_id?: string;
         };
         Relationships: [
@@ -182,7 +204,7 @@ export type Database = {
             foreignKeyName: 'message_sender_id_fkey';
             columns: ['sender_id'];
             isOneToOne: false;
-            referencedRelation: 'user';
+            referencedRelation: 'profiles';
             referencedColumns: ['user_id'];
           },
         ];
@@ -197,6 +219,7 @@ export type Database = {
           pending_auction_id: string;
           product_id: string;
           scheduled_create_at: string;
+          updated_at: string | null;
         };
         Insert: {
           auction_end_at: string;
@@ -207,6 +230,7 @@ export type Database = {
           pending_auction_id?: string;
           product_id: string;
           scheduled_create_at: string;
+          updated_at?: string | null;
         };
         Update: {
           auction_end_at?: string;
@@ -217,6 +241,7 @@ export type Database = {
           pending_auction_id?: string;
           product_id?: string;
           scheduled_create_at?: string;
+          updated_at?: string | null;
         };
         Relationships: [
           {
@@ -270,7 +295,7 @@ export type Database = {
             foreignKeyName: 'product_exhibit_user_id_fkey';
             columns: ['exhibit_user_id'];
             isOneToOne: false;
-            referencedRelation: 'user';
+            referencedRelation: 'profiles';
             referencedColumns: ['user_id'];
           },
         ];
@@ -304,7 +329,7 @@ export type Database = {
           },
         ];
       };
-      user: {
+      profiles: {
         Row: {
           address: string | null;
           created_at: string;
@@ -342,13 +367,87 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      bytea_to_text: {
+        Args: { data: string };
+        Returns: string;
+      };
+      http: {
+        Args: { request: Database['public']['CompositeTypes']['http_request'] };
+        Returns: Database['public']['CompositeTypes']['http_response'];
+      };
+      http_delete: {
+        Args: { uri: string } | { uri: string; content: string; content_type: string };
+        Returns: Database['public']['CompositeTypes']['http_response'];
+      };
+      http_get: {
+        Args: { uri: string } | { uri: string; data: Json };
+        Returns: Database['public']['CompositeTypes']['http_response'];
+      };
+      http_head: {
+        Args: { uri: string };
+        Returns: Database['public']['CompositeTypes']['http_response'];
+      };
+      http_header: {
+        Args: { field: string; value: string };
+        Returns: Database['public']['CompositeTypes']['http_header'];
+      };
+      http_list_curlopt: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          curlopt: string;
+          value: string;
+        }[];
+      };
+      http_patch: {
+        Args: { uri: string; content: string; content_type: string };
+        Returns: Database['public']['CompositeTypes']['http_response'];
+      };
+      http_post: {
+        Args: { uri: string; content: string; content_type: string } | { uri: string; data: Json };
+        Returns: Database['public']['CompositeTypes']['http_response'];
+      };
+      http_put: {
+        Args: { uri: string; content: string; content_type: string };
+        Returns: Database['public']['CompositeTypes']['http_response'];
+      };
+      http_reset_curlopt: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+      http_set_curlopt: {
+        Args: { curlopt: string; value: string };
+        Returns: boolean;
+      };
+      text_to_bytea: {
+        Args: { data: string };
+        Returns: string;
+      };
+      urlencode: {
+        Args: { data: Json } | { string: string } | { string: string };
+        Returns: string;
+      };
     };
     Enums: {
       [_ in never]: never;
     };
     CompositeTypes: {
-      [_ in never]: never;
+      http_header: {
+        field: string | null;
+        value: string | null;
+      };
+      http_request: {
+        method: unknown | null;
+        uri: string | null;
+        headers: Database['public']['CompositeTypes']['http_header'][] | null;
+        content_type: string | null;
+        content: string | null;
+      };
+      http_response: {
+        status: number | null;
+        content_type: string | null;
+        headers: Database['public']['CompositeTypes']['http_header'][] | null;
+        content: string | null;
+      };
     };
   };
 };
