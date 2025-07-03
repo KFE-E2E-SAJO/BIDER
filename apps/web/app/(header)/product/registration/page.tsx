@@ -7,9 +7,11 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { useRouter } from 'next/navigation';
 import ImageUploadPreview, { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 import { categories, CategoryValue } from '@/features/category/types';
+import { useAuthStore } from '@/shared/model/authStore';
 
 const ProductRegistrationPage = () => {
   const router = useRouter();
+  const user = useAuthStore();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
@@ -49,6 +51,9 @@ const ProductRegistrationPage = () => {
     formData.append('min_price', numericPrice.toString());
     formData.append('end_at', endAt.toISOString());
     formData.append('category', category);
+    if (user.user?.id) {
+      formData.append('user_id', user.user.id);
+    }
 
     images.forEach((img) => {
       if (img.file) {
