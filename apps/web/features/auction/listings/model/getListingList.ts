@@ -1,12 +1,12 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import fetchListingList from '../lib/util';
+import fetchListingList from '@/features/auction/listings/lib/util';
 
 interface ListingListProps {
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';
 }
 
 const getListingList = async (filter: ListingListProps['filter']) => {
-  const user = { id: '0f521e94-ed27-479f-ab3f-e0c9255886c5' };
+  const user = { id: 'c6d80a1e-b154-4cd0-b17d-c7308c46ebaa' };
   if (!user) return null;
 
   const listingData = await fetchListingList(user.id);
@@ -29,7 +29,7 @@ const getListingList = async (filter: ListingListProps['filter']) => {
         filter === 'win' &&
         auction &&
         auction.auction_status === '경매 종료' &&
-        auction.winning_bid_user_id === user.id;
+        auction.winning_bid_user_id;
       const isFail =
         filter === 'fail' &&
         auction &&
@@ -62,11 +62,11 @@ const getListingList = async (filter: ListingListProps['filter']) => {
 
   //4. 최종 가공 데이터 반환
   return filtered.map(({ product, auction, pending, myBid }) => ({
-    id: myBid?.bid_id ?? auction?.auction_id ?? pending?.pending_auction_id ?? product.product_id,
+    id: pending ? product.product_id : auction?.auction_id,
     thumbnail:
       product.product_image?.find((img: any) => img.order_index === 0)?.image_url ?? '/default.png',
     title: product.title,
-    location: product.address ?? '위치 정보 없음',
+    address: product.address ?? '위치 정보 없음',
     bidCount: auction?.auction_id ? (bidCountMap[auction.auction_id] ?? 0) : 0,
     price: myBid?.bid_price ?? 0,
     minPrice: auction?.min_price ?? pending?.min_price ?? 0,

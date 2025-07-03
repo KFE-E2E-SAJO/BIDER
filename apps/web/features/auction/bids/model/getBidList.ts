@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import fetchBidList from '../lib/util';
+import fetchBidList from '@/features/auction/bids/lib/util';
 
 interface BidListProps {
   filter: 'all' | 'progress' | 'win' | 'fail';
@@ -38,7 +38,7 @@ export interface BidHistoryFromDB {
 }
 
 const getBidList = async (filter: BidListProps['filter']) => {
-  const user = { id: '0f521e94-ed27-479f-ab3f-e0c9255886c5' };
+  const user = { id: 'c6d80a1e-b154-4cd0-b17d-c7308c46ebaa' };
   if (!user) return null;
 
   const bidData = await fetchBidList(user.id);
@@ -75,12 +75,12 @@ const getBidList = async (filter: BidListProps['filter']) => {
   }
 
   return filtered.map((item) => ({
-    id: item.bid_id,
+    id: item.auction.auction_id,
     thumbnail:
       item.auction.product.product_image.find((img) => img.order_index === 0)?.image_url ??
       '/default.png',
     title: item.auction.product.title,
-    location: item.auction.product.address ?? '위치 정보 없음',
+    address: item.auction.product.address ?? '위치 정보 없음',
     bidCount: bidCountMap[item.auction.auction_id] ?? 0,
     price: item.bid_price,
     minPrice: item.auction.min_price ?? 0,

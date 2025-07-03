@@ -1,5 +1,5 @@
 import ProductList from '@/features/product/ui/ProductList';
-import getListingList from '../model/getListingList';
+import getListingList from '@/features/auction/listings/model/getListingList';
 
 interface ListingListProps {
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';

@@ -4,7 +4,7 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { Input } from '@repo/ui/components/Input/Input';
 import ProfilePreview, { UploadedImage } from './ProfilePreview';
 import { useState } from 'react';
-import { setUserInfo } from '../model/setUserInfo';
+import { setUserInfo } from '@/features/mypage/edit/model/setUserInfo';
 import { redirect } from 'next/navigation';
 
 interface ProfileInputListProps {
