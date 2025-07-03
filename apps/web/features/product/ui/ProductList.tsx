@@ -33,7 +33,6 @@ const ProductList = ({ data }: ProductListProps) => {
                 sellerId: item.sellerId,
                 itemId: item.id,
                 isPending: item.isPending,
-                pendingId: item.pendingId,
               }}
             />
           </div>

@@ -76,7 +76,6 @@ const getListingList = async (filter: ListingListProps['filter']) => {
     sellerId: product.exhibit_user_id,
     isAwarded: myBid?.is_awarded ?? false,
     isPending: !!pending?.pending_auction_id,
-    pendingId: pending?.pending_auction_id,
   }));
 };
 

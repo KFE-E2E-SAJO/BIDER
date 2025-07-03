@@ -19,7 +19,6 @@ interface ProductActionBtnProps {
   isAwarded: boolean;
   itemId: string;
   isPending?: boolean;
-  pendingId?: string | null;
 }
 
 const ProductActionBtn = ({
@@ -29,7 +28,6 @@ const ProductActionBtn = ({
   isAwarded,
   itemId,
   isPending,
-  pendingId,
 }: ProductActionBtnProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -49,30 +47,23 @@ const ProductActionBtn = ({
 
   const handleDeleteClick = async () => {
     try {
-      console.log('//// productId = ', itemId);
+      const res = await fetch('/api/auction/listings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: itemId }),
+      });
 
-      const { data, error } = await supabase
-        .from('product')
-        .delete()
-        .eq('product_id', itemId)
-        .select(); // 👈 중요! 삭제된 row를 반환하게 강제함
+      const result = await res.json();
 
-      if (error) {
-        console.error('[삭제 에러]', error);
-        alert('삭제 중 오류: ' + error.message);
-        return;
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || '삭제 실패');
       }
-
-      if (!data || data.length === 0) {
-        console.warn('[삭제 실패] 조건에 맞는 row가 존재하지 않습니다.');
-        alert('삭제 대상이 존재하지 않거나 이미 삭제되었습니다.');
-        return;
-      }
-
-      console.log(data);
 
       alert('삭제가 완료되었습니다.');
       setOpen(false);
+
       router.push('/auction/listings');
       router.refresh();
     } catch (err) {
