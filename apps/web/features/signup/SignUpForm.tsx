@@ -277,7 +277,10 @@ export const SignUpForm = () => {
     <form onSubmit={handleSubmitForm} className="space-y-6">
       <div className="space-y-3">
         <label htmlFor="email-id" className="typo-body-bold block text-neutral-800">
-          이메일 {isEmailVerified && <span className="text-sm text-green-600">✓ 인증완료</span>}
+          이메일{' '}
+          {isEmailVerified && (
+            <span className="typo-subtitle-small-bold text-green-600">✓ 인증완료</span>
+          )}
         </label>
         <div className="flex items-center gap-2">
           <Input
@@ -299,10 +302,10 @@ export const SignUpForm = () => {
           >
             <SelectTrigger
               className={`h-13 focus:ring-main focus:border-main flex-1 rounded-sm border focus:outline-none focus:ring-2 ${
-                domainError ? 'border-red-500' : 'border-neutral-400'
-              } ${isEmailVerified ? 'cursor-not-allowed bg-gray-100' : ''}`}
+                domainError ? 'border-danger' : 'border-neutral-400'
+              } ${isEmailVerified ? 'cursor-not-allowed bg-neutral-300' : ''}`}
             >
-              <SelectValue placeholder="과일을 선택하세요" />
+              <SelectValue placeholder="도메인을 선택해주세요" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -319,8 +322,8 @@ export const SignUpForm = () => {
         {domain === 'custom' && (
           <input
             className={`typo-body-regular h-13 focus:ring-main focus:border-main w-full rounded-sm border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${
-              domainError ? 'border-red-500' : 'border-neutral-400'
-            } ${isEmailVerified ? 'cursor-not-allowed bg-gray-100' : ''}`}
+              domainError ? 'border-danger' : 'border-neutral-400'
+            } ${isEmailVerified ? 'cursor-not-allowed bg-neutral-300' : ''}`}
             type="text"
             placeholder="도메인을 입력해주세요"
             value={customDomain}
@@ -328,13 +331,13 @@ export const SignUpForm = () => {
             disabled={isEmailVerified}
           />
         )}
-        {emailError && <p className="text-sm text-red-500">{emailError}</p>}
-        {domainError && <p className="text-sm text-red-500">{domainError}</p>}
+        {emailError && <p className="typo-caption-regular text-danger">{emailError}</p>}
+        {domainError && <p className="typo-caption-regular text-danger">{domainError}</p>}
 
         <Button
           className={`whitespace-nowrap px-4 ${
             isEmailVerified
-              ? 'cursor-not-allowed bg-green-600 text-white'
+              ? 'text-neutral-0 cursor-not-allowed bg-green-600'
               : 'text-neutral-0 bg-neutral-800 hover:bg-neutral-900'
           }`}
           type="button"
