@@ -93,11 +93,9 @@ export const LogInForm = () => {
         });
 
         setSuccessMessage('로그인에 성공했습니다!');
-
-        setTimeout(() => {
-          router.push('/');
-        }, 1000);
       }
+
+      router.push('/');
     } catch (err) {
       setError('로그인 중 문제가 발생했습니다.');
       console.error('Login error:', err);
