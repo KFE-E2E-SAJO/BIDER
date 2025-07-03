@@ -35,7 +35,7 @@ const ProductBadge = ({
   let stateBadge: { type: StatusType; label: string } | null = null;
 
   if (isAuctionPage) {
-    if (auctionStatus == '경매 종료' && !isAwarded && bidCount !== 0 && !winnerId) {
+    if (pathname === '/auction/bids' && auctionStatus == '경매 종료' && !isAwarded) {
       stateBadge = { type: 'state-gray', label: '패찰' };
     } else if (
       (auctionStatus == '경매 종료' && isAwarded) ||
@@ -44,7 +44,12 @@ const ProductBadge = ({
       stateBadge = { type: 'state-green', label: '낙찰' };
     } else if (isPending) {
       stateBadge = { type: 'state-orange', label: '대기' };
-    } else if (auctionStatus == '경매 종료' && bidCount == 0 && winnerId === null) {
+    } else if (
+      pathname === '/auction/listings' &&
+      auctionStatus == '경매 종료' &&
+      bidCount == 0 &&
+      winnerId === null
+    ) {
       stateBadge = { type: 'state-gray', label: '유찰' };
     }
   }
