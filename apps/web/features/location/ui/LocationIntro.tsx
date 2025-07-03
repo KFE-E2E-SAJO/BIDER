@@ -3,11 +3,11 @@ import DotStepper from '@/features/location/ui/DotStepper';
 import { Button } from '@repo/ui/components/Button/Button';
 import Image from 'next/image';
 
-type Props = {
+type LocationIntroProps = {
   onNext: () => void;
 };
 
-const LocationIntro = ({ onNext }: Props) => (
+const LocationIntro = ({ onNext }: LocationIntroProps) => (
   <>
     <div className="p-box flex flex-1 flex-col justify-center">
       <h2 className="typo-subtitle-medium mb-[16px] text-neutral-900">

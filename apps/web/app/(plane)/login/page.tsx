@@ -1,5 +1,5 @@
 import { Button } from '@repo/ui/components/Button/Button';
-import { LogInForm } from '@/features/login/LogInForm';
+import { LogInForm } from '@/features/login/ui/LogInForm';
 import '@repo/ui/styles.css';
 
 export default function LogInPage() {

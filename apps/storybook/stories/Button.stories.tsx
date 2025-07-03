@@ -1,7 +1,7 @@
 // Button.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@repo/ui/components/Button/Button';
-import { Map, MapPin, MessageSquareMore, Plus } from 'lucide-react';
+import { Map, MapPin, MessageSquareMore, Plus, X } from 'lucide-react';
 
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
@@ -215,6 +215,9 @@ export const IconOnly: Story = {
       </Button>
       <Button size="icon" {...args}>
         <MessageSquareMore />
+      </Button>
+      <Button size="icon" {...args} className="text-body size-30 rounded-full bg-neutral-900">
+        <X size={12} />
       </Button>
     </div>
   ),

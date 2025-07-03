@@ -1,52 +1,39 @@
-'use client';
+import { useTheme } from 'next-themes';
+import { Fragment } from 'react/jsx-runtime';
+import { toast as sonnerToast, Toaster as Sonner, ToasterProps } from 'sonner';
 
-import * as React from 'react';
-import { Toaster as Sonner, ToasterProps, toast } from 'sonner';
-
-type Position =
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right'
-  | 'top-center'
-  | 'bottom-center';
-
-interface CustomToasterProps extends ToasterProps {
-  toastClassName?: string;
-  titleClassName?: string;
-  position?: Position;
+export interface CustomToastOptions {
+  content: string;
   duration?: number;
-  render?: ToasterProps['toastOptions'] extends { render: infer T } ? T : never;
 }
 
-const Toast = React.forwardRef<HTMLDivElement, CustomToasterProps>(
-  (
+const toast = ({ content, duration = 3000 }: CustomToastOptions) => {
+  sonnerToast.custom(
+    () => (
+      <div className={`flex items-center justify-center gap-2 rounded-[5px] bg-neutral-900`}>
+        {/* Content */}
+        <div className="typo-caption-medium text-neutral-0 w-[95vw] max-w-[500px] flex-grow break-words p-[11px] text-center">
+          {content.split('\n').map((line, index) => (
+            <Fragment key={index}>
+              {line}
+              {index < content.split('\n').length - 1 && <br />}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    ),
     {
-      toastClassName = '!w-full !flex !justify-center !rounded-lg !bg-neutral-900',
-      titleClassName = '!text-body !font-extrabold !text-neutral-0',
-      position = 'bottom-center',
-      duration = 2000,
-      render,
-      ...props
-    },
-    ref
-  ) => {
-    return (
-      <Sonner
-        ref={ref}
-        position={position}
-        duration={duration}
-        toastOptions={{
-          classNames: {
-            toast: toastClassName,
-            title: titleClassName,
-          },
-          ...(render ? { render } : {}),
-        }}
-        {...props}
-      />
-    );
-  }
-);
+      duration,
+      className: 'custom-toast',
+    }
+  );
+};
 
-export { Toast, toast };
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = 'system' } = useTheme();
+  return (
+    <Sonner theme={theme as ToasterProps['theme']} className="toaster group" gap={8} {...props} />
+  );
+};
+
+export { toast, Toaster };

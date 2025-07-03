@@ -1,26 +1,43 @@
 'use client';
+
 import { useProductList } from '@/features/product/model/useProductList';
 import LocationPin from '@/features/product/ui/LocationPin';
 import ProductList from '@/features/product/ui/ProductList';
+import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-
-//유저정보 받아서 lat,lng대신 유저 id 넣는걸로 수정예정
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const HomePage = () => {
+  const router = useRouter();
+  const userId = useAuthStore((state) => state.user?.id);
+
   const { data, isLoading, error } = useProductList({
-    lat: 37.371017496651,
-    lng: 127.00463877897,
+    userId: userId as string,
   });
 
-  if (isLoading) return <Loading />;
-  if (error) return <p>에러 발생: {(error as Error).message}</p>;
-  const products = data ?? [];
+  useEffect(() => {
+    if (!error) return;
+
+    const message = (error as Error).message;
+
+    if (message === '유저 위치 정보가 없습니다.') {
+      alert(message);
+      router.replace('/setLocation');
+    } else {
+      alert('로그인이 필요합니다.');
+      router.replace('/login');
+    }
+  }, [error, router]);
+
+  if (isLoading || error || !data) {
+    return <Loading />;
+  }
 
   return (
     <div className="p-box">
       <LocationPin />
-
-      <ProductList data={products} />
+      <ProductList data={data} />
     </div>
   );
 };
