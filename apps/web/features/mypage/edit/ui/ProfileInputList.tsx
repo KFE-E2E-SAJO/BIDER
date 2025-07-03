@@ -3,37 +3,60 @@
 import { Button } from '@repo/ui/components/Button/Button';
 import { Input } from '@repo/ui/components/Input/Input';
 import ProfilePreview, { UploadedImage } from './ProfilePreview';
-import { useState } from 'react';
-import { setUserInfo } from '@/features/mypage/edit/model/setUserInfo';
-import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useAuthStore } from '@/shared/model/authStore';
+import Loading from '@/shared/ui/Loading/Loading';
+import { useGetEditProfile } from '../model/useGetEditProfile';
+import { useRouter } from 'next/navigation';
 
-interface ProfileInputListProps {
-  userId: string;
-  nickname: string;
-  profileImg?: string | null;
-}
+const ProfileInputList = () => {
+  const user = useAuthStore((state) => state.user);
+  const userId = user?.id ?? '';
 
-const ProfileInputList = ({ userId, nickname, profileImg }: ProfileInputListProps) => {
-  const [newNickname, setNewNickname] = useState(nickname);
+  const { data, isLoading, error } = useGetEditProfile({ userId });
+
+  const [newNickname, setNewNickname] = useState('');
   const [avatar, setAvatar] = useState<UploadedImage | null>(null);
   const [isDeleted, setIsDeleted] = useState(false);
-  const isModified = newNickname !== nickname || avatar !== null || isDeleted;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (data?.nickname) {
+      setNewNickname(data.nickname);
+    }
+  }, [data?.nickname]);
+
+  if (!userId || error || isLoading || !data) return <Loading />;
+
+  const isModified = newNickname !== data.nickname || avatar !== null || isDeleted;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const nicknameChanged = newNickname !== nickname;
+    const nicknameChanged = newNickname !== data.nickname;
 
-    const updatedUserData = {
-      userId,
-      nickname: nicknameChanged ? newNickname : nickname,
-      profileImg: (isDeleted ? null : (avatar?.preview ?? profileImg)) as string | null,
-    };
-    console.log('userId:', userId);
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('nickname', nicknameChanged ? newNickname : data.nickname);
+
+    if (isDeleted) {
+      formData.append('profileImg', '');
+      formData.append('isDeleted', 'true');
+    } else if (avatar?.file) {
+      formData.append('profileImg', avatar.file);
+    }
 
     try {
-      await setUserInfo(updatedUserData);
-      redirect('/mypage');
+      const res = await fetch('/api/mypage', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+
+      router.push('/mypage');
+      router.refresh();
     } catch (error) {
       alert((error as Error).message);
     }
@@ -42,7 +65,7 @@ const ProfileInputList = ({ userId, nickname, profileImg }: ProfileInputListProp
   return (
     <form onSubmit={handleSubmit} className="flex flex-col items-center gap-5">
       <ProfilePreview
-        profileImg={profileImg}
+        profileImg={data.profile_img}
         onChangeAvatar={setAvatar}
         onDelete={() => {
           setAvatar(null);
