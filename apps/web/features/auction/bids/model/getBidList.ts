@@ -1,11 +1,12 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import fetchBidList from '@/features/auction/bids/lib/util';
+import { ProductForList } from '@/features/product/types';
 
-interface BidListProps {
+interface BidListParams {
   filter: 'all' | 'progress' | 'win' | 'fail';
+  userId: string;
 }
 
-export interface BidHistoryFromDB {
+interface BidData {
   bid_id: string;
   bid_price: number;
   is_awarded: boolean;
@@ -37,14 +38,17 @@ export interface BidHistoryFromDB {
   };
 }
 
-const getBidList = async (filter: BidListProps['filter']) => {
-  const user = { id: 'c6d80a1e-b154-4cd0-b17d-c7308c46ebaa' };
-  if (!user) return null;
+const getBidList = async (params: BidListParams): Promise<ProductForList[]> => {
+  const { filter, userId } = params;
 
-  const bidData = await fetchBidList(user.id);
-  if (!bidData) return null;
+  const res = await fetch(`/api/auction/bids?userId=${userId}`);
+  const result = await res.json();
 
-  const typedData = bidData as BidHistoryFromDB[];
+  if (!res.ok || !result.success) {
+    throw new Error(result.error || 'Failed to fetch product list');
+  }
+
+  const typedData: BidData[] = result.data;
 
   const filtered = typedData.filter((item) => {
     const { auction } = item;
