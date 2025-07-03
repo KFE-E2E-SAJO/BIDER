@@ -19,6 +19,7 @@ import {
 import '@repo/ui/styles.css';
 import { signupSchema } from '../../shared/lib/validation/signupSchema';
 import { emailSchema } from '@/shared/lib/validation/email';
+import { Check, CheckIcon, CheckLine } from 'lucide-react';
 
 export const SignUpForm = () => {
   const searchParams = useSearchParams();
@@ -276,10 +277,12 @@ export const SignUpForm = () => {
   return (
     <form onSubmit={handleSubmitForm} className="space-y-6">
       <div className="space-y-3">
-        <label htmlFor="email-id" className="typo-body-bold block text-neutral-800">
+        <label htmlFor="email-id" className="typo-body-bold block flex text-neutral-800">
           이메일{' '}
           {isEmailVerified && (
-            <span className="typo-subtitle-small-bold text-green-600">✓ 인증완료</span>
+            <span className="typo-caption-medium flex text-green-600">
+              <Check className="flex" size={15} /> 인증완료
+            </span>
           )}
         </label>
         <div className="flex items-center gap-2">
@@ -344,7 +347,16 @@ export const SignUpForm = () => {
           disabled={!checkEmailInputs() || isEmailVerified || isLoading}
           onClick={sendVerificationEmail}
         >
-          {isLoading ? '발송 중...' : isEmailVerified ? '✓ 인증 완료' : '이메일 인증하기'}
+          {isLoading ? (
+            '발송 중...'
+          ) : isEmailVerified ? (
+            <span className="inline-flex items-center gap-1">
+              <Check size={15} />
+              인증 완료
+            </span>
+          ) : (
+            '이메일 인증하기'
+          )}
         </Button>
       </div>
 
