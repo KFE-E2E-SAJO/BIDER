@@ -8,7 +8,6 @@ interface MyPageProfileCardProps {
 }
 
 const MyPageProfileCard = ({ nickname, email, profileImg }: MyPageProfileCardProps) => {
-  console.log('profileImg = ', profileImg);
   return (
     <div className="mx-[16px] flex items-center justify-between border-b border-neutral-100 pb-[25px] pt-[16px]">
       <div className="flex items-center">
