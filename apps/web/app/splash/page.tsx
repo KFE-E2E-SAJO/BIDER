@@ -8,9 +8,12 @@ import Link from 'next/link';
 
 export default function SplashPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    setIsMounted(true);
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 5000);
@@ -19,21 +22,47 @@ export default function SplashPage() {
   }, []);
 
   const checkIsAuthenticated = (): boolean => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined' || !isMounted) return false;
 
-    const token = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
-    return !!token;
+    const tokenData = localStorage.getItem('sb-nrxemenkpeejarhejbbk-auth-token');
+
+    if (!tokenData) return false;
+
+    const accessToken = JSON.parse(tokenData).access_token;
+
+    return !!accessToken;
   };
 
   const handleStartClick = () => {
+    if (!isMounted) return;
+
     const isAuthenticated = checkIsAuthenticated();
 
     if (isAuthenticated) {
-      router.push('/loca');
+      const authStorage = localStorage.getItem('auth-storage');
+
+      if (!authStorage) return false;
+      const address = JSON.parse(authStorage).state.user.address;
+
+      if (address && address !== 'null') {
+        router.push('/');
+      } else {
+        router.push('/setLocation');
+      }
     } else {
-      router.push('/sign');
+      router.push('/signup');
     }
   };
+
+  if (!isMounted) {
+    return (
+      <div className="bg-main fixed inset-0 z-50 flex items-center justify-center">
+        <div className="flex flex-1 scale-[2.5] items-center justify-center">
+          <Logo variant="reversal" />
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
