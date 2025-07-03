@@ -82,8 +82,7 @@ const ProductRegistrationPage = () => {
 
       alert('출품이 완료되었습니다!');
       setTimeout(() => {
-        // 마이페이지 등록한 상품내역 화면으로 이동 예정(아직 미구현됨)
-        router.push('/');
+        router.push('/auction/listings');
       }, 0);
     } catch (err) {
       console.error('출품 에러', err);

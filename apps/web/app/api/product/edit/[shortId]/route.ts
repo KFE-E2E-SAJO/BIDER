@@ -42,6 +42,7 @@ export async function POST(request: Request, { params }: { params: { shortId: st
   const formData = await request.formData();
   const productId = decodeShortId(params.shortId);
   const title = formData.get('title') as string;
+  const category = formData.get('category') as string;
   const description = formData.get('description') as string;
   const minPrice = formData.get('min_price') as string;
   const endAt = formData.get('end_at') as string;
@@ -119,6 +120,7 @@ export async function POST(request: Request, { params }: { params: { shortId: st
       .from('product')
       .update({
         title,
+        category,
         description,
         updated_at: new Date().toISOString(),
       })
