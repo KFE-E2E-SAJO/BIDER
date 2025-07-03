@@ -122,7 +122,15 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
       return;
     }
 
-    if (!title || !description || !minPrice || !endDate || !endTime || images.length === 0) {
+    if (
+      !title ||
+      !category ||
+      !description ||
+      !minPrice ||
+      !endDate ||
+      !endTime ||
+      images.length === 0
+    ) {
       alert('모든 필수 항목을 입력해 주세요');
       return;
     }
