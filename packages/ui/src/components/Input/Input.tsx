@@ -56,9 +56,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         'placeholder:text-muted-foreground dark:bg-input/30',
         'border-neutral-400 flex h-13 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-xs',
         'transition-[color,box-shadow] outline-none',
-        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-
-        (type === 'date' || type === 'time') && 'letter-spacing-date-time'
+        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
       );
 
       if (disabled || status === 'disabled') {
@@ -116,9 +114,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             onChange={handleChange}
             aria-invalid={status === 'error'}
             style={
-              type == 'time' || type == 'date'
-                ? { letterSpacing: '0.2rem', fontSize: '1.1rem' }
-                : {}
+              type === 'time'
+                ? { letterSpacing: '0.35rem', paddingLeft: '1rem' }
+                : type === 'date'
+                  ? { letterSpacing: '0.16rem', paddingLeft: '1rem' }
+                  : {}
             }
             {...props}
           />
