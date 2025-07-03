@@ -89,7 +89,7 @@ const ProductDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
           </div>
         </div>
 
-        <div className="typo-body-regular">{mapped.productDescription}</div>
+        <div className="typo-body-regular whitespace-pre-line">{mapped.productDescription}</div>
       </div>
       <div className="h-[8px] w-full bg-neutral-100"></div>
       <div className="p-box">
