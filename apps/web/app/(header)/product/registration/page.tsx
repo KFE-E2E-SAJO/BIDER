@@ -6,12 +6,21 @@ import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useRouter } from 'next/navigation';
 import ImageUploadPreview, { UploadedImage } from '@/shared/lib/ImageUploadPreview';
+import { categories, CategoryValue } from '@/features/category/types';
 import { useAuthStore } from '@/shared/model/authStore';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@repo/ui/components/Select/Select';
 
 const ProductRegistrationPage = () => {
   const router = useRouter();
   const user = useAuthStore();
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [images, setImages] = useState<UploadedImage[]>([]);
@@ -33,7 +42,15 @@ const ProductRegistrationPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!title || !description || !minPrice || !endDate || !endTime || images.length === 0) {
+    if (
+      !title ||
+      !category ||
+      !description ||
+      !minPrice ||
+      !endDate ||
+      !endTime ||
+      images.length === 0
+    ) {
       alert('모든 필수 항목을 입력해 주세요');
       return;
     }
@@ -48,6 +65,7 @@ const ProductRegistrationPage = () => {
     formData.append('description', description);
     formData.append('min_price', numericPrice.toString());
     formData.append('end_at', endAt.toISOString());
+    formData.append('category', category);
     if (user.user?.id) {
       formData.append('user_id', user.user.id);
     }
@@ -72,8 +90,7 @@ const ProductRegistrationPage = () => {
 
       alert('출품이 완료되었습니다!');
       setTimeout(() => {
-        // 마이페이지 등록한 상품내역 화면으로 이동 예정(아직 미구현됨)
-        router.push('/');
+        router.push('/auction/listings');
       }, 0);
     } catch (err) {
       console.error('출품 에러', err);
@@ -99,6 +116,25 @@ const ProductRegistrationPage = () => {
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+        </div>
+        <div className="flex flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">
+            카테고리<span className="text-main">*</span>
+          </div>
+          <Select value={category} onValueChange={(value) => setCategory(value as CategoryValue)}>
+            <SelectTrigger className="typo-body-regular rounded-sm px-[10.5px]">
+              <SelectValue placeholder="카테고리를 선택해 주세요." />
+            </SelectTrigger>
+            <SelectContent>
+              {categories
+                .filter((category) => category.value !== 'all')
+                .map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-[13px]">
           <div className="typo-subtitle-small-medium">
