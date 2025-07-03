@@ -1,8 +1,8 @@
 'use client';
 
-import { getRandomImage } from '@/features/lib/random';
+import { getRandomImage } from '@/features/chat/lib/random';
 import TimeAgo from 'javascript-time-ago';
-import ko from 'javascript-time-ago/locale/ko';
+import ko from 'javascript-time-ago/locale/ko.json';
 
 TimeAgo.addDefaultLocale(ko);
 

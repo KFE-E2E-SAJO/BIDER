@@ -11,7 +11,7 @@ export const createServerSupabaseClient = async (
   const resolvedCookieStore = await cookieStore;
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    admin ? process.env.NEXT_SUPABASE_SERVICE_ROLE! : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    admin ? process.env.NEXT_PUBLIC_SUPABASE_KEY! : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         get(name: string) {

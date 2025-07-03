@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getAllUsers } from '@/features/chat/model/chatActions';
+import { getAllUsers } from '@/.next/types/app/model/chatActions';
 import { useRouter } from 'next/navigation';
 
 import React, { useState } from 'react';
