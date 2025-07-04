@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../../shared/lib/supabaseClient';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function AuthCallback() {
         // 에러가 있는 경우
         if (error) {
           console.error('Auth error:', error, errorDescription);
-          alert('이메일 인증 중 오류가 발생했습니다: ' + (errorDescription || error));
+          toast({ content: '이메일 인증 중 오류가 발생했습니다: ' + (errorDescription || error) });
 
           // 부모 창에 에러 메시지 전송
           if (window.opener) {
@@ -48,7 +49,7 @@ export default function AuthCallback() {
 
           if (sessionError) {
             console.error('Session error:', sessionError);
-            alert('세션 설정 중 오류가 발생했습니다.');
+            toast({ content: '세션 설정 중 오류가 발생했습니다.' });
 
             if (window.opener) {
               window.opener.postMessage(
@@ -70,7 +71,7 @@ export default function AuthCallback() {
 
           if (userError || !userData.user) {
             console.error('User error:', userError);
-            alert('사용자 정보를 가져올 수 없습니다.');
+            toast({ content: '사용자 정보를 가져올 수 없습니다.' });
 
             if (window.opener) {
               window.opener.postMessage(
@@ -89,8 +90,6 @@ export default function AuthCallback() {
 
           // 이메일 인증 완료 확인
           if (userData.user.email_confirmed_at) {
-            console.log('Email verified successfully for:', userData.user.email);
-
             if (window.opener) {
               window.opener.postMessage(
                 {
@@ -100,14 +99,14 @@ export default function AuthCallback() {
                 window.location.origin
               );
               // 성공 메시지 표시 후 창 닫기
-              alert('이메일 인증이 완료되었습니다! 회원가입을 계속 진행해주세요.');
+              toast({ content: '이메일 인증이 완료되었습니다! 회원가입을 계속 진행해주세요.' });
+
               window.close();
             } else {
               router.replace('/signup?verified=true');
             }
           } else {
-            alert('이메일 인증이 완료되지 않았습니다.');
-
+            toast({ content: '이메일 인증이 완료되지 않았습니다.' });
             if (window.opener) {
               window.opener.postMessage(
                 {
@@ -139,7 +138,7 @@ export default function AuthCallback() {
         }
       } catch (error) {
         console.error('Unexpected error in callback:', error);
-        alert('예상치 못한 오류가 발생했습니다.');
+        toast({ content: '예상치 못한 오류가 발생했습니다.' });
 
         if (window.opener) {
           window.opener.postMessage(

@@ -4,6 +4,7 @@ import type { Viewport } from 'next';
 import '@repo/ui/styles.css';
 import '../styles/global.css';
 import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
+import { Toaster } from '@repo/ui/components/Toast/Sonner';
 
 const geistSans = localFont({
   src: '../public/fonts/GeistVF.woff',
@@ -41,6 +42,8 @@ const RootLayout = ({
             {children}
           </div>
         </ReactQueryProvider>
+
+        <Toaster />
       </body>
     </html>
   );
