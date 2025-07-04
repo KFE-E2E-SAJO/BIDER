@@ -1,12 +1,13 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
-import { User, Mail } from 'lucide-react';
+import { User, Mail, ChevronLeft } from 'lucide-react';
 import '@repo/ui/styles.css';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { validateFullEmail } from '@/shared/lib/validation/email';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 export default function FindAccountPage() {
   const [inputValue, setInputValue] = useState<string>('');
@@ -55,7 +56,7 @@ export default function FindAccountPage() {
         .single();
 
       if (error || !data?.email) {
-        alert('등록되지 않은 사용자명입니다.');
+        toast({ content: '등록되지 않은 사용자명입니다.' });
         return;
       }
 
@@ -64,7 +65,7 @@ export default function FindAccountPage() {
       setIsFound(true);
     } catch (err) {
       console.error('이메일 검색 오류:', err);
-      alert('검색 중 오류가 발생했습니다.');
+      toast({ content: '검색 중 오류가 발생했습니다.' });
     }
   };
 
@@ -72,7 +73,7 @@ export default function FindAccountPage() {
   const handlePasswordReset = async () => {
     const [email, domain] = inputValue.split('@');
     if (!email || !domain) {
-      alert('유효하지 않은 이메일 형식입니다.');
+      toast({ content: '유효하지 않은 이메일 형식입니다.' });
       return;
     }
 
@@ -85,7 +86,8 @@ export default function FindAccountPage() {
         });
 
         if (error) {
-          alert('등록되지 않은 이메일이거나 오류가 발생했습니다.');
+          toast({ content: '등록되지 않은 이메일이거나 오류가 발생했습니다.' });
+
           return;
         }
 
@@ -93,10 +95,10 @@ export default function FindAccountPage() {
         setIsFound(true);
       } catch (err) {
         console.error('비밀번호 재설정 오류:', err);
-        alert('재설정 중 오류가 발생했습니다.');
+        toast({ content: '재설정 중 오류가 발생했습니다.' });
       }
     } else {
-      alert('올바른 이메일 형식을 입력해주세요');
+      toast({ content: '올바른 이메일 형식을 입력해주세요' });
       return;
     }
   };
@@ -105,7 +107,7 @@ export default function FindAccountPage() {
     e.preventDefault();
 
     if (!inputValue.trim()) {
-      alert(`${accountType === 'email' ? '사용자명을' : '이메일을'} 입력해주세요.`);
+      toast({ content: `${accountType === 'email' ? '사용자명을' : '이메일을'} 입력해주세요.` });
       return;
     }
 
@@ -147,7 +149,7 @@ export default function FindAccountPage() {
         title: '비밀번호 찾기',
         placeholder: '이메일 주소',
         icon: <Mail />,
-        inputType: 'email' as const,
+        inputType: 'text' as const,
         buttonText: '재설정 이메일 발송',
         resultPrefix: '',
         description: '입력하신 이메일로 재설정 링크를 확인해주세요.',
@@ -158,7 +160,8 @@ export default function FindAccountPage() {
   const config = getConfig();
 
   return (
-    <div className="m-3">
+    <div className="p-box">
+      <ChevronLeft className="mt-[30px]" />
       <p className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]">
         {config.title}
       </p>

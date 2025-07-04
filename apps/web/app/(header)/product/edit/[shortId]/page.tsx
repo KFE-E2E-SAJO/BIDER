@@ -17,6 +17,7 @@ import {
   SelectItem,
 } from '@repo/ui/components/Select/Select';
 import { categories, CategoryValue } from '@/features/category/types';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 type PendingAuction = {
   min_price: number;
@@ -117,7 +118,7 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
     const now = new Date();
 
     if (deadline && now > deadline) {
-      alert('상품 수정 가능 시간이 만료되었습니다!');
+      toast({ content: '상품 수정 가능 시간이 만료되었습니다!' });
       router.back();
       return;
     }
@@ -131,7 +132,8 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
       !endTime ||
       images.length === 0
     ) {
-      alert('모든 필수 항목을 입력해 주세요');
+      toast({ content: '모든 필수 항목을 입력해 주세요' });
+
       return;
     }
 
@@ -165,17 +167,17 @@ const ProductEditPage = ({ params }: { params: Promise<{ shortId: string }> }) =
 
       if (!res.ok) {
         const { error } = await res.json();
-        alert(`수정 실패: ${error}`);
+        toast({ content: '수정 실패' });
+        console.error(error);
         return;
       }
-
-      alert('수정이 완료되었습니다!');
+      toast({ content: '수정이 완료되었습니다!' });
       setTimeout(() => {
         router.push('/auction/listings');
       }, 0);
     } catch (err) {
       console.error('수정 에러', err);
-      alert('알 수 없는 오류가 발생했어요.');
+      toast({ content: '알 수 없는 오류가 발생했어요.' });
     } finally {
       setIsSubmitting(false);
     }

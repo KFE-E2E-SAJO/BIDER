@@ -4,14 +4,14 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { Input } from '@repo/ui/components/Input/Input';
-import { KeyIcon, Lock } from 'lucide-react';
+import { ChevronLeft, KeyIcon, Lock } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
-import { passwordSchema } from '@/shared/lib/validation/password';
+import { passwordSchema } from '@/shared/lib/validation/signupSchema';
 
 export default function ResetPasswordPage() {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setnewPasswordConfirm] = useState('');
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -22,12 +22,12 @@ export default function ResetPasswordPage() {
     const result1 = passwordSchema.safeParse(newPasswordConfirm);
 
     if (newPassword !== newPasswordConfirm) {
-      alert('비밀번호가 일치하지 않습니다. 확인해주세요');
+      setStatus('비밀번호가 일치하지 않습니다. 확인해주세요');
       return;
     }
 
     if (!result.success || !result1.success) {
-      alert('비밀번호 형식을 맞춰서 작성해주세요');
+      setStatus('비밀번호 형식을 맞춰서 작성해주세요');
       return false;
     }
 
@@ -36,7 +36,8 @@ export default function ResetPasswordPage() {
     });
 
     if (error) {
-      setStatus('error');
+      setStatus(error.message);
+      return;
     } else {
       setStatus('success');
       router.push('/login');
@@ -45,6 +46,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="m-3">
+      <ChevronLeft className="mt-[30px]" />
       <p className='className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]'>
         비밀번호 재설정
       </p>
@@ -73,6 +75,7 @@ export default function ResetPasswordPage() {
           required
         />
 
+        {status && <p className="typo-caption-regular text-danger">{status}</p>}
         <Button type="submit" className="mt-[0.81rem]">
           재설정하기
         </Button>

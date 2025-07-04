@@ -15,6 +15,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@repo/ui/components/Select/Select';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 const ProductRegistrationPage = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ const ProductRegistrationPage = () => {
       !endTime ||
       images.length === 0
     ) {
-      alert('모든 필수 항목을 입력해 주세요');
+      toast({ content: '모든 필수 항목을 입력해 주세요' });
       return;
     }
 
@@ -84,17 +85,18 @@ const ProductRegistrationPage = () => {
 
       if (!res.ok) {
         const { error } = await res.json();
-        alert(`출품 실패: ${error}`);
+        toast({ content: '출품 실패' });
+        console.error(error);
         return;
       }
+      toast({ content: '출품이 완료되었습니다!' });
 
-      alert('출품이 완료되었습니다!');
       setTimeout(() => {
         router.push('/auction/listings');
       }, 0);
     } catch (err) {
       console.error('출품 에러', err);
-      alert('알 수 없는 오류가 발생했어요.');
+      toast({ content: '알 수 없는 오류가 발생했어요.' });
     } finally {
       setIsSubmitting(false);
     }

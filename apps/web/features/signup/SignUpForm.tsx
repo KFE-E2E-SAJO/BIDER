@@ -18,8 +18,9 @@ import {
 } from '../../shared/lib/auth';
 import '@repo/ui/styles.css';
 import { signupSchema } from '../../shared/lib/validation/signupSchema';
-import { emailSchema } from '@/shared/lib/validation/email';
+import { emailSchema } from '@/shared/lib/validation/signupSchema';
 import { Check, CheckIcon, CheckLine } from 'lucide-react';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 export const SignUpForm = () => {
   const searchParams = useSearchParams();
@@ -87,12 +88,10 @@ export const SignUpForm = () => {
             }
             router.replace('/signup');
           } else {
-            console.log('이메일 인증 실패:', { isVerified, userEmail });
-            alert('이메일 인증이 완료되지 않았습니다. 다시 시도해주세요.');
+            toast({ content: '이메일 인증이 완료되지 않았습니다. 다시 시도해주세요.' });
           }
         } catch (error) {
-          console.error('인증 확인 중 오류:', error);
-          alert('인증 확인 중 오류가 발생했습니다. 다시 시도해주세요.');
+          toast({ content: '인증 확인 중 오류가 발생했습니다. 다시 시도해주세요.' });
         }
       } else {
         return;
@@ -130,7 +129,7 @@ export const SignUpForm = () => {
         // URL에서 verified 파라미터 제거
         router.replace('/signup');
       } else if (event.data.type === 'AUTH_ERROR') {
-        alert('인증 중 오류가 발생했습니다: ' + event.data.error);
+        toast({ content: '인증 중 오류가 발생했습니다: ' + event.data.error });
       }
     };
 
@@ -188,13 +187,14 @@ export const SignUpForm = () => {
       const result = await sendEmailVerification(fullEmail);
 
       if (result?.success) {
-        alert(`${fullEmail}로 인증 이메일을 보냈습니다! 이메일을 확인해주세요.`);
+        toast({ content: `${fullEmail}로 인증 이메일을 보냈습니다! 이메일을 확인해주세요.` });
+
         setIsEmailSent(true);
       } else {
-        alert(`${result?.error}`);
+        toast({ content: `${result?.error}` });
       }
     } catch (error) {
-      alert('이메일 발송 중 오류가 발생했습니다. 다시 시도해주세요.');
+      toast({ content: '이메일 발송 중 오류가 발생했습니다. 다시 시도해주세요.' });
     } finally {
       setIsLoading(false);
     }
@@ -210,7 +210,8 @@ export const SignUpForm = () => {
     setNicknameError('');
 
     if (!isEmailVerified || !verifiedEmail) {
-      alert('이메일 인증을 완료해주세요.');
+      toast({ content: '이메일 인증을 완료해주세요.' });
+
       return;
     }
 
@@ -256,13 +257,14 @@ export const SignUpForm = () => {
       });
 
       if (result.success) {
-        alert('회원가입이 완료되었습니다!');
+        toast({ content: '회원가입이 완료되었습니다!' });
+
         router.push('/login');
       } else {
-        alert(`회원가입 실패: ${result.error}`);
+        toast({ content: `회원가입 실패: ${result.error}` });
       }
     } catch (error) {
-      alert('회원가입 중 오류가 발생했습니다.');
+      toast({ content: '회원가입 중 오류가 발생했습니다.' });
     } finally {
       setIsLoading(false);
     }
@@ -271,8 +273,8 @@ export const SignUpForm = () => {
   return (
     <form onSubmit={handleSubmitForm} className="space-y-6">
       <div className="space-y-3">
-        <label htmlFor="email-id" className="typo-body-bold block flex text-neutral-800">
-          이메일{' '}
+        <label htmlFor="email-id" className="typo-body-bold block text-neutral-800">
+          이메일
           {isEmailVerified && (
             <span className="typo-caption-medium flex text-green-600">
               <Check className="flex" size={15} /> 인증완료

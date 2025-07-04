@@ -7,6 +7,7 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/Dialog/Dialog';
 
 import { Input } from '@repo/ui/components/Input/Input';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
@@ -56,7 +57,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
       const bidPriceNumber = Number(biddingPrice.replace(/,/g, ''));
 
       if (!bidPriceNumber || bidPriceNumber <= 0) {
-        alert('올바른 입찰가를 입력해주세요.');
+        toast({ content: '올바른 입찰가를 입력해주세요.' });
         return;
       }
 
@@ -75,19 +76,19 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
       const result = await response.json();
 
       if (!response.ok) {
-        alert(result.error || '입찰 중 오류가 발생했습니다.');
+        toast({ content: result.error || '입찰 중 오류가 발생했습니다.' });
         return;
       }
 
       // 입찰 성공
-      alert(result.message || '입찰이 완료되었습니다!');
+      toast({ content: result.message || '입찰이 완료되었습니다!' });
       setOpenBiddingSheet(false);
 
       // 페이지 새로고침 또는 데이터 재로드
       window.location.reload();
     } catch (error) {
       console.error('입찰 요청 오류:', error);
-      alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+      toast({ content: '네트워크 오류가 발생했습니다. 다시 시도해주세요.' });
     } finally {
       setIsSubmitting(false);
     }

@@ -11,6 +11,7 @@ import {
 } from '@repo/ui/components/Dialog/Dialog';
 import { useState } from 'react';
 import { encodeUUID } from '@/shared/lib/shortUuid';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 interface ProductActionBtnProps {
   winnerId?: string | null;
@@ -61,14 +62,15 @@ const ProductActionBtn = ({
         throw new Error(result.error || '삭제 실패');
       }
 
-      alert('삭제가 완료되었습니다.');
+      toast({ content: '삭제가 완료되었습니다.' });
+
       setOpen(false);
 
       router.push('/auction/listings');
       router.refresh();
     } catch (err) {
       console.error('[삭제 실패]', err);
-      alert('삭제 중 오류가 발생했습니다: ' + (err as Error).message);
+      toast({ content: '삭제 중 오류가 발생했습니다: ' + (err as Error).message });
     }
   };
 

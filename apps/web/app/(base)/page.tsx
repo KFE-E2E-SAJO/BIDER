@@ -5,6 +5,7 @@ import LocationPin from '@/features/product/ui/LocationPin';
 import ProductList from '@/features/product/ui/ProductList';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -22,10 +23,10 @@ const HomePage = () => {
     const message = (error as Error).message;
 
     if (message === '유저 위치 정보가 없습니다.') {
-      alert(message);
+      toast({ content: message });
       router.replace('/setLocation');
     } else {
-      alert('로그인이 필요합니다.');
+      toast({ content: '로그인이 필요합니다.' });
       router.replace('/login');
     }
   }, [error, router]);

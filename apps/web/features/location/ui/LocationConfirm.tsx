@@ -8,6 +8,7 @@ import { getAddressFromLatLng } from '@/features/location/api/getAddressFromLatL
 import { SetLocation } from '@/features/location/api/setLocation';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useRouter } from 'next/navigation';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
@@ -26,18 +27,17 @@ const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
 
   const handleNext = async () => {
     if (!userId) {
-      alert('로그인이 필요합니다.');
+      toast({ content: '로그인이 필요합니다.' });
       router.replace('/login');
       return;
     }
-
     if (!position) {
-      alert('위치 정보가 없습니다.');
+      toast({ content: '위치 정보가 없습니다.' });
       return;
     }
 
     if (!address) {
-      alert('주소 정보가 없습니다.');
+      toast({ content: '주소 정보가 없습니다.' });
       return;
     }
     updateAddress(address);
@@ -53,7 +53,7 @@ const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
       onNext();
     } catch (err) {
       console.error('위치 저장 실패:', err);
-      alert('위치 저장에 실패했습니다.');
+      toast({ content: '위치 저장에 실패했습니다.' });
     }
   };
 
@@ -72,7 +72,7 @@ const LocationConfirm = ({ onNext }: LocationConfirmProps) => {
         setLoading(false);
       },
       (err) => {
-        alert('지도를 불러오는 데 문제가 발생했습니다.');
+        toast({ content: '지도를 불러오는 데 문제가 발생했습니다.' });
         console.error('지도를 불러오는 데 문제가 발생했습니다.', err);
         setError(true);
         setLoading(false);

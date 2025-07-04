@@ -45,3 +45,51 @@ export const signupSchema = baseSignupSchema.refine(
     path: ['confirmPassword'],
   }
 );
+
+//이메일용 스키마
+export const emailSchema = baseSignupSchema
+  .pick({
+    email: true,
+    domain: true,
+    customDomain: true,
+  })
+  .refine(
+    (data) => {
+      if (data.domain === 'custom') {
+        const custom = data.customDomain ?? '';
+        if (
+          !custom.includes('.') ||
+          custom.startsWith('-') ||
+          custom.endsWith('-') ||
+          custom.includes('..')
+        ) {
+          return false;
+        }
+      }
+      return true;
+    },
+    {
+      message: '올바른 도메인 형식이 아닙니다',
+      path: ['customDomain'],
+    }
+  );
+
+//비밀번호 재설정용 스키마
+export const passwordSchema = z
+  .string()
+  .min(8, '비밀번호는 8자 이상이어야 합니다')
+  .max(20, '비밀번호는 20자 이하여야 합니다')
+  .refine(
+    (val) => {
+      const hasLower = /[a-z]/.test(val);
+      const hasUpper = /[A-Z]/.test(val);
+      const hasNumber = /\d/.test(val);
+      const hasSpecial = /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(val);
+
+      const typeCount = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+      return typeCount >= 2;
+    },
+    {
+      message: '비밀번호는 영문 대/소문자, 숫자, 특수문자 중 2가지 이상을 포함해야 합니다',
+    }
+  );
