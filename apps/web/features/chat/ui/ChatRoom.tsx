@@ -11,7 +11,7 @@ import {
   getAllMessages,
   // selectedUserIdState,
   // selectedUserIndexState,
-} from '../../../.next/types/app/model/chatActions';
+} from '@/app/model/chatActions';
 
 // 기타 import는 동일
 const productImage = 'https://via.placeholder.com/44';
@@ -109,9 +109,10 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
       {/* 채팅 메시지 영역 - 스크롤 가능, flex-1로 영역 차지 */}
       <div className="flex-1 overflow-y-auto bg-white px-4 py-3">
         <div className="flex flex-1 flex-col gap-3 overflow-y-auto bg-white px-4 py-3">
-          {getAllMessagesQuery.data?.map((message) => (
+          {getAllMessagesQuery.data?.map((message, index) => (
             <Message
-              isFromMe={message.sender_id === 'currentUserId'} // 현재 사용자 ID와 비교
+              key={message.message_id || index}
+              isFromMe={message.sender_id === 'currentUserId'}
               message={message.content}
             />
           ))}
