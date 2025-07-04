@@ -1,4 +1,3 @@
-import { useTheme } from 'next-themes';
 import { Fragment } from 'react/jsx-runtime';
 import { toast as sonnerToast, Toaster as Sonner, ToasterProps } from 'sonner';
 
@@ -30,11 +29,7 @@ const toast = ({ content, duration = 3000 }: CustomToastOptions) => {
 };
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = 'system' } = useTheme();
-
-  return (
-    <Sonner theme={theme as ToasterProps['theme']} className="toaster group" gap={8} {...props} />
-  );
+  return <Sonner className="toaster group" gap={8} {...props} />;
 };
 
 export { toast, Toaster };

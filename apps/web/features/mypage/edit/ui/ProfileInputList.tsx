@@ -8,6 +8,7 @@ import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useGetEditProfile } from '@/features/mypage/edit/model/useGetEditProfile';
 import { useRouter } from 'next/navigation';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 const ProfileInputList = () => {
   const user = useAuthStore((state) => state.user);
@@ -58,7 +59,7 @@ const ProfileInputList = () => {
       router.push('/mypage');
       router.refresh();
     } catch (error) {
-      alert((error as Error).message);
+      toast({ content: (error as Error).message });
     }
   };
 

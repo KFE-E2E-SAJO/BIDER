@@ -35,8 +35,6 @@ export default function ResetPasswordPage() {
       password: newPassword,
     });
 
-    console.log(error);
-
     if (error) {
       setStatus(error.message);
       return;
