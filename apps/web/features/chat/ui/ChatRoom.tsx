@@ -11,7 +11,7 @@ import {
   getAllMessages,
   // selectedUserIdState,
   // selectedUserIndexState,
-} from '@/app/model/chatActions';
+} from '../../../app/model/chatActions';
 
 // 기타 import는 동일
 const productImage = 'https://via.placeholder.com/44';
