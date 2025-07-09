@@ -1,11 +1,7 @@
-interface SetLocationProps {
-  userId: string;
-  lat: number;
-  lng: number;
-  address: string;
-}
+import { UpdateLocationProps } from '@/features/location/types';
 
-export const SetLocation = async ({ userId, lat, lng, address }: SetLocationProps) => {
+export const updateLocation = async ({ userId, location, address }: UpdateLocationProps) => {
+  const { lat, lng } = location;
   const res = await fetch('/api/location', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
