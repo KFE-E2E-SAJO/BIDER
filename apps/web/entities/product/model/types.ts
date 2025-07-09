@@ -1,3 +1,4 @@
+import { ProductImage } from '@/entities/productImage/model/types';
 import { Profiles } from '@/entities/profiles/model/types';
 
 export interface Product {
@@ -13,6 +14,7 @@ export interface Product {
   updated_at?: string;
 }
 
-export interface ProductWithUser extends Product {
-  exhibit_user: Profiles[];
+export interface ProductWithUserNImages extends Product {
+  exhibit_user: Profiles;
+  product_image: ProductImage[];
 }
