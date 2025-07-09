@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     const { data: auctions, error: fetchError } = await supabase
       .from('auction')
-      .select('id, product_id')
+      .select('auction_id, product_id')
       .eq('auction_status', '경매 대기')
       .lte('created_at', referenceTime);
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
             auction_status: '경매 중',
             updated_at: now,
           })
-          .eq('id', auction.id);
+          .eq('auction_id', auction.auction_id);
 
         if (updateError) {
           console.error(`Product ${auction.product_id} 경매 생성 실패:`, updateError);
