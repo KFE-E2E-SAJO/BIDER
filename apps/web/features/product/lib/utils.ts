@@ -1,3 +1,5 @@
+import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
+
 export const getCountdownWithColor = (
   endTime: string | Date
 ): { text: string; color: 'gray' | 'orange' | 'blue' } => {
@@ -46,3 +48,16 @@ export function getDistanceKm(lat1: number, lng1: number, lat2: number, lng2: nu
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
+
+export const parseFormattedPrice = (formattedPrice: string): number => {
+  return parseInt(formattedPrice.replace(/,/g, ''), 10);
+};
+
+export const formatPriceInput = (value: string): string => {
+  const numericOnly = value.replace(/\D/g, '');
+  return formatNumberWithComma(numericOnly);
+};
+
+export const combineDateTime = (date: string, time: string): Date => {
+  return new Date(`${date}T${time}`);
+};
