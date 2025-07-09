@@ -63,29 +63,19 @@ export async function POST(request: Request, { params }: { params: { shortId: st
   const hasImageChanges = newImageFiles.length > 0 || imageOrders.length > 0;
 
   try {
-    // STEP 0: 수정 제한 시간 체크
-    const { data: pending, error: pendingError } = await supabase
-      .from('pending_auction')
-      .select('scheduled_create_at')
+    // STEP 0: 경매 상태 체크
+    const { data: auction, error: auctionError } = await supabase
+      .from('auction')
+      .select('auction_status')
       .eq('product_id', productId)
       .maybeSingle();
 
-    if (pendingError) {
-      throw new Error(`경매 제한 시간 조회 실패: ${pendingError.message}`);
+    if (auctionError) {
+      throw new Error(`경매 상태 조회 실패: ${auctionError.message}`);
     }
 
-    if (!pending || !pending.scheduled_create_at) {
-      return NextResponse.json(
-        { error: '경매 제한 시간이 설정되어 있지 않습니다.' },
-        { status: 400 }
-      );
-    }
-
-    const scheduledTime = new Date(pending.scheduled_create_at);
-    const now = new Date();
-
-    if (now > scheduledTime) {
-      return NextResponse.json({ error: '상품 수정 가능 시간이 만료되었습니다.' }, { status: 403 });
+    if (!auction || auction.auction_status !== '경매 대기') {
+      return NextResponse.json({ error: '상품 수정 가능 시간이 만료되었습니다.' }, { status: 400 });
     }
 
     // STEP 1: product 테이블 업데이트
@@ -103,9 +93,9 @@ export async function POST(request: Request, { params }: { params: { shortId: st
       throw new Error(`상품 정보 업데이트 실패: ${productUpdateError.message}`);
     }
 
-    // STEP 2: pending_auction 테이블 업데이트
-    const { error: pendingUpdateError } = await supabase
-      .from('pending_auction')
+    // STEP 2: auction 테이블 업데이트
+    const { error: auctionUpdateError } = await supabase
+      .from('auction')
       .update({
         min_price: parseInt(minPrice),
         auction_end_at: endAt,
@@ -113,8 +103,8 @@ export async function POST(request: Request, { params }: { params: { shortId: st
       })
       .eq('product_id', productId);
 
-    if (pendingUpdateError) {
-      throw new Error(`경매 정보 업데이트 실패: ${pendingUpdateError.message}`);
+    if (auctionUpdateError) {
+      throw new Error(`경매 정보 업데이트 실패: ${auctionUpdateError.message}`);
     }
 
     // STEP 3: 이미지 처리 로직 (변경이 있는 경우에만)
