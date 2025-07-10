@@ -5,7 +5,7 @@ import '@repo/ui/styles.css';
 export default function LogInPage() {
   return (
     <div className="z-50 m-5 space-y-6">
-      <h1 className="mt-28 text-center font-['Noto_Sans_KR'] text-[2rem] font-semibold leading-[2.6rem] text-[color:var(--252525,#252525)]">
+      <h1 className="mt-28 text-center text-[2rem] font-semibold leading-[2.6rem] text-neutral-900">
         로그인
       </h1>
 
