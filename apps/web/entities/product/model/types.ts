@@ -18,3 +18,9 @@ export interface ProductWithUserNImages extends Product {
   exhibit_user: Profiles;
   product_image: ProductImage[];
 }
+
+export interface ProductForEdit extends Product {
+  product_image: ProductImage[];
+  min_price: number;
+  auction_end_at: string;
+}

@@ -83,3 +83,22 @@ export const productKeys = {
   detail: (id: string) => [...productKeys.details(), id] as const,
   create: () => [...productKeys.all, 'create'] as const,
 } as const;
+
+export interface ProductEditFormData {
+  title: string;
+  category: string;
+  description: string;
+  minPrice: string;
+  endDate: string;
+  endTime: string;
+  images: UploadedImage[];
+}
+
+export interface ProductEditPageProps {
+  params: Promise<{ shortId: string }>;
+}
+
+export interface ProductEditResponse {
+  success: boolean;
+  error?: string;
+}

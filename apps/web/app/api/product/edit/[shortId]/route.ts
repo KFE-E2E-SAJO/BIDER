@@ -2,37 +2,56 @@ import { v4 as uuidv4 } from 'uuid';
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextResponse } from 'next/server';
+import { ProductForEdit } from '@/entities/product/model/types';
 
-export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ shortId: string }> }
+): Promise<
+  NextResponse<
+    ProductForEdit | { error: string; details?: string; shortId?: string; decodedId?: any }
+  >
+> {
   const resolvedParams = await params;
   const id = decodeShortId(resolvedParams.shortId);
 
   try {
     // 1. 먼저 경매 정보만 가져오기
-    const { data: imageData, error: imageError } = await supabase
+    const { data, error } = await supabase
       .from('product')
       .select(
         `
                 *,
                 product_image (*),
-                pending_auction(min_price, auction_end_at)
+                auction!inner (min_price, auction_end_at)
             `
       )
       .eq('product_id', id)
       .single();
 
-    if (imageError || !imageData) {
+    if (error || !data) {
       return NextResponse.json(
         {
-          error: 'Image not found',
-          details: imageError?.message,
+          error: 'Product not found',
+          details: error?.message,
           shortId: resolvedParams.shortId,
           decodedId: id,
         },
         { status: 404 }
       );
     }
-    return NextResponse.json(imageData);
+    // auction 데이터 추출 (배열의 첫 번째 요소)
+    const auctionData = data.auction[0];
+
+    // ProductForEdit 타입에 맞게 데이터 변환
+    const productForEdit: ProductForEdit = {
+      ...data,
+      min_price: auctionData.min_price,
+      auction_end_at: auctionData.auction_end_at,
+      auction: undefined, // auction 배열 제거
+    };
+
+    return NextResponse.json(productForEdit);
   } catch (err) {
     return NextResponse.json({ error: '서버 내부 오류 발생' }, { status: 500 });
   }

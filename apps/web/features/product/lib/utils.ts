@@ -1,4 +1,5 @@
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
+import { ProductEditFormData } from '../types';
 
 export const getCountdownWithColor = (
   endTime: string | Date
@@ -60,4 +61,26 @@ export const formatPriceInput = (value: string): string => {
 
 export const combineDateTime = (date: string, time: string): Date => {
   return new Date(`${date}T${time}`);
+};
+
+export const validateProductEditForm = (data: ProductEditFormData): boolean => {
+  const { title, category, description, minPrice, endDate, endTime, images } = data;
+
+  return !!(
+    title &&
+    category &&
+    description &&
+    minPrice &&
+    endDate &&
+    endTime &&
+    images.length > 0
+  );
+};
+
+export const canEditProduct = (createdAt: string): boolean => {
+  const deadline = new Date(createdAt);
+  deadline.setHours(deadline.getHours() + 1);
+  const now = new Date();
+
+  return now <= deadline;
 };
