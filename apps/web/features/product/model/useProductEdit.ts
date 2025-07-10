@@ -1,9 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
-import { ProductForEdit } from '@/entities/product/model/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
-import { fetchProductForEdit, updateProduct } from '../api/editProduct';
 import {
   mapProductImagesToUploadedImages,
   formatProductDateTime,
@@ -11,39 +9,23 @@ import {
   handleMinPriceChange,
 } from '../lib/editFormUtils';
 import { canEditProduct, validateProductEditForm } from '../lib/utils';
+import { useProductEditQuery } from './useProductForEdit';
+import { useProductUpdateMutation } from './useProductUpdate';
 
 export const useProductEdit = (shortId: string) => {
   const router = useRouter();
-  const [data, setData] = useState<ProductForEdit | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data, isLoading: loading, error } = useProductEditQuery(shortId);
+  const { mutate: submitUpdate, isPending: isSubmitting } = useProductUpdateMutation(shortId);
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [images, setImages] = useState<UploadedImage[]>([]);
-  const [endDate, setEndDate] = useState<string>('');
-  const [endTime, setEndTime] = useState<string>('');
+  const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('');
 
   const mappedImages = useMemo(() => mapProductImagesToUploadedImages(data?.product_image), [data]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const result = await fetchProductForEdit(shortId);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [shortId]);
 
   useEffect(() => {
     if (data) {
@@ -65,7 +47,7 @@ export const useProductEdit = (shortId: string) => {
     setMinPrice(formatted);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!data) return;
 
     if (!canEditProduct(data.created_at)) {
@@ -80,28 +62,23 @@ export const useProductEdit = (shortId: string) => {
       return;
     }
 
-    setIsSubmitting(true);
+    const submitData = createFormDataFromProduct(formData, images);
 
-    try {
-      const submitData = createFormDataFromProduct(formData, images);
-      await updateProduct(shortId, submitData);
-
-      toast({ content: '수정이 완료되었습니다!' });
-      setTimeout(() => {
+    submitUpdate(submitData, {
+      onSuccess: () => {
+        toast({ content: '수정이 완료되었습니다!' });
         router.push('/auction/listings');
-      }, 0);
-    } catch (err) {
-      console.error('수정 에러', err);
-      toast({ content: '알 수 없는 오류가 발생했어요.' });
-    } finally {
-      setIsSubmitting(false);
-    }
+      },
+      onError: () => {
+        toast({ content: '알 수 없는 오류가 발생했어요.' });
+      },
+    });
   };
 
   return {
     data,
     loading,
-    error,
+    error: error instanceof Error ? error.message : null,
     isSubmitting,
     mappedImages,
 
