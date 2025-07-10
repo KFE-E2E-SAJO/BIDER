@@ -1,7 +1,7 @@
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
-import { Auction } from '../../product/route';
+import { AuctionDetail } from '@/entities/auction/model/types';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
   const resolvedParams = await params;
@@ -18,7 +18,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
           *,
           exhibit_user:exhibit_user_id (
             *
-          ),
+          ), 
           product_image (
             *
           )
@@ -35,7 +35,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     // 2. 입찰 내역 조회
     const { data: bidHistory, error: bidError } = await supabase
       .from('bid_history')
-      .select('bid_id, bid_price, bid_user_id, bid_at')
+      .select('*')
       .eq('auction_id', id)
       .order('bid_price', { ascending: false });
 
@@ -50,27 +50,20 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     const currentHighestBid =
       sortedBidHistory.length > 0 ? sortedBidHistory[0]?.bid_price : auctionData.min_price;
 
+    const productData = auctionData.product;
+    const userData = productData?.exhibit_user;
+
     // 5. 응답 데이터 구성
-    const response: Auction = {
-      auction_id: auctionData.auction_id,
+    const response: AuctionDetail = {
+      ...auctionData,
       product: {
-        title: auctionData.product?.title,
-        description: auctionData.product?.description,
-        category: auctionData.product?.category,
-        exhibit_user: {
-          user_id: auctionData.product?.exhibit_user?.user_id,
-          address: auctionData.product?.exhibit_user?.address,
-          profile_img: auctionData.product?.exhibit_user?.profile_img,
-          nickname: auctionData.product?.exhibit_user?.nickname,
-        },
-        product_image: auctionData.product?.product_image || [],
+        ...productData,
+        exhibit_user: userData,
+        product_image: productData?.product_image || [],
       },
-      auction_status: auctionData.auction_status,
-      min_price: auctionData.min_price,
-      auction_end_at: auctionData.auction_end_at,
       bid_history: sortedBidHistory,
       current_highest_bid: currentHighestBid,
-    };
+    } as AuctionDetail;
 
     return NextResponse.json(response);
   } catch (error) {

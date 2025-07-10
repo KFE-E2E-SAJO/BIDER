@@ -3,61 +3,52 @@ import { supabase } from '@/shared/lib/supabaseClient';
 
 export async function GET(request: NextRequest) {
   try {
-    // 현재 시간을 기준으로 생성해야 할 pending_auction 조회
+    // 현재 시간 - 1시간을 기준으로 '경매 중'으로 변경해야 할 auction 조회
     const now = new Date().toISOString();
+    const referenceTime = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-    const { data: pendingAuctions, error: fetchError } = await supabase
-      .from('pending_auction')
-      .select('*')
+    const { data: auctions, error: fetchError } = await supabase
+      .from('auction')
+      .select('auction_id, product_id')
       .eq('auction_status', '경매 대기')
-      .lte('scheduled_create_at', now); // 예정 시간이 지난 것들
+      .lte('created_at', referenceTime);
 
     if (fetchError) {
-      console.error('Pending auctions 조회 실패:', fetchError);
+      console.error('auctions 조회 실패:', fetchError);
       return NextResponse.json({ success: false, error: fetchError.message }, { status: 500 });
     }
 
     let successCount = 0;
     let failCount = 0;
 
-    // 각 pending auction에 대해 실제 auction 생성
-    for (const pending of pendingAuctions || []) {
+    // 각 auction의 auction_status를 '경매 중'으로 변경
+    for (const auction of auctions || []) {
       try {
         // auction 테이블에 데이터 생성
-        const { error: createError } = await supabase.from('auction').insert({
-          product_id: pending.product_id,
-          min_price: pending.min_price,
-          auction_end_at: pending.auction_end_at,
-          created_at: new Date().toISOString(),
-          auction_status: '경매 중',
-        });
+        const { error: updateError } = await supabase
+          .from('auction')
+          .update({
+            auction_status: '경매 중',
+            updated_at: now,
+          })
+          .eq('auction_id', auction.auction_id);
 
-        if (createError) {
-          console.error(`Product ${pending.product_id} 경매 생성 실패:`, createError);
+        if (updateError) {
+          console.error(`Product ${auction.product_id} 경매 생성 실패:`, updateError);
           failCount++;
           continue;
         }
 
-        // pending_auction 데이터 삭제
-        const { error: deleteError } = await supabase
-          .from('pending_auction')
-          .delete()
-          .eq('pending_auction_id', pending.pending_auction_id);
-
-        if (deleteError) {
-          console.error(`Pending auction ${pending.pending_auction_id} 삭제 실패:`, deleteError);
-        }
-
         successCount++;
       } catch (error) {
-        console.error(`Product ${pending.product_id} 처리 중 오류:`, error);
+        console.error(`Product ${auction.product_id} 처리 중 오류:`, error);
         failCount++;
       }
     }
 
     const result = {
       success: true,
-      processed: pendingAuctions?.length || 0,
+      processed: auctions?.length || 0,
       successCount,
       failCount,
       timestamp: now,
