@@ -16,3 +16,7 @@ export interface BidResponse {
   message?: string;
   error?: string;
 }
+
+export type SubmitBidContext = {
+  onSuccess?: () => void;
+};
