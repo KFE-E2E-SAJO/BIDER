@@ -17,3 +17,10 @@ export interface AuctionDetailContent {
 export type AuctionDetailContentProps = {
   data: AuctionDetailContent;
 };
+
+export interface BottomBarProps {
+  shortId: string;
+  auctionEndAt: string | Date;
+  title: string;
+  lastPrice: string;
+}
