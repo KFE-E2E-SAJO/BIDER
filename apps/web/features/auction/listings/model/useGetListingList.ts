@@ -1,4 +1,4 @@
-import { ProductForList } from '@/features/product/types';
+import { ProductList } from '@/features/product/types';
 import { useQuery } from '@tanstack/react-query';
 import getListingList from '@/features/auction/listings/model/getListingList';
 
@@ -8,7 +8,7 @@ interface useGetListingListParams {
 }
 
 export const useGetListingList = (params: useGetListingListParams) => {
-  return useQuery<ProductForList[]>({
+  return useQuery<ProductList[]>({
     queryKey: ['ListingList', params.userId, params.filter],
     queryFn: () => getListingList(params),
     enabled: !!params.userId,

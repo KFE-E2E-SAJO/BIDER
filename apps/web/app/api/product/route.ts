@@ -184,8 +184,11 @@ export async function GET(req: NextRequest) {
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
 
-  if (!userId) {
-    return NextResponse.json({ error: 'userId가 없습니다' }, { status: 400 });
+  if (!userId || userId === 'undefined') {
+    return NextResponse.json(
+      { error: '로그인이 필요합니다.', code: 'NO_USER_ID' },
+      { status: 401 }
+    );
   }
 
   const { data: userData, error: userError } = await supabase
@@ -195,11 +198,17 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (!userData?.latitude || !userData?.longitude) {
-    return NextResponse.json({ error: '유저 위치 정보가 없습니다.' }, { status: 400 });
+    return NextResponse.json(
+      { error: '유저 위치 정보가 없습니다.', code: 'NO_USER_LOCATION' },
+      { status: 400 }
+    );
   }
 
   if (userError) {
-    return NextResponse.json({ error: '유저 정보 조회 실패' }, { status: 500 });
+    return NextResponse.json(
+      { error: '유저 정보 조회 실패', code: 'USER_FETCH_FAIL' },
+      { status: 500 }
+    );
   }
 
   const lat = userData.latitude;
@@ -229,9 +238,9 @@ export async function GET(req: NextRequest) {
 `);
 
   if (error) {
-    console.error('리스트 데이터 조회 실패:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
   const filtered: ProductResponse[] = (auctionData as unknown as ProductFromDB[])
     .filter((item) => {
       const { product } = item;

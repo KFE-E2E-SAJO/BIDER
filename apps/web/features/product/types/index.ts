@@ -1,4 +1,4 @@
-export interface ProductForList {
+export interface ProductList {
   id: string;
   thumbnail: string;
   title: string;
@@ -11,4 +11,16 @@ export interface ProductForList {
   sellerId: string;
   isAwarded: boolean;
   isPending?: boolean;
+}
+
+export interface ProductListError {
+  message: string;
+  code?: string;
+  status: number;
+}
+
+export interface ProductListParams {
+  userId: string;
+  search?: string;
+  cate?: string;
 }
