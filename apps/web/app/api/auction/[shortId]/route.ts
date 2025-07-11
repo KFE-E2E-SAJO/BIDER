@@ -1,7 +1,7 @@
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
-import { AuctionDetail } from '@/entities/auction/model/types';
+import { AuctionDetail, AuctionForBid } from '@/entities/auction/model/types';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
   const resolvedParams = await params;
@@ -95,10 +95,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sho
       return NextResponse.json({ error: '올바른 입찰가를 입력해주세요.' }, { status: 400 });
     }
 
-    // 2. 경매 정보 조회 (마감 시간 확인용)
+    // 2. 경매 정보 조회
     const { data: auctionData, error: auctionError } = await supabase
       .from('auction')
-      .select('auction_end_at, auction_status, min_price')
+      .select('auction_end_at, auction_status, min_price, product:product_id(title)')
       .eq('auction_id', auctionId)
       .single();
 
@@ -160,6 +160,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sho
       return NextResponse.json({ error: '입찰 처리 중 오류가 발생했습니다.' }, { status: 500 });
     }
 
+    const auctionTyped = auctionData as unknown as AuctionForBid;
+    const productTitle = auctionTyped.product.title;
+
     // 8. 성공 응답
     return NextResponse.json({
       success: true,
@@ -168,6 +171,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sho
         bid_id: bidData.bid_id,
         bid_price: bidData.bid_price,
         bid_at: bidData.bid_at,
+        product_title: productTitle,
+        bid_end_at: auctionData.auction_end_at,
       },
     });
   } catch (error) {
