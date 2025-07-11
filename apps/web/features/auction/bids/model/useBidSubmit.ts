@@ -4,7 +4,7 @@ import { parseBidPrice, validateBidPrice } from '../lib/utils';
 import { submitBid } from '../api/doBid';
 import { useMutation } from '@tanstack/react-query';
 import { BidResponse, SubmitBidContext } from '../types';
-import { useBidStore } from '@/shared/model/bidStore';
+import { useBidStore } from '@/features/auction/bids/model/bidStore';
 import { useRouter } from 'next/navigation';
 
 export const useBidSubmit = (shortId: string) => {

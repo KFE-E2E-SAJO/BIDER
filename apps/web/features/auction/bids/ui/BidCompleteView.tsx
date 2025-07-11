@@ -1,6 +1,6 @@
 'use client';
 
-import { useBidStore } from '@/shared/model/bidStore';
+import { useBidStore } from '@/features/auction/bids/model/bidStore';
 import { Button } from '@repo/ui/components/Button/Button';
 import { Check } from 'lucide-react';
 import React from 'react';
