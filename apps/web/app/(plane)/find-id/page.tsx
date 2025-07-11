@@ -16,7 +16,7 @@ export default function FindAccountPage() {
 
   return (
     <div className="p-box">
-      <ChevronLeft className="mt-[30px]" />
+      <ChevronLeft className="sursor-pointer mt-[30px]" onClick={() => router.back()} />
       <p className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]">
         {config.title}
       </p>

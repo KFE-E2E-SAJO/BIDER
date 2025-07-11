@@ -4,8 +4,10 @@ import { Input } from '@repo/ui/components/Input/Input';
 import { ChevronLeft, KeyIcon, Lock } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useResetPw } from '@/features/reset-pw/model/useResetPw';
+import { useRouter } from 'next/navigation';
 
 export default function ResetPasswordPage() {
+  const router = useRouter();
   const {
     newPassword,
     newPasswordConfirm,
@@ -17,7 +19,6 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="m-3">
-      <ChevronLeft className="mt-[30px]" />
       <p className='className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]'>
         비밀번호 재설정
       </p>
