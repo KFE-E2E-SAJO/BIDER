@@ -18,3 +18,12 @@ export interface AuctionDetail extends Auction {
   bid_history: BidHistory[];
   current_highest_bid: number;
 }
+
+export interface AuctionForBid {
+  auction_end_at: string;
+  auction_status: string;
+  min_price: number;
+  product: {
+    title: string;
+  };
+}
