@@ -13,7 +13,7 @@ const LocationSuccess = () => (
         <p>내 동네 설정이 성공적으로 완료되었습니다.</p>
         <p>지금 바로 Bider를 시작해 보세요!</p>
       </div>
-      <DotStepper activeIndex={2} />
+      <DotStepper />
       <div className="flex justify-center">
         <Image src="/setLocation2.svg" alt="축하합니다" width={235} height={235} />
       </div>

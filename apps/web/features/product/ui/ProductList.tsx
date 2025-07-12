@@ -1,11 +1,11 @@
-import { ProductForList } from '@/features/product/types';
+import { ProductList as ProductListType } from '@/features/product/types';
 import ProductActionBtn from '@/features/product/ui/ProductActionBtn';
 import ProductItem from '@/features/product/ui/ProductItem';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 import Link from 'next/link';
 
 interface ProductListProps {
-  data: ProductForList[];
+  data: ProductListType[];
 }
 const ProductList = ({ data }: ProductListProps) => {
   if (data.length === 0) {

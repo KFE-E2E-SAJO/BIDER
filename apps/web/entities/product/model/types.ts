@@ -24,3 +24,10 @@ export interface ProductForEdit extends Product {
   min_price: number;
   auction_end_at: string;
 }
+
+export type ProductForList = Pick<
+  Product,
+  'title' | 'category' | 'exhibit_user_id' | 'latitude' | 'longitude' | 'address'
+> & {
+  product_image: ProductImage[];
+};
