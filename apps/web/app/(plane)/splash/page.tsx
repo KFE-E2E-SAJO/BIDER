@@ -1,70 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Logo from '@/shared/ui/icon/Logo';
-import { Button } from '@repo/ui/components/Button/Button';
 import Link from 'next/link';
+import { useSplashTimer } from '@/app/(plane)/splash/model/useSplashTimer';
+import { SplashStartButton } from './ui/splashStartButton';
 
 export default function SplashPage() {
-  const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
+  const isLoading = useSplashTimer();
 
   useEffect(() => {
     setIsMounted(true);
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
   }, []);
 
-  const checkIsAuthenticated = (): boolean => {
-    if (typeof window === 'undefined' || !isMounted) return false;
-
-    const tokenData = localStorage.getItem('sb-nrxemenkpeejarhejbbk-auth-token');
-
-    if (!tokenData) return false;
-
-    const accessToken = JSON.parse(tokenData).access_token;
-
-    return !!accessToken;
-  };
-
-  const handleStartClick = () => {
-    if (!isMounted) return;
-
-    const isAuthenticated = checkIsAuthenticated();
-
-    if (isAuthenticated) {
-      const authStorage = localStorage.getItem('auth-storage');
-
-      if (!authStorage) return false;
-      const address = JSON.parse(authStorage).state.user.address;
-
-      if (address && address !== 'null') {
-        router.push('/');
-      } else {
-        router.push('/setLocation');
-      }
-    } else {
-      router.push('/signup');
-    }
-  };
-
-  if (!isMounted) {
-    return (
-      <div className="bg-main fixed inset-0 z-50 flex items-center justify-center">
-        <div className="flex flex-1 scale-[2.5] items-center justify-center">
-          <Logo variant="reversal" />
-        </div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
+  if (isLoading || !isMounted) {
     return (
       <div className="bg-main fixed inset-0 z-50 flex items-center justify-center">
         <div className="flex flex-1 scale-[2.5] items-center justify-center">
@@ -86,9 +36,7 @@ export default function SplashPage() {
 
       <div className="flex flex-1 flex-col justify-end">
         <div className="flex flex-col items-center gap-4 px-3 pb-16">
-          <Button className="w-full" onClick={handleStartClick}>
-            시작하기
-          </Button>
+          <SplashStartButton isMounted={isMounted}></SplashStartButton>
           <p className="typo-caption-regular text-center">
             이미 계정이 있나요?{' '}
             <Link href="/login" className="text-main cursor-pointer underline">

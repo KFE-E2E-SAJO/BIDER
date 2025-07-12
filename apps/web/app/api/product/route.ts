@@ -89,19 +89,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // STEP 4: 1시간 뒤 auction 자동 생성 예약 호출
-    const auctionCreateTime = new Date(Date.now() + 60 * 60 * 1000); // 1시간 후
-
-    const { error: pendingError } = await supabase.from('pending_auction').insert({
+    // STEP 4: auction 테이블에 insert
+    const { error: auctionError } = await supabase.from('auction').insert({
       product_id: productId,
       min_price: minPrice,
       auction_end_at: endAt,
-      scheduled_create_at: auctionCreateTime.toISOString(),
       auction_status: '경매 대기',
     });
 
-    if (pendingError) {
-      console.error('예약 경매 저장 실패:', pendingError);
+    if (auctionError) {
+      console.error('경매 저장 실패:', auctionError);
     }
 
     return NextResponse.json({ success: true, product_id: productId });
