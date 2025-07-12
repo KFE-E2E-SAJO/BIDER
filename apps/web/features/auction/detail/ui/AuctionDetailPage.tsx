@@ -49,15 +49,7 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
             상위 5등까지만 조회 가능합니다.
           </div>
         </div>
-        {/* {data.bidHistory.length > 0 && (
-          <div>
-            <div className="typo-subtitle-bold mb-[10px]">입찰 현황</div>
-            <div className="text-neutral-600 typo-caption-regular">
-              총 {data.bidHistory.length}건의 입찰
-            </div>
-          </div>
-        )} */}
-        <BiddingStatusBoard />
+        <BiddingStatusBoard data={data.bidHistory} />
       </div>
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
