@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/shared/model/authStore';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { getKoreanErrorMessage } from '../lib/getKoreanErrorMessage';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 export const useLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string>('');
 
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
@@ -20,7 +20,6 @@ export const useLogin = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    setSuccessMessage('');
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -75,8 +74,13 @@ export const useLogin = () => {
           address: profile.address,
         });
 
-        setSuccessMessage('로그인에 성공했습니다!');
-        router.push('/');
+        toast({ content: '로그인에 성공했습니다!' });
+
+        if (!profile.address) {
+          router.push('/setLocation');
+        } else {
+          router.push('/');
+        }
       }
     } catch (err) {
       setError('로그인 중 문제가 발생했습니다.');
@@ -93,7 +97,6 @@ export const useLogin = () => {
     setPassword,
     error,
     isLoading,
-    successMessage,
     handleSubmit,
   };
 };
