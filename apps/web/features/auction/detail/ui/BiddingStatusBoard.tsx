@@ -4,10 +4,10 @@ import { BiddingStatusBoardProps } from '../types';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 
 const BiddingStatusBoard = ({ data }: BiddingStatusBoardProps) => {
-  if (false) {
+  if (data.length === 0) {
     return <div className="text-center">아직 입찰자가 없습니다. 첫 입찰자가 되어보세요!</div>;
   }
-  console.log(data);
+
   return (
     <div>
       {data.slice(0, 5).map((bid, index) => (
