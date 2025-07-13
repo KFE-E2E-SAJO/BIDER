@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
 export async function middleware(req: NextRequest) {
-  //사용자가 접근하려는 페이지 경로
   const redirectPage = req.nextUrl.pathname;
-  console.log('접근하려는 페이지 : ', redirectPage);
 
   //쿠키에서 로그인 확인(내부적으로 쿠키에서 토큰을 읽어서 session 객체를 생성)
   const authToken = req.cookies.get('sb-nrxemenkpeejarhejbbk-auth-token');
