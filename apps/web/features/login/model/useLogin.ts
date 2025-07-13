@@ -1,4 +1,4 @@
-'use Clinet';
+'use clinet';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -74,13 +74,15 @@ export const useLogin = () => {
           address: profile.address,
         });
 
+        //쿠키에 토근, 위치 설정 정보 저장
+        if (data.session?.access_token) {
+          document.cookie = `sb-nrxemenkpeejarhejbbk-auth-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+          document.cookie = `user-has-address=${!!profile.address}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+        }
+
         toast({ content: '로그인에 성공했습니다!' });
 
-        if (!profile.address) {
-          router.push('/setLocation');
-        } else {
-          router.push('/');
-        }
+        router.push('/');
       }
     } catch (err) {
       setError('로그인 중 문제가 발생했습니다.');
