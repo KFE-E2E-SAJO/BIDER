@@ -45,8 +45,8 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
   });
 
   const sendMessageMutation = useMutation({
-    mutationFn: async ({ content, receiver_id }: { content: string; receiver_id: string }) => {
-      return sendMessage({ content, receiver_id, chatroom_id: roomId });
+    mutationFn: async ({ content }: { content: string }) => {
+      return sendMessage({ content, chatroom_id: roomId });
     },
     onSuccess: () => {
       setMessage('');

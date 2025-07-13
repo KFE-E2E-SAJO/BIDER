@@ -100,6 +100,7 @@ const chats = [
 export default function ChatList({ loggedInUser }: { loggedInUser: { id: string } }) {
   const router = useRouter();
   const [selected, setSelected] = useState('all');
+
   // 실제 데이터 패치 (React Query)
   console.log('ChatList 렌더링됨!');
   const {
@@ -116,6 +117,8 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
     },
   });
 
+  const totalUnreadCount = users.reduce((sum, chat) => sum + (chat.unread || 0), 0);
+
   const { data: rooms = [] } = useQuery({
     queryKey: ['chat_rooms'],
     queryFn: fetchRooms, // 실제 데이터 불러오는 함수
@@ -128,6 +131,10 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
     if (selected === 'unread') return chat.unread > 0;
     return true;
   });
+
+  const handleChatRoomClick = (chatroomId: string) => {
+    router.push(`/chat/${chatroomId}`);
+  };
 
   return (
     <div>
@@ -167,9 +174,10 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
             !isError &&
             filteredChats.map((chat: any) => (
               <div
-                key={chat.chatroom_id}
+                key={chat.id}
                 className="flex h-20 cursor-pointer items-center gap-3 border-b px-2 last:border-b-0 hover:bg-gray-50"
                 style={{ minHeight: 80 }}
+                onClick={() => handleChatRoomClick(chat.id)}
               >
                 <img
                   src={chat.profile_img || 'https://via.placeholder.com/44'}
@@ -206,9 +214,9 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
                     </span>
                   </div>
                 </div>
-                {chat.unread > 0 ? (
-                  <span className="ml-2 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-green-200 px-1 text-xs font-bold text-green-700">
-                    {chat.unread}
+                {totalUnreadCount > 0 ? (
+                  <span className="ml-2 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-red-500 px-2 text-xs font-bold text-white">
+                    {totalUnreadCount}
                   </span>
                 ) : (
                   <svg

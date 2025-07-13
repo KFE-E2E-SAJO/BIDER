@@ -5,6 +5,7 @@ import ChatRoom from '@/features/chat/ui/ChatRoom';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/shared/lib/supabaseClient';
+import Loading from '@/shared/ui/Loading/Loading';
 
 export default function ChatPage() {
   const userId = useAuthStore((state) => state.user?.id);
@@ -34,11 +35,7 @@ export default function ChatPage() {
   const loggedInUser = userId ? { id: userId } : sessionUser;
 
   if (loading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <div>Loading...</div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
