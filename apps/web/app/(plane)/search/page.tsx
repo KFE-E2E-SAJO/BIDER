@@ -1,5 +1,5 @@
 'use client';
-import { useAuthStore } from '@/shared/model/authStore';
+
 import BackBtn from '@/shared/ui/button/BackBtn';
 import { Input } from '@repo/ui/components/Input/Input';
 import { debounce } from 'lodash';
@@ -10,7 +10,6 @@ import ResultSection from '@/features/search/ui/ResultSection';
 const SearchPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [search, setSearch] = useState('');
-  const userId = useAuthStore((state) => state.user?.id);
 
   const updateSearch = useCallback(
     debounce((value: string) => {
@@ -53,7 +52,7 @@ const SearchPage = () => {
       </div>
 
       <div className="flex flex-1 flex-col">
-        <ResultSection search={search} userId={userId} />
+        <ResultSection search={search} />
       </div>
     </div>
   );

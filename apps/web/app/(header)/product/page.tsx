@@ -3,48 +3,28 @@
 import { useCategoryStore } from '@/features/category/model/useCategoryStore';
 import Category from '@/features/category/ui/Category';
 import { useProductList } from '@/features/product/model/useProductList';
+import useProductListErrorHandler from '@/features/product/model/useProductListErrorHandler';
 import LocationPin from '@/features/product/ui/LocationPin';
 import ProductList from '@/features/product/ui/ProductList';
 
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-import { toast } from '@repo/ui/components/Toast/Sonner';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 const productListPage = () => {
-  const router = useRouter();
   const cate = useCategoryStore((state) => state.selected);
-  const userId = useAuthStore((state) => state.user?.id);
+  const userId = useAuthStore((state) => state.user?.id) as string;
 
-  const { data, isLoading, error } = useProductList({
-    userId: userId as string,
+  const { data, isLoading, error, isError } = useProductList({
+    userId,
     cate,
   });
 
-  useEffect(() => {
-    if (!error) return;
+  useProductListErrorHandler(isError, error);
 
-    const message = (error as Error).message;
-
-    if (message === '유저 위치 정보가 없습니다.') {
-      toast({ content: message });
-      router.replace('/setLocation');
-    } else {
-      toast({ content: '로그인이 필요합니다.' });
-      router.replace('/login');
-    }
-  }, [error, router]);
-
-  if (isLoading || error || !data) {
-    return <Loading />;
-  }
   let content = null;
 
-  if (isLoading) {
+  if (isLoading || !data) {
     content = <Loading />;
-  } else if (error) {
-    content = <p>에러 발생: {(error as Error).message}</p>;
   } else {
     content = <ProductList data={data} />;
   }
