@@ -1,8 +1,11 @@
 'use server';
 
+import { supabase } from '@/shared/lib/supabaseClient';
 import { UUID } from 'crypto';
 import { createServerSupabaseAdminClient } from 'shared/lib/supabaseServer';
 import { createServerSupabaseClient } from 'shared/lib/supabaseServer';
+
+const message = supabase.channel('message');
 
 export async function getAllUsers() {
   const supabase = await createServerSupabaseAdminClient();
