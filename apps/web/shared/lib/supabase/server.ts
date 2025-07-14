@@ -17,8 +17,8 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
-          } catch {
-            // 서버 컴포넌트에서는 쿠키 설정이 실패할 수 있음
+          } catch (error) {
+            console.warn('쿠키 설정 실패:', error);
           }
         },
       },

@@ -55,7 +55,6 @@ export async function handleRedirect(request: NextRequest) {
   ];
   const authRoutes = ['/login', '/signup'];
 
-  // 페이지가 "/setLocation" 인 경우
   if (redirectPage.startsWith('/setLocation')) {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL('/login', request.url));
@@ -63,7 +62,6 @@ export async function handleRedirect(request: NextRequest) {
     return supabaseResponse;
   }
 
-  // 페이지가 "/" 인 경우
   if (redirectPage === '/') {
     if (isLoggedIn && !hasAddress) {
       return NextResponse.redirect(new URL('/setLocation', request.url));
