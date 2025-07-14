@@ -1,6 +1,16 @@
 import { ProductList, ProductListParams } from '@/features/product/types';
 
-export const getProductList = async (params: ProductListParams): Promise<ProductList[]> => {
+interface getProductListParams {
+  limit: number;
+  offset: number;
+  params: ProductListParams;
+}
+
+export const getProductList = async ({
+  limit,
+  offset = 0,
+  params,
+}: getProductListParams): Promise<{ data: ProductList[]; nextOffset: number }> => {
   const { userId, search, cate } = params;
 
   if (!userId) {
@@ -14,6 +24,8 @@ export const getProductList = async (params: ProductListParams): Promise<Product
   const query = new URLSearchParams();
 
   query.set('userId', userId);
+  query.set('limit', limit.toString());
+  query.set('offset', offset.toString());
   if (search) query.set('search', search);
   if (cate) query.set('cate', cate);
 
@@ -27,5 +39,11 @@ export const getProductList = async (params: ProductListParams): Promise<Product
       status: res.status,
     };
   }
-  return res.json();
+
+  const result = await res.json();
+  console.log(result);
+  return {
+    data: result.data,
+    nextOffset: result.nextOffset,
+  };
 };

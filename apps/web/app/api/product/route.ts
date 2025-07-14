@@ -118,14 +118,17 @@ type AuctionListFromDB = AuctionForList & {
 };
 
 interface AuctionResponse {
-  id: string;
-  thumbnail: string;
-  title: string;
-  address: string;
-  bidCount: number;
-  minPrice: number;
-  auctionEndAt: string;
-  auctionStatus: string;
+  data: {
+    id: string;
+    thumbnail: string;
+    title: string;
+    address: string;
+    bidCount: number;
+    minPrice: number;
+    auctionEndAt: string;
+    auctionStatus: string;
+  }[];
+  nextOffset: number | null;
 }
 
 interface ErrorResponse {
@@ -135,7 +138,7 @@ interface ErrorResponse {
 
 export async function GET(
   req: NextRequest
-): Promise<NextResponse<AuctionResponse[] | ErrorResponse>> {
+): Promise<NextResponse<AuctionResponse | ErrorResponse>> {
   const { searchParams } = req.nextUrl;
   const userId = searchParams.get('userId');
   const search = searchParams.get('search')?.toLowerCase() || '';
@@ -224,5 +227,12 @@ export async function GET(
       };
     });
 
-  return NextResponse.json(filtered);
+  const limit = Number(searchParams.get('limit')) || 10;
+  const offset = Number(searchParams.get('offset')) || 0;
+  const sliced = filtered.slice(offset * limit, (offset + 1) * limit);
+
+  return NextResponse.json({
+    data: sliced,
+    nextOffset: sliced.length < limit ? null : offset + 1,
+  });
 }
