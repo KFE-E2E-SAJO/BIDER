@@ -6,26 +6,20 @@ interface BidListParams {
   userId: string;
 }
 
-interface BidData {
+export interface BidData {
   bid_id: string;
-  bid_price: number;
   is_awarded: boolean;
-  bid_user_id: string;
-  bid_at: string;
 
   auction: {
     auction_id: string;
     auction_status: string;
     auction_end_at: string;
-    min_price: number;
     winning_bid_user_id: string | null;
 
     product: {
       product_id: string;
       title: string;
-      category: string | null;
       exhibit_user_id: string;
-      description: string;
       latitude: number;
       longitude: number;
       address: string | null;
@@ -38,6 +32,11 @@ interface BidData {
   };
 }
 
+export interface BidDataWithStats extends BidData {
+  bidCount: number;
+  maxPrice: number;
+}
+
 const getBidList = async (params: BidListParams): Promise<ProductForList[]> => {
   const { filter, userId } = params;
 
@@ -48,7 +47,7 @@ const getBidList = async (params: BidListParams): Promise<ProductForList[]> => {
     throw new Error(result.error || 'Failed to fetch product list');
   }
 
-  const typedData: BidData[] = result.data;
+  const typedData: BidDataWithStats[] = result.data;
 
   const filtered = typedData.filter((item) => {
     const { auction } = item;
@@ -65,19 +64,6 @@ const getBidList = async (params: BidListParams): Promise<ProductForList[]> => {
     return filter === 'all' || isProgress || isWin || isFail;
   });
 
-  const auctionIds = filtered.map((item) => item.auction.auction_id);
-
-  const { data: bidCountRaw } = await supabase
-    .from('bid_history')
-    .select('auction_id, bid_id')
-    .in('auction_id', auctionIds);
-
-  const bidCountMap: Record<string, number> = {};
-  for (const item of bidCountRaw ?? []) {
-    const auctionId = item.auction_id;
-    bidCountMap[auctionId] = (bidCountMap[auctionId] ?? 0) + 1;
-  }
-
   return filtered.map((item) => ({
     id: item.auction.auction_id,
     thumbnail:
@@ -85,9 +71,9 @@ const getBidList = async (params: BidListParams): Promise<ProductForList[]> => {
       '/default.png',
     title: item.auction.product.title,
     address: item.auction.product.address ?? '위치 정보 없음',
-    bidCount: bidCountMap[item.auction.auction_id] ?? 0,
-    price: item.bid_price,
-    minPrice: item.auction.min_price ?? 0,
+    bidCount: item.bidCount,
+    minPrice: item.maxPrice,
+    myBidPrice: item.maxPrice, // 내 입찰가로 변경 예정
     auctionEndAt: item.auction.auction_end_at,
     auctionStatus: item.auction.auction_status,
     winnerId: item.auction.winning_bid_user_id ?? null,

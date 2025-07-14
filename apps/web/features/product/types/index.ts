@@ -8,6 +8,7 @@ export interface ProductForList {
   address: string;
   bidCount: number;
   minPrice: number;
+  myBidPrice?: number;
   auctionEndAt: string;
   auctionStatus: string;
   winnerId?: string | null;

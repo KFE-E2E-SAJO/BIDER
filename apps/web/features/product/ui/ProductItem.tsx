@@ -2,6 +2,7 @@ import { getCountdownWithColor } from '@/features/product/lib/utils';
 import { ProductForList } from '@/features/product/types';
 import ProductBadge from '@/features/product/ui/ProductBadge';
 import Image from 'next/image';
+import ProductPrice from './ProductPrice';
 
 const ProductItem = ({
   thumbnail,
@@ -9,6 +10,7 @@ const ProductItem = ({
   address,
   bidCount,
   minPrice,
+  myBidPrice,
   auctionEndAt,
   auctionStatus,
   isAwarded,
@@ -16,7 +18,7 @@ const ProductItem = ({
   winnerId,
 }: ProductForList) => {
   const { text, color } =
-    auctionStatus === 'end'
+    auctionStatus === '경매 종료'
       ? { text: '경매 종료', color: 'gray' }
       : getCountdownWithColor(auctionEndAt);
 
@@ -37,9 +39,7 @@ const ProductItem = ({
         </li>
 
         <li className="mt-[30px]">
-          <p className="typo-body-bold mb-[8px]">
-            {minPrice.toLocaleString()} <span className="typo-body-regular">원</span>
-          </p>
+          <ProductPrice minPrice={minPrice} myBidPrice={myBidPrice} />
           <ProductBadge {...badgeProps} />
         </li>
       </ul>

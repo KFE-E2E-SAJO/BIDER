@@ -42,14 +42,11 @@ const getListingList = async (params: ListingListParams): Promise<ProductForList
   const filtered = listingData
     .map((product) => {
       const auction = Array.isArray(product.auction) ? product.auction[0] : product.auction;
-      const pending = Array.isArray(product.pending_auction)
-        ? product.pending_auction[0]
-        : product.pending_auction;
       const myBid = auction?.bid_history?.find((b: any) => b.bid_user_id === userId);
 
       const hasLocation = product.latitude && product.longitude;
 
-      const isPending = filter === 'pending' && pending?.pending_auction_id;
+      const isPending = filter === 'pending' && auction && auction.auction_status === '경매 대기';
       const isProgress = filter === 'progress' && auction && auction.auction_status === '경매 중';
       const isWin =
         filter === 'win' &&
@@ -63,12 +60,11 @@ const getListingList = async (params: ListingListParams): Promise<ProductForList
         !auction.winning_bid_user_id;
       const pass = filter === 'all' || isPending || isProgress || isWin || isFail;
 
-      return pass && hasLocation ? { product, auction, pending, myBid } : null;
+      return pass && hasLocation ? { product, auction, myBid } : null;
     })
     .filter(Boolean) as {
     product: any;
     auction?: any;
-    pending?: any;
     myBid?: any;
   }[];
 
@@ -85,21 +81,21 @@ const getListingList = async (params: ListingListParams): Promise<ProductForList
     bidCountMap[auctionId] = (bidCountMap[auctionId] ?? 0) + 1;
   }
 
-  return filtered.map(({ product, auction, pending, myBid }) => ({
-    id: pending ? product.product_id : auction?.auction_id,
+  return filtered.map(({ product, auction, myBid }) => ({
+    id: auction.auction_status === '경매 대기' ? product.product_id : auction?.auction_id,
     thumbnail:
       product.product_image?.find((img: any) => img.order_index === 0)?.image_url ?? '/default.png',
     title: product.title,
     address: product.address ?? '위치 정보 없음',
     bidCount: auction?.auction_id ? (bidCountMap[auction.auction_id] ?? 0) : 0,
     price: myBid?.bid_price ?? 0,
-    minPrice: auction?.min_price ?? pending?.min_price ?? 0,
-    auctionEndAt: auction?.auction_end_at ?? pending?.auction_end_at ?? '',
-    auctionStatus: auction?.auction_status ?? pending?.auction_status ?? '경매 대기',
+    minPrice: auction?.min_price ?? 0,
+    auctionEndAt: auction?.auction_end_at ?? '',
+    auctionStatus: auction?.auction_status,
     winnerId: auction?.winning_bid_user_id ?? null,
     sellerId: product.exhibit_user_id,
     isAwarded: myBid?.is_awarded ?? false,
-    isPending: !!pending?.pending_auction_id,
+    isPending: auction.auction_status === '경매 대기',
   }));
 };
 

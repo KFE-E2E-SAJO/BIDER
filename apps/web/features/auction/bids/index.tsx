@@ -1,5 +1,5 @@
 import { Tabs } from '@repo/ui/components/Tabs/Tabs';
-import AuctionTopTabs from '@/features/auction/shared/ui/AuctionTaopTabs';
+import AuctionTopTabs from '@/features/auction/shared/ui/AuctionTopTabs';
 import BidList from '@/features/auction/bids/ui/BidList';
 
 //입찰 내역

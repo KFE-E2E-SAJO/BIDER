@@ -21,15 +21,19 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'userId is required' }, { status: 400 });
   }
 
-  const { data, error } = await supabase.from('product').select(`
+  const { data, error } = await supabase
+    .from('product')
+    .select(
+      `
     *,
     product_image:product_image!product_image_product_id_fkey(*),
-    pending_auction:pending_auction!pending_auction_product_id_fkey(*),
     auction:auction!auction_product_id_fkey(
       *,
       bid_history:BidHistory_auction_id_fkey(*)
     )
-  `);
+  `
+    )
+    .order('created_at', { ascending: false });
 
   if (error || !data) {
     console.error('출품 데이터 로딩 실패:', error);
