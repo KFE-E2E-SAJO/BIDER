@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { searcher } from '@/features/search/lib/utils';
 import { getDistanceKm } from '@/features/product/lib/utils';
+import { AuctionForList } from '@/entities/auction/model/types';
+import { ProductForList } from '@/entities/product/model/types';
+import { BidHistory } from '@/entities/bidHistory/model/types';
 
 export async function POST(req: NextRequest) {
   try {
@@ -108,63 +111,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export interface Auction {
-  auction_id: string;
-  product: {
-    title: string;
-    description: string;
-    category: string | null;
-    exhibit_user: {
-      user_id: string;
-      address: string;
-      profile_img: string | null;
-      nickname: string;
-    };
-    product_image: ProductImage[];
-  };
-  auction_status: string;
-  min_price: number;
-  auction_end_at: string;
-  bid_history: {
-    bid_id: string;
-    bid_price: number;
-    bid_user_id: string;
-    bid_at: string;
-  }[];
-  current_highest_bid?: number; // 현재 최고 입찰가 (옵션)
-}
+//나중에 auction으로 이사 시킬껍니다!
+type AuctionListFromDB = AuctionForList & {
+  product: ProductForList;
+  bid_history: Pick<BidHistory, 'bid_price'>[];
+};
 
-export interface ProductImage {
-  image_id: string;
-  image_url: string;
-  order_index: number;
-  product_id: string;
-}
-
-interface ProductFromDB {
-  auction_id: string;
-  product_id: string;
-  product: {
-    title: string;
-    category: string | null; // 카테고리 추후 수정
-    exhibit_user_id: string;
-    product_image: {
-      image_url: string;
-      order_index: number;
-    }[];
-    latitude: number;
-    longitude: number;
-    address: string;
-  };
-  auction_status: string;
-  min_price: number;
-  auction_end_at: string;
-  bid_history: {
-    bid_price: number;
-  }[];
-}
-
-interface ProductResponse {
+interface AuctionResponse {
   id: string;
   thumbnail: string;
   title: string;
@@ -175,14 +128,24 @@ interface ProductResponse {
   auctionStatus: string;
 }
 
-export async function GET(req: NextRequest) {
+interface ErrorResponse {
+  error: string;
+  code?: string;
+}
+
+export async function GET(
+  req: NextRequest
+): Promise<NextResponse<AuctionResponse[] | ErrorResponse>> {
   const { searchParams } = req.nextUrl;
   const userId = searchParams.get('userId');
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
 
-  if (!userId) {
-    return NextResponse.json({ error: 'userId가 없습니다' }, { status: 400 });
+  if (!userId || userId === 'undefined') {
+    return NextResponse.json(
+      { error: '로그인이 필요합니다.', code: 'NO_USER_ID' },
+      { status: 401 }
+    );
   }
 
   const { data: userData, error: userError } = await supabase
@@ -192,11 +155,17 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (!userData?.latitude || !userData?.longitude) {
-    return NextResponse.json({ error: '유저 위치 정보가 없습니다.' }, { status: 400 });
+    return NextResponse.json(
+      { error: '유저 위치 정보가 없습니다.', code: 'NO_USER_LOCATION' },
+      { status: 400 }
+    );
   }
 
   if (userError) {
-    return NextResponse.json({ error: '유저 정보 조회 실패' }, { status: 500 });
+    return NextResponse.json(
+      { error: '유저 정보 조회 실패', code: 'USER_FETCH_FAIL' },
+      { status: 500 }
+    );
   }
 
   const lat = userData.latitude;
@@ -226,10 +195,10 @@ export async function GET(req: NextRequest) {
 `);
 
   if (error) {
-    console.error('리스트 데이터 조회 실패:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  const filtered: ProductResponse[] = (auctionData as unknown as ProductFromDB[])
+
+  const filtered = (auctionData as unknown as AuctionListFromDB[])
     .filter((item) => {
       const { product } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);

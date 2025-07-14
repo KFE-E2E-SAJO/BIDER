@@ -4,6 +4,7 @@ import { MapPin } from 'lucide-react';
 
 const LocationPin = () => {
   const userAddress = useAuthStore((state) => state.user?.address);
+
   return (
     <div className="my-[21px]">
       <Button shape="rounded" className="typo-caption-medium h-8 bg-neutral-900" size="fit">

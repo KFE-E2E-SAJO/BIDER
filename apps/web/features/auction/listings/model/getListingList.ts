@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import { ProductForList } from '@/features/product/types';
+import { ProductList } from '@/features/product/types';
 
 interface ListingListParams {
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';
@@ -27,7 +27,7 @@ interface ListingData {
     [key: string]: any;
   }[];
 }
-const getListingList = async (params: ListingListParams): Promise<ProductForList[]> => {
+const getListingList = async (params: ListingListParams): Promise<ProductList[]> => {
   const { filter, userId } = params;
 
   const res = await fetch(`/api/auction/listings?userId=${userId}`);

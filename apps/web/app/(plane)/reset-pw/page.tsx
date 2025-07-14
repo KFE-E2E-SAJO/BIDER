@@ -17,7 +17,6 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="m-3">
-      <ChevronLeft className="mt-[30px]" />
       <p className='className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]'>
         비밀번호 재설정
       </p>

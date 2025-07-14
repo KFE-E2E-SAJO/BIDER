@@ -1,7 +1,7 @@
 import { CategoryValue } from '@/features/category/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 
-export interface ProductForList {
+export interface ProductList {
   id: string;
   thumbnail: string;
   title: string;
@@ -17,6 +17,17 @@ export interface ProductForList {
   isPending?: boolean;
 }
 
+export interface ProductListError {
+  message: string;
+  code?: string;
+  status: number;
+}
+
+export interface ProductListParams {
+  userId: string;
+  search?: string;
+  cate?: string;
+}
 export interface ProductFormData {
   title: string;
   category: CategoryValue | string;
