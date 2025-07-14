@@ -42,7 +42,17 @@ export async function handleRedirect(request: NextRequest) {
   const userHasAddress = request.cookies.get('user-has-address');
   const hasAddress = userHasAddress?.value === 'true';
 
-  const protectedRoutes = ['/profile', '/settings', '/my-page', '/product'];
+  const protectedRoutes = [
+    '/profile',
+    '/settings',
+    '/mypage',
+    '/product',
+    '/search',
+    '/category',
+    '/aution',
+    '/bid',
+    '/alarm',
+  ];
   const authRoutes = ['/login', '/signup'];
 
   // 페이지가 "/setLocation" 인 경우
