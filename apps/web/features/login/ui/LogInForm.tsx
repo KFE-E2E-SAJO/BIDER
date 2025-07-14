@@ -7,8 +7,7 @@ import Link from 'next/link';
 import { useLogin } from '../model/useLogin';
 
 export const LogInForm = () => {
-  const { email, setEmail, password, setPassword, error, isLoading, successMessage, handleSubmit } =
-    useLogin();
+  const { email, setEmail, password, setPassword, error, isLoading, handleSubmit } = useLogin();
 
   return (
     <div>
@@ -41,8 +40,6 @@ export const LogInForm = () => {
           </div>
 
           {error && <p className="rounded p-2 text-sm text-red-500">{error}</p>}
-
-          {successMessage && <p className="rounded p-2 text-sm text-green-500">{successMessage}</p>}
 
           <Button
             type="submit"

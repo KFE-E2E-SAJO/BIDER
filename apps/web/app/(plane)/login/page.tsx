@@ -1,6 +1,7 @@
 import { Button } from '@repo/ui/components/Button/Button';
 import { LogInForm } from '@/features/login/ui/LogInForm';
 import '@repo/ui/styles.css';
+import Link from 'next/link';
 
 export default function LogInPage() {
   return (
@@ -27,9 +28,9 @@ export default function LogInPage() {
 
       <div className="mt-8 flex items-center justify-center gap-1">
         <span className="font-main-text font-medium">아직 회원이 아니신가요?</span>
-        <a href="../sign/" className="text-main flex font-medium underline">
+        <Link href="/signup" className="text-main flex font-medium underline">
           회원가입
-        </a>
+        </Link>
       </div>
     </div>
   );
