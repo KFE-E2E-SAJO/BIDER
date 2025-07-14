@@ -1,9 +1,9 @@
-'use client';
+'use clinet';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/shared/model/authStore';
-import { supabase } from '@/shared/lib/supabaseForMiddleware';
+import { supabase } from '@/shared/lib/supabaseClient';
 import { getKoreanErrorMessage } from '../lib/getKoreanErrorMessage';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 
@@ -74,9 +74,14 @@ export const useLogin = () => {
           address: profile.address,
         });
 
+        //쿠키에 토근, 위치 설정 정보 저장
+        if (data.session?.access_token) {
+          document.cookie = `sb-nrxemenkpeejarhejbbk-auth-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+          document.cookie = `user-has-address=${!!profile.address}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+        }
+
         toast({ content: '로그인에 성공했습니다!' });
 
-        router.refresh();
         router.push('/');
       }
     } catch (err) {
