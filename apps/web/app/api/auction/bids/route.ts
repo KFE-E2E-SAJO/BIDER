@@ -6,7 +6,10 @@ export async function GET(request: NextRequest) {
   const userId = searchParams.get('userId');
 
   if (!userId) {
-    return NextResponse.json({ success: false, message: 'userId is required' }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: '로그인 후 서비스 이용이 가능합니다' },
+      { status: 400 }
+    );
   }
 
   const { data, error } = await supabase
@@ -27,7 +30,6 @@ export async function GET(request: NextRequest) {
     .order('bid_at', { ascending: false });
 
   if (error || !data) {
-    console.error('출품 데이터 로딩 실패:', error);
     return NextResponse.json(
       { success: false, message: '데이터 로딩 실패', error },
       { status: 500 }
@@ -50,9 +52,8 @@ export async function GET(request: NextRequest) {
     .in('auction_id', auctionIds);
 
   if (statsError) {
-    console.error('bid count fetch error:', statsError);
     return NextResponse.json(
-      { success: false, message: 'bid count error', error: statsError },
+      { success: false, message: '입찰 데이터 로딩 실패', error: statsError },
       { status: 500 }
     );
   }

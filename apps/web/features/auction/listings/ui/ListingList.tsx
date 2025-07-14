@@ -16,9 +16,7 @@ const ListingList = ({ filter }: ListingListProps) => {
     filter,
   });
 
-  if (isLoading || error || !data) {
-    return <Loading />;
-  }
+  if (isLoading || error || !data) return <Loading />;
 
   return (
     <div className="flex flex-col gap-4 px-4">

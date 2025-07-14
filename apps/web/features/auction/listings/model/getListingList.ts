@@ -9,7 +9,7 @@ const getListingList = async (params: ListingListParams): Promise<ProductList[]>
   const result = await res.json();
 
   if (!res.ok || !result.success) {
-    throw new Error(result.error || 'Failed to fetch product list');
+    throw new Error(result.error || '데이터 로딩 실패');
   }
 
   const listingData: ListingData[] = result.data;
