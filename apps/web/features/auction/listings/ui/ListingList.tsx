@@ -4,7 +4,6 @@ import ProductList from '@/features/product/ui/ProductList';
 import { useGetListingList } from '@/features/auction/listings/model/useGetListingList';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-
 interface ListingListProps {
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';
 }

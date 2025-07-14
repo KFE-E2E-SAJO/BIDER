@@ -2,13 +2,11 @@ import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import AuctionTopTabs from '@/features/auction/shared/ui/AuctionTopTabs';
 import ListingList from '@/features/auction/listings/ui/ListingList';
 
-// 출품내역
-
 const AuctionListings = () => {
   const items = [
     { value: 'all', label: '전체', content: <ListingList filter="all" /> },
     { value: 'pending', label: '대기', content: <ListingList filter="pending" /> },
-    { value: 'progress', label: '경매 진행 중', content: <ListingList filter="progress" /> },
+    { value: 'progress', label: '경매 중', content: <ListingList filter="progress" /> },
     { value: 'win', label: '낙찰', content: <ListingList filter="win" /> },
     { value: 'fail', label: '유찰', content: <ListingList filter="fail" /> },
   ];

@@ -1,42 +1,6 @@
-import { supabase } from '@/shared/lib/supabaseClient';
 import { ProductList } from '@/features/product/types';
-
-interface BidListParams {
-  filter: 'all' | 'progress' | 'win' | 'fail';
-  userId: string;
-}
-
-export interface BidData {
-  bid_id: string;
-  is_awarded: boolean;
-  bid_price: number;
-
-  auction: {
-    auction_id: string;
-    auction_status: string;
-    auction_end_at: string;
-    winning_bid_user_id: string | null;
-
-    product: {
-      product_id: string;
-      title: string;
-      exhibit_user_id: string;
-      latitude: number;
-      longitude: number;
-      address: string | null;
-
-      product_image: {
-        image_url: string;
-        order_index: number;
-      }[];
-    };
-  };
-}
-
-export interface BidDataWithStats extends BidData {
-  bidCount: number;
-  maxPrice: number;
-}
+import { BidDataWithStats, BidListParams } from '@/features/auction/bids/types';
+import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 
 const getBidList = async (params: BidListParams): Promise<ProductList[]> => {
   const { filter, userId } = params;
@@ -50,20 +14,25 @@ const getBidList = async (params: BidListParams): Promise<ProductList[]> => {
 
   const typedData: BidDataWithStats[] = result.data;
 
-  const filtered = typedData.filter((item) => {
-    const { auction } = item;
-    const { product } = auction;
+  const shouldInclude = (item: BidDataWithStats) => {
+    const { auction, is_awarded } = item;
+    const { product, auction_status } = auction;
 
     if (product.latitude == null || product.longitude == null) return false;
 
-    const isProgress = filter === 'progress' && auction.auction_status === '경매 중';
-    const isWin =
-      filter === 'win' && auction.auction_status === '경매 종료' && item.is_awarded === true;
-    const isFail =
-      filter === 'fail' && auction.auction_status === '경매 종료' && item.is_awarded === false;
+    switch (filter) {
+      case 'progress':
+        return auction_status === AUCTION_STATUS.IN_PROGRESS;
+      case 'win':
+        return auction_status === AUCTION_STATUS.ENDED && is_awarded === true;
+      case 'fail':
+        return auction_status === AUCTION_STATUS.ENDED && is_awarded === false;
+      default:
+        return true;
+    }
+  };
 
-    return filter === 'all' || isProgress || isWin || isFail;
-  });
+  const filtered = typedData.filter(shouldInclude);
 
   return filtered.map((item) => ({
     id: item.auction.auction_id,

@@ -1,5 +1,6 @@
 'use client';
 
+import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import StatusBadge, { StatusType } from '@/shared/ui/badge/StatusBadge';
 import { usePathname } from 'next/navigation';
 
@@ -35,18 +36,18 @@ const ProductBadge = ({
   let stateBadge: { type: StatusType; label: string } | null = null;
 
   if (isAuctionPage) {
-    if (pathname === '/auction/bids' && auctionStatus == '경매 종료' && !isAwarded) {
+    if (pathname === '/auction/bids' && auctionStatus == AUCTION_STATUS.ENDED && !isAwarded) {
       stateBadge = { type: 'state-gray', label: '패찰' };
     } else if (
-      (auctionStatus == '경매 종료' && isAwarded) ||
-      (auctionStatus == '경매 종료' && winnerId)
+      (auctionStatus == AUCTION_STATUS.ENDED && isAwarded) ||
+      (auctionStatus == AUCTION_STATUS.ENDED && winnerId)
     ) {
       stateBadge = { type: 'state-green', label: '낙찰' };
     } else if (isPending) {
       stateBadge = { type: 'state-orange', label: '대기' };
     } else if (
       pathname === '/auction/listings' &&
-      auctionStatus == '경매 종료' &&
+      auctionStatus == AUCTION_STATUS.ENDED &&
       bidCount == 0 &&
       winnerId === null
     ) {

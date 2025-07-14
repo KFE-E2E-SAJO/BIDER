@@ -18,7 +18,7 @@ const ProductPrice = ({ minPrice, myBidPrice }: PriductPriceProps) => {
     <div className="mb-[10px]">
       {(isBidPage && myBidPrice) || (isBidPage && myBidPrice == 0) ? (
         <>
-          <div className="typo-body-bold">
+          <div className="text-[16px] font-medium">
             내 입찰가{' '}
             <span className={`${isMyBidHigher ? 'text-main' : ''}`}>
               {myBidPrice.toLocaleString()}
