@@ -1,12 +1,13 @@
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { AlarmClock, PencilLine } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { AuctionDetailContentProps } from '../types';
 import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
 import BiddingStatusBoard from './BiddingStatusBoard';
 
 const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
+  const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
   return (
     <>
       {/* 경매 상품 내용 */}
@@ -15,9 +16,7 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
 
         <div>
           <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
-          <div className="typo-subtitle-bold">
-            {formatNumberWithComma(data.currentHighestBid)}원
-          </div>
+          <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
         </div>
 
         <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
@@ -49,7 +48,10 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
             상위 5등까지만 조회 가능합니다.
           </div>
         </div>
-        <BiddingStatusBoard data={data.bidHistory} />
+        <BiddingStatusBoard
+          data={data.bidHistory}
+          onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
+        />
       </div>
       <div className="h-[8px] w-full bg-neutral-100"></div>
 

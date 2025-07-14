@@ -27,4 +27,5 @@ export interface BottomBarProps {
 
 export interface BiddingStatusBoardProps {
   data: BidHistoryWithUserNickname[];
+  onNewHighestBid?: (price: number) => void;
 }

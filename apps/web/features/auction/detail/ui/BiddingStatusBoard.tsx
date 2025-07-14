@@ -2,57 +2,30 @@ import { Crown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { BiddingStatusBoardProps } from '../types';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
-import { anonSupabase } from '@/shared/lib/supabaseClient';
-import { BidHistory, BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
+import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
+import { useBidHistoryRealtime } from '../api/useBidHistoryRealtime';
 
-const BiddingStatusBoard = ({ data }: BiddingStatusBoardProps) => {
-  if (data.length === 0) {
-    return <div className="text-center">아직 입찰자가 없습니다. 첫 입찰자가 되어보세요!</div>;
-  }
-
+const BiddingStatusBoard = ({ data, onNewHighestBid }: BiddingStatusBoardProps) => {
   const [bidData, setBidData] = useState<BidHistoryWithUserNickname[]>(data);
+  const [latestBid, setLatestBid] = useState<BidHistoryWithUserNickname | null>(null);
+
+  useBidHistoryRealtime({
+    auctionId: data[0]?.auction_id || '',
+    onNewBid: (newBid) => {
+      setBidData((prev) => [newBid, ...prev]);
+      setLatestBid(newBid);
+    },
+  });
 
   useEffect(() => {
-    const channel = anonSupabase
-      .channel('bid_history_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'bid_history',
-          filter: `auction_id=eq.${data[0]?.auction_id}`,
-        },
-        async (payload) => {
-          const newBid = payload.new;
-          const { data: profiles, error } = await anonSupabase
-            .from('profiles')
-            .select('nickname')
-            .eq('user_id', newBid.bid_user_id)
-            .limit(1)
-            .single();
+    if (!latestBid) return;
 
-          if (error) {
-            console.error('프로필 조회 실패:', error);
-            return;
-          }
+    onNewHighestBid?.(latestBid.bid_price);
+  }, [latestBid]);
 
-          const newBidWithNickname = {
-            ...(newBid as BidHistory),
-            bid_user_nickname: { nickname: profiles.nickname },
-          };
-
-          setBidData((prev) => [newBidWithNickname, ...prev]);
-        }
-      )
-      .subscribe((status) => {
-        console.log('SUBSCRIBE STATUS:', status);
-      });
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, []);
+  if (bidData.length === 0) {
+    return <div className="text-center">아직 입찰자가 없습니다. 첫 입찰자가 되어보세요!</div>;
+  }
 
   return (
     <div>
