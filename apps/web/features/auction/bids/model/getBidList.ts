@@ -9,6 +9,7 @@ interface BidListParams {
 export interface BidData {
   bid_id: string;
   is_awarded: boolean;
+  bid_price: number;
 
   auction: {
     auction_id: string;
@@ -73,7 +74,7 @@ const getBidList = async (params: BidListParams): Promise<ProductList[]> => {
     address: item.auction.product.address ?? '위치 정보 없음',
     bidCount: item.bidCount,
     minPrice: item.maxPrice,
-    myBidPrice: item.maxPrice, // 내 입찰가로 변경 예정
+    myBidPrice: item.bid_price,
     auctionEndAt: item.auction.auction_end_at,
     auctionStatus: item.auction.auction_status,
     winnerId: item.auction.winning_bid_user_id ?? null,
