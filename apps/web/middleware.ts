@@ -1,56 +1,86 @@
-import { NextResponse } from 'next/server';
-import { NextRequest } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 
-export async function middleware(req: NextRequest) {
-  const redirectPage = req.nextUrl.pathname;
+export async function middleware(request: NextRequest) {
+  const redirectPage = request.nextUrl.pathname;
 
-  //쿠키에서 로그인 확인(내부적으로 쿠키에서 토큰을 읽어서 session 객체를 생성)
-  const authToken = req.cookies.get('sb-nrxemenkpeejarhejbbk-auth-token');
-  const isLoggedIn = !!authToken?.value;
+  let supabaseResponse = NextResponse.next({ request });
 
-  // 유저 위치 설정 여부
-  const userHasAddress = req.cookies.get('user-has-address');
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_KEY!,
+    {
+      cookies: {
+        //쿠키 읽기
+        getAll() {
+          return request.cookies.getAll();
+        },
+
+        //쿠키 쓰기(토큰 자동 갱신)
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value);
+          });
+          supabaseResponse = NextResponse.next({
+            request,
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  //JWT 토큰 검증
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  const isLoggedIn = !!user;
+
+  const userHasAddress = request.cookies.get('user-has-address');
   const hasAddress = userHasAddress?.value === 'true';
 
   const protectedRoutes = ['/profile', '/settings', '/my-page', '/product'];
-  const auth = ['/login', '/signup'];
+  const authRoutes = ['/login', '/signup'];
 
-  // 페이지가 "/setLocation" 인 경우(무한 리다이렉트 인 경우)
+  // 페이지가 "/setLocation" 인 경우
   if (redirectPage.startsWith('/setLocation')) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/login', req.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
-    return NextResponse.next();
+    return supabaseResponse;
   }
 
-  // 페이지가 "/" 인 경우(무한 리다이렉트 인 경우)
+  // 페이지가 "/" 인 경우
   if (redirectPage === '/') {
     if (isLoggedIn && !hasAddress) {
-      return NextResponse.redirect(new URL('/setLocation', req.url));
+      return NextResponse.redirect(new URL('/setLocation', request.url));
     }
   }
 
   if (protectedRoutes.some((page) => redirectPage.startsWith(page))) {
     if (isLoggedIn) {
       if (!hasAddress) {
-        return NextResponse.redirect(new URL('/setLocation', req.url));
+        return NextResponse.redirect(new URL('/setLocation', request.url));
       }
     } else {
-      return NextResponse.redirect(new URL('/login', req.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
-  if (auth.some((page) => redirectPage.startsWith(page))) {
+  if (authRoutes.some((page) => redirectPage.startsWith(page))) {
     if (isLoggedIn) {
       if (hasAddress) {
-        return NextResponse.redirect(new URL('/', req.url));
+        return NextResponse.redirect(new URL('/', request.url));
       } else {
-        return NextResponse.redirect(new URL('/setLocation', req.url));
+        return NextResponse.redirect(new URL('/setLocation', request.url));
       }
     }
   }
 
-  return NextResponse.next();
+  return supabaseResponse;
 }
 
 export const config = {
