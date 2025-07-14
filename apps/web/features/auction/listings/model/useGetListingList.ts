@@ -12,6 +12,6 @@ export const useGetListingList = (params: useGetListingListParams) => {
     queryKey: ['ListingList', params.userId, params.filter],
     queryFn: () => getListingList(params),
     enabled: !!params.userId,
-    staleTime: 1000 * 60 * 1,
+    staleTime: 0,
   });
 };
