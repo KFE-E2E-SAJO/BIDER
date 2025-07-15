@@ -40,9 +40,7 @@ export const BidDialog = ({
   };
 
   const handleBidSubmit = async () => {
-    await onSubmitBid(biddingPrice, () => {
-      onOpenChange(false);
-    });
+    await onSubmitBid(biddingPrice);
   };
 
   return (
