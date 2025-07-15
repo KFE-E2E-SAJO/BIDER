@@ -30,7 +30,9 @@ const ProductListScroll = ({
         return (
           <li
             key={virtualRow.key}
-            className="absolute left-0 top-0 w-full border-b border-neutral-100 py-[20px]"
+            className={`absolute left-0 top-0 w-full border-b border-neutral-100 py-[20px] ${
+              virtualRow.index === 0 ? 'pt-0' : ''
+            }`}
             style={{
               height: `${virtualRow.size}px`,
               transform: `translateY(${virtualRow.start}px)`,

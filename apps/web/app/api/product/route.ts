@@ -144,6 +144,9 @@ export async function GET(
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
   const sort = searchParams.get('sort') || 'latest';
+  const filters = searchParams.getAll('filter');
+  const hasDeadlineToday = filters.includes('deadline-today');
+  const hasExcludeEnded = filters.includes('exclude-ended');
 
   if (!userId || userId === 'undefined') {
     return NextResponse.json(
@@ -204,12 +207,20 @@ export async function GET(
 
   const filtered = (auctionData as unknown as AuctionListFromDB[])
     .filter((item) => {
-      const { product } = item;
+      const { product, auction_status, auction_end_at } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
       const matchSearch = !search || searcher(product.title, search);
       const matchCate = cate === '' || cate === 'all' || product.category === cate;
-      return within5km && matchSearch && matchCate;
+
+      const now = new Date();
+      const isEnded = auction_status === '경매 종료';
+      const isDeadlineToday = new Date(auction_end_at).toDateString() === now.toDateString();
+
+      const filterDeadline = !hasDeadlineToday || (hasDeadlineToday && isDeadlineToday);
+      const filterExcludeEnded = !hasExcludeEnded || (hasExcludeEnded && !isEnded);
+
+      return within5km && matchSearch && matchCate && filterDeadline && filterExcludeEnded;
     })
     .map((item) => {
       const bidPrices = item.bid_history?.map((b) => b.bid_price) ?? [];

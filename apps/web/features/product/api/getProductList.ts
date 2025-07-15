@@ -11,7 +11,7 @@ export const getProductList = async ({
   offset = 0,
   params,
 }: getProductListParams): Promise<{ data: ProductList[]; nextOffset: number }> => {
-  const { userId, search, cate, sort } = params;
+  const { userId, search, cate, sort, filter } = params;
 
   if (!userId) {
     throw {
@@ -29,6 +29,9 @@ export const getProductList = async ({
   if (search) query.set('search', search);
   if (cate) query.set('cate', cate);
   if (sort) query.set('sort', sort);
+  if (filter && filter.length > 0) {
+    filter.forEach((f) => query.append('filter', f));
+  }
 
   const res = await fetch(`/api/product?${query.toString()}`);
   if (!res.ok) {
@@ -42,7 +45,6 @@ export const getProductList = async ({
   }
 
   const result = await res.json();
-  console.log(result);
   return {
     data: result.data,
     nextOffset: result.nextOffset,
