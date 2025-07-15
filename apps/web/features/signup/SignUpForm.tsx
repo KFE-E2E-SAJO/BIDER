@@ -27,6 +27,12 @@ export const SignUpForm = () => {
     isEmailVerified,
     isEmailSent,
 
+    emailError,
+    domainError,
+    passwordError,
+    confirmPasswordError,
+    nicknameError,
+
     sendVerificationEmail,
     handleSubmitForm,
   } = useSignUpForm();
@@ -40,39 +46,31 @@ export const SignUpForm = () => {
         isEmailVerified={isEmailVerified}
         isEmailSent={isEmailSent}
         isLoading={isLoading}
-        emailError=""
-        domainError=""
+        emailError={emailError}
+        domainError={domainError}
         onChangeEmail={setEmail}
         onChangeDomain={setDomain}
         onChangeCustomDomain={setCustomDomain}
         onClickSendVerification={sendVerificationEmail}
       />
 
-      <PasswordField password={password} passwordError="" onChangePassword={setPassword} />
+      <PasswordField
+        password={password}
+        passwordError={passwordError}
+        onChangePassword={setPassword}
+      />
 
       <ConfirmPasswordField
         confirmPassword={confirmPassword}
-        confirmPasswordError=""
+        confirmPasswordError={confirmPasswordError}
         onChangeConfirmPassword={setConfirmPassword}
       />
 
-      <NicknameField nickname={nickname} nicknameError="" onChangeNickname={setNickname} />
-
-      {/* <div className="solid space-y-3">
-        <label className="typo-body-bold block text-neutral-800">약관동의</label>
-
-        <div className="flex flex-col border border-neutral-400 pb-5 pl-6 pt-5">
-          <Base>전체 동의</Base>
-          <hr className="mb-5 mr-5 mt-5 border-neutral-400"></hr>
-
-          <div className="flex flex-col gap-5">
-            <Base>이용약관 동의 (필수)</Base>
-            <Base>개인정보 수집 및 이용 동의 (필수)</Base>
-            <Base>마케팅 정보 수신 동의 (선택)</Base>
-            <Base>이벤트 및 혜택 알림 동의 (선택)</Base>
-          </div>
-        </div>
-      </div> */}
+      <NicknameField
+        nickname={nickname}
+        nicknameError={nicknameError}
+        onChangeNickname={setNickname}
+      />
 
       <Button
         type="submit"
