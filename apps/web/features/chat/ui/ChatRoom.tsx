@@ -1,27 +1,53 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import React, { useState, useRef, useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Message } from './Message';
 import { useRecoilValue } from 'recoil';
-import { selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
 import {
   getUserById,
   sendMessage,
   getAllMessages,
-  // selectedUserIdState,
-  // selectedUserIndexState,
+  getAllUsers,
 } from '../../../app/model/chatActions';
+import { presenceState, selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
+import { useAuthStore } from '@/shared/model/authStore';
+import { supabase } from '../../../shared/lib/supabaseBrowserClient';
+import { useRouter } from 'next/navigation';
 
 // 기타 import는 동일
 const productImage = 'https://via.placeholder.com/44';
 
 export default function ChatRoom({ roomId }: { roomId: string }) {
+  const userId = useAuthStore((state) => state.user?.id);
   const [message, setMessage] = useState('');
   const [input, setInput] = useState('');
   const [plusMode, setPlusMode] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const plusItems = ['location', 'photo', 'file', 'contact'];
+  const selectedUserId = useRecoilValue(selectedUserIdState);
+  const selectedUserIndex = useRecoilValue(selectedUserIndexState);
+  const presence = useRecoilValue(presenceState);
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  // const {
+  //   data: messages = [],
+  //   isLoading,
+  //   error,
+  //   refetch,
+  // } = useQuery({
+  //   queryKey: ['messages', userId, roomId],
+  //   queryFn: () => getAllMessages(roomId, userId!),
+  //   enabled: !!userId && !!roomId,
+  // });
+
+  // const handleSendMessage = async (content: string) => {
+  //   if (!userId || !roomId || !content) return;
+  //   await sendMessage({ content, userId: userId, chatroom_id: roomId });
+  //   // 쿼리 refetch!
+  //   queryClient.invalidateQueries({ queryKey: ['messages', userId, roomId] });
+  // };
 
   // + 버튼 클릭 시
   const handlePlusClick = () => {
@@ -35,8 +61,10 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
     inputRef.current?.focus();
   };
 
-  const selectedUserId = useRecoilValue(selectedUserIdState);
-  const selectedUserIndex = useRecoilValue(selectedUserIndexState);
+  const getAllUsersQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => getAllUsers(),
+  });
 
   const selectedUserQuery = useQuery({
     queryKey: ['profile', selectedUserId],
@@ -46,7 +74,10 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
 
   const sendMessageMutation = useMutation({
     mutationFn: async ({ content }: { content: string }) => {
-      return sendMessage({ content, chatroom_id: roomId });
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+      return sendMessage({ content, chatroom_id: roomId, userId });
     },
     onSuccess: () => {
       setMessage('');
@@ -54,10 +85,61 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
     },
   });
 
+  // function getUuid(val: any): string | undefined {
+  //   if (!val) return undefined;
+  //   if (typeof val === 'string') return val;
+  //   if (typeof val === 'object' && val !== null) {
+  //     if (val.id && typeof val.id === 'string') return val.id;
+  //     if (val.user && val.user.id && typeof val.user.id === 'string') return val.user.id;
+  //   }
+  //   return undefined;
+  // }
+
+  // const convertedId = getUuid(selectedUserId);
+
+  // console.log('실제로 사용되는 userId:', convertedId);
+
   const getAllMessagesQuery = useQuery({
-    queryKey: ['messages', roomId],
-    queryFn: () => getAllMessages(roomId),
+    queryKey: ['messages', userId, roomId],
+    queryFn: () => getAllMessages(roomId, userId!),
+    enabled: !!userId && !!roomId,
   });
+
+  useEffect(() => {
+    interface MessagePayload {
+      eventType: string;
+      errors?: any;
+      new?: any;
+      old?: any;
+    }
+
+    interface PostgresChangesConfig {
+      event: 'INSERT' | 'UPDATE' | 'DELETE';
+      schema: string;
+      table: string;
+    }
+
+    const channel = supabase
+      .channel('message_postgres_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'message',
+        },
+        (payload: any) => {
+          if (payload.eventType === 'INSERT' && !payload.errors) {
+            getAllMessagesQuery.refetch();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col bg-white">
@@ -65,7 +147,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
       <div className="flex flex-col gap-2 border-b px-4 pb-2 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button className="mr-1">
+            <button className="mr-1" onClick={() => router.back()}>
               <svg
                 width={24}
                 height={24}
@@ -77,7 +159,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
                 <path d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <span className="text-base font-semibold">입찰매니아</span>
+            <span className="text-base font-semibold">{getAllUsersQuery.data?.[0]?.nickname}</span>
           </div>
           <button>
             <svg
@@ -109,10 +191,10 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
       {/* 채팅 메시지 영역 - 스크롤 가능, flex-1로 영역 차지 */}
       <div className="flex-1 overflow-y-auto bg-white px-4 py-3">
         <div className="flex flex-1 flex-col gap-3 overflow-y-auto bg-white px-4 py-3">
-          {getAllMessagesQuery.data?.map((message, index) => (
+          {getAllMessagesQuery.data?.map((message) => (
             <Message
-              key={message.message_id || index}
-              isFromMe={message.sender_id === 'currentUserId'}
+              key={message.message_id}
+              isFromMe={message.sender_id === userId}
               message={message.content}
             />
           ))}
@@ -185,6 +267,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
 
           {/* 전송(비행기) 버튼 */}
           <button
+            onClick={() => sendMessageMutation.mutate({ content: input })}
             type="submit"
             aria-label="send"
             className={`ml-1 flex-shrink-0 ${
@@ -218,4 +301,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
       </div>
     </div>
   );
+}
+function createBrowserSupabaseClient() {
+  throw new Error('Function not implemented.');
 }

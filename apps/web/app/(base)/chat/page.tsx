@@ -1,11 +1,11 @@
 'use client';
 
 import ChatList from '@/features/chat/ui/ChatList';
-import ChatRoom from '@/features/chat/ui/ChatRoom';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/shared/lib/supabaseClient';
 import Loading from '@/shared/ui/Loading/Loading';
+import { RecoilRoot } from 'recoil';
 
 export default function ChatPage() {
   const userId = useAuthStore((state) => state.user?.id);
@@ -39,8 +39,10 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex h-screen w-full justify-center">
-      {loggedInUser && <ChatList loggedInUser={loggedInUser} />}
-    </div>
+    <RecoilRoot>
+      <div className="flex h-screen w-full justify-center">
+        {loggedInUser && <ChatList loggedInUser={loggedInUser} />}
+      </div>
+    </RecoilRoot>
   );
 }

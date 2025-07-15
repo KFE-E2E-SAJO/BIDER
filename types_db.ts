@@ -132,13 +132,6 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'chat_room_bid_user_id_fkey';
-            columns: ['bid_user_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['user_id'];
-          },
-          {
             foreignKeyName: 'chat_room_exhibit_user_id_fkey';
             columns: ['exhibit_user_id'];
             isOneToOne: false;

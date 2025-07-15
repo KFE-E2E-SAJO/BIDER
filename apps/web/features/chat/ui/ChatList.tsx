@@ -3,8 +3,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllUsers } from '../../../app/model/chatActions';
 import { useRouter } from 'next/navigation';
+import { useRecoilState } from 'recoil';
+import { presenceState, selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
+import { supabase } from '../../../shared/lib/supabaseBrowserClient';
+import { chatRoomsWithImage } from '../../../app/model/chatActions';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Define the Room type
 type Room = {
@@ -100,6 +104,10 @@ const chats = [
 export default function ChatList({ loggedInUser }: { loggedInUser: { id: string } }) {
   const router = useRouter();
   const [selected, setSelected] = useState('all');
+  const [selectedUserId, setSelectedUserId] = useRecoilState(selectedUserIdState);
+  const [selectedUserIndex, setSelectedUserIndex] = useRecoilState(selectedUserIndexState);
+  const [presence, setPresence] = useRecoilState(presenceState);
+  const DEFAULT_PROFILE_IMG = '/default-profile.png';
 
   // 실제 데이터 패치 (React Query)
   console.log('ChatList 렌더링됨!');
@@ -116,6 +124,42 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
       return allUsers.filter((user) => user.id !== loggedInUser.id);
     },
   });
+
+  // Use the imported supabase client
+  const { data: chatRoomsWithImageData = [] } = useQuery({
+    queryKey: ['chatRoomsWithImage'],
+    queryFn: chatRoomsWithImage,
+  });
+
+  useEffect(() => {
+    const channel = supabase.channel('online_users', {
+      config: {
+        presence: {
+          key: loggedInUser.id,
+        },
+      },
+    });
+
+    channel.on('presence', { event: 'sync' }, () => {
+      const newState = channel.presenceState();
+      const newStateObj = JSON.parse(JSON.stringify(newState));
+      setPresence(newStateObj);
+    });
+
+    channel.subscribe(async (status: string) => {
+      if (status !== 'SUBSCRIBED') {
+        return;
+      }
+
+      const newPresenceStatus: unknown = await channel.track({
+        onlineAt: new Date().toISOString(),
+      });
+    });
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const totalUnreadCount = users.reduce((sum, chat) => sum + (chat.unread || 0), 0);
 
@@ -179,18 +223,24 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
                 style={{ minHeight: 80 }}
                 onClick={() => handleChatRoomClick(chat.id)}
               >
-                <img
-                  src={chat.profile_img || 'https://via.placeholder.com/44'}
-                  alt="유저"
-                  className="h-11 w-11 rounded-md object-cover"
-                />
+                {chatRoomsWithImageData.map((room) => (
+                  <img
+                    key={room.chatroom_id}
+                    src={room.product_image_url}
+                    alt="유저"
+                    className="h-11 w-11 rounded-md object-cover"
+                  />
+                ))}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="flex items-center gap-1 text-sm font-semibold text-gray-900">
                       {chat.nickname || '알수없음'}
                       <img
-                        src={chat.profile_img || 'https://via.placeholder.com/20'}
+                        src={users?.[0]?.profile_img || DEFAULT_PROFILE_IMG}
                         alt="프로필"
+                        onError={(e) => {
+                          e.currentTarget.src = DEFAULT_PROFILE_IMG;
+                        }}
                         className="ml-1 h-5 w-5 rounded-full border border-gray-200 object-cover"
                       />
                     </span>

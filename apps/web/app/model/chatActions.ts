@@ -1,11 +1,48 @@
 'use server';
 
 import { supabase } from '@/shared/lib/supabaseClient';
-import { UUID } from 'crypto';
 import { createServerSupabaseAdminClient } from 'shared/lib/supabaseServer';
 import { createServerSupabaseClient } from 'shared/lib/supabaseServer';
 
 const message = supabase.channel('message');
+const DEFAULT_PROFILE_IMG = '/default-profile.png';
+
+export async function chatRoomsWithImage() {
+  const supabase = await createServerSupabaseClient();
+
+  // 1. 채팅방 목록 조회
+  const { data: chatRooms } = await supabase.from('chat_room').select('*');
+  if (!chatRooms) return [];
+
+  // 2. auction_id 추출
+  const auctionIds = chatRooms.map((room) => room.auction_id);
+
+  // 3. auction 테이블에서 product_id 매핑
+  const { data: auctions } = await supabase
+    .from('auction')
+    .select('auction_id, product_id')
+    .in('auction_id', auctionIds);
+  if (!auctions) return [];
+
+  const productIdMap = new Map(auctions.map((a) => [a.auction_id, a.product_id]));
+  const productIds = auctions.map((a) => a.product_id).filter(Boolean);
+
+  // 4. product_image 테이블에서 이미지 조회
+  const { data: productImages } = await supabase
+    .from('product_image')
+    .select('*')
+    .in('product_id', productIds);
+  console.log('chatRoomsWithImage productImages:', productImages);
+  // 5. 매핑
+  return chatRooms.map((room) => {
+    const product_id = productIdMap.get(room.auction_id);
+    const img = productImages?.find((i) => i.product_id === product_id);
+    return {
+      ...room,
+      product_image_url: img?.image_url ?? DEFAULT_PROFILE_IMG,
+    };
+  });
+}
 
 export async function getAllUsers() {
   const supabase = await createServerSupabaseAdminClient();
@@ -14,7 +51,7 @@ export async function getAllUsers() {
     *,
     exhibit_user_id!inner(nickname, profile_img)
   `);
-
+  console.log('getAllUsers data:', data);
   if (error) {
     console.error('getAllUsers error:', error);
     return [];
@@ -22,11 +59,8 @@ export async function getAllUsers() {
 
   return data.map((chat: any, product_image: any, message: any) => ({
     id: chat.chatroom_id,
-    chatroom_id: chat.chatroom_id,
-    user: chat.exhibit_user_id?.nickname || '알수없음',
     nickname: chat.exhibit_user_id?.nickname || '알수없음',
-    profile_img: chat.exhibit_user_id?.profile_img || 'https://via.placeholder.com/44',
-    image_id: product_image?.image_id,
+    profile_img: chat.exhibit_user_id?.profile_img ?? DEFAULT_PROFILE_IMG,
     message: message.content || '메시지가 없습니다',
     time: new Date(chat.updated_at).toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -55,24 +89,18 @@ export async function getUserById(user_Id: string) {
 export async function sendMessage({
   content,
   chatroom_id,
+  userId,
 }: {
   content: string;
   chatroom_id: string;
+  userId: string;
 }) {
   const supabase = await createServerSupabaseClient();
-
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-  if (error || !session || !session.user) {
-    throw new Error('User is not authenticated');
-  }
   const { data, error: sendMessageError } = await supabase
     .from('message')
     .insert({
       content,
-      sender_id: session.user.id,
+      sender_id: userId,
       chatroom_id,
       is_read: false,
       created_at: new Date().toISOString(),
@@ -84,29 +112,13 @@ export async function sendMessage({
   return data;
 }
 
-export async function getAllMessages(chatroom_id: string) {
+export async function getAllMessages(chatroom_id: string, userId: string) {
   const supabase = await createServerSupabaseClient();
 
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-  if (error || !session || !session.user) {
-    throw new Error('User is not authenticated');
-  }
-
-  // 메시지와 채팅방 정보를 조인하여 가져오기
+  // 메시지 전부 가져오기
   const { data, error: getAllMessagesError } = await supabase
     .from('message')
-    .select(
-      `
-      *,
-      chat_room!inner(
-        bid_user_id,
-        exhibit_user_id
-      )
-    `
-    )
+    .select(`*`)
     .eq('chatroom_id', chatroom_id)
     .order('created_at', { ascending: true });
 
@@ -114,37 +126,26 @@ export async function getAllMessages(chatroom_id: string) {
     console.error('getAllMessages error:', getAllMessagesError);
     return [];
   }
-
-  // 현재 사용자가 이 채팅방에 속해있는지 확인
-  if (data.length > 0 && data[0]) {
-    const chatRoom = data[0].chat_room;
-    const isParticipant =
-      chatRoom.bid_user_id === session.user.id || chatRoom.exhibit_user_id === session.user.id;
-
-    if (!isParticipant) {
-      throw new Error('Access denied to this chat room');
-    }
-  }
-
   // 메시지를 읽음 처리
   await markMessagesAsRead(chatroom_id);
 
-  return data.map((message) => ({
-    ...message,
-    bid_user_id: message.chat_room.bid_user_id,
-    exhibit_user_id: message.chat_room.exhibit_user_id,
-  }));
+  return data;
 }
-
-export async function markMessagesAsRead(chatroom_id: string) {
+export async function markMessagesAsRead(chatroom_id: string, userId?: string) {
   const supabase = await createServerSupabaseClient();
 
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-  if (error || !session || !session.user) {
-    throw new Error('User is not authenticated');
+  // userId가 없으면 모든 메시지를 읽음 처리
+  if (!userId) {
+    const { error: updateError } = await supabase
+      .from('message')
+      .update({ is_read: true })
+      .eq('chatroom_id', chatroom_id)
+      .eq('is_read', false);
+
+    if (updateError) {
+      console.error('markMessagesAsRead error:', updateError);
+    }
+    return;
   }
 
   // 현재 사용자가 받은 메시지(즉, 상대방이 보낸 메시지)를 읽음 처리
@@ -152,7 +153,7 @@ export async function markMessagesAsRead(chatroom_id: string) {
     .from('message')
     .update({ is_read: true })
     .eq('chatroom_id', chatroom_id)
-    .neq('sender_id', session.user.id) // 자신이 보낸 메시지가 아닌 것만
+    .neq('sender_id', userId) // 자신이 보낸 메시지가 아닌 것만
     .eq('is_read', false); // 읽지 않은 메시지만
 
   if (updateError) {

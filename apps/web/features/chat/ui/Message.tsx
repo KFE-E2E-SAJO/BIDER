@@ -17,7 +17,7 @@ export const Message = ({ isFromMe, message }: MessageProps) => {
       <Textarea
         variant="chat"
         value={message}
-        className={`w-fit ${isFromMe ? 'bg-gray-100 text-gray-900' : 'bg-main text-neutral-0 ml-auto flex'}`}
+        className={`w-fit ${isFromMe ? 'bg-main text-neutral-0 ml-auto flex' : 'bg-gray-100 text-gray-900'}`}
       />
     </div>
   );
