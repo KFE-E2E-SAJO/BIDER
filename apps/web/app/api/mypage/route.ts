@@ -1,3 +1,4 @@
+import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -30,23 +31,89 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ success: true });
 }
 
+interface BidWithAuction {
+  auction: { auction_status: string } | null;
+}
+
+interface ProductWithAuction {
+  product_id: string;
+  auction: { auction_status: string } | null;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
 
   if (!userId) {
-    return NextResponse.json({ error: 'userId is required' }, { status: 400 });
+    return NextResponse.json({ error: '프로필 정보를 불러오지 못했습니다.' }, { status: 400 });
   }
 
-  const { data, error } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('user_id, nickname, profile_img')
+    .select('nickname, email, profile_img, address')
     .eq('user_id', userId)
     .single();
 
-  if (error || !data) {
+  if (profileError || !profile) {
     return NextResponse.json({ error: '프로필 정보를 불러오지 못했습니다.' }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, data });
+  const [bidRes, productRes] = await Promise.all([
+    supabase
+      .from('bid_history')
+      .select('auction_id, auction:auction_id(auction_status)')
+      .eq('bid_user_id', userId),
+
+    supabase
+      .from('product')
+      .select('product_id, auction:auction!auction_product_id_fkey(auction_status)')
+      .eq('exhibit_user_id', userId),
+  ]);
+
+  if (bidRes.error || productRes.error) {
+    return NextResponse.json({ error: '내 경매 정보를 불러오지 못했습니다.' }, { status: 500 });
+  }
+
+  const seenAuctionIds = new Set<string>();
+  const uniqueBidData: BidWithAuction[] = [];
+
+  (bidRes.data as { auction_id: string; auction: any }[]).forEach((item) => {
+    const auctionId = item.auction_id;
+    if (!seenAuctionIds.has(auctionId)) {
+      seenAuctionIds.add(auctionId);
+      uniqueBidData.push({
+        auction: Array.isArray(item.auction) ? (item.auction[0] ?? null) : (item.auction ?? null),
+      });
+    }
+  });
+
+  const productData: ProductWithAuction[] = (
+    productRes.data as { product_id: string; auction: any }[]
+  ).map((item) => ({
+    product_id: item.product_id,
+    auction: Array.isArray(item.auction) ? (item.auction[0] ?? null) : (item.auction ?? null),
+  }));
+
+  const bidCount = uniqueBidData.length;
+  const bidProgressCount = uniqueBidData.filter(
+    (b) => b.auction?.auction_status === AUCTION_STATUS.IN_PROGRESS
+  ).length;
+
+  const listingCount = productData.length;
+  const listingProgressCount = productData.filter(
+    (p) => p.auction?.auction_status === AUCTION_STATUS.IN_PROGRESS
+  ).length;
+
+  return NextResponse.json({
+    success: true,
+    data: {
+      profile,
+      auction: {
+        bidCount,
+        bidProgressCount,
+        listingCount,
+        listingProgressCount,
+      },
+    },
+  });
 }
