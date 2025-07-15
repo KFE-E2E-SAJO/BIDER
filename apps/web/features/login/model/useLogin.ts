@@ -81,7 +81,6 @@ export const useLogin = () => {
         toast({ content: '로그인에 성공했습니다!' });
 
         router.push('/');
-        router.refresh();
       }
     } catch (err) {
       setError('로그인 중 문제가 발생했습니다.');
