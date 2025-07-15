@@ -19,7 +19,7 @@ export type StatusType =
   | 'state-green';
 
 const baseStyle =
-  'inline-flex items-center justify-center py-1 px-2 min-w-7 w-fit typo-caption-medium';
+  'inline-flex items-center justify-center py-1 px-2 min-w-7 w-fit text-[10px] font-semibold';
 const roundedTypes: StatusType[] = ['count-blue', 'count-gray', 'count-green'];
 
 const colorStyles: Record<StatusType, string> = {
