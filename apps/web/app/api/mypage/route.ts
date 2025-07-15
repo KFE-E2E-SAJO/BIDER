@@ -27,9 +27,7 @@ export async function POST(req: NextRequest) {
   let profileImgToSave: string | null = null;
 
   try {
-    if (isDeleted) {
-      profileImgToSave = null;
-    } else if (profileImgFile && profileImgFile instanceof File) {
+    if (!isDeleted && profileImgFile && profileImgFile instanceof File) {
       const ext = profileImgFile.name.split('.').pop();
       const fileName = `${uuidv4()}.${ext}`;
       const filePath = `${fileName}`;
@@ -49,12 +47,19 @@ export async function POST(req: NextRequest) {
       profileImgToSave = urlData.publicUrl;
     }
 
+    const updateData: { nickname: string; profile_img?: string | null } = {
+      nickname,
+    };
+
+    if (isDeleted) {
+      updateData.profile_img = null;
+    } else if (profileImgToSave) {
+      updateData.profile_img = profileImgToSave;
+    }
+
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({
-        nickname,
-        profile_img: profileImgToSave,
-      })
+      .update(updateData)
       .eq('user_id', userId);
 
     if (updateError) {

@@ -25,7 +25,10 @@ const ProfileInputList = () => {
 
   useEffect(() => {
     if (profile?.nickname) setNewNickname(profile.nickname);
-    if (profile?.profile_img) setProfileImgSrc(profile.profile_img);
+    if (profile?.profile_img) {
+      setProfileImgSrc(profile.profile_img);
+      setIsDeleted(false);
+    }
   }, [profile?.nickname, profile?.profile_img]);
 
   if (!userId || error || isLoading || !data) return <Loading />;
@@ -58,6 +61,7 @@ const ProfileInputList = () => {
 
       router.push('/mypage');
       router.refresh();
+      toast({ content: '수정되었습니다.' });
     } catch (error) {
       toast({ content: (error as Error).message });
     }
