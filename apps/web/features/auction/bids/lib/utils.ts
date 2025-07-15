@@ -5,11 +5,6 @@ export const formatBidPrice = (price: string): string => {
   return formatNumberWithComma(numericOnly);
 };
 
-export const formatBidPriceWithCurrency = (price: string): string => {
-  const formatted = formatBidPrice(price);
-  return formatted + ' 원';
-};
-
 export const parseBidPrice = (price: string): number => {
   return Number(price.replace(/,/g, ''));
 };
