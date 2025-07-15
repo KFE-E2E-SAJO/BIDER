@@ -77,6 +77,17 @@ export const useFindId = () => {
 
     if (result.success) {
       try {
+        const { data: userData, error: userError } = await supabase
+          .from('profiles')
+          .select('email')
+          .eq('email', inputValue.trim())
+          .single();
+
+        if (userError || !userData) {
+          toast({ content: '등록되지 않은 이메일입니다.' });
+          return;
+        }
+
         const { error } = await supabase.auth.resetPasswordForEmail(inputValue.trim(), {
           redirectTo: `http://localhost:3000/reset-pw`,
         });
