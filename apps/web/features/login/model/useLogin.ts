@@ -6,9 +6,11 @@ import { useAuthStore } from '@/shared/model/authStore';
 import { createClient } from '@/shared/lib/supabase/client';
 import { getKoreanErrorMessage } from '../lib/getKoreanErrorMessage';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import { validateFullEmail } from '@/shared/lib/validation/email';
+import { passwordSchema } from '@/shared/lib/validation/signupSchema';
 
 export const useLogin = () => {
-  const [email, setEmail] = useState('');
+  const [fullEmail, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,25 +23,18 @@ export const useLogin = () => {
     setIsLoading(true);
     setError('');
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailValid = validateFullEmail({ fullEmail: fullEmail });
 
-    if (!email.trim()) {
-      setError('이메일을 입력해주세요');
+    if (!emailValid.success) {
+      setError(emailValid.error ?? '올바른 이메일 형식이 아닙니다');
       setIsLoading(false);
       return;
     }
-    if (!password.trim()) {
-      setError('비밀번호를 입력해주세요');
-      setIsLoading(false);
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      setError('올바른 이메일 형식을 입력해주세요');
-      setIsLoading(false);
-      return;
-    }
-    if (password.length < 6) {
-      setError('비밀번호는 최소 6자 이상이어야 합니다');
+
+    const passwordValid = passwordSchema.safeParse(password);
+
+    if (!passwordValid.success) {
+      setError(passwordValid.error.errors[0]?.message ?? '올바른 비밀번호 형식이 아닙니다');
       setIsLoading(false);
       return;
     }
@@ -48,7 +43,7 @@ export const useLogin = () => {
       const supabase = createClient();
 
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: fullEmail.trim(),
         password: password,
       });
 
@@ -91,7 +86,7 @@ export const useLogin = () => {
   };
 
   return {
-    email,
+    fullEmail,
     setEmail,
     password,
     setPassword,

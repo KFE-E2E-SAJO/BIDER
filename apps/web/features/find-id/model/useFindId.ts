@@ -67,13 +67,7 @@ export const useFindId = () => {
 
   // 비밀번호 찾기(이메일 입력)
   const handlePasswordReset = async () => {
-    const [email, domain] = inputValue.split('@');
-    if (!email || !domain) {
-      toast({ content: '유효하지 않은 이메일 형식입니다.' });
-      return;
-    }
-
-    const result = validateFullEmail({ email, domain });
+    const result = validateFullEmail({ fullEmail: inputValue });
 
     if (result.success) {
       try {
@@ -93,7 +87,7 @@ export const useFindId = () => {
         toast({ content: '재설정 중 오류가 발생했습니다.' });
       }
     } else {
-      toast({ content: '올바른 이메일 형식을 입력해주세요' });
+      toast({ content: `${result.error ?? '올바른 이메일 형식이 아닙니다'}` });
       return;
     }
   };
