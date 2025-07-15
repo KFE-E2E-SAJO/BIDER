@@ -56,7 +56,7 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       {/* 판매자 정보 */}
-      <div className="p-box flex items-center gap-[19px]">
+      <div className="p-box mb-[25px] flex items-center gap-[19px]">
         <Avatar src={data.exhibitUser?.profile_img || undefined} className="size-[36px]" />
         <div className="flex flex-col gap-[5px]">
           <div className="typo-body-medium">{data.exhibitUser?.nickname}</div>
