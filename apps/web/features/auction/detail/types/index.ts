@@ -5,6 +5,7 @@ import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
 export interface AuctionDetailContent {
   auctionId: string;
   productTitle: string;
+  productCategory: string;
   productDescription: string;
   images: ProductImage[];
   minPrice: number;

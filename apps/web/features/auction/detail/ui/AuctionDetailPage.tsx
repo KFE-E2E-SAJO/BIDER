@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { AuctionDetailContentProps } from '../types';
 import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
 import BiddingStatusBoard from './BiddingStatusBoard';
+import { getCategoryLabel } from '@/features/category/lib/utils';
+import { CategoryValue } from '@/features/category/types';
 
 const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
@@ -12,7 +14,12 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
     <>
       {/* 경매 상품 내용 */}
       <div className="p-box flex flex-col gap-[25px]">
-        <div className="typo-subtitle-bold">{data.productTitle}</div>
+        <div className="flex flex-col gap-[14px]">
+          <div className="typo-subtitle-bold">{data.productTitle}</div>
+          <p className="typo-caption-regular w-fit border-b text-neutral-700">
+            {getCategoryLabel(data.productCategory as CategoryValue)}
+          </p>
+        </div>
 
         <div>
           <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>

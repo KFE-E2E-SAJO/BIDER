@@ -21,6 +21,7 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
   const mapped: AuctionDetailContent = {
     auctionId: data.auction_id,
     productTitle: data.product?.title,
+    productCategory: data.product?.category,
     productDescription: data.product?.description,
     images: data.product?.product_image ?? [],
     minPrice: data.min_price,
