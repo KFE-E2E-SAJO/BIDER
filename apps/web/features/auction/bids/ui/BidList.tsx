@@ -4,8 +4,7 @@ import ProductList from '@/features/product/ui/ProductList';
 import { useGetBidList } from '@/features/auction/bids/model/useGetBidList';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-
-interface BidListProps {
+export interface BidListProps {
   filter: 'all' | 'progress' | 'win' | 'fail';
 }
 
@@ -17,9 +16,7 @@ const BidList = ({ filter }: BidListProps) => {
     filter,
   });
 
-  if (isLoading || error || !data) {
-    return <Loading />;
-  }
+  if (isLoading || error || !data) return <Loading />;
 
   return (
     <div className="flex flex-col gap-4 px-4">
