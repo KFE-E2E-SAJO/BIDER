@@ -12,12 +12,12 @@ export async function handleRedirect(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_KEY!,
     {
       cookies: {
-        //쿠키 읽기
+        // 쿠키 읽기
         getAll() {
           return request.cookies.getAll();
         },
 
-        //쿠키 쓰기(토큰 자동 갱신)
+        // 쿠키 쓰기(토큰 자동 갱신)
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value);
@@ -33,7 +33,7 @@ export async function handleRedirect(request: NextRequest) {
     }
   );
 
-  //JWT 토큰 검증
+  // JWT 토큰 검증
   const {
     data: { user },
     error,
@@ -50,7 +50,7 @@ export async function handleRedirect(request: NextRequest) {
     '/product',
     '/search',
     '/category',
-    '/aution',
+    '/auction',
     '/bid',
     '/alarm',
   ];
@@ -81,7 +81,6 @@ export async function handleRedirect(request: NextRequest) {
     if (isLoggedIn && !hasAddress) {
       return NextResponse.redirect(new URL('/setLocation', request.url));
     }
-
     return supabaseResponse;
   }
 
@@ -92,7 +91,6 @@ export async function handleRedirect(request: NextRequest) {
     if (isLoggedIn && !hasAddress) {
       return NextResponse.redirect(new URL('/setLocation', request.url));
     }
-
     return supabaseResponse;
   }
 
@@ -115,19 +113,18 @@ export async function handleRedirect(request: NextRequest) {
       if (!token || type !== 'recovery') {
         return NextResponse.redirect(new URL('/splash', request.url));
       }
+
+      return supabaseResponse;
     }
 
     if (isLoggedIn) {
-      if (redirectPage === '/reset-pw') {
-        return supabaseResponse;
-      }
-
       if (hasAddress) {
         return NextResponse.redirect(new URL('/', request.url));
       } else {
         return NextResponse.redirect(new URL('/setLocation', request.url));
       }
     }
+
     return supabaseResponse;
   }
 
