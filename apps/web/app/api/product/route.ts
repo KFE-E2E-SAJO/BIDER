@@ -143,6 +143,7 @@ export async function GET(
   const userId = searchParams.get('userId');
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
+  const sort = searchParams.get('sort') || 'latest';
 
   if (!userId || userId === 'undefined') {
     return NextResponse.json(
@@ -229,7 +230,16 @@ export async function GET(
 
   const limit = Number(searchParams.get('limit')) || 10;
   const offset = Number(searchParams.get('offset')) || 0;
-  const sliced = filtered.slice(offset * limit, (offset + 1) * limit);
+
+  const sorted = filtered.sort((a, b) => {
+    if (sort === 'popular') {
+      return b.bidCount - a.bidCount;
+    } else {
+      return new Date(b.auctionEndAt).getTime() - new Date(a.auctionEndAt).getTime();
+    }
+  });
+
+  const sliced = sorted.slice(offset * limit, (offset + 1) * limit);
 
   return NextResponse.json({
     data: sliced,

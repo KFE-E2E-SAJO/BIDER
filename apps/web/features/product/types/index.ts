@@ -22,10 +22,12 @@ export interface ProductListError {
   status: number;
 }
 
+export type ProductSort = 'latest' | 'popular';
 export interface ProductListParams {
   userId: string;
   search?: string;
   cate?: string;
+  sort?: ProductSort;
 }
 export interface ProductFormData {
   title: string;
