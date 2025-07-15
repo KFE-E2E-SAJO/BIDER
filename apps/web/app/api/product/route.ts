@@ -216,11 +216,14 @@ export async function GET(
       const now = new Date();
       const isEnded = auction_status === '경매 종료';
       const isDeadlineToday = new Date(auction_end_at).toDateString() === now.toDateString();
+      const isWaiting = auction_status === '경매 대기';
 
       const filterDeadline = !hasDeadlineToday || (hasDeadlineToday && isDeadlineToday);
       const filterExcludeEnded = !hasExcludeEnded || (hasExcludeEnded && !isEnded);
 
-      return within5km && matchSearch && matchCate && filterDeadline && filterExcludeEnded;
+      return (
+        !isWaiting && within5km && matchSearch && matchCate && filterDeadline && filterExcludeEnded
+      );
     })
     .map((item) => {
       const bidPrices = item.bid_history?.map((b) => b.bid_price) ?? [];

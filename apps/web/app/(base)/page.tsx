@@ -30,7 +30,7 @@ const HomePage = () => {
   if (isLoading) return <Loading />;
   return (
     <>
-      <div className="p-box flex items-center justify-between">
+      <div className="p-box my-[21px] flex items-center justify-between">
         <LocationPin />
         <ProductSortDropdown setSort={setSort} />
       </div>

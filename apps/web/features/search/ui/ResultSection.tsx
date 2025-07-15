@@ -7,6 +7,12 @@ import useProductListErrorHandler from '@/features/product/model/useProductListE
 import { useAuthStore } from '@/shared/model/authStore';
 import useVirtualInfiniteScroll from '@/features/product/model/useVirtualInfiniteScroll';
 import ProductListScroll from '@/features/product/ui/ProductListScroll';
+import { useState } from 'react';
+import { ProductFilter as ProductFilterType, ProductSort } from '@/features/product/types';
+import ProductSortDropdown from '@/features/product/ui/ProductSortDropdown';
+import ProductFilter from '@/features/product/ui/ProductFilter';
+import CategoryFilter from '@/features/category/ui/CategoryFilter';
+import { CategoryValue } from '@/features/category/types';
 
 interface ResultSectionProps {
   search: string;
@@ -14,9 +20,12 @@ interface ResultSectionProps {
 
 const ResultSection = ({ search }: ResultSectionProps) => {
   const userId = useAuthStore((state) => state.user?.id) as string;
+  const [sort, setSort] = useState<ProductSort>('latest');
+  const [filter, setFilter] = useState<ProductFilterType[]>(['exclude-ended']);
+  const [cate, setCate] = useState<CategoryValue>('all');
 
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useProductList({ userId, search });
+    useProductList({ userId, search, sort, filter, cate });
 
   useProductListErrorHandler(isError, error);
 
@@ -42,7 +51,7 @@ const ResultSection = ({ search }: ResultSectionProps) => {
     content = (
       <div
         ref={parentRef}
-        style={{ height: 'calc(100vh - 138px)' }}
+        style={{ height: 'calc(100vh - 173px)' }}
         className="p-box overflow-auto"
       >
         <ProductListScroll
@@ -57,9 +66,15 @@ const ResultSection = ({ search }: ResultSectionProps) => {
 
   return (
     <>
-      <div className="p-box flex flex-col">
-        <LocationPin />
+      <div className="p-box my-[21px] flex items-center justify-between">
+        <div className="flex gap-[11px]">
+          <LocationPin />
+          <CategoryFilter setCate={setCate} />
+        </div>
+
+        <ProductSortDropdown setSort={setSort} />
       </div>
+      <ProductFilter setFilter={setFilter} />
       {content}
     </>
   );

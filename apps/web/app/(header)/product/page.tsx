@@ -64,7 +64,7 @@ const productListPage = () => {
   return (
     <>
       <Category type="inline" />
-      <div className="p-box flex items-center justify-between">
+      <div className="p-box my-[21px] flex items-center justify-between">
         <LocationPin />
         <ProductSortDropdown setSort={setSort} />
       </div>
