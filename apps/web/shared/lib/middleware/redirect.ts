@@ -108,7 +108,20 @@ export async function handleRedirect(request: NextRequest) {
       }
     }
 
+    if (redirectPage === '/reset-pw') {
+      const token = searchParams.get('token');
+      const type = searchParams.get('type');
+
+      if (!token || type !== 'recovery') {
+        return NextResponse.redirect(new URL('/splash', request.url));
+      }
+    }
+
     if (isLoggedIn) {
+      if (redirectPage === '/reset-pw') {
+        return supabaseResponse;
+      }
+
       if (hasAddress) {
         return NextResponse.redirect(new URL('/', request.url));
       } else {
