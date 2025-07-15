@@ -3,6 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 
 export async function handleRedirect(request: NextRequest) {
   const redirectPage = request.nextUrl.pathname;
+  const searchParams = request.nextUrl.searchParams;
 
   let supabaseResponse = NextResponse.next({ request });
 
@@ -53,32 +54,9 @@ export async function handleRedirect(request: NextRequest) {
     '/bid',
     '/alarm',
   ];
-  const authRoutes = ['/login', '/signup'];
+  const authRoutes = ['/login', '/signup', '/find-id', '/reset-pw'];
 
-  if (redirectPage.startsWith('/setLocation')) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-    return supabaseResponse;
-  }
-
-  if (redirectPage === '/') {
-    if (isLoggedIn && !hasAddress) {
-      return NextResponse.redirect(new URL('/setLocation', request.url));
-    }
-  }
-
-  if (protectedRoutes.some((page) => redirectPage.startsWith(page))) {
-    if (isLoggedIn) {
-      if (!hasAddress) {
-        return NextResponse.redirect(new URL('/setLocation', request.url));
-      }
-    } else {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-  }
-
-  if (authRoutes.some((page) => redirectPage.startsWith(page))) {
+  if (redirectPage === '/splash') {
     if (isLoggedIn) {
       if (hasAddress) {
         return NextResponse.redirect(new URL('/', request.url));
@@ -86,11 +64,63 @@ export async function handleRedirect(request: NextRequest) {
         return NextResponse.redirect(new URL('/setLocation', request.url));
       }
     }
+    return supabaseResponse;
+  }
+
+  if (redirectPage.startsWith('/setLocation')) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL('/splash', request.url));
+    }
+    return supabaseResponse;
+  }
+
+  if (redirectPage === '/') {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL('/splash', request.url));
+    }
+    if (isLoggedIn && !hasAddress) {
+      return NextResponse.redirect(new URL('/setLocation', request.url));
+    }
+
+    return supabaseResponse;
+  }
+
+  if (protectedRoutes.some((page) => redirectPage.startsWith(page))) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL('/splash', request.url));
+    }
+    if (isLoggedIn && !hasAddress) {
+      return NextResponse.redirect(new URL('/setLocation', request.url));
+    }
+
+    return supabaseResponse;
+  }
+
+  if (authRoutes.some((page) => redirectPage.startsWith(page))) {
+    if (redirectPage === '/signup' && searchParams.get('verified') === 'true') {
+      return supabaseResponse;
+    }
+
+    if (redirectPage === '/find-id') {
+      const type = searchParams.get('type');
+      if (!type || (type !== 'email' && type !== 'password')) {
+        return NextResponse.redirect(new URL('/find-id?type=email', request.url));
+      }
+    }
+
+    if (isLoggedIn) {
+      if (hasAddress) {
+        return NextResponse.redirect(new URL('/', request.url));
+      } else {
+        return NextResponse.redirect(new URL('/setLocation', request.url));
+      }
+    }
+    return supabaseResponse;
   }
 
   return supabaseResponse;
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|auth|.*\\.css|.*\\.js|.*\\.map).*)'],
 };
