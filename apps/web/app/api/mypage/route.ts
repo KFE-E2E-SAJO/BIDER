@@ -1,6 +1,7 @@
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -8,28 +9,64 @@ export async function POST(req: NextRequest) {
   const userId = formData.get('userId') as string;
   const nickname = formData.get('nickname') as string;
   const isDeleted = formData.get('isDeleted') === 'true';
-  const profileImg = formData.get('profileImg') as string | null;
+  const profileImgFile = formData.get('profileImg') as File | null;
 
   if (!userId || !nickname) {
     return NextResponse.json({ error: '유저 정보가 부족합니다.' }, { status: 400 });
   }
 
-  const profileImgToSave = isDeleted ? null : profileImg;
+  let profileImgToSave: string | null = null;
 
-  const { error: updateError } = await supabase
-    .from('profiles')
-    .update({
-      nickname,
-      profile_img: profileImgToSave,
-    })
-    .eq('user_id', userId);
+  try {
+    if (isDeleted) {
+      profileImgToSave = null;
+    }
 
-  if (updateError) {
-    return NextResponse.json({ error: updateError.message }, { status: 500 });
+    // 새 이미지 업로드가 있는 경우
+    else if (profileImgFile && profileImgFile instanceof File) {
+      const ext = profileImgFile.name.split('.').pop();
+      const fileName = `${uuidv4()}.${ext}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('user-profile-image')
+        .upload(filePath, profileImgFile, { contentType: profileImgFile.type });
+
+      if (uploadError) {
+        return NextResponse.json(
+          { error: `이미지 업로드 실패: ${uploadError.message}` },
+          { status: 500 }
+        );
+      }
+
+      const { data: urlData } = supabase.storage.from('user-profile-image').getPublicUrl(filePath);
+      profileImgToSave = urlData.publicUrl;
+    }
+
+    // DB 업데이트
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({
+        nickname,
+        profile_img: profileImgToSave,
+      })
+      .eq('user_id', userId);
+
+    if (updateError) {
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('프로필 수정 실패:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : '서버 오류 발생' },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ success: true });
 }
+
+// GET action
 
 interface BidWithAuction {
   auction: { auction_status: string } | null;

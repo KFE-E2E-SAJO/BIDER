@@ -10,6 +10,6 @@ export const useGetProfile = ({ userId }: useGetProfileParams) => {
     queryKey: ['userProfile', userId],
     queryFn: () => getProfile({ userId }),
     enabled: !!userId,
-    staleTime: 1000 * 60 * 1,
+    staleTime: 0,
   });
 };

@@ -14,8 +14,6 @@ const MyPage = () => {
 
   if (isLoading || error || !data) return <Loading />;
 
-  console.log(data);
-
   return (
     <div>
       <MyPageProfileCard {...data.profile} />
