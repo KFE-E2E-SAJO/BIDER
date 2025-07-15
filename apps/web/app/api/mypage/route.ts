@@ -3,6 +3,15 @@ import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
+interface BidWithAuction {
+  auction: { auction_status: string } | null;
+}
+
+interface ProductWithAuction {
+  product_id: string;
+  auction: { auction_status: string } | null;
+}
+
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
 
@@ -20,10 +29,7 @@ export async function POST(req: NextRequest) {
   try {
     if (isDeleted) {
       profileImgToSave = null;
-    }
-
-    // 새 이미지 업로드가 있는 경우
-    else if (profileImgFile && profileImgFile instanceof File) {
+    } else if (profileImgFile && profileImgFile instanceof File) {
       const ext = profileImgFile.name.split('.').pop();
       const fileName = `${uuidv4()}.${ext}`;
       const filePath = `${fileName}`;
@@ -43,7 +49,6 @@ export async function POST(req: NextRequest) {
       profileImgToSave = urlData.publicUrl;
     }
 
-    // DB 업데이트
     const { error: updateError } = await supabase
       .from('profiles')
       .update({
@@ -64,17 +69,6 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-// GET action
-
-interface BidWithAuction {
-  auction: { auction_status: string } | null;
-}
-
-interface ProductWithAuction {
-  product_id: string;
-  auction: { auction_status: string } | null;
 }
 
 export async function GET(request: NextRequest) {
