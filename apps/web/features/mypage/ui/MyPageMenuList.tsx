@@ -38,7 +38,7 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
         <MyPageMenuItem label="등급" href="/mypage/grade" />
         <MyPageMenuItem
           label="내 위치 수정"
-          href="/location"
+          href="/setLocation"
           rightElement={
             <Button
               shape="rounded"
@@ -50,6 +50,7 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
             </Button>
           }
         />
+
         <MyPageMenuItem label="회원 정보 수정" href="/mypage/edit" withBorder={false} />
       </ul>
 
