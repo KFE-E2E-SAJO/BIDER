@@ -69,14 +69,17 @@ export async function handleRedirect(request: NextRequest) {
 
   if (redirectPage.startsWith('/setLocation')) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/splash', request.url));
+      return NextResponse.redirect(new URL('/splash/welcome', request.url));
+    }
+    if (hasAddress) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
     return supabaseResponse;
   }
 
   if (redirectPage === '/') {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/splash', request.url));
+      return NextResponse.redirect(new URL('/splash/welcome', request.url));
     }
     if (isLoggedIn && !hasAddress) {
       return NextResponse.redirect(new URL('/setLocation', request.url));
@@ -86,7 +89,7 @@ export async function handleRedirect(request: NextRequest) {
 
   if (protectedRoutes.some((page) => redirectPage.startsWith(page))) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/splash', request.url));
+      return NextResponse.redirect(new URL('/splash/welcome', request.url));
     }
     if (isLoggedIn && !hasAddress) {
       return NextResponse.redirect(new URL('/setLocation', request.url));
@@ -111,7 +114,7 @@ export async function handleRedirect(request: NextRequest) {
       const type = searchParams.get('type');
 
       if (!token || type !== 'recovery') {
-        return NextResponse.redirect(new URL('/splash', request.url));
+        return NextResponse.redirect(new URL('/splash/welcome', request.url));
       }
 
       return supabaseResponse;
@@ -123,9 +126,9 @@ export async function handleRedirect(request: NextRequest) {
       } else {
         return NextResponse.redirect(new URL('/setLocation', request.url));
       }
+    } else {
+      return NextResponse.redirect(new URL('/splash/welcome', request.url));
     }
-
-    return supabaseResponse;
   }
 
   return supabaseResponse;
