@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 import { Button } from '@repo/ui/components/Button/Button';
@@ -18,6 +18,7 @@ import {
 import { formatPriceInput } from '../lib/utils';
 import { useCreateProductWithValidation } from '../model/useCreateProduct';
 import { useProductFormWithoutSubmitting } from '../model/useProductForm';
+import GoogleMap from '@/features/location/ui/GoggleMap';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
@@ -28,6 +29,9 @@ export const ProductRegistrationForm = () => {
     title,
     category,
     description,
+    dealAddress,
+    dealLatitude,
+    dealLongitude,
     minPrice,
     endDate,
     endTime,
@@ -36,6 +40,9 @@ export const ProductRegistrationForm = () => {
     setTitle,
     setCategory,
     setDescription,
+    setDealAddress,
+    setDealLatitude,
+    setDealLongitude,
     setMinPrice,
     setEndDate,
     setEndTime,
@@ -65,6 +72,9 @@ export const ProductRegistrationForm = () => {
       title,
       category,
       description,
+      dealAddress,
+      dealLatitude: Number(dealLatitude),
+      dealLongitude: Number(dealLongitude),
       minPrice,
       endDate,
       endTime,
@@ -74,6 +84,8 @@ export const ProductRegistrationForm = () => {
   };
 
   const isSubmitting = createProduct.isPending;
+
+  const [dealLocationUse, setDealLocationUse] = useState(false);
 
   return (
     <div className="flex flex-col gap-[26px] pt-[16px]">
@@ -127,6 +139,17 @@ export const ProductRegistrationForm = () => {
             onChange={(e) => setDescription(e.target.value)}
             required
           />
+        </div>
+        {/* 거래 희망 장소 */}
+        <div className="flex flex-col gap-[13px]">
+          <div className="typo-subtitle-small-medium">거래 희망 장소</div>
+          <Input
+            placeholder="위치 추가"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <GoogleMap />
         </div>
       </div>
 
