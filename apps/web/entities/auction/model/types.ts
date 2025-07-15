@@ -1,4 +1,4 @@
-import { BidHistory } from '@/entities/bidHistory/model/types';
+import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
 import { ProductWithUserNImages } from '@/entities/product/model/types';
 
 export interface Auction {
@@ -15,7 +15,7 @@ export interface Auction {
 
 export interface AuctionDetail extends Auction {
   product: ProductWithUserNImages;
-  bid_history: BidHistory[];
+  bid_history: BidHistoryWithUserNickname[];
   current_highest_bid: number;
 }
 
