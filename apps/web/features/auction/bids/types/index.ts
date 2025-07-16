@@ -27,3 +27,38 @@ export interface BidResponse {
 export type SubmitBidContext = {
   onSuccess?: () => void;
 };
+
+export interface BidListParams {
+  userId: string;
+  filter: 'all' | 'progress' | 'win' | 'fail';
+}
+export interface BidData {
+  bid_id: string;
+  is_awarded: boolean;
+  bid_price: number;
+
+  auction: {
+    auction_id: string;
+    auction_status: string;
+    auction_end_at: string;
+    winning_bid_user_id: string | null;
+
+    product: {
+      product_id: string;
+      title: string;
+      exhibit_user_id: string;
+      latitude: number;
+      longitude: number;
+      address: string | null;
+
+      product_image: {
+        image_url: string;
+        order_index: number;
+      }[];
+    };
+  };
+}
+export interface BidDataWithStats extends BidData {
+  bidCount: number;
+  maxPrice: number;
+}

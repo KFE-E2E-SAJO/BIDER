@@ -1,9 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getEditProfile } from '@/features/mypage/edit/lib/getEditProfile';
-
-interface UseGetEditProfileParams {
-  userId: string;
-}
+import { getEditProfile } from '@/features/mypage/edit/model/getEditProfile';
+import { UseGetEditProfileParams } from '@/features/mypage/edit/types';
 
 export const useGetEditProfile = ({ userId }: UseGetEditProfileParams) => {
   return useQuery({
