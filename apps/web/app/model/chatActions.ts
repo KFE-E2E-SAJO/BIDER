@@ -7,22 +7,42 @@ import { createServerSupabaseClient } from 'shared/lib/supabaseServer';
 const message = supabase.channel('message');
 const DEFAULT_PROFILE_IMG = '/default-profile.png';
 
+export async function getProductInfo() {
+  const { data, error } = await supabase.from('chat_room').select(`
+    *,
+    auction_id (
+      min_price,
+      product_id,
+      product_id (
+        title
+      )
+    )
+  `);
+  if (error) {
+    console.error('getProductInfo error:', error);
+    return [];
+  }
+  return data.map((chat: any) => ({
+    id: chat.chatroom_id,
+    min_price: chat.auction_id?.min_price ?? 0,
+    product_id: chat.auction_id?.product_id ?? null,
+    title: chat.auction_id?.product_id?.title ?? '알수없음',
+  }));
+}
+
 export async function chatRoomsWithImage() {
   // 1. 채팅방 목록 조회
   const { data: chatRooms } = await supabase.from('chat_room').select('*');
-  console.log('chatRoomsWithImage chatRooms:', chatRooms);
   if (!chatRooms) return [];
 
   // 2. auction_id 추출
   const auctionIds = chatRooms.map((room) => room.auction_id);
-  console.log('chatRoomsWithImage auctionIds:', auctionIds);
 
   // 3. auction 테이블에서 product_id 매핑
   const { data: auctions } = await supabase
     .from('auction')
     .select('auction_id, product_id')
     .in('auction_id', auctionIds);
-  console.log('chatRoomsWithImage auctions:', auctions);
   if (!auctions) return [];
 
   const productIdMap = new Map(auctions.map((a) => [a.auction_id, a.product_id]));
@@ -33,7 +53,6 @@ export async function chatRoomsWithImage() {
     .from('product_image')
     .select('*')
     .eq('order_index', 0);
-  console.log('chatRoomsWithImage productImages:', productImages);
   // 5. 매핑
   return chatRooms.map((room) => {
     const product_id = productIdMap.get(room.auction_id);
@@ -41,6 +60,38 @@ export async function chatRoomsWithImage() {
     return {
       ...room,
       product_image_url: img?.image_url ?? DEFAULT_PROFILE_IMG,
+    };
+  });
+}
+
+export async function getLatestMessages() {
+  // 1. 채팅방 목록
+  const { data: chatRooms } = await supabase.from('chat_room').select('*');
+  console.log('채팅방 목록:', chatRooms);
+  if (!chatRooms) return [];
+
+  // 2. 최신 메시지 전체 쿼리
+  const chatRoomIds = chatRooms.map((room) => room.chatroom_id);
+  const { data: latestMessages } = await supabase
+    .from('message')
+    .select('chatroom_id, content, created_at')
+    .in('chatroom_id', chatRoomIds)
+    .order('created_at', { ascending: false });
+  console.log('최신 메시지:', latestMessages);
+  // 3. chatroom_id별로 최신 메시지 1개만 추림
+  const latestMessageMap = new Map();
+  latestMessages?.forEach((msg) => {
+    if (!latestMessageMap.has(msg.chatroom_id)) {
+      latestMessageMap.set(msg.chatroom_id, msg); // 최신 메시지만
+    }
+  });
+
+  return chatRooms.map((room) => {
+    const msg = latestMessageMap.get(room.chatroom_id);
+    return {
+      ...room,
+      message: msg?.content ?? '메시지가 없습니다',
+      created_at: msg?.created_at ?? null,
     };
   });
 }
@@ -67,6 +118,7 @@ export async function getAllUsers() {
       day: 'numeric',
     }),
     updated_at: chat.updated_at,
+    created_at: message.created_at,
     unread: 0, // 실제 읽지 않은 메시지 수 계산 로직 필요
     badge: null, // 배지 로직 필요
     type: 'buy', // 실제 타입 결정 로직 필요

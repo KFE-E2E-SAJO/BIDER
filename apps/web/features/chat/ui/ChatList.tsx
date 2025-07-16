@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getAllUsers } from '../../../app/model/chatActions';
+import { getAllUsers, getLatestMessages } from '../../../app/model/chatActions';
 import { useRouter } from 'next/navigation';
 import { useRecoilState } from 'recoil';
 import { presenceState, selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
@@ -135,6 +135,14 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
     },
   });
 
+  const { data: getLatestMessages = [] } = useQuery({
+    queryKey: ['latestMessages'],
+    queryFn: async () => {
+      const res = await fetch('/api/latestMessages');
+      return res.json();
+    },
+  });
+
   useEffect(() => {
     const channel = supabase.channel('online_users', {
       config: {
@@ -254,19 +262,24 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
                       </span>
                     )}
                   </div>
-                  <div className="mt-1 flex items-center gap-2">
-                    <span className="block w-44 truncate text-xs text-gray-500">
-                      {chat.message}
-                    </span>
-                    <span className="ml-1 text-xs text-gray-400">
-                      {new Date(chat.updated_at).toLocaleString('ko-KR', {
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
-                  </div>
+                  {getLatestMessages.map((chatrooms: any) => (
+                    <div className="mt-1 flex items-center gap-2">
+                      <span
+                        key={chatrooms.chatroom_id}
+                        className="block w-44 truncate text-xs text-gray-500"
+                      >
+                        {chatrooms.message}
+                      </span>
+                      <span className="ml-1 text-xs text-gray-400">
+                        {new Date(chatrooms.created_at).toLocaleString('ko-KR', {
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </div>
+                  ))}
                 </div>
                 {totalUnreadCount > 0 ? (
                   <span className="ml-2 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-red-500 px-2 text-xs font-bold text-white">

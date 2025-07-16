@@ -61,6 +61,22 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
     inputRef.current?.focus();
   };
 
+  const { data: chatRoomsWithImage = [] } = useQuery({
+    queryKey: ['chatRooms'],
+    queryFn: async () => {
+      const res = await fetch('/api/chat-rooms');
+      return res.json();
+    },
+  });
+
+  const { data: getProductInfo = [] } = useQuery({
+    queryKey: ['data'],
+    queryFn: async () => {
+      const res = await fetch('/api/chat-rooms/[shortId]');
+      return res.json();
+    },
+  });
+
   const getAllUsersQuery = useQuery({
     queryKey: ['profile'],
     queryFn: () => getAllUsers(),
@@ -177,11 +193,20 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
           </button>
         </div>
         <div className="mt-1 flex items-center gap-3 text-xs">
-          <img src={productImage} alt="상품 이미지" className="h-9 w-9 rounded-md object-cover" />
-          <div className="flex min-w-0 flex-col justify-center">
-            <div className="truncate text-[13px] font-medium">아이폰 14pro 128G 팝니다</div>
-            <div className="text-[15px] font-bold">200,000원</div>
-          </div>
+          {chatRoomsWithImage.map((chatrooms: any) => (
+            <img
+              key={chatrooms.chatroom_id}
+              src={chatrooms.product_image_url}
+              alt="Product Image"
+              className="h-9 w-9 rounded-md object-cover"
+            />
+          ))}
+          {getProductInfo.map((product: any) => (
+            <div key={product.id} className="flex min-w-0 flex-col justify-center">
+              <div className="truncate text-[13px] font-medium">{product.title}</div>
+              <div className="text-[15px] font-bold">{product.min_price.toLocaleString()}원</div>
+            </div>
+          ))}
           <span className="ml-auto rounded bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600">
             경매 종료
           </span>
