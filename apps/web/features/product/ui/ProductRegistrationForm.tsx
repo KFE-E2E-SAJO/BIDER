@@ -15,10 +15,11 @@ import {
   SelectContent,
   SelectItem,
 } from '@repo/ui/components/Select/Select';
-import { formatPriceInput } from '../lib/utils';
+import { formatPriceInput, isEndDateValid } from '../lib/utils';
 import { useCreateProductWithValidation } from '../model/useCreateProduct';
 import { useProductFormWithoutSubmitting } from '../model/useProductForm';
 import GoogleMap from '@/features/location/ui/GoggleMap';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
@@ -65,6 +66,11 @@ export const ProductRegistrationForm = () => {
 
   const handleSubmit = () => {
     if (!user.user?.id) {
+      return;
+    }
+
+    if (!isEndDateValid(endDate, endTime)) {
+      toast({ content: '종료일시는 현재 시간 기준 1시간 이후여야 합니다.' });
       return;
     }
 

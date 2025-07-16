@@ -8,7 +8,7 @@ import {
   createFormDataFromProduct,
   handleMinPriceChange,
 } from '../lib/editFormUtils';
-import { canEditProduct, validateProductEditForm } from '../lib/utils';
+import { canEditProduct, isEndDateAfterInitialDate, validateProductEditForm } from '../lib/utils';
 import { useProductEditQuery } from './useProductForEdit';
 import { useProductUpdateMutation } from './useProductUpdate';
 
@@ -53,6 +53,11 @@ export const useProductEdit = (shortId: string) => {
     if (!canEditProduct(data.created_at)) {
       toast({ content: '상품 수정 가능 시간이 만료되었습니다!' });
       router.back();
+      return;
+    }
+
+    if (!isEndDateAfterInitialDate(endDate, endTime, data.created_at)) {
+      toast({ content: '경매 종료일시는 상품 등록 시각 기준으로 1시간 이후여야 합니다.' });
       return;
     }
 
