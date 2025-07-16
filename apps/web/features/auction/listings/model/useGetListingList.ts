@@ -5,7 +5,7 @@ import { ListingListParams } from '../types';
 
 export const useGetListingList = (params: ListingListParams) => {
   return useQuery<ProductList[]>({
-    queryKey: ['ListingList', params.userId, params.filter],
+    queryKey: ['listingList', params.userId, params.filter],
     queryFn: () => getListingList(params),
     enabled: !!params.userId,
     staleTime: 0,

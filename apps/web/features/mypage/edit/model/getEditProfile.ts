@@ -1,6 +1,4 @@
-interface GetEditProfileParams {
-  userId: string;
-}
+import { GetEditProfileParams } from '@/features/mypage/edit/types';
 
 export const getEditProfile = async ({ userId }: GetEditProfileParams) => {
   const res = await fetch(`/api/mypage?userId=${userId}`);

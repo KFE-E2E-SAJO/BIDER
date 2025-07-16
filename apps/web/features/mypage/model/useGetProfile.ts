@@ -1,11 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProfile } from '@/features/mypage/lib/getProfile';
+import getProfile from '@/features/mypage/model/getProfile';
+import { useGetProfileParams } from '@/features/mypage/types';
 
-interface UseGetProfileParams {
-  userId: string;
-}
-
-export const useGetProfile = ({ userId }: UseGetProfileParams) => {
+export const useGetProfile = ({ userId }: useGetProfileParams) => {
   return useQuery({
     queryKey: ['userProfile', userId],
     queryFn: () => getProfile({ userId }),
