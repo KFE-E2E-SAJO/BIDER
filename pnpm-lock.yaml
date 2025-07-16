@@ -159,7 +159,7 @@ importers:
         version: link:../../packages/ui
       '@supabase/ssr':
         specifier: ^0.6.1
-        version: 0.6.1(@supabase/supabase-js@2.50.1(ws@8.18.2))
+        version: 0.6.1(@supabase/supabase-js@2.51.0)
       '@supabase/supabase-js':
         specifier: ^2.50.1
         version: 2.51.0
@@ -2427,10 +2427,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-
   cookie@1.0.2:
     resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
     engines: {node: '>=18'}
+
   core-js-pure@3.44.0:
     resolution: {integrity: sha512-gvMQAGB4dfVUxpYD0k3Fq8J+n5bB6Ytl15lqlZrOIXFzxOhtPaObfkQGHtMRdyjIf7z2IeNULwi1jEwyS+ltKQ==}
 
@@ -6025,9 +6025,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@supabase/ssr@0.6.1(@supabase/supabase-js@2.50.1(ws@8.18.2))':
+  '@supabase/ssr@0.6.1(@supabase/supabase-js@2.51.0)':
     dependencies:
-      '@supabase/supabase-js': 2.50.1(ws@8.18.2)
+      '@supabase/supabase-js': 2.51.0
       cookie: 1.0.2
 
   '@supabase/storage-js@2.7.1':
@@ -6960,6 +6960,7 @@ snapshots:
   convert-source-map@2.0.0: {}
 
   cookie@1.0.2: {}
+
   core-js-pure@3.44.0: {}
 
   create-require@1.1.1: {}
