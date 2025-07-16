@@ -10,17 +10,7 @@ import {
 } from '@repo/ui/components/Dialog/Dialog';
 import { Camera, Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-
-interface ProfilePreviewProps {
-  profileImg?: string | null;
-  onChangeAvatar?: (avatar: UploadedImage) => void;
-  onDelete?: () => void;
-}
-
-export interface UploadedImage {
-  file: File;
-  preview: string;
-}
+import { ProfilePreviewProps, UploadedImage } from '@/features/mypage/edit/types';
 
 const ProfilePreview = ({ profileImg, onChangeAvatar, onDelete }: ProfilePreviewProps) => {
   const [avatar, setAvatar] = useState<UploadedImage | null>(null);

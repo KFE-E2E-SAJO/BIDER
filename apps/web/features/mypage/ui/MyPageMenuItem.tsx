@@ -1,13 +1,6 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { ReactNode } from 'react';
-
-interface MyPageMenuItemProps {
-  label: string;
-  href: string;
-  rightElement?: ReactNode;
-  withBorder?: boolean;
-}
+import { MyPageMenuItemProps } from '@/features/mypage/types';
 
 const MyPageMenuItem = ({ label, href, rightElement, withBorder = true }: MyPageMenuItemProps) => {
   return (

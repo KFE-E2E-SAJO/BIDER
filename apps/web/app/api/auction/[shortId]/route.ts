@@ -35,7 +35,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     // 2. 입찰 내역 조회
     const { data: bidHistory, error: bidError } = await supabase
       .from('bid_history')
-      .select('*')
+      .select(
+        `
+        *,
+        bid_user_nickname:bid_user_id (
+          nickname
+        )
+      `
+      )
       .eq('auction_id', id)
       .order('bid_price', { ascending: false });
 
