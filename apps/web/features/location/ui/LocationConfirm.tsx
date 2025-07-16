@@ -5,16 +5,18 @@ import DotStepper from '@/features/location/ui/DotStepper';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
-import { useLocationStore } from '@/features/location/model/useLocationStore';
 import GoogleMap from '@/features/location/ui/GoggleMap';
 import useUpdateLocation from '@/features/location/model/useUpdateLocation';
 import clsx from 'clsx';
+import { Location } from '@/features/location/types';
+import { useState } from 'react';
 
 const LocationConfirm = () => {
   const router = useRouter();
   const userId = useAuthStore((state) => state.user?.id);
-  const address = useLocationStore((state) => state.userAddress);
-  const location = useLocationStore((state) => state.userLocation);
+  const [location, setLocation] = useState<Location | null>(null);
+  const [address, setAddress] = useState<string | null>(null);
+  const updateAddress = useAuthStore((state) => state.updateAddress);
   const { mutate: locationMutate, isPending: isLocationUpdatePending } = useUpdateLocation();
 
   const handleNext = async () => {
@@ -37,6 +39,8 @@ const LocationConfirm = () => {
       location,
       address,
     });
+
+    updateAddress(address);
   };
 
   return (
@@ -52,7 +56,7 @@ const LocationConfirm = () => {
 
         <DotStepper />
 
-        <GoogleMap />
+        <GoogleMap setLocation={setLocation} setAddress={setAddress} mapId="setLocation" />
       </div>
 
       <div>
