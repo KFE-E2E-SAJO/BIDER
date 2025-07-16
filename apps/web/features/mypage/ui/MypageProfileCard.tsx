@@ -1,10 +1,5 @@
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
-
-interface MyPageProfileCardProps {
-  nickname: string;
-  email: string;
-  profile_img?: string | null;
-}
+import { MyPageProfileCardProps } from '@/features/mypage/types';
 
 const MyPageProfileCard = ({ nickname, email, profile_img }: MyPageProfileCardProps) => {
   return (

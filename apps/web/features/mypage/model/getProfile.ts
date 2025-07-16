@@ -1,6 +1,4 @@
-export interface ProfileParams {
-  userId: string;
-}
+import { ProfileParams } from '@/features/mypage/types';
 
 const getProfile = async (params: ProfileParams) => {
   const { userId } = params;

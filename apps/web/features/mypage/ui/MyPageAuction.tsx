@@ -1,13 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import MyPageAuctionCard from '@/features/mypage/ui/MyPageAuctionCard';
-
-interface MyPageAuctionProps {
-  bidCount: number;
-  bidProgressCount: number;
-  listingCount: number;
-  listingProgressCount: number;
-}
+import { MyPageAuctionProps } from '@/features/mypage/types';
 
 const MyPageAuction = ({
   bidCount,

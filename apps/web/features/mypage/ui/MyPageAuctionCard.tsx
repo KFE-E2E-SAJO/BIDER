@@ -1,9 +1,4 @@
-interface AuctionCardProps {
-  title1: string;
-  count1: number;
-  title2: string;
-  count2: number;
-}
+import { AuctionCardProps } from '@/features/mypage/types';
 
 const MyPageAuctionCard = ({ title1, count1, title2, count2 }: AuctionCardProps) => {
   return (

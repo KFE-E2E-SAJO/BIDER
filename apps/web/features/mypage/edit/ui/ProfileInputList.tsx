@@ -2,13 +2,14 @@
 
 import { Button } from '@repo/ui/components/Button/Button';
 import { Input } from '@repo/ui/components/Input/Input';
-import ProfilePreview, { UploadedImage } from '@/features/mypage/edit/ui/ProfilePreview';
+import ProfilePreview from '@/features/mypage/edit/ui/ProfilePreview';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useGetEditProfile } from '@/features/mypage/edit/model/useGetEditProfile';
 import { useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import { UploadedImage } from '@/features/mypage/edit/types';
 
 const ProfileInputList = () => {
   const userId = useAuthStore((state) => state.user?.id) as string;
