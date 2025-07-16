@@ -12,10 +12,11 @@ const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
 export interface GoogleMapProps {
   setLocation: (location: Location) => void;
-  setAddress: (address: string) => void;
+  setAddress?: (address: string) => void;
   height?: string;
   mapId: string;
   draggable?: boolean;
+  initialLocation?: Location;
 }
 
 const GoogleMap = ({
@@ -24,6 +25,7 @@ const GoogleMap = ({
   height = 'h-[200px]',
   mapId,
   draggable = false,
+  initialLocation,
 }: GoogleMapProps) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -62,7 +64,22 @@ const GoogleMap = ({
   };
 
   useEffect(() => {
-    fetchLocation();
+    if (initialLocation) {
+      // 🔥 props로 받은 좌표가 있을 경우
+      setCurrentLocation(initialLocation);
+      setLocation(initialLocation);
+      getKoreanAddress(initialLocation).then((koreanAddress) => {
+        if (koreanAddress) {
+          setCurrentAddress(koreanAddress);
+          if (setAddress) setAddress(koreanAddress);
+        } else {
+          setError(true);
+        }
+        setLoading(false);
+      });
+    } else {
+      fetchLocation();
+    }
   }, []);
 
   const handleDragEnd = async (e: google.maps.MapMouseEvent) => {

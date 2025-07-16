@@ -104,6 +104,10 @@ export interface ProductEditFormData {
   endDate: string;
   endTime: string;
   images: UploadedImage[];
+  dealLocationUse?: boolean;
+  dealAddress?: string | null;
+  dealLatitude?: number | null;
+  dealLongitude?: number | null;
 }
 
 export interface ProductEditPageProps {
