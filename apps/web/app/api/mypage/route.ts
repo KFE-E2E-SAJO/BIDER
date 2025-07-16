@@ -1,16 +1,8 @@
+import { BidWithAuction, ProductWithAuction } from '@/features/mypage/types';
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-
-interface BidWithAuction {
-  auction: { auction_status: string } | null;
-}
-
-interface ProductWithAuction {
-  product_id: string;
-  auction: { auction_status: string } | null;
-}
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
