@@ -65,9 +65,9 @@ export interface CreateProductRequest {
   title: string;
   category: string;
   description: string;
-  dealLongitude: number;
-  dealLatitude: number;
-  dealAddress: string;
+  dealLongitude?: number;
+  dealLatitude?: number;
+  dealAddress?: string;
   minPrice: string;
   endDate: string;
   endTime: string;

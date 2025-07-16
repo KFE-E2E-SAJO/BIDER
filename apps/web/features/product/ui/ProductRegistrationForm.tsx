@@ -20,6 +20,8 @@ import { useCreateProductWithValidation } from '../model/useCreateProduct';
 import { useProductFormWithoutSubmitting } from '../model/useProductForm';
 import GoogleMap from '@/features/location/ui/GoggleMap';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import { Switch } from '@repo/ui/components/Switch/Switch';
+import { Location } from '@/features/location/types';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
@@ -78,9 +80,9 @@ export const ProductRegistrationForm = () => {
       title,
       category,
       description,
-      dealAddress,
-      dealLatitude: Number(dealLatitude),
-      dealLongitude: Number(dealLongitude),
+      dealAddress: dealLocationUse ? dealAddress : undefined,
+      dealLatitude: dealLocationUse ? Number(dealLatitude) : undefined,
+      dealLongitude: dealLocationUse ? Number(dealLongitude) : undefined,
       minPrice,
       endDate,
       endTime,
@@ -148,14 +150,32 @@ export const ProductRegistrationForm = () => {
         </div>
         {/* 거래 희망 장소 */}
         <div className="flex flex-col gap-[13px]">
-          <div className="typo-subtitle-small-medium">거래 희망 장소</div>
-          <Input
-            placeholder="위치 추가"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-          <GoogleMap />
+          <div className="flex justify-between">
+            <div className="typo-subtitle-small-medium">거래 희망 장소</div>
+            <Switch checked={dealLocationUse} onCheckedChange={setDealLocationUse} />
+          </div>
+          {dealLocationUse && (
+            <div className="flex flex-col gap-[4px]">
+              <div className="typo-caption-regular text-neutral-700">
+                ⁕ 지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.
+              </div>
+              <GoogleMap
+                setLocation={(loc: Location) => {
+                  setDealLatitude(loc.lat.toString());
+                  setDealLongitude(loc.lng.toString());
+                }}
+                setAddress={setDealAddress}
+                draggable={true}
+                mapId="product-registration"
+                height="h-[300px]"
+              />
+              <Input
+                placeholder="위치 추가"
+                value={dealAddress}
+                onChange={(e) => setDealAddress(e.target.value)}
+              />
+            </div>
+          )}
         </div>
       </div>
 
