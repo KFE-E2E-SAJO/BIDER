@@ -8,15 +8,7 @@ export default function SplashLoadingPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const hasShownSplash = localStorage.getItem('hasShownSplash');
-
-    if (hasShownSplash === 'true') {
-      router.replace('/splash/welcome');
-      return;
-    }
-
     const timer = setTimeout(() => {
-      localStorage.setItem('hasShownSplash', 'true');
       router.replace('/splash/welcome');
     }, 2000);
 

@@ -126,8 +126,6 @@ export async function handleRedirect(request: NextRequest) {
       } else {
         return NextResponse.redirect(new URL('/setLocation', request.url));
       }
-    } else {
-      return NextResponse.redirect(new URL('/splash/welcome', request.url));
     }
   }
 
