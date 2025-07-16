@@ -8,20 +8,21 @@ const message = supabase.channel('message');
 const DEFAULT_PROFILE_IMG = '/default-profile.png';
 
 export async function chatRoomsWithImage() {
-  const supabase = await createServerSupabaseClient();
-
   // 1. 채팅방 목록 조회
   const { data: chatRooms } = await supabase.from('chat_room').select('*');
+  console.log('chatRoomsWithImage chatRooms:', chatRooms);
   if (!chatRooms) return [];
 
   // 2. auction_id 추출
   const auctionIds = chatRooms.map((room) => room.auction_id);
+  console.log('chatRoomsWithImage auctionIds:', auctionIds);
 
   // 3. auction 테이블에서 product_id 매핑
   const { data: auctions } = await supabase
     .from('auction')
     .select('auction_id, product_id')
     .in('auction_id', auctionIds);
+  console.log('chatRoomsWithImage auctions:', auctions);
   if (!auctions) return [];
 
   const productIdMap = new Map(auctions.map((a) => [a.auction_id, a.product_id]));
@@ -31,7 +32,7 @@ export async function chatRoomsWithImage() {
   const { data: productImages } = await supabase
     .from('product_image')
     .select('*')
-    .in('product_id', productIds);
+    .eq('order_index', 0);
   console.log('chatRoomsWithImage productImages:', productImages);
   // 5. 매핑
   return chatRooms.map((room) => {
@@ -45,13 +46,11 @@ export async function chatRoomsWithImage() {
 }
 
 export async function getAllUsers() {
-  const supabase = await createServerSupabaseAdminClient();
-
   const { data, error } = await supabase.from('chat_room').select(`
     *,
     exhibit_user_id!inner(nickname, profile_img)
   `);
-  console.log('getAllUsers data:', data);
+
   if (error) {
     console.error('getAllUsers error:', error);
     return [];
@@ -75,8 +74,6 @@ export async function getAllUsers() {
 }
 
 export async function getUserById(user_Id: string) {
-  const supabase = await createServerSupabaseAdminClient();
-
   const { data, error } = await supabase.auth.admin.getUserById(user_Id);
 
   if (error) {
@@ -95,7 +92,6 @@ export async function sendMessage({
   chatroom_id: string;
   userId: string;
 }) {
-  const supabase = await createServerSupabaseClient();
   const { data, error: sendMessageError } = await supabase
     .from('message')
     .insert({
@@ -113,8 +109,6 @@ export async function sendMessage({
 }
 
 export async function getAllMessages(chatroom_id: string, userId: string) {
-  const supabase = await createServerSupabaseClient();
-
   // 메시지 전부 가져오기
   const { data, error: getAllMessagesError } = await supabase
     .from('message')
@@ -132,8 +126,6 @@ export async function getAllMessages(chatroom_id: string, userId: string) {
   return data;
 }
 export async function markMessagesAsRead(chatroom_id: string, userId?: string) {
-  const supabase = await createServerSupabaseClient();
-
   // userId가 없으면 모든 메시지를 읽음 처리
   if (!userId) {
     const { error: updateError } = await supabase

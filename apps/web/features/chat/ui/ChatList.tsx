@@ -9,6 +9,7 @@ import { supabase } from '../../../shared/lib/supabaseBrowserClient';
 import { chatRoomsWithImage } from '../../../app/model/chatActions';
 
 import React, { useState, useEffect } from 'react';
+import { string } from 'zod';
 
 // Define the Room type
 type Room = {
@@ -126,9 +127,12 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
   });
 
   // Use the imported supabase client
-  const { data: chatRoomsWithImageData = [] } = useQuery({
-    queryKey: ['chatRoomsWithImage'],
-    queryFn: chatRoomsWithImage,
+  const { data: chatRoomsWithImage = [] } = useQuery({
+    queryKey: ['chatRooms'],
+    queryFn: async () => {
+      const res = await fetch('/api/chat-rooms');
+      return res.json();
+    },
   });
 
   useEffect(() => {
@@ -223,11 +227,11 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
                 style={{ minHeight: 80 }}
                 onClick={() => handleChatRoomClick(chat.id)}
               >
-                {chatRoomsWithImageData.map((room) => (
+                {chatRoomsWithImage.map((chatrooms: any) => (
                   <img
-                    key={room.chatroom_id}
-                    src={room.product_image_url}
-                    alt="유저"
+                    key={chatrooms.chatroom_id}
+                    src={chatrooms.product_image_url}
+                    alt="Product Image"
                     className="h-11 w-11 rounded-md object-cover"
                   />
                 ))}
