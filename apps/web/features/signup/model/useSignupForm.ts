@@ -1,14 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { sendEmailVerification, checkEmailVerification, completeSignUp } from '@/shared/lib/auth';
 import { signupSchema } from '@/shared/lib/validation/signupSchema';
 import { emailSchema } from '@/shared/lib/validation/signupSchema';
 
 export const useSignUpForm = () => {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   // form 상태
@@ -36,11 +35,11 @@ export const useSignUpForm = () => {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // 이메일 인증 여부 확인
-    const checkVerificationStatus = async () => {
-      const isVerifiedFromCallback = searchParams.get('verified') === 'true';
-      if (!isVerifiedFromCallback) return;
+    const searchParams = new URLSearchParams(window.location.search);
+    const isVerifiedFromCallback = searchParams.get('verified') === 'true';
+    if (!isVerifiedFromCallback) return;
 
+    const checkVerificationStatus = async () => {
       try {
         const { isVerified, email: userEmail } = await checkEmailVerification();
         if (isVerified && userEmail) {
@@ -54,6 +53,8 @@ export const useSignUpForm = () => {
       }
     };
 
+    checkVerificationStatus();
+
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
 
@@ -66,10 +67,8 @@ export const useSignUpForm = () => {
     };
 
     window.addEventListener('message', handleMessage);
-    checkVerificationStatus();
-
     return () => window.removeEventListener('message', handleMessage);
-  }, [searchParams, router]);
+  }, [router]);
 
   const handleVerifiedEmail = (userEmail: string) => {
     setIsEmailVerified(true);
@@ -225,7 +224,6 @@ export const useSignUpForm = () => {
     setConfirmPassword,
     setNickname,
 
-    // 이벤트 핸들러
     handleSelectChange,
     sendVerificationEmail,
     handleSubmitForm,
