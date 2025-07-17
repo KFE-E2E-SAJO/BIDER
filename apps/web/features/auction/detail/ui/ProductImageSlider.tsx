@@ -5,7 +5,7 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Swiper as SwiperType } from 'swiper';
-import { ProductImage } from '@/app/api/product/route';
+import { ProductImage } from '@/entities/productImage/model/types';
 
 interface Props {
   images: ProductImage[];
