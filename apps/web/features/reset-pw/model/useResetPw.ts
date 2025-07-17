@@ -14,17 +14,22 @@ export const useResetPw = () => {
   const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const result = passwordSchema.safeParse(newPassword);
-    const result1 = passwordSchema.safeParse(newPasswordConfirm);
+    if (!supabase) {
+      setStatus('Supabase 클라이언트가 초기화되지 않았습니다.');
+      return;
+    }
 
     if (newPassword !== newPasswordConfirm) {
       setStatus('비밀번호가 일치하지 않습니다. 확인해주세요');
       return;
     }
 
+    const result = passwordSchema.safeParse(newPassword);
+    const result1 = passwordSchema.safeParse(newPasswordConfirm);
+
     if (!result.success || !result1.success) {
       setStatus('비밀번호 형식을 맞춰서 작성해주세요');
-      return false;
+      return;
     }
 
     const { error } = await supabase.auth.updateUser({
@@ -34,10 +39,10 @@ export const useResetPw = () => {
     if (error) {
       setStatus(error.message);
       return;
-    } else {
-      setStatus('success');
-      router.push('/login');
     }
+
+    setStatus('success');
+    router.push('/login');
   };
 
   return {

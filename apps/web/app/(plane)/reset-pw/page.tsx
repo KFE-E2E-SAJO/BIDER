@@ -45,7 +45,10 @@ export default function ResetPasswordPage() {
           required
         />
 
-        {status && <p className="typo-caption-regular text-danger">{status}</p>}
+        {status && status !== 'success' && (
+          <p className="typo-caption-regular text-danger">{status}</p>
+        )}
+
         <Button type="submit" className="mt-[0.81rem]">
           재설정하기
         </Button>
