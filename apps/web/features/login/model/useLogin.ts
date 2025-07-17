@@ -40,43 +40,37 @@ export const useLogin = () => {
     }
 
     try {
-      const supabase = createClient();
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: fullEmail.trim(),
-        password: password,
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullEmail, password }),
       });
 
-      if (error) {
-        setError(getKoreanErrorMessage(error.message));
+      if (!res.ok) {
+        const errData = await res.json();
+        setError(getKoreanErrorMessage(errData.error ?? '로그인에 실패했습니다'));
+        setIsLoading(false);
         return;
       }
 
-      if (data.user) {
-        const { data: profile, error: profileError } = await supabase
-          .from(`profiles`)
-          .select('*')
-          .eq('user_id', data.user.id)
-          .single();
+      const { user } = await res.json();
 
-        if (profileError) {
-          console.error('nickName, address 정보 가져오기 실패');
-          return;
-        }
-
-        setUser({
-          id: data.user.id,
-          email: data.user.email!,
-          nickName: profile.nickname,
-          address: profile.address,
-        });
-
-        document.cookie = `user-has-address=${!!profile.address}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
-
-        toast({ content: '로그인에 성공했습니다!' });
-
-        router.push('/');
+      if (!user) {
+        setError('유저 정보를 불러오지 못했습니다.');
+        setIsLoading(false);
+        return;
       }
+
+      setUser({
+        id: user.id,
+        email: user.email!,
+        nickName: user.nickname,
+        address: user.address,
+      });
+
+      toast({ content: '로그인에 성공했습니다!' });
+
+      router.push('/');
     } catch (err) {
       setError('로그인 중 문제가 발생했습니다.');
       console.error('Login error:', err);
