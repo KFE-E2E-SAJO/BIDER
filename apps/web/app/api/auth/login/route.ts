@@ -54,7 +54,6 @@ export async function POST(req: Request) {
   const response = NextResponse.json({
     success: true,
     user: userInfo,
-    session: data.session,
   });
 
   response.cookies.set('user-has-address', String(hasAddress), {
