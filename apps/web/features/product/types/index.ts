@@ -1,4 +1,5 @@
 import { CategoryValue } from '@/features/category/types';
+import { Location } from '@/features/location/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 
 export interface ProductList {
@@ -8,6 +9,7 @@ export interface ProductList {
   address: string;
   bidCount: number;
   minPrice: number;
+  myBidPrice?: number;
   auctionEndAt: string;
   auctionStatus: string;
   winnerId?: string | null;
@@ -21,30 +23,28 @@ export interface ProductListError {
   code?: string;
   status: number;
 }
+export type ProductSort = 'latest' | 'popular';
+export type ProductFilter = 'deadline-today' | 'exclude-ended';
 
 export interface ProductListParams {
   userId: string;
   search?: string;
   cate?: string;
+  sort?: ProductSort;
+  filter?: ProductFilter[];
 }
+
 export interface ProductFormData {
   title: string;
   category: CategoryValue | string;
   description: string;
+  dealLongitude: string;
+  dealLatitude: string;
+  dealAddress: string;
   minPrice: string;
   endDate: string;
   endTime: string;
   images: UploadedImage[];
-}
-
-export interface ProductCreateRequest {
-  title: string;
-  description: string;
-  min_price: number;
-  end_at: string;
-  category: string;
-  user_id: string;
-  images: File[];
 }
 
 export interface ProductFormState extends ProductFormData {
@@ -55,6 +55,9 @@ export interface ProductFormActions {
   setTitle: (title: string) => void;
   setCategory: (category: CategoryValue | string) => void;
   setDescription: (description: string) => void;
+  setDealLongitude: (dealLongitude: string) => void;
+  setDealLatitude: (dealLatitude: string) => void;
+  setDealAddress: (dealAddress: string) => void;
   setMinPrice: (price: string) => void;
   setEndDate: (date: string) => void;
   setEndTime: (time: string) => void;
@@ -67,6 +70,9 @@ export interface CreateProductRequest {
   title: string;
   category: string;
   description: string;
+  dealLongitude?: number;
+  dealLatitude?: number;
+  dealAddress?: string;
   minPrice: string;
   endDate: string;
   endTime: string;
@@ -103,6 +109,10 @@ export interface ProductEditFormData {
   endDate: string;
   endTime: string;
   images: UploadedImage[];
+  dealLocationUse?: boolean;
+  dealAddress?: string | null;
+  dealLatitude?: number | null;
+  dealLongitude?: number | null;
 }
 
 export interface ProductEditPageProps {
@@ -112,4 +122,10 @@ export interface ProductEditPageProps {
 export interface ProductEditResponse {
   success: boolean;
   error?: string;
+}
+
+export interface ProductMapList {
+  id: string;
+  location: Location;
+  thumbnail: string;
 }

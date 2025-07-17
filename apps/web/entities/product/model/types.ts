@@ -23,11 +23,18 @@ export interface ProductForEdit extends Product {
   product_image: ProductImage[];
   min_price: number;
   auction_end_at: string;
+  deal_address: string;
+  deal_longitude: number;
+  deal_latitude: number;
 }
 
 export type ProductForList = Pick<
   Product,
   'title' | 'category' | 'exhibit_user_id' | 'latitude' | 'longitude' | 'address'
 > & {
+  product_image: ProductImage[];
+};
+
+export type ProductForMapList = Pick<Product, 'latitude' | 'longitude'> & {
   product_image: ProductImage[];
 };

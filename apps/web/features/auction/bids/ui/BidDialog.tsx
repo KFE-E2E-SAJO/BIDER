@@ -7,7 +7,8 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { getCountdown } from '@/shared/lib/getCountdown';
 import { BidDialogProps } from '../types';
 import { useBidSubmit } from '../model/useBidSubmit';
-import { formatBidPrice, formatBidPriceWithCurrency, getInitialBidPrice } from '../lib/utils';
+import { formatBidPrice, getInitialBidPrice } from '../lib/utils';
+import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 
 export const BidDialog = ({
   shortId,
@@ -18,9 +19,6 @@ export const BidDialog = ({
   onOpenChange,
 }: BidDialogProps) => {
   const [biddingPrice, setBiddingPrice] = useState(getInitialBidPrice(lastPrice));
-  const [biddingPriceWon, setBiddingPriceWon] = useState(
-    formatBidPriceWithCurrency(getInitialBidPrice(lastPrice))
-  );
   const [countdown, setCountdown] = useState('');
 
   const { onSubmitBid, isSubmitting } = useBidSubmit(shortId);
@@ -36,13 +34,10 @@ export const BidDialog = ({
     const raw = e.target.value;
     const formatted = formatBidPrice(raw);
     setBiddingPrice(formatted);
-    setBiddingPriceWon(formatBidPriceWithCurrency(formatted));
   };
 
   const handleBidSubmit = async () => {
-    await onSubmitBid(biddingPrice, () => {
-      onOpenChange(false);
-    });
+    await onSubmitBid(biddingPrice);
   };
 
   return (
@@ -52,19 +47,30 @@ export const BidDialog = ({
         <DialogTitle>{title}</DialogTitle>
       </DialogHeader>
       <div className="typo-subtitle-bold mb-[22px] text-left">{title}</div>
-      <div className="bg-neutral-050 flex w-full justify-between px-[21px] py-[11px]">
-        <div className="typo-body-regular">입찰 마감</div>
-        <div className="typo-body-bold">{countdown}</div>
+      <div className="bg-neutral-050 flex w-full items-center justify-around px-[21px] py-[11px]">
+        <div className="flex flex-col">
+          <div className="typo-caption-medium text-neutral-600">최고 입찰가</div>
+          <div className="typo-body-bold">{formatNumberWithComma(lastPrice)}원</div>
+        </div>
+        <div className="h-[38px] w-[1px] bg-neutral-300"></div>
+        <div className="flex flex-col">
+          <div className="typo-caption-medium text-neutral-600">입찰 마감</div>
+          <div className="typo-body-bold">{countdown}</div>
+        </div>
       </div>
       <div className="mt-[34px] flex items-center justify-between">
         <div className="typo-body-regular">희망 입찰가</div>
-        <Input
-          className="typo-body-bold w-[168px]"
-          value={biddingPriceWon}
-          onChange={handleBiddingPriceChange}
-          placeholder="입찰가를 적어주세요."
-          required
-        />
+        <div className="flex items-end gap-[8px]">
+          <Input
+            inputStyle="text-right typo-body-bold"
+            className="w-[168px]"
+            value={biddingPrice}
+            onChange={handleBiddingPriceChange}
+            placeholder="입찰가를 적어주세요."
+            required
+          />
+          <div className="typo-body-medium">원</div>
+        </div>
       </div>
       <Button className="mt-[33px]" onClick={handleBidSubmit} disabled={isSubmitting}>
         {isSubmitting ? '입찰 중...' : '입찰하기'}

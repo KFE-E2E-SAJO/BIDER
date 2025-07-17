@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useLogin } from '../model/useLogin';
 
 export const LogInForm = () => {
-  const { email, setEmail, password, setPassword, error, isLoading, handleSubmit } = useLogin();
+  const { fullEmail, setEmail, password, setPassword, error, isLoading, handleSubmit } = useLogin();
 
   return (
     <div>
@@ -15,10 +15,10 @@ export const LogInForm = () => {
         <div className="mt-20 space-y-3">
           <div className="flex items-center gap-2">
             <Input
-              type="email"
+              type="text"
               placeholder="이메일"
               className="flex-1"
-              value={email}
+              value={fullEmail}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
               icon={<Mail size={20} />}

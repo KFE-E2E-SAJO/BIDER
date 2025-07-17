@@ -1,14 +1,16 @@
-'use Clinet';
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/shared/model/authStore';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { createClient } from '@/shared/lib/supabase/client';
 import { getKoreanErrorMessage } from '../lib/getKoreanErrorMessage';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import { validateFullEmail } from '@/shared/lib/validation/email';
+import { passwordSchema } from '@/shared/lib/validation/signupSchema';
 
 export const useLogin = () => {
-  const [email, setEmail] = useState('');
+  const [fullEmail, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,67 +23,62 @@ export const useLogin = () => {
     setIsLoading(true);
     setError('');
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailValid = validateFullEmail({ fullEmail: fullEmail });
 
-    if (!email.trim()) {
-      setError('이메일을 입력해주세요');
+    if (!emailValid.success) {
+      setError(emailValid.error ?? '올바른 이메일 형식이 아닙니다');
       setIsLoading(false);
       return;
     }
-    if (!password.trim()) {
-      setError('비밀번호를 입력해주세요');
-      setIsLoading(false);
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      setError('올바른 이메일 형식을 입력해주세요');
-      setIsLoading(false);
-      return;
-    }
-    if (password.length < 6) {
-      setError('비밀번호는 최소 6자 이상이어야 합니다');
+
+    const passwordValid = passwordSchema.safeParse(password);
+
+    if (!passwordValid.success) {
+      setError(passwordValid.error.errors[0]?.message ?? '올바른 비밀번호 형식이 아닙니다');
       setIsLoading(false);
       return;
     }
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password: password,
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullEmail, password }),
       });
 
-      if (error) {
-        setError(getKoreanErrorMessage(error.message));
+      if (!res.ok) {
+        const errData = await res.json();
+        setError(getKoreanErrorMessage(errData.error ?? '로그인에 실패했습니다'));
+        setIsLoading(false);
         return;
       }
 
-      if (data.user) {
-        const { data: profile, error: profileError } = await supabase
-          .from(`profiles`)
-          .select('*')
-          .eq('user_id', data.user.id)
-          .single();
+      const responseData = await res.json();
 
-        if (profileError) {
-          console.error('nickName, address 정보 가져오기 실패');
-          return;
-        }
+      const { user, session } = responseData;
 
-        setUser({
-          id: data.user.id,
-          email: data.user.email!,
-          nickName: profile.nickname,
-          address: profile.address,
-        });
-
-        toast({ content: '로그인에 성공했습니다!' });
-
-        if (!profile.address) {
-          router.push('/setLocation');
-        } else {
-          router.push('/');
-        }
+      if (!user) {
+        setError('유저 정보를 불러오지 못했습니다.');
+        setIsLoading(false);
+        return;
       }
+
+      const supabase = createClient();
+
+      if (session) {
+        await supabase.auth.setSession(session);
+      }
+
+      setUser({
+        id: user.id,
+        email: user.email,
+        nickName: user.nickName,
+        address: user.address,
+      });
+
+      toast({ content: '로그인에 성공했습니다!' });
+
+      router.push('/');
     } catch (err) {
       setError('로그인 중 문제가 발생했습니다.');
       console.error('Login error:', err);
@@ -91,7 +88,7 @@ export const useLogin = () => {
   };
 
   return {
-    email,
+    fullEmail,
     setEmail,
     password,
     setPassword,

@@ -2,6 +2,8 @@ import { getCountdownWithColor } from '@/features/product/lib/utils';
 import { ProductList } from '@/features/product/types';
 import ProductBadge from '@/features/product/ui/ProductBadge';
 import Image from 'next/image';
+import ProductPrice from './ProductPrice';
+import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 
 const ProductItem = ({
   thumbnail,
@@ -9,6 +11,7 @@ const ProductItem = ({
   address,
   bidCount,
   minPrice,
+  myBidPrice,
   auctionEndAt,
   auctionStatus,
   isAwarded,
@@ -16,7 +19,7 @@ const ProductItem = ({
   winnerId,
 }: ProductList) => {
   const { text, color } =
-    auctionStatus === 'end'
+    auctionStatus === AUCTION_STATUS.ENDED
       ? { text: '경매 종료', color: 'gray' }
       : getCountdownWithColor(auctionEndAt);
 
@@ -38,14 +41,12 @@ const ProductItem = ({
         <li>
           <p className="typo-body-regular line-clamp-2">{title}</p>
           <span className="typo-caption-regular text-neutral-600">
-            {address} {bidCount ? `• 입찰 ${bidCount}회` : null}
+            {address} • 입찰 {bidCount}회
           </span>
         </li>
 
         <li className="mt-[30px]">
-          <p className="typo-body-bold mb-[8px]">
-            {minPrice.toLocaleString()} <span className="typo-body-regular">원</span>
-          </p>
+          <ProductPrice minPrice={minPrice} myBidPrice={myBidPrice} />
           <ProductBadge {...badgeProps} />
         </li>
       </ul>

@@ -9,23 +9,16 @@ import Loading from '@/shared/ui/Loading/Loading';
 import { useGetProfile } from '@/features/mypage/model/useGetProfile';
 
 const MyPage = () => {
-  const user = useAuthStore((state) => state.user);
+  const userId = useAuthStore((state) => state.user?.id) as string;
+  const { data, isLoading, error } = useGetProfile({ userId });
 
-  const { data, isLoading, error } = useGetProfile({ userId: user?.id ?? '' });
-
-  if (!user?.id || error || isLoading || !data) {
-    return <Loading />;
-  }
+  if (isLoading || error || !data) return <Loading />;
 
   return (
     <div>
-      <MyPageProfileCard
-        nickname={data.nickname}
-        email={data.email}
-        profileImg={data.profile_img}
-      />
-      <MyPageAuction />
-      <MyPageMenuList address={data.address} />
+      <MyPageProfileCard {...data.profile} />
+      <MyPageAuction {...data.auction} />
+      <MyPageMenuList address={data.profile.address} />
       <Footer />
     </div>
   );

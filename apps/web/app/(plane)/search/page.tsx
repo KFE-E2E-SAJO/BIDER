@@ -38,8 +38,8 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="p-box flex flex-1 flex-col">
-      <div className="flex items-center gap-[14px] pt-[22px]">
+    <div className="flex flex-1 flex-col">
+      <div className="p-box flex items-center gap-[14px] pt-[22px]">
         <BackBtn />
         <Input
           placeholder="어떤 상품을 찾으시나요?"

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 import { Button } from '@repo/ui/components/Button/Button';
@@ -15,6 +15,9 @@ import { categories, CategoryValue } from '@/features/category/types';
 import ImageUploadPreview from '@/shared/lib/ImageUploadPreview';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useProductEdit } from '../model/useProductEdit';
+import { Switch } from '@repo/ui/components/Switch/Switch';
+import GoogleMap from '@/features/location/ui/GoggleMap';
+import { Location } from '@/features/location/types';
 
 interface ProductEditFormProps {
   shortId: string;
@@ -30,6 +33,10 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     title,
     category,
     description,
+    dealLocationUse,
+    dealAddress,
+    dealLatitude,
+    dealLongitude,
     minPrice,
     images,
     endDate,
@@ -37,6 +44,10 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     setTitle,
     setCategory,
     setDescription,
+    setDealLocationUse,
+    setDealAddress,
+    setDealLatitude,
+    setDealLongitude,
     setImages,
     setEndDate,
     setEndTime,
@@ -100,6 +111,40 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
             onChange={(e) => setDescription(e.target.value)}
             required
           />
+        </div>
+
+        {/* 거래 희망 장소 */}
+        <div className="flex flex-col gap-[13px]">
+          <div className="flex justify-between">
+            <div className="typo-subtitle-small-medium">거래 희망 장소</div>
+            <Switch checked={dealLocationUse} onCheckedChange={setDealLocationUse} />
+          </div>
+          {dealLocationUse && (
+            <div className="flex flex-col gap-[4px]">
+              <div className="typo-caption-regular text-neutral-700">
+                ⁕ 지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.
+              </div>
+              <GoogleMap
+                setLocation={(loc: Location) => {
+                  setDealLatitude(loc.lat);
+                  setDealLongitude(loc.lng);
+                }}
+                draggable={true}
+                mapId="product-registration"
+                height="h-[300px]"
+                initialLocation={
+                  dealLatitude && dealLongitude
+                    ? { lat: Number(dealLatitude), lng: Number(dealLongitude) }
+                    : undefined
+                }
+              />
+              <Input
+                placeholder="위치 추가"
+                value={dealAddress}
+                onChange={(e) => setDealAddress(e.target.value)}
+              />
+            </div>
+          )}
         </div>
       </div>
 

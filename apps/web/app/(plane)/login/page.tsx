@@ -1,4 +1,3 @@
-import { Button } from '@repo/ui/components/Button/Button';
 import { LogInForm } from '@/features/login/ui/LogInForm';
 import '@repo/ui/styles.css';
 import Link from 'next/link';
@@ -11,20 +10,6 @@ export default function LogInPage() {
       </h1>
 
       <LogInForm />
-
-      {/* <hr className="border-t-2 border-neutral-300"></hr>
-      <div className="mt-9 flex flex-col items-center justify-center">
-        <span className="font-main-text mb-4 flex text-center font-medium">
-          SNS계정으로
-          <br />
-          간편 로그인/회원가입
-        </span>
-        <div className="mb-8 flex w-full gap-2">
-          <Button className="flex-1" />
-          <Button className="flex-1" />
-        </div>
-      </div>
-      <hr className="border-t-2 border-neutral-300"></hr> */}
 
       <div className="mt-8 flex items-center justify-center gap-1">
         <span className="font-main-text font-medium">아직 회원이 아니신가요?</span>

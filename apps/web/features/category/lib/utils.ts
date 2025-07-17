@@ -6,3 +6,8 @@ export function sortCategories(selected: CategoryValue) {
   const others = rest.filter((item) => item.value !== selected);
   return [all, ...(selectedItem ? [selectedItem] : []), ...others];
 }
+
+export const getCategoryLabel = (value: CategoryValue): string => {
+  const category = categories.find((c) => c.value === value);
+  return category?.label ?? '';
+};

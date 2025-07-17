@@ -2,17 +2,15 @@ import StatusBadge from '@/shared/ui/badge/StatusBadge';
 import { Heart, MapPin } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
 import MyPageMenuItem from '@/features/mypage/ui/MyPageMenuItem';
-
-interface MyPageMenuListProps {
-  address: string;
-}
+import { MyPageMenuListProps } from '@/features/mypage/types';
 
 const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
   return (
     <div>
       <ul className="p-box border-t-8 border-neutral-100 py-[15px]">
+        <p className="typo-caption-regular py-[5px] text-neutral-600">내 쇼핑</p>
         <MyPageMenuItem
-          label="받은 후기"
+          label="내 후기"
           href="/reviews"
           rightElement={
             <StatusBadge
@@ -28,22 +26,16 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
           rightElement={
             <Heart className="fill-danger absolute right-11 top-[50%] translate-y-[-50%] stroke-0" />
           }
+          withBorder={false}
         />
-        <MyPageMenuItem label="최근 본 상품" href="/recent" />
-        <MyPageMenuItem
-          label="키워드 알림 설정"
-          href="/alerts"
-          rightElement={
-            <StatusBadge
-              type="count-gray"
-              label="5"
-              className="absolute right-11 top-[50%] translate-y-[-50%]"
-            />
-          }
-        />
+      </ul>
+      <ul className="p-box border-t-8 border-neutral-100 py-[15px]">
+        <p className="typo-caption-regular py-[5px] text-neutral-600">내 계정 정보</p>
+        <MyPageMenuItem label="포인트" href="/mypage/point" />
+        <MyPageMenuItem label="등급" href="/mypage/grade" />
         <MyPageMenuItem
           label="내 위치 수정"
-          href="/location"
+          href="/setLocation"
           rightElement={
             <Button
               shape="rounded"
@@ -54,11 +46,13 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
               {address}
             </Button>
           }
-          withBorder={false}
         />
+
+        <MyPageMenuItem label="회원 정보 수정" href="/mypage/edit" withBorder={false} />
       </ul>
 
       <ul className="p-box border-t-8 border-neutral-100 py-[15px]">
+        <p className="typo-caption-regular py-[5px] text-neutral-600">고객지원</p>
         <MyPageMenuItem label="앱 설정" href="/settings" />
         <MyPageMenuItem label="공지사항" href="/notice" />
         <MyPageMenuItem label="고객센터" href="/support" />

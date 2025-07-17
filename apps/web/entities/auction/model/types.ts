@@ -1,4 +1,4 @@
-import { BidHistory } from '@/entities/bidHistory/model/types';
+import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
 import { ProductWithUserNImages } from '@/entities/product/model/types';
 
 export interface Auction {
@@ -11,11 +11,14 @@ export interface Auction {
   auction_status: string;
   auction_end_at: string;
   updated_at?: string;
+  deal_longitude?: number;
+  deal_latitude?: number;
+  deal_address?: string;
 }
 
 export interface AuctionDetail extends Auction {
   product: ProductWithUserNImages;
-  bid_history: BidHistory[];
+  bid_history: BidHistoryWithUserNickname[];
   current_highest_bid: number;
 }
 
@@ -32,3 +35,5 @@ export type AuctionForList = Pick<
   Auction,
   'auction_id' | 'product_id' | 'auction_status' | 'min_price' | 'auction_end_at'
 >;
+
+export type MapAuction = Pick<Auction, 'auction_id' | 'product_id'>;
