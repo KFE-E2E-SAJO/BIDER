@@ -53,20 +53,12 @@ export const useLogin = () => {
         return;
       }
 
-      const responseData = await res.json();
-
-      const { user, session } = responseData;
+      const { user } = await res.json();
 
       if (!user) {
         setError('유저 정보를 불러오지 못했습니다.');
         setIsLoading(false);
         return;
-      }
-
-      const supabase = createClient();
-
-      if (session) {
-        await supabase.auth.setSession(session);
       }
 
       setUser({
