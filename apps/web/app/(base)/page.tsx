@@ -12,16 +12,21 @@ import { useState } from 'react';
 import { ProductSort } from '@/features/product/types';
 import { Button } from '@repo/ui/components/Button/Button';
 import { List, Map } from 'lucide-react';
+import GoogleMapView from '@/features/location/ui/GoogleMapView';
+import { useGetUserLocation } from '@/features/location/model/useGetUserLocation';
+import { useProductMarkers } from '@/features/product/model/useProductMarkers';
 
 const HomePage = () => {
   const userId = useAuthStore((state) => state.user?.id) as string;
   const [sort, setSort] = useState<ProductSort>('latest');
-  const [showMap, setShowMap] = useState(false); // ✅ 지도 보기 토글 상태
+  const [showMap, setShowMap] = useState(true);
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useProductList({ userId, sort });
   useProductListErrorHandler(isError, error);
-
   const productList = data?.pages.flatMap((page) => page.data) ?? [];
+  const { data: userLocationData, isLoading: isUserLocationLoading } = useGetUserLocation(userId);
+
+  const { data: productMarkers = [], isLoading: isMarkerLoading } = useProductMarkers(userId);
 
   const { parentRef, virtualRows, totalSize } = useVirtualInfiniteScroll({
     data: productList,
@@ -30,10 +35,18 @@ const HomePage = () => {
     fetchNextPage,
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isUserLocationLoading || isMarkerLoading) return <Loading />;
   return (
     <>
-      {showMap && <div className="h-[300px]">{/* <GoogleMap mapId="productList" /> */}</div>}
+      {showMap && (
+        <GoogleMapView
+          mapId="productList"
+          height="h-[300px]"
+          location={userLocationData}
+          showMyLocation={false}
+          markers={productMarkers}
+        />
+      )}
       <div className="p-box my-[21px] flex items-center justify-between">
         <LocationPin />
         <ProductSortDropdown setSort={setSort} />
@@ -56,15 +69,8 @@ const HomePage = () => {
         className="bottom-30 text-caption fixed left-1/2 -translate-x-1/2 bg-neutral-900"
         onClick={() => setShowMap((prev) => !prev)}
       >
-        {showMap ? (
-          <>
-            <List size="20" /> 리스트로 보기
-          </>
-        ) : (
-          <>
-            <Map size="20" /> 지도로 보기
-          </>
-        )}
+        {showMap ? <List size="20" /> : <Map size="20" />}
+        {showMap ? '리스트로 보기' : '지도로 보기'}
       </Button>
     </>
   );

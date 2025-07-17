@@ -1,4 +1,5 @@
 import { CategoryValue } from '@/features/category/types';
+import { Location } from '@/features/location/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 
 export interface ProductList {
@@ -117,4 +118,10 @@ export interface ProductEditPageProps {
 export interface ProductEditResponse {
   success: boolean;
   error?: string;
+}
+
+export interface ProductMapList {
+  id: string;
+  location: Location;
+  thumbnail: string;
 }
