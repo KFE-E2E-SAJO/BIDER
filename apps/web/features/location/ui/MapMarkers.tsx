@@ -11,10 +11,6 @@ export type MapMarkersProps = {
   pois: ProductMapList[];
 };
 
-/**
- * The ClusteredTreeMarkers component is responsible for integrating the
- * markers with the markerclusterer.
- */
 export const MapMarkers = ({ pois }: MapMarkersProps) => {
   const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
   const [selectedMarkerKey, setSelectedMarkerKey] = useState<string | null>(null);
@@ -24,8 +20,6 @@ export const MapMarkers = ({ pois }: MapMarkersProps) => {
     [pois, selectedMarkerKey]
   );
 
-  // create the markerClusterer once the map is available and update it when
-  // the markers are changed
   const map = useMap();
   const clusterer = useMemo(() => {
     if (!map) return null;
@@ -40,8 +34,6 @@ export const MapMarkers = ({ pois }: MapMarkersProps) => {
     clusterer.addMarkers(Object.values(markers));
   }, [clusterer, markers]);
 
-  // this callback will effectively get passsed as ref to the markers to keep
-  // tracks of markers currently on the map
   const setMarkerRef = useCallback((marker: Marker | null, key: string) => {
     setMarkers((markers) => {
       if ((marker && markers[key]) || (!marker && !markers[key])) return markers;

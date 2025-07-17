@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 import { Button } from '@repo/ui/components/Button/Button';
@@ -15,9 +15,13 @@ import {
   SelectContent,
   SelectItem,
 } from '@repo/ui/components/Select/Select';
-import { formatPriceInput } from '../lib/utils';
+import { formatPriceInput, isEndDateValid } from '../lib/utils';
 import { useCreateProductWithValidation } from '../model/useCreateProduct';
 import { useProductFormWithoutSubmitting } from '../model/useProductForm';
+import GoogleMap from '@/features/location/ui/GoggleMap';
+import { toast } from '@repo/ui/components/Toast/Sonner';
+import { Switch } from '@repo/ui/components/Switch/Switch';
+import { Location } from '@/features/location/types';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
@@ -28,6 +32,9 @@ export const ProductRegistrationForm = () => {
     title,
     category,
     description,
+    dealAddress,
+    dealLatitude,
+    dealLongitude,
     minPrice,
     endDate,
     endTime,
@@ -36,6 +43,9 @@ export const ProductRegistrationForm = () => {
     setTitle,
     setCategory,
     setDescription,
+    setDealAddress,
+    setDealLatitude,
+    setDealLongitude,
     setMinPrice,
     setEndDate,
     setEndTime,
@@ -61,10 +71,18 @@ export const ProductRegistrationForm = () => {
       return;
     }
 
+    if (!isEndDateValid(endDate, endTime)) {
+      toast({ content: '종료일시는 현재 시간 기준 1시간 이후여야 합니다.' });
+      return;
+    }
+
     createProduct.mutate({
       title,
       category,
       description,
+      dealAddress: dealLocationUse ? dealAddress : undefined,
+      dealLatitude: dealLocationUse ? Number(dealLatitude) : undefined,
+      dealLongitude: dealLocationUse ? Number(dealLongitude) : undefined,
       minPrice,
       endDate,
       endTime,
@@ -74,6 +92,8 @@ export const ProductRegistrationForm = () => {
   };
 
   const isSubmitting = createProduct.isPending;
+
+  const [dealLocationUse, setDealLocationUse] = useState(false);
 
   return (
     <div className="flex flex-col gap-[26px] pt-[16px]">
@@ -127,6 +147,35 @@ export const ProductRegistrationForm = () => {
             onChange={(e) => setDescription(e.target.value)}
             required
           />
+        </div>
+        {/* 거래 희망 장소 */}
+        <div className="flex flex-col gap-[13px]">
+          <div className="flex justify-between">
+            <div className="typo-subtitle-small-medium">거래 희망 장소</div>
+            <Switch checked={dealLocationUse} onCheckedChange={setDealLocationUse} />
+          </div>
+          {dealLocationUse && (
+            <div className="flex flex-col gap-[4px]">
+              <div className="typo-caption-regular text-neutral-700">
+                ⁕ 지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.
+              </div>
+              <GoogleMap
+                setLocation={(loc: Location) => {
+                  setDealLatitude(loc.lat.toString());
+                  setDealLongitude(loc.lng.toString());
+                }}
+                setAddress={setDealAddress}
+                draggable={true}
+                mapId="product-registration"
+                height="h-[300px]"
+              />
+              <Input
+                placeholder="위치 추가"
+                value={dealAddress}
+                onChange={(e) => setDealAddress(e.target.value)}
+              />
+            </div>
+          )}
         </div>
       </div>
 

@@ -23,7 +23,13 @@ export async function GET(
         `
                 *,
                 product_image (*),
-                auction!inner (min_price, auction_end_at)
+                auction!inner (
+                  min_price, 
+                  auction_end_at,
+                  deal_longitude,
+                  deal_latitude,
+                  deal_address
+                )
             `
       )
       .eq('product_id', id)
@@ -48,6 +54,9 @@ export async function GET(
       ...data,
       min_price: auctionData.min_price,
       auction_end_at: auctionData.auction_end_at,
+      deal_address: auctionData.deal_address,
+      deal_longitude: auctionData.deal_longitude,
+      deal_latitude: auctionData.deal_latitude,
       auction: undefined, // auction 배열 제거
     };
 
@@ -68,7 +77,13 @@ export async function POST(request: Request) {
   const description = formData.get('description') as string;
   const minPrice = formData.get('min_price') as string;
   const endAt = formData.get('end_at') as string;
-
+  const dealLatitudeRaw = formData.get('deal_latitude');
+  const dealLongitudeRaw = formData.get('deal_longitude');
+  const dealAddressRaw = formData.get('deal_address');
+  const dealLatitude = dealLatitudeRaw !== null ? Number(dealLatitudeRaw) : null;
+  const dealLongitude = dealLongitudeRaw !== null ? Number(dealLongitudeRaw) : null;
+  const dealAddress =
+    dealAddressRaw !== null && dealAddressRaw !== '' ? String(dealAddressRaw) : null;
   // 새로 업로드할 파일들
   const newImageFiles = formData.getAll('images') as File[];
 
@@ -110,7 +125,6 @@ export async function POST(request: Request) {
         updated_at: new Date().toISOString(),
       })
       .eq('product_id', productId);
-
     if (productUpdateError) {
       throw new Error(`상품 정보 업데이트 실패: ${productUpdateError.message}`);
     }
@@ -122,6 +136,9 @@ export async function POST(request: Request) {
         min_price: parseInt(minPrice),
         auction_end_at: endAt,
         updated_at: new Date().toISOString(),
+        deal_latitude: dealLatitude,
+        deal_longitude: dealLongitude,
+        deal_address: dealAddress,
       })
       .eq('product_id', productId);
 

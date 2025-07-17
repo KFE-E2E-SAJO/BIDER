@@ -11,6 +11,9 @@ export interface Auction {
   auction_status: string;
   auction_end_at: string;
   updated_at?: string;
+  deal_longitude?: number;
+  deal_latitude?: number;
+  deal_address?: string;
 }
 
 export interface AuctionDetail extends Auction {

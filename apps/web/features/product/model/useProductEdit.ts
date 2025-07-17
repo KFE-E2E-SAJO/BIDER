@@ -8,7 +8,7 @@ import {
   createFormDataFromProduct,
   handleMinPriceChange,
 } from '../lib/editFormUtils';
-import { canEditProduct, validateProductEditForm } from '../lib/utils';
+import { canEditProduct, isEndDateAfterInitialDate, validateProductEditForm } from '../lib/utils';
 import { useProductEditQuery } from './useProductForEdit';
 import { useProductUpdateMutation } from './useProductUpdate';
 
@@ -24,6 +24,10 @@ export const useProductEdit = (shortId: string) => {
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [dealLocationUse, setDealLocationUse] = useState(false);
+  const [dealAddress, setDealAddress] = useState('');
+  const [dealLatitude, setDealLatitude] = useState<number | null>(null);
+  const [dealLongitude, setDealLongitude] = useState<number | null>(null);
 
   const mappedImages = useMemo(() => mapProductImagesToUploadedImages(data?.product_image), [data]);
 
@@ -33,6 +37,15 @@ export const useProductEdit = (shortId: string) => {
       setCategory(data.category || '');
       setDescription(data.description || '');
       setMinPrice(data.min_price ? handleMinPriceChange(data.min_price.toString()) : '');
+      setDealAddress(data.deal_address || '');
+      setDealLongitude(data.deal_longitude || null);
+      setDealLatitude(data.deal_latitude || null);
+
+      if (data.deal_latitude !== null && data.deal_longitude !== null) {
+        setDealLocationUse(true);
+      } else {
+        setDealLocationUse(false);
+      }
 
       if (data.auction_end_at) {
         const { date, time } = formatProductDateTime(data.auction_end_at);
@@ -56,7 +69,24 @@ export const useProductEdit = (shortId: string) => {
       return;
     }
 
-    const formData = { title, category, description, minPrice, endDate, endTime, images };
+    if (!isEndDateAfterInitialDate(endDate, endTime, data.created_at)) {
+      toast({ content: '경매 종료일시는 상품 등록 시각 기준으로 1시간 이후여야 합니다.' });
+      return;
+    }
+
+    const formData = {
+      title,
+      category,
+      description,
+      minPrice,
+      endDate,
+      endTime,
+      images,
+      dealLocationUse,
+      dealAddress,
+      dealLatitude,
+      dealLongitude,
+    };
     if (!validateProductEditForm(formData)) {
       toast({ content: '모든 필수 항목을 입력해 주세요' });
       return;
@@ -85,6 +115,10 @@ export const useProductEdit = (shortId: string) => {
     title,
     category,
     description,
+    dealLocationUse,
+    dealAddress,
+    dealLatitude,
+    dealLongitude,
     minPrice,
     images,
     endDate,
@@ -93,6 +127,10 @@ export const useProductEdit = (shortId: string) => {
     setTitle,
     setCategory,
     setDescription,
+    setDealLocationUse,
+    setDealAddress,
+    setDealLatitude,
+    setDealLongitude,
     setImages,
     setEndDate,
     setEndTime,

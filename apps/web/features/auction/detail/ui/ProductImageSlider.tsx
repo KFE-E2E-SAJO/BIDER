@@ -18,7 +18,7 @@ export default function ProductImageSlider({ images }: Props) {
   return (
     <div className="w-full">
       {/* Main Swiper */}
-      <div className="h-[310px]">
+      <div className="flex h-[310px] items-center justify-center overflow-hidden">
         <Swiper
           modules={[Pagination]}
           spaceBetween={0}
@@ -29,8 +29,12 @@ export default function ProductImageSlider({ images }: Props) {
           className="h-full p-0"
         >
           {images.map((img) => (
-            <SwiperSlide key={img.image_id} className="relative">
-              <img src={img.image_url} alt="Product" className="h-full w-full object-cover" />
+            <SwiperSlide key={img.image_id} className="flex items-center justify-center">
+              <img
+                src={img.image_url}
+                alt="Product"
+                className="mx-auto h-full w-auto object-contain"
+              />
             </SwiperSlide>
           ))}
         </Swiper>
