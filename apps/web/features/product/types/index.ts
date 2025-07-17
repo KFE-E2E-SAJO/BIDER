@@ -1,4 +1,5 @@
 import { CategoryValue } from '@/features/category/types';
+import { Location } from '@/features/location/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 
 export interface ProductList {
@@ -22,11 +23,15 @@ export interface ProductListError {
   code?: string;
   status: number;
 }
+export type ProductSort = 'latest' | 'popular';
+export type ProductFilter = 'deadline-today' | 'exclude-ended';
 
 export interface ProductListParams {
   userId: string;
   search?: string;
   cate?: string;
+  sort?: ProductSort;
+  filter?: ProductFilter[];
 }
 export interface ProductFormData {
   title: string;
@@ -113,4 +118,10 @@ export interface ProductEditPageProps {
 export interface ProductEditResponse {
   success: boolean;
   error?: string;
+}
+
+export interface ProductMapList {
+  id: string;
+  location: Location;
+  thumbnail: string;
 }

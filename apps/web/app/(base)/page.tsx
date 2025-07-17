@@ -3,28 +3,77 @@
 import { useProductList } from '@/features/product/model/useProductList';
 import useProductListErrorHandler from '@/features/product/model/useProductListErrorHandler';
 import LocationPin from '@/features/product/ui/LocationPin';
-import ProductList from '@/features/product/ui/ProductList';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
+import useVirtualInfiniteScroll from '@/features/product/model/useVirtualInfiniteScroll';
+import ProductListScroll from '@/features/product/ui/ProductListScroll';
+import ProductSortDropdown from '@/features/product/ui/ProductSortDropdown';
+import { useState } from 'react';
+import { ProductSort } from '@/features/product/types';
+import { Button } from '@repo/ui/components/Button/Button';
+import { List, Map } from 'lucide-react';
+import GoogleMapView from '@/features/location/ui/GoogleMapView';
+import { useGetUserLocation } from '@/features/location/model/useGetUserLocation';
+import { useProductMarkers } from '@/features/product/model/useProductMarkers';
 
 const HomePage = () => {
   const userId = useAuthStore((state) => state.user?.id) as string;
+  const [sort, setSort] = useState<ProductSort>('latest');
+  const [showMap, setShowMap] = useState(true);
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useProductList({ userId, sort });
+  useProductListErrorHandler(isError, error);
+  const productList = data?.pages.flatMap((page) => page.data) ?? [];
+  const { data: userLocationData, isLoading: isUserLocationLoading } = useGetUserLocation(userId);
 
-  const { data, isLoading, isError, error } = useProductList({
-    userId,
+  const { data: productMarkers = [], isLoading: isMarkerLoading } = useProductMarkers(userId);
+
+  const { parentRef, virtualRows, totalSize } = useVirtualInfiniteScroll({
+    data: productList,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
   });
 
-  useProductListErrorHandler(isError, error);
-
-  if (isLoading || !data) {
-    return <Loading />;
-  }
-
+  if (isLoading || isUserLocationLoading || isMarkerLoading) return <Loading />;
   return (
-    <div className="p-box">
-      <LocationPin />
-      <ProductList data={data} />
-    </div>
+    <>
+      {showMap && userLocationData && (
+        <GoogleMapView
+          mapId="productList"
+          height="h-[300px]"
+          location={userLocationData}
+          showMyLocation={false}
+          markers={productMarkers}
+          showMarkers={true}
+        />
+      )}
+      <div className="p-box my-[21px] flex items-center justify-between">
+        <LocationPin />
+        <ProductSortDropdown setSort={setSort} />
+      </div>
+      <div
+        ref={parentRef}
+        style={{ height: showMap ? 'calc(100vh - 535px)' : 'calc(100vh - 235px)' }}
+        className="p-box overflow-auto"
+      >
+        <ProductListScroll
+          data={productList}
+          virtualRows={virtualRows}
+          totalSize={totalSize}
+          isFetchingNextPage={isFetchingNextPage}
+        />
+      </div>
+      <Button
+        shape="rounded"
+        size="fit"
+        className="bottom-30 text-caption fixed left-1/2 -translate-x-1/2 bg-neutral-900"
+        onClick={() => setShowMap((prev) => !prev)}
+      >
+        {showMap ? <List size="20" /> : <Map size="20" />}
+        {showMap ? '리스트로 보기' : '지도로 보기'}
+      </Button>
+    </>
   );
 };
 
