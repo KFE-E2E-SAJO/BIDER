@@ -1,6 +1,6 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
-import { User, Mail, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import '@repo/ui/styles.css';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useFindId } from '@/features/find-id/model/useFindId';
@@ -13,6 +13,7 @@ export default function FindAccountPage() {
 
   const router = useRouter();
   const config = FindAccountConfig(accountType);
+  const Icon = config.icon;
 
   return (
     <div className="p-box">
@@ -26,7 +27,7 @@ export default function FindAccountPage() {
           <Input
             className="mt-[1.81rem]"
             type={config.inputType}
-            icon={config.icon}
+            icon={<Icon />}
             placeholder={config.placeholder}
             inputStyle="pl-12 pr-11"
             value={inputValue}
