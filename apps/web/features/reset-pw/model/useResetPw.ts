@@ -1,4 +1,4 @@
-'use Client';
+'use client';
 
 import { supabase } from '@/shared/lib/supabaseClient';
 import { passwordSchema } from '@/shared/lib/validation/signupSchema';

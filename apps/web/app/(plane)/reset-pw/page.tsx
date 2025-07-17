@@ -17,7 +17,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="m-3">
-      <p className='className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]'>
+      <p className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]">
         비밀번호 재설정
       </p>
       <form onSubmit={handleResetPassword}>
