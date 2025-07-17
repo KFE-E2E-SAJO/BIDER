@@ -11,9 +11,10 @@ const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 export interface GoogleMapViewProps {
   height?: string;
   mapId: string;
-  location?: Location;
-  markers: ProductMapList[];
+  location: Location;
+  markers?: ProductMapList[];
   showMyLocation?: boolean;
+  showMarkers?: boolean;
 }
 
 const GoogleMapView = ({
@@ -22,6 +23,7 @@ const GoogleMapView = ({
   location,
   markers = [],
   showMyLocation = true,
+  showMarkers = false,
 }: GoogleMapViewProps) => {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
 
@@ -53,7 +55,7 @@ const GoogleMapView = ({
             </AdvancedMarker>
           )}
 
-          <MapMarkers pois={markers} />
+          {showMarkers && <MapMarkers pois={markers} />}
         </Map>
       </APIProvider>
     </div>

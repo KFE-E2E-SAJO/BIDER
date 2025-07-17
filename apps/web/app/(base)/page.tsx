@@ -38,13 +38,14 @@ const HomePage = () => {
   if (isLoading || isUserLocationLoading || isMarkerLoading) return <Loading />;
   return (
     <>
-      {showMap && (
+      {showMap && userLocationData && (
         <GoogleMapView
           mapId="productList"
           height="h-[300px]"
           location={userLocationData}
           showMyLocation={false}
           markers={productMarkers}
+          showMarkers={true}
         />
       )}
       <div className="p-box my-[21px] flex items-center justify-between">
