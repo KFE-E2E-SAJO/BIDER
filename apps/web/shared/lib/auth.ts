@@ -7,11 +7,25 @@ export interface SignUpData {
 }
 
 export const sendEmailVerification = async (email: string) => {
+  const getURL = () => {
+    let url =
+      process?.env?.NEXT_PUBLIC_SITE_URL ??
+      process?.env?.NEXT_PUBLIC_VERCEL_URL ??
+      'http://localhost:3000/';
+
+    url = url.startsWith('http') ? url : `https://${url}`;
+
+    url = url.endsWith('/') ? url : `${url}/`;
+    return url;
+  };
+
+  console.log('url : ', getURL());
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password: 'temp_password',
     options: {
-      emailRedirectTo: 'http://localhost:3000/auth/callback',
+      emailRedirectTo: `${getURL()}auth/callback`,
     },
   });
 
