@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@repo/ui/components/Input/Input';
-import { ChevronLeft, KeyIcon, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useResetPw } from '@/features/reset-pw/model/useResetPw';
 

@@ -2,7 +2,6 @@
 
 import { supabase } from '@/shared/lib/supabaseClient';
 import { passwordSchema } from '@/shared/lib/validation/signupSchema';
-import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -10,7 +9,6 @@ export const useResetPw = () => {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setnewPasswordConfirm] = useState('');
   const [status, setStatus] = useState('');
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
