@@ -24,6 +24,8 @@ export const useFindId = () => {
       setInputValue('');
       setResult('');
       setIsFound(false);
+    } else if (type === null) {
+      setAccountType('email');
     } else {
       router.replace('/find-id?type=email');
     }

@@ -6,8 +6,9 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { useFindId } from '@/features/find-id/model/useFindId';
 import { useRouter } from 'next/navigation';
 import { FindAccountConfig } from '@/features/find-id/lib/findAccountConfig';
+import { Suspense } from 'react';
 
-export default function FindAccountPage() {
+function FindAccountContent() {
   const { inputValue, isFound, isSearching, accountType, result, setInputValue, handleSubmit } =
     useFindId();
 
@@ -73,5 +74,13 @@ export default function FindAccountPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function FindAccountPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FindAccountContent />
+    </Suspense>
   );
 }
