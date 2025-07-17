@@ -7,6 +7,9 @@ const initialState: Omit<ProductFormState, 'isSubmitting'> = {
   title: '',
   category: '',
   description: '',
+  dealLatitude: '',
+  dealLongitude: '',
+  dealAddress: '',
   minPrice: '',
   endDate: '',
   endTime: '',
@@ -61,6 +64,9 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
   const [title, setTitle] = useState(initialState.title);
   const [category, setCategory] = useState<CategoryValue | string>(initialState.category);
   const [description, setDescription] = useState(initialState.description);
+  const [dealLongitude, setDealLongitude] = useState(initialState.dealLongitude);
+  const [dealLatitude, setDealLatitude] = useState(initialState.dealLatitude);
+  const [dealAddress, setDealAddress] = useState(initialState.dealAddress);
   const [minPrice, setMinPrice] = useState(initialState.minPrice);
   const [endDate, setEndDate] = useState(initialState.endDate);
   const [endTime, setEndTime] = useState(initialState.endTime);
@@ -70,6 +76,9 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
     setTitle(initialState.title);
     setCategory(initialState.category);
     setDescription(initialState.description);
+    setDealLongitude(initialState.dealLongitude);
+    setDealLatitude(initialState.dealLatitude);
+    setDealAddress(initialState.dealAddress);
     setMinPrice(initialState.minPrice);
     setEndDate(initialState.endDate);
     setEndTime(initialState.endTime);
@@ -81,6 +90,9 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
     title,
     category,
     description,
+    dealLongitude,
+    dealLatitude,
+    dealAddress,
     minPrice,
     endDate,
     endTime,
@@ -89,6 +101,9 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
     setTitle,
     setCategory,
     setDescription,
+    setDealLongitude,
+    setDealLatitude,
+    setDealAddress,
     setMinPrice,
     setEndDate,
     setEndTime,

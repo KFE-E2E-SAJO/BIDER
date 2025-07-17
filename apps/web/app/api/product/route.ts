@@ -17,6 +17,11 @@ export async function POST(req: NextRequest) {
     const minPrice = parseInt(formData.get('min_price') as string, 10);
     const endAt = formData.get('end_at') as string;
     const exhibitUserId = formData.get('user_id') as string;
+    const dealLatitudeRaw = formData.get('deal_latitude');
+    const dealLongitudeRaw = formData.get('deal_longitude');
+    const dealLatitude = dealLatitudeRaw !== null ? Number(dealLatitudeRaw) : null;
+    const dealLongitude = dealLongitudeRaw !== null ? Number(dealLongitudeRaw) : null;
+    const dealAddress = formData.get('deal_address') as string;
 
     // STEP 0: 로그인한 회원 정보 조회
     const { data: userData, error: userError } = await supabase
@@ -98,6 +103,9 @@ export async function POST(req: NextRequest) {
       min_price: minPrice,
       auction_end_at: endAt,
       auction_status: '경매 대기',
+      deal_longitude: dealLongitude,
+      deal_latitude: dealLatitude,
+      deal_address: dealAddress,
     });
 
     if (auctionError) {

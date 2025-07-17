@@ -5,6 +5,9 @@ import React, { useState } from 'react';
 import { AuctionDetailContentProps } from '../types';
 import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
 import BiddingStatusBoard from './BiddingStatusBoard';
+import { getCategoryLabel } from '@/features/category/lib/utils';
+import { CategoryValue } from '@/features/category/types';
+import GoogleMapView from '@/features/location/ui/GoogleMapView';
 
 const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
@@ -12,7 +15,12 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
     <>
       {/* 경매 상품 내용 */}
       <div className="p-box flex flex-col gap-[25px]">
-        <div className="typo-subtitle-bold">{data.productTitle}</div>
+        <div className="flex flex-col gap-[14px]">
+          <div className="typo-subtitle-bold">{data.productTitle}</div>
+          <p className="typo-caption-regular w-fit border-b text-neutral-700">
+            {getCategoryLabel(data.productCategory as CategoryValue)}
+          </p>
+        </div>
 
         <div>
           <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
@@ -38,8 +46,28 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
         </div>
 
         <div className="typo-body-regular whitespace-pre-line">{data.productDescription}</div>
+
+        {/* 거래 희망 장소 */}
+        {data.dealAddress && data.dealLocation && (
+          <div className="flex flex-col gap-[14px]">
+            <div className="flex items-end gap-[11px]">
+              <div className="typo-subtitle-small-medium">거래 희망 장소</div>
+              <div className="typo-body-regular text-neutral-700">{data.dealAddress}</div>
+            </div>
+            <div className="overflow-hidden rounded-[10px]">
+              <GoogleMapView
+                mapId="productDetail"
+                height="h-[126px]"
+                location={data.dealLocation}
+                showMyLocation={true}
+              />
+            </div>
+          </div>
+        )}
       </div>
+
       <div className="h-[8px] w-full bg-neutral-100"></div>
+
       {/* 입찰 히스토리 */}
       <div className="p-box">
         <div className="items-baseline-last mb-[14px] flex justify-between">
@@ -56,7 +84,7 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       {/* 판매자 정보 */}
-      <div className="p-box flex items-center gap-[19px]">
+      <div className="p-box mb-[25px] flex items-center gap-[19px]">
         <Avatar src={data.exhibitUser?.profile_img || undefined} className="size-[36px]" />
         <div className="flex flex-col gap-[5px]">
           <div className="typo-body-medium">{data.exhibitUser?.nickname}</div>

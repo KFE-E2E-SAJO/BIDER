@@ -16,6 +16,17 @@ export const createFormDataFromProduct = (
   formData.append('min_price', numericPrice.toString());
   formData.append('category', data.category);
   formData.append('end_at', endAt.toISOString());
+  if (data.dealLocationUse) {
+    if (data.dealLongitude) {
+      formData.append('deal_longitude', data.dealLongitude.toString());
+    }
+    if (data.dealLatitude) {
+      formData.append('deal_latitude', data.dealLatitude.toString());
+    }
+    if (data.dealAddress) {
+      formData.append('deal_address', data.dealAddress);
+    }
+  }
 
   images.forEach((img, index) => {
     if (img.file) {

@@ -7,10 +7,12 @@ import { AuctionDetailContent } from '@/features/auction/detail/types';
 import AuctionDetail from '@/features/auction/detail/ui/AuctionDetailPage';
 import ProductImageSlider from '@/features/auction/detail/ui/ProductImageSlider';
 import BottomBar from '@/features/auction/detail/ui/BottomBar';
+import { useAuthStore } from '@/shared/model/authStore';
 
 const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> }) => {
   const resolvedParams = use(params);
   const { data, isLoading, error } = useAuctionDetail(resolvedParams.shortId);
+  const user = useAuthStore();
 
   if (isLoading) return <Loading />;
   if (error) return <p>오류: {(error as Error).message}</p>;
@@ -19,6 +21,7 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
   const mapped: AuctionDetailContent = {
     auctionId: data.auction_id,
     productTitle: data.product?.title,
+    productCategory: data.product?.category,
     productDescription: data.product?.description,
     images: data.product?.product_image ?? [],
     minPrice: data.min_price,
@@ -26,18 +29,27 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
     exhibitUser: data.product?.exhibit_user,
     currentHighestBid: data.current_highest_bid || data.min_price,
     bidHistory: data.bid_history,
+    dealLocation:
+      data.deal_latitude != null && data.deal_longitude != null
+        ? { lat: data.deal_latitude, lng: data.deal_longitude }
+        : undefined,
+    dealAddress: data.deal_address ?? undefined,
   };
 
+  const isProductMine = user.user?.id === mapped.exhibitUser.user_id;
+
   return (
-    <div className="flex flex-col gap-[25px] pb-[112px]">
+    <div className={`flex flex-col gap-[25px] ${isProductMine ? '' : 'pb-[100px]'}`}>
       <ProductImageSlider images={mapped.images} />
       <AuctionDetail data={mapped} />
-      <BottomBar
-        shortId={resolvedParams.shortId}
-        auctionEndAt={mapped.auctionEndAt}
-        title={mapped.productTitle}
-        lastPrice={String(mapped.currentHighestBid)}
-      />
+      {!isProductMine && (
+        <BottomBar
+          shortId={resolvedParams.shortId}
+          auctionEndAt={mapped.auctionEndAt}
+          title={mapped.productTitle}
+          lastPrice={String(mapped.currentHighestBid)}
+        />
+      )}
     </div>
   );
 };

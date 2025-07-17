@@ -1,4 +1,3 @@
-// features/auction/detail/api/useBidHistoryRealtime.ts
 import { useEffect } from 'react';
 import { anonSupabase } from '@/shared/lib/supabaseClient';
 import { BidHistory, BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
