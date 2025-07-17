@@ -126,14 +126,17 @@ type AuctionListFromDB = AuctionForList & {
 };
 
 interface AuctionResponse {
-  id: string;
-  thumbnail: string;
-  title: string;
-  address: string;
-  bidCount: number;
-  minPrice: number;
-  auctionEndAt: string;
-  auctionStatus: string;
+  data: {
+    id: string;
+    thumbnail: string;
+    title: string;
+    address: string;
+    bidCount: number;
+    minPrice: number;
+    auctionEndAt: string;
+    auctionStatus: string;
+  }[];
+  nextOffset: number | null;
 }
 
 interface ErrorResponse {
@@ -143,11 +146,15 @@ interface ErrorResponse {
 
 export async function GET(
   req: NextRequest
-): Promise<NextResponse<AuctionResponse[] | ErrorResponse>> {
+): Promise<NextResponse<AuctionResponse | ErrorResponse>> {
   const { searchParams } = req.nextUrl;
   const userId = searchParams.get('userId');
   const search = searchParams.get('search')?.toLowerCase() || '';
   const cate = searchParams.get('cate') || '';
+  const sort = searchParams.get('sort') || 'latest';
+  const filters = searchParams.getAll('filter');
+  const hasDeadlineToday = filters.includes('deadline-today');
+  const hasExcludeEnded = filters.includes('exclude-ended');
 
   if (!userId || userId === 'undefined') {
     return NextResponse.json(
@@ -208,12 +215,23 @@ export async function GET(
 
   const filtered = (auctionData as unknown as AuctionListFromDB[])
     .filter((item) => {
-      const { product } = item;
+      const { product, auction_status, auction_end_at } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
       const matchSearch = !search || searcher(product.title, search);
       const matchCate = cate === '' || cate === 'all' || product.category === cate;
-      return within5km && matchSearch && matchCate;
+
+      const now = new Date();
+      const isEnded = auction_status === '경매 종료';
+      const isDeadlineToday = new Date(auction_end_at).toDateString() === now.toDateString();
+      const isWaiting = auction_status === '경매 대기';
+
+      const filterDeadline = !hasDeadlineToday || (hasDeadlineToday && isDeadlineToday);
+      const filterExcludeEnded = !hasExcludeEnded || (hasExcludeEnded && !isEnded);
+
+      return (
+        !isWaiting && within5km && matchSearch && matchCate && filterDeadline && filterExcludeEnded
+      );
     })
     .map((item) => {
       const bidPrices = item.bid_history?.map((b) => b.bid_price) ?? [];
@@ -232,5 +250,21 @@ export async function GET(
       };
     });
 
-  return NextResponse.json(filtered);
+  const limit = Number(searchParams.get('limit')) || 10;
+  const offset = Number(searchParams.get('offset')) || 0;
+
+  const sorted = filtered.sort((a, b) => {
+    if (sort === 'popular') {
+      return b.bidCount - a.bidCount;
+    } else {
+      return new Date(b.auctionEndAt).getTime() - new Date(a.auctionEndAt).getTime();
+    }
+  });
+
+  const sliced = sorted.slice(offset * limit, (offset + 1) * limit);
+
+  return NextResponse.json({
+    data: sliced,
+    nextOffset: sliced.length < limit ? null : offset + 1,
+  });
 }
