@@ -34,6 +34,8 @@ export const useSignUpForm = () => {
   const [nicknameError, setNicknameError] = useState('');
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     // 이메일 인증 여부 확인
     const checkVerificationStatus = async () => {
       const isVerifiedFromCallback = searchParams.get('verified') === 'true';
