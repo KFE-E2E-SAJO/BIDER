@@ -1,3 +1,5 @@
+'use Client';
+
 import { supabase } from './supabaseClient';
 
 export interface SignUpData {
@@ -9,13 +11,12 @@ export interface SignUpData {
 export const sendEmailVerification = async (email: string) => {
   const getURL = () => {
     let url =
-      process?.env?.NEXT_PUBLIC_SITE_URL ??
-      process?.env?.NEXT_PUBLIC_VERCEL_URL ??
-      'http://localhost:3000/';
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.NEXT_PUBLIC_VERCEL_URL
+        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+        : 'http://localhost:3000');
 
-    url = url.startsWith('http') ? url : `https://${url}`;
-
-    url = url.endsWith('/') ? url : `${url}/`;
+    url = url.endsWith('/') ? url.slice(0, -1) : url;
     return url;
   };
 
@@ -56,6 +57,9 @@ export const checkEmailVerification = async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    if (!user) return { isVerified: false, email: null };
+
     return {
       isVerified: !!user?.email_confirmed_at,
       email: user?.email || null,
