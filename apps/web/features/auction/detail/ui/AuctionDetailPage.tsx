@@ -7,6 +7,7 @@ import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
 import BiddingStatusBoard from './BiddingStatusBoard';
 import { getCategoryLabel } from '@/features/category/lib/utils';
 import { CategoryValue } from '@/features/category/types';
+import GoogleMapView from '@/features/location/ui/GoogleMapView';
 
 const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
@@ -45,8 +46,28 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
         </div>
 
         <div className="typo-body-regular whitespace-pre-line">{data.productDescription}</div>
+
+        {/* 거래 희망 장소 */}
+        {data.dealAddress && data.dealLocation && (
+          <div className="flex flex-col gap-[14px]">
+            <div className="flex items-end gap-[11px]">
+              <div className="typo-subtitle-small-medium">거래 희망 장소</div>
+              <div className="typo-body-regular text-neutral-700">{data.dealAddress}</div>
+            </div>
+            <div className="overflow-hidden rounded-[10px]">
+              <GoogleMapView
+                mapId="productDetail"
+                height="h-[126px]"
+                location={data.dealLocation}
+                showMyLocation={true}
+              />
+            </div>
+          </div>
+        )}
       </div>
+
       <div className="h-[8px] w-full bg-neutral-100"></div>
+
       {/* 입찰 히스토리 */}
       <div className="p-box">
         <div className="items-baseline-last mb-[14px] flex justify-between">

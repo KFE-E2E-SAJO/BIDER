@@ -1,6 +1,7 @@
 import { ProductImage } from '@/entities/productImage/model/types';
 import { Profiles } from '@/entities/profiles/model/types';
 import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
+import { Location } from '@/features/location/types';
 
 export interface AuctionDetailContent {
   auctionId: string;
@@ -13,6 +14,8 @@ export interface AuctionDetailContent {
   exhibitUser: Profiles;
   currentHighestBid: number;
   bidHistory: BidHistoryWithUserNickname[];
+  dealLocation?: Location;
+  dealAddress?: string;
 }
 
 export type AuctionDetailContentProps = {
