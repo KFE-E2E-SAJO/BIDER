@@ -59,7 +59,9 @@ const getListingList = async (params: ListingListParams): Promise<ProductList[]>
     address: product.address ?? '위치 정보 없음',
     bidCount: auction.bid_history.length,
     price: myBid?.bid_price ?? 0,
-    minPrice: auction?.min_price ?? 0,
+    minPrice: auction?.bid_history?.length
+      ? Math.max(...auction.bid_history.map((bid: any) => bid.bid_price))
+      : auction?.min_price,
     auctionEndAt: auction?.auction_end_at ?? '',
     auctionStatus: auction?.auction_status,
     winnerId: auction?.winning_bid_user_id ?? null,

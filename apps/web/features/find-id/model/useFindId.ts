@@ -67,16 +67,21 @@ export const useFindId = () => {
 
   // 비밀번호 찾기(이메일 입력)
   const handlePasswordReset = async () => {
-    const [email, domain] = inputValue.split('@');
-    if (!email || !domain) {
-      toast({ content: '유효하지 않은 이메일 형식입니다.' });
-      return;
-    }
-
-    const result = validateFullEmail({ email, domain });
+    const result = validateFullEmail({ fullEmail: inputValue });
 
     if (result.success) {
       try {
+        const { data: userData, error: userError } = await supabase
+          .from('profiles')
+          .select('email')
+          .eq('email', inputValue.trim())
+          .single();
+
+        if (userError || !userData) {
+          toast({ content: '등록되지 않은 이메일입니다.' });
+          return;
+        }
+
         const { error } = await supabase.auth.resetPasswordForEmail(inputValue.trim(), {
           redirectTo: `http://localhost:3000/reset-pw`,
         });
@@ -93,7 +98,7 @@ export const useFindId = () => {
         toast({ content: '재설정 중 오류가 발생했습니다.' });
       }
     } else {
-      toast({ content: '올바른 이메일 형식을 입력해주세요' });
+      toast({ content: `${result.error ?? '올바른 이메일 형식이 아닙니다'}` });
       return;
     }
   };
