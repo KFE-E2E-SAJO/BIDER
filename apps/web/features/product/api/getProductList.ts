@@ -1,7 +1,17 @@
 import { ProductList, ProductListParams } from '@/features/product/types';
 
-export const getProductList = async (params: ProductListParams): Promise<ProductList[]> => {
-  const { userId, search, cate } = params;
+interface getProductListParams {
+  limit: number;
+  offset: number;
+  params: ProductListParams;
+}
+
+export const getProductList = async ({
+  limit,
+  offset = 0,
+  params,
+}: getProductListParams): Promise<{ data: ProductList[]; nextOffset: number }> => {
+  const { userId, search, cate, sort, filter } = params;
 
   if (!userId) {
     throw {
@@ -14,8 +24,14 @@ export const getProductList = async (params: ProductListParams): Promise<Product
   const query = new URLSearchParams();
 
   query.set('userId', userId);
+  query.set('limit', limit.toString());
+  query.set('offset', offset.toString());
   if (search) query.set('search', search);
   if (cate) query.set('cate', cate);
+  if (sort) query.set('sort', sort);
+  if (filter && filter.length > 0) {
+    filter.forEach((f) => query.append('filter', f));
+  }
 
   const res = await fetch(`/api/product?${query.toString()}`);
   if (!res.ok) {
@@ -27,5 +43,10 @@ export const getProductList = async (params: ProductListParams): Promise<Product
       status: res.status,
     };
   }
-  return res.json();
+
+  const result = await res.json();
+  return {
+    data: result.data,
+    nextOffset: result.nextOffset,
+  };
 };

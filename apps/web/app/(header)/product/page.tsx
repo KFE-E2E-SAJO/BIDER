@@ -4,38 +4,73 @@ import { useCategoryStore } from '@/features/category/model/useCategoryStore';
 import Category from '@/features/category/ui/Category';
 import { useProductList } from '@/features/product/model/useProductList';
 import useProductListErrorHandler from '@/features/product/model/useProductListErrorHandler';
+import useVirtualInfiniteScroll from '@/features/product/model/useVirtualInfiniteScroll';
+import { ProductFilter as ProductFilterType, ProductSort } from '@/features/product/types';
 import LocationPin from '@/features/product/ui/LocationPin';
-import ProductList from '@/features/product/ui/ProductList';
+import ProductFilter from '@/features/product/ui/ProductFilter';
+import ProductListScroll from '@/features/product/ui/ProductListScroll';
+import ProductSortDropdown from '@/features/product/ui/ProductSortDropdown';
 
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
 
+import { useState } from 'react';
+
 const productListPage = () => {
   const cate = useCategoryStore((state) => state.selected);
   const userId = useAuthStore((state) => state.user?.id) as string;
+  const [sort, setSort] = useState<ProductSort>('latest');
+  const [filter, setFilter] = useState<ProductFilterType[]>(['exclude-ended']);
 
-  const { data, isLoading, error, isError } = useProductList({
-    userId,
-    cate,
-  });
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useProductList({ userId, cate, sort, filter });
 
   useProductListErrorHandler(isError, error);
+
+  const productList = data?.pages.flatMap((page) => page.data) ?? [];
+
+  const { parentRef, virtualRows, totalSize } = useVirtualInfiniteScroll({
+    data: productList,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  });
 
   let content = null;
 
   if (isLoading || !data) {
-    content = <Loading />;
+    content = (
+      <div className="flex flex-1">
+        <Loading />
+      </div>
+    );
   } else {
-    content = <ProductList data={data} />;
+    content = (
+      <div
+        ref={parentRef}
+        style={{ height: 'calc(100vh - 286px)' }}
+        className="p-box overflow-auto"
+      >
+        <ProductListScroll
+          data={productList}
+          virtualRows={virtualRows}
+          totalSize={totalSize}
+          isFetchingNextPage={isFetchingNextPage}
+        />
+      </div>
+    );
   }
 
   return (
     <>
       <Category type="inline" />
-      <div className="p-box flex flex-1 flex-col">
+      <div className="p-box my-[21px] flex items-center justify-between">
         <LocationPin />
-        {content}
+        <ProductSortDropdown setSort={setSort} />
       </div>
+      <ProductFilter setFilter={setFilter} />
+
+      {content}
     </>
   );
 };
