@@ -5,7 +5,7 @@ export const FindAccountConfig = (accountType: string) => {
     return {
       title: '아이디(이메일) 찾기',
       placeholder: '닉네임',
-      icon: <User />,
+      icon: () => <User />,
       inputType: 'text' as const,
       buttonText: '아이디(이메일) 찾기',
       resultPrefix: '이메일: ',
@@ -15,7 +15,7 @@ export const FindAccountConfig = (accountType: string) => {
     return {
       title: '비밀번호 찾기',
       placeholder: '이메일 주소',
-      icon: <Mail />,
+      icon: () => <Mail />,
       inputType: 'text' as const,
       buttonText: '재설정 이메일 발송',
       resultPrefix: '',

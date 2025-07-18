@@ -66,9 +66,12 @@ export async function GET(
   }
 }
 
-export async function POST(request: Request, { params }: { params: { shortId: string } }) {
+export async function POST(request: Request) {
+  const url = new URL(request.url);
+  const shortId = url.pathname.split('/').pop();
+
   const formData = await request.formData();
-  const productId = decodeShortId(params.shortId);
+  const productId = decodeShortId(shortId!);
   const title = formData.get('title') as string;
   const category = formData.get('category') as string;
   const description = formData.get('description') as string;

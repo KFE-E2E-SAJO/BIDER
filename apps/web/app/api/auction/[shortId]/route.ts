@@ -79,10 +79,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ shortId: string }> }) {
+export async function POST(req: NextRequest) {
   try {
-    const resolvedParams = await params;
-    const auctionId = decodeShortId(resolvedParams.shortId);
+    const url = new URL(req.url);
+    const shortId = url.pathname.split('/').pop();
+    const auctionId = decodeShortId(shortId!);
 
     // 요청 본문에서 입찰 데이터 추출
     const { bidPrice, userId } = await req.json();

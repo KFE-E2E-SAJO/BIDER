@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@repo/ui/components/Input/Input';
-import { ChevronLeft, KeyIcon, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useResetPw } from '@/features/reset-pw/model/useResetPw';
 
@@ -17,7 +17,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="m-3">
-      <p className='className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]'>
+      <p className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]">
         비밀번호 재설정
       </p>
       <form onSubmit={handleResetPassword}>
@@ -45,7 +45,10 @@ export default function ResetPasswordPage() {
           required
         />
 
-        {status && <p className="typo-caption-regular text-danger">{status}</p>}
+        {status && status !== 'success' && (
+          <p className="typo-caption-regular text-danger">{status}</p>
+        )}
+
         <Button type="submit" className="mt-[0.81rem]">
           재설정하기
         </Button>
