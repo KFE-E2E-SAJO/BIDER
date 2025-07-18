@@ -1,11 +1,11 @@
-import { User, Mail } from 'lucide-react';
+import { Mail, UserRound } from 'lucide-react';
 
 export const FindAccountConfig = (accountType: string) => {
   if (accountType === 'email') {
     return {
       title: '아이디(이메일) 찾기',
       placeholder: '닉네임',
-      icon: () => <User />,
+      icon: () => <UserRound size={20} strokeWidth={1.5} />,
       inputType: 'text' as const,
       buttonText: '아이디(이메일) 찾기',
       resultPrefix: '이메일: ',
@@ -15,7 +15,7 @@ export const FindAccountConfig = (accountType: string) => {
     return {
       title: '비밀번호 찾기',
       placeholder: '이메일 주소',
-      icon: () => <Mail />,
+      icon: () => <Mail size={20} strokeWidth={1.5} />,
       inputType: 'text' as const,
       buttonText: '재설정 이메일 발송',
       resultPrefix: '',

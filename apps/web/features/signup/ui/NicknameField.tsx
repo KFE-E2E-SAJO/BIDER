@@ -9,8 +9,8 @@ interface Props {
 
 export const NicknameField = ({ nickname, nicknameError, onChangeNickname }: Props) => {
   return (
-    <div className="space-y-3">
-      <label className="typo-body-bold block text-neutral-800">닉네임</label>
+    <div>
+      <label className="typo-body-bold mb-[8px] block text-neutral-900">닉네임</label>
       <Input
         type="text"
         placeholder="닉네임"

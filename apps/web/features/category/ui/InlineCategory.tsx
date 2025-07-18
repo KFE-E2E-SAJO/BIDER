@@ -11,7 +11,7 @@ const InlineCategory = ({ onSelect }: InlineCategoryProps) => {
   const selected = useCategoryStore((state) => state.selected);
 
   return (
-    <div className="bg-neutral-0 sticky top-[67px] z-10 flex gap-[26px] overflow-x-scroll p-[15px]">
+    <div className="bg-neutral-0 scrollbar-hide sticky top-[67px] z-10 flex gap-[26px] overflow-x-scroll p-[15px]">
       {categories.map((item) => {
         const isSelected = item.value === selected;
         return (

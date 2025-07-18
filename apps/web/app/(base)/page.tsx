@@ -67,10 +67,10 @@ const HomePage = () => {
       <Button
         shape="rounded"
         size="fit"
-        className="bottom-30 text-caption fixed left-1/2 -translate-x-1/2 bg-neutral-900"
+        className="typo-caption-regular fixed bottom-32 left-1/2 -translate-x-1/2 bg-neutral-900"
         onClick={() => setShowMap((prev) => !prev)}
       >
-        {showMap ? <List size="20" /> : <Map size="20" />}
+        {showMap ? <List size="18" strokeWidth={1.5} /> : <Map size="18" strokeWidth={1.5} />}
         {showMap ? '리스트로 보기' : '지도로 보기'}
       </Button>
     </>
