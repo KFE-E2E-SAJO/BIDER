@@ -91,8 +91,6 @@ export const useFindId = () => {
           return `${baseURL}/reset-pw`;
         };
 
-        console.log('URL : ', getRedirectURL());
-
         const { error } = await supabase.auth.resetPasswordForEmail(inputValue.trim(), {
           redirectTo: `${getRedirectURL()}`,
         });

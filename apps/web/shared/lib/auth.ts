@@ -17,8 +17,6 @@ export const sendEmailVerification = async (email: string) => {
     return `${baseURL}/auth/callback`;
   };
 
-  console.log('URL : ', getRedirectURL());
-
   const { data, error } = await supabase.auth.signUp({
     email,
     password: 'temp_password',
