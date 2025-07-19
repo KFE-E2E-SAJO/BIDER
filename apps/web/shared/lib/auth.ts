@@ -9,24 +9,19 @@ export interface SignUpData {
 }
 
 export const sendEmailVerification = async (email: string) => {
-  const getURL = () => {
-    let url =
-      process.env.NEXT_PUBLIC_SITE_URL ??
-      (process.env.NEXT_PUBLIC_VERCEL_URL
-        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-        : 'http://localhost:3000');
-
-    url = url.endsWith('/') ? url.slice(0, -1) : url;
-    return url;
+  const getRedirectURL = () => {
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/auth/callback`;
+    }
+    const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    return `${baseURL}/auth/callback`;
   };
-
-  console.log('url : ', getURL());
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password: 'temp_password',
     options: {
-      emailRedirectTo: `${getURL()}auth/callback`,
+      emailRedirectTo: `${getRedirectURL()}`,
     },
   });
 
