@@ -24,12 +24,12 @@ export default function SplashWelcomePage() {
 
       <div className="flex flex-1 flex-col justify-end">
         <div className="flex flex-col items-center gap-4 px-3 pb-16">
-          <Button className="w-full" onClick={handleStartClick}>
+          <Button className="h-14 w-full" onClick={handleStartClick}>
             시작하기
           </Button>
-          <p className="typo-caption-regular text-center">
+          <p className="typo-body-regular text-center">
             이미 계정이 있나요?{' '}
-            <Link href="/login" className="text-main cursor-pointer underline">
+            <Link href="/login" className="text-main typo-body-medium cursor-pointer underline">
               로그인
             </Link>
           </p>

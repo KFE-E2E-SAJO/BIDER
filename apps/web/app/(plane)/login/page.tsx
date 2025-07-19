@@ -1,22 +1,32 @@
+'use client';
+
 import { LogInForm } from '@/features/login/ui/LogInForm';
 import '@repo/ui/styles.css';
 import Link from 'next/link';
+import { ChevronLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-export default function LogInPage() {
+const LogInPage = () => {
+  const router = useRouter();
+
   return (
-    <div className="z-50 m-5 space-y-6">
-      <h1 className="mt-28 text-center text-[2rem] font-semibold leading-[2.6rem] text-neutral-900">
-        로그인
-      </h1>
+    <div className="p-box">
+      <ChevronLeft
+        className="mt-[30px] size-[30px] cursor-pointer stroke-[#8C8C8C] stroke-[1.5]"
+        onClick={() => router.back()}
+      />
+      <h1 className="typo-h2 mb-[41px] mt-[56px] text-center">로그인</h1>
 
       <LogInForm />
 
       <div className="mt-8 flex items-center justify-center gap-1">
-        <span className="font-main-text font-medium">아직 회원이 아니신가요?</span>
-        <Link href="/signup" className="text-main flex font-medium underline">
+        <span className="typo-body-regular">아직 회원이 아니신가요?</span>
+        <Link href="/signup" className="text-main typo-body-medium flex font-medium underline">
           회원가입
         </Link>
       </div>
     </div>
   );
-}
+};
+
+export default LogInPage;

@@ -9,9 +9,9 @@ interface Props {
 
 export const PasswordField = ({ password, passwordError, onChangePassword }: Props) => {
   return (
-    <div className="space-y-3">
-      <label className="typo-body-bold block text-neutral-800">비밀번호</label>
-      <p className="typo-caption-regular text-neutral-400">
+    <div className="flex flex-col">
+      <label className="typo-body-bold mb-[8px] block text-neutral-900">비밀번호</label>
+      <p className="typo-caption-regular mb-[13px] text-neutral-600">
         영문, 숫자, 특수문자 중 2종류 이상을 포함한 8자 이상의 비밀번호를 입력해 주세요.
       </p>
       <Input

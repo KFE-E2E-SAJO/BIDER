@@ -13,8 +13,8 @@ export const ConfirmPasswordField = ({
   onChangeConfirmPassword,
 }: Props) => {
   return (
-    <div className="space-y-3">
-      <label className="typo-body-bold block text-neutral-800">비밀번호확인</label>
+    <div>
+      <label className="typo-body-bold mb-[8px] block text-neutral-900">비밀번호확인</label>
       <Input
         type="password"
         placeholder="비밀번호 확인"
