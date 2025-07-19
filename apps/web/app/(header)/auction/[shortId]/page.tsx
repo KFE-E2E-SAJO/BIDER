@@ -39,7 +39,7 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
   const isProductMine = user.user?.id === mapped.exhibitUser.user_id;
 
   return (
-    <div className={`flex flex-col gap-[25px] ${isProductMine ? '' : 'pb-[100px]'}`}>
+    <div className={`flex flex-col gap-[25px] ${isProductMine ? '' : 'pb-[66px]'}`}>
       <ProductImageSlider images={mapped.images} />
       <AuctionDetail data={mapped} />
       {!isProductMine && (

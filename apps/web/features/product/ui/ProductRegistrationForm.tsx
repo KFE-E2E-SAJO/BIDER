@@ -96,13 +96,13 @@ export const ProductRegistrationForm = () => {
   const [dealLocationUse, setDealLocationUse] = useState(false);
 
   return (
-    <div className="flex flex-col gap-[26px] pt-[16px]">
+    <div className="flex flex-col gap-[26px]">
       <div className="p-box flex flex-col gap-[26px]">
         {/* 사진 업로드 */}
         <ImageUploadPreview exImages={[]} onImagesChange={setImages} />
 
         {/* 상품 제목 */}
-        <div className="flex flex-col gap-[13px]">
+        <div className="flex flex-col gap-[10px]">
           <div className="typo-subtitle-small-medium">
             상품 제목<span className="text-main">*</span>
           </div>
@@ -115,7 +115,7 @@ export const ProductRegistrationForm = () => {
         </div>
 
         {/* 카테고리 */}
-        <div className="flex flex-col gap-[13px]">
+        <div className="flex flex-col gap-[10px]">
           <div className="typo-subtitle-small-medium">
             카테고리<span className="text-main">*</span>
           </div>
@@ -136,7 +136,7 @@ export const ProductRegistrationForm = () => {
         </div>
 
         {/* 상품 설명 */}
-        <div className="flex flex-col gap-[13px]">
+        <div className="flex flex-col gap-[10px]">
           <div className="typo-subtitle-small-medium">
             자세한 설명<span className="text-main">*</span>
           </div>
@@ -148,16 +148,17 @@ export const ProductRegistrationForm = () => {
             required
           />
         </div>
+
         {/* 거래 희망 장소 */}
-        <div className="flex flex-col gap-[13px]">
-          <div className="flex justify-between">
+        <div className="flex flex-col gap-[10px]">
+          <div className="flex items-center justify-between">
             <div className="typo-subtitle-small-medium">거래 희망 장소</div>
             <Switch checked={dealLocationUse} onCheckedChange={setDealLocationUse} />
           </div>
           {dealLocationUse && (
-            <div className="flex flex-col gap-[4px]">
+            <div className="flex flex-col gap-[10px]">
               <div className="typo-caption-regular text-neutral-700">
-                ⁕ 지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.
+                *지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.
               </div>
               <GoogleMap
                 setLocation={(loc: Location) => {
@@ -183,7 +184,7 @@ export const ProductRegistrationForm = () => {
 
       <div className="p-box flex flex-col gap-[26px]">
         {/* 입찰 시작가 */}
-        <div className="flex flex-col gap-[13px]">
+        <div className="flex flex-col gap-[10px]">
           <div className="typo-subtitle-small-medium">
             입찰 시작가<span className="text-main">*</span>
           </div>

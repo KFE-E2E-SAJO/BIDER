@@ -1,6 +1,6 @@
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
-import { AlarmClock, PencilLine } from 'lucide-react';
+import { AlarmClock, Info, PencilLine } from 'lucide-react';
 import React, { useState } from 'react';
 import { AuctionDetailContentProps } from '../types';
 import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
@@ -17,9 +17,9 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
       <div className="p-box flex flex-col gap-[25px]">
         <div className="flex flex-col gap-[14px]">
           <div className="typo-subtitle-bold">{data.productTitle}</div>
-          <p className="typo-caption-regular w-fit border-b text-neutral-700">
+          <u className="typo-caption-regular w-fit text-neutral-700">
             {getCategoryLabel(data.productCategory as CategoryValue)}
-          </p>
+          </u>
         </div>
 
         <div>
@@ -72,8 +72,9 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
       <div className="p-box">
         <div className="items-baseline-last mb-[14px] flex justify-between">
           <div className="typo-subtitle-small-medium">입찰 현황판</div>
-          <div className="typo-caption-regular text-neutral-700">
-            상위 5등까지만 조회 가능합니다.
+          <div className="typo-caption-regular flex items-center gap-1 text-neutral-600">
+            <Info size={13} strokeWidth={2} stroke="var(--color-neutral-400)" /> 상위 5등까지만 조회
+            가능합니다.
           </div>
         </div>
         <BiddingStatusBoard
@@ -85,7 +86,7 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
 
       {/* 판매자 정보 */}
       <div className="p-box mb-[25px] flex items-center gap-[19px]">
-        <Avatar src={data.exhibitUser?.profile_img || undefined} className="size-[36px]" />
+        <Avatar src={data.exhibitUser?.profile_img || undefined} className="size-[40px]" />
         <div className="flex flex-col gap-[5px]">
           <div className="typo-body-medium">{data.exhibitUser?.nickname}</div>
           <div className="typo-caption-regular">{data.exhibitUser?.address}</div>

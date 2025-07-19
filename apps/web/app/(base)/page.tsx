@@ -67,7 +67,7 @@ const HomePage = () => {
       <Button
         shape="rounded"
         size="fit"
-        className="typo-caption-regular fixed bottom-32 left-1/2 -translate-x-1/2 bg-neutral-900"
+        className="typo-caption-medium fixed bottom-32 left-1/2 h-10 -translate-x-1/2 bg-neutral-900"
         onClick={() => setShowMap((prev) => !prev)}
       >
         {showMap ? <List size="18" strokeWidth={1.5} /> : <Map size="18" strokeWidth={1.5} />}

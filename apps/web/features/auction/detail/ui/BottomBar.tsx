@@ -40,8 +40,8 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
           >
             입찰하기
           </Button>
-          <Button variant="outline" className="w-[53px]">
-            <MessageSquareMore className="text-main" />
+          <Button variant="outline" className="w-[53px] border-[1.5px]">
+            <MessageSquareMore className="text-main" strokeWidth={1.5} />
           </Button>
         </div>
       </div>

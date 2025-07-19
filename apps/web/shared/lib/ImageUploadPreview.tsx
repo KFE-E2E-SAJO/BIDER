@@ -120,7 +120,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
     <div className="w-full">
       <div className="scroll-container flex gap-[18px] pt-[10px]">
         <div
-          className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[5px] border border-neutral-400"
+          className="flex h-[70px] w-[70px] shrink-0 items-center justify-center rounded-[5px] border border-neutral-400"
           onClick={openActionSheet}
         >
           <div className="flex flex-col items-center">
@@ -133,7 +133,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
         {images.map((image, index) => (
           <div key={image.id} className="relative">
             <Avatar
-              className="h-[60px] w-[60px] rounded-[5px]"
+              className="h-[70px] w-[70px] rounded-[5px]"
               src={image.preview}
               alt={index === 0 ? '대표 이미지' : '업로드된 이미지'}
             />
@@ -144,7 +144,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
             )}
             <Button
               size="icon"
-              className="absolute right-0 top-0 h-[20px] w-[20px] -translate-y-1/2 translate-x-1/2 rounded-full bg-neutral-800"
+              className="absolute right-1 top-1 h-[20px] w-[20px] -translate-y-1/2 translate-x-1/2 rounded-full bg-neutral-800"
               onClick={() => removeImage(image.id)}
             >
               <X size={12} />
