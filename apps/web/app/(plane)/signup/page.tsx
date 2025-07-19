@@ -1,7 +1,6 @@
 'use client';
 
 import { SignUpForm } from '@/features/signup/SignUpForm';
-import '@repo/ui/styles.css';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 

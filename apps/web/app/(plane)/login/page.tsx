@@ -1,7 +1,6 @@
 'use client';
 
 import { LogInForm } from '@/features/login/ui/LogInForm';
-import '@repo/ui/styles.css';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
