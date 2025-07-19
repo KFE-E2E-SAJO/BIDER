@@ -116,9 +116,20 @@ export async function handleRedirect(request: NextRequest) {
     if (redirectPage === '/reset-pw') {
       const token = searchParams.get('token');
       const type = searchParams.get('type');
+      const refreshToken = searchParams.get('refresh_token');
 
-      if (!token || type !== 'recovery') {
+      if (isLoggedIn) {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+
+      if (type === null || token === null || refreshToken === null) {
         return NextResponse.redirect(new URL('/splash/welcome', request.url));
+      }
+
+      if (type || token || refreshToken) {
+        if (type !== 'recovery' || !token || !refreshToken) {
+          return NextResponse.redirect(new URL('/splash/welcome', request.url));
+        }
       }
 
       return supabaseResponse;

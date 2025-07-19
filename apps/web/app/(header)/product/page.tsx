@@ -48,7 +48,7 @@ const productListPage = () => {
     content = (
       <div
         ref={parentRef}
-        style={{ height: 'calc(100vh - 286px)' }}
+        style={{ height: 'calc(100vh - 320px)' }}
         className="p-box overflow-auto"
       >
         <ProductListScroll

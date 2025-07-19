@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@repo/ui/components/Button/Button';
-import '@repo/ui/styles.css';
 import { EmailField } from './ui/EmailField';
 import { PasswordField } from './ui/PasswordField';
 import { ConfirmPasswordField } from './ui/ConfirmPassword';

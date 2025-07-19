@@ -1,7 +1,6 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Button } from '@repo/ui/components/Button/Button';
-import '@repo/ui/styles.css';
 import { Mail, LockKeyhole } from 'lucide-react';
 import Link from 'next/link';
 import { useLogin } from '../model/useLogin';

@@ -1,7 +1,6 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
 import { ChevronLeft } from 'lucide-react';
-import '@repo/ui/styles.css';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useFindId } from '@/features/find-id/model/useFindId';
 import { useRouter } from 'next/navigation';
