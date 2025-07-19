@@ -35,3 +35,5 @@
        - [🔗 FSD 온보딩 가이드 바로가기](https://www.notion.so/FSD-Onboarding-Guide-20ea3f519ab88010a4c2faf71acf5ac0?source=copy_link)
      - storybook 디렉토리 위치 변경
    - 2-2. 컴포넌트 리팩토링
+
+.
