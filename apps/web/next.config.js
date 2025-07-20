@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@repo/ui'],
+  transpilePackages: [],
   experimental: {
     turbo: {
       rules: {},
     },
+  },
+  images: {
+    domains: ['nrxemenkpeejarhejbbk.supabase.co'],
   },
 };
 
