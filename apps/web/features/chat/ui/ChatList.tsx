@@ -1,15 +1,16 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getAllUsers, getLatestMessages } from '../../../app/model/chatActions';
+import { useGetChatList } from '@/features/chat/model/useGetChatList';
 import { useRouter } from 'next/navigation';
 import { useRecoilState } from 'recoil';
 import { presenceState, selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
-import { supabase } from '../../../shared/lib/supabaseBrowserClient';
-import { chatRoomsWithImage } from '../../../app/model/chatActions';
+import { supabase } from '@/shared/lib/supabaseClient';
+import { useAuthStore } from '@/shared/model/authStore';
 
 import React, { useState, useEffect } from 'react';
-import { string } from 'zod';
+import { filter } from 'lodash';
+import { ChatroomWithInfoProps } from '../types';
 
 // Define the Room type
 type Room = {
@@ -18,7 +19,7 @@ type Room = {
 };
 
 // Temporary function to fetch rooms - replace with actual implementation
-const fetchRooms = async (): Promise<Room[]> => {
+const Rooms = async (): Promise<Room[]> => {
   // Replace this with your actual API call
   return [];
 };
@@ -30,79 +31,8 @@ const categories = [
   { label: '안 읽은 채팅', value: 'unread' },
 ];
 
-/*
-const chats = [
-  {
-    id: 1,
-    user: '입찰매니아',
-    message: '구매 가능한가요?',
-    time: '1시간',
-    unread: 1,
-    label: null,
-    date: null,
-    profile: 'https://randomuser.me/api/portraits/men/32.jpg',
-    type: 'buy',
-  },
-  {
-    id: 2,
-    user: '입찰매니아',
-    message: '넵 좋은 하루 되세요~!!!',
-    time: '6월 3일',
-    unread: 0,
-    label: null,
-    date: '6월 3일',
-    profile: 'https://randomuser.me/api/portraits/men/32.jpg',
-    type: 'buy',
-  },
-  {
-    id: 3,
-    user: '입찰매니아',
-    message: '넵 좋은 하루 되세요~!!!',
-    time: '6월 3일',
-    unread: 0,
-    label: '낙찰',
-    date: '6월 3일',
-    profile: 'https://randomuser.me/api/portraits/men/32.jpg',
-    type: 'sell',
-  },
-  {
-    id: 4,
-    user: '입찰매니아',
-    message: '넵 좋은 하루 되세요~!!!',
-    time: '6월 3일',
-    unread: 2,
-    label: null,
-    date: '6월 3일',
-    profile: 'https://randomuser.me/api/portraits/men/32.jpg',
-    type: 'sell',
-  },
-  {
-    id: 5,
-    user: '입찰매니아',
-    message: '넵 좋은 하루 되세요~!!!',
-    time: '6월 3일',
-    unread: 0,
-    label: null,
-    date: '6월 3일',
-    profile: 'https://randomuser.me/api/portraits/men/32.jpg',
-    type: 'buy',
-  },
-];
-*/
-
-// 유저 리스트가 아래와 같이 내려온다고 가정
-// type User = {
-//   chatroom_id: uuid;
-//   auction_id: uuid;
-//   exhibit_user_id: uuid -> nickname, profile_img;
-//   message: string;
-//   updated_at: string;
-//   unread: number;
-//   badge: string;
-//   type: 'buy' | 'sell';
-// };
-
-export default function ChatList({ loggedInUser }: { loggedInUser: { id: string } }) {
+export default function ChatList() {
+  const userId = useAuthStore((state) => state.user?.id);
   const router = useRouter();
   const [selected, setSelected] = useState('all');
   const [selectedUserId, setSelectedUserId] = useRecoilState(selectedUserIdState);
@@ -110,83 +40,68 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
   const [presence, setPresence] = useRecoilState(presenceState);
   const DEFAULT_PROFILE_IMG = '/default-profile.png';
 
-  // 실제 데이터 패치 (React Query)
-  console.log('ChatList 렌더링됨!');
-  const {
-    data: users = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['chat_room'],
-    queryFn: async () => {
-      console.log('queryFn 실행!');
-      const allUsers = await getAllUsers();
-      console.log(allUsers);
-      return allUsers.filter((user) => user.id !== loggedInUser.id);
-    },
-  });
-
-  // Use the imported supabase client
-  const { data: chatRoomsWithImage = [] } = useQuery({
-    queryKey: ['chatRooms'],
-    queryFn: async () => {
-      const res = await fetch('/api/chat-rooms');
-      return res.json();
-    },
-  });
-
-  const { data: getLatestMessages = [] } = useQuery({
-    queryKey: ['latestMessages'],
-    queryFn: async () => {
-      const res = await fetch('/api/latestMessages');
-      return res.json();
-    },
-  });
-
   useEffect(() => {
-    const channel = supabase.channel('online_users', {
-      config: {
-        presence: {
-          key: loggedInUser.id,
+    const changes = supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'chat_room',
         },
-      },
-    });
-
-    channel.on('presence', { event: 'sync' }, () => {
-      const newState = channel.presenceState();
-      const newStateObj = JSON.parse(JSON.stringify(newState));
-      setPresence(newStateObj);
-    });
-
-    channel.subscribe(async (status: string) => {
-      if (status !== 'SUBSCRIBED') {
-        return;
-      }
-
-      const newPresenceStatus: unknown = await channel.track({
-        onlineAt: new Date().toISOString(),
-      });
-    });
-
-    return () => {
-      channel.unsubscribe();
-    };
+        (payload) => console.log(payload)
+      )
+      .subscribe();
   }, []);
 
-  const totalUnreadCount = users.reduce((sum, chat) => sum + (chat.unread || 0), 0);
+  //   const channel = anonSupabase.channel('online_users', {
+  //     config: {
+  //       presence: {
+  //         key: userId,
+  //       },
+  //     },
+  //   });
 
-  const { data: rooms = [] } = useQuery({
-    queryKey: ['chat_rooms'],
-    queryFn: fetchRooms, // 실제 데이터 불러오는 함수
-  });
+  //   channel.on('presence', { event: 'sync' }, () => {
+  //     const newState = channel.presenceState();
+  //     const newStateObj = JSON.parse(JSON.stringify(newState));
+  //     setPresence(newStateObj);
+  //   });
+
+  //   channel.subscribe(async (status: string) => {
+  //     if (status !== 'SUBSCRIBED') {
+  //       return;
+  //     }
+
+  //     const newPresenceStatus: unknown = await channel.track({
+  //       onlineAt: new Date().toISOString(),
+  //     });
+  //   });
+
+  //   return () => {
+  //     channel.unsubscribe();
+  //   };
+  // }, []);
+
   // 카테고리별 필터
-  const filteredChats = users.filter((chat: any) => {
-    if (selected === 'all') return true;
-    if (selected === 'buy') return chat.type === 'buy';
-    if (selected === 'sell') return chat.type === 'sell';
-    if (selected === 'unread') return chat.unread > 0;
-    return true;
-  });
+  const { data: Rooms = [], isLoading, isError } = useGetChatList(userId || '');
+  console.log('Rooms:', Rooms);
+  const filteredChats =
+    Rooms && Array.isArray(Rooms)
+      ? Rooms.filter((chat: any) => {
+          if (selected === 'all') return true;
+          if (selected === 'sell') return chat.exhibit_user_id === userId;
+          if (selected === 'buy') return chat.bid_user_id === userId;
+          if (selected === 'unread') {
+            return (
+              chat.messages &&
+              chat.messages.some((msg: any) => !msg.is_read && msg.sender_id !== userId)
+            );
+          }
+          return true;
+        })
+      : [];
 
   const handleChatRoomClick = (chatroomId: string) => {
     router.push(`/chat/${chatroomId}`);
@@ -194,11 +109,15 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
 
   return (
     <div>
-      {rooms.map((room) => (
-        <div key={room.roomId} onClick={() => router.push(`/chat/${room.roomId}`)}>
-          {room.name}
-        </div>
-      ))}
+      {Array.isArray(Rooms) &&
+        Rooms.map((room: any) => (
+          <div
+            key={room.chatroom_id}
+            onClick={() => {
+              router.push(`/chat/${room.chatroom_id}`);
+            }}
+          ></div>
+        ))}
       <div className="flex h-full w-full flex-col bg-white">
         {/* 카테고리 버튼 */}
         <div className="flex gap-2 px-4 pb-2 pt-5">
@@ -230,25 +149,22 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
             !isError &&
             filteredChats.map((chat: any) => (
               <div
-                key={chat.id}
-                className="flex h-20 cursor-pointer items-center gap-3 border-b px-2 last:border-b-0 hover:bg-gray-50"
-                style={{ minHeight: 80 }}
-                onClick={() => handleChatRoomClick(chat.id)}
+                key={chat.chatroom_id}
+                className="flex h-[80px] cursor-pointer items-center gap-3 border-b px-2 last:border-b-0 hover:bg-gray-50"
+                onClick={() => handleChatRoomClick(chat.chatroom_id)}
               >
-                {chatRoomsWithImage.map((chatrooms: any) => (
-                  <img
-                    key={chatrooms.chatroom_id}
-                    src={chatrooms.product_image_url}
-                    alt="Product Image"
-                    className="h-11 w-11 rounded-md object-cover"
-                  />
-                ))}
+                <img
+                  key={chat.chatroom_id}
+                  src={chat.product_image_url}
+                  alt="Product Image"
+                  className="h-11 w-11 rounded-md object-cover"
+                />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="flex items-center gap-1 text-sm font-semibold text-gray-900">
                       {chat.nickname || '알수없음'}
                       <img
-                        src={users?.[0]?.profile_img || DEFAULT_PROFILE_IMG}
+                        src={chat.profile_img || DEFAULT_PROFILE_IMG}
                         alt="프로필"
                         onError={(e) => {
                           e.currentTarget.src = DEFAULT_PROFILE_IMG;
@@ -256,46 +172,44 @@ export default function ChatList({ loggedInUser }: { loggedInUser: { id: string 
                         className="ml-1 h-5 w-5 rounded-full border border-gray-200 object-cover"
                       />
                     </span>
-                    {chat.badge && (
+                    {chat.unread > 0 && (
                       <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-500">
-                        {chat.badge}
+                        {chat.unread}
                       </span>
                     )}
                   </div>
-                  {getLatestMessages.map((chatrooms: any) => (
-                    <div className="mt-1 flex items-center gap-2">
-                      <span
-                        key={chatrooms.chatroom_id}
-                        className="block w-44 truncate text-xs text-gray-500"
-                      >
-                        {chatrooms.message}
-                      </span>
-                      <span className="ml-1 text-xs text-gray-400">
-                        {new Date(chatrooms.created_at).toLocaleString('ko-KR', {
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
-                    </div>
-                  ))}
+                  <div className="mt-1 flex items-center gap-2">
+                    <span
+                      key={chat.chatroom_id}
+                      className="block w-44 truncate text-xs text-gray-500"
+                    >
+                      {chat.messages &&
+                        chat.messages.some((msg: any) => msg.content || '메시지가 없습니다.')}
+                    </span>
+                    <span className="ml-1 text-xs text-gray-400">
+                      {new Date(chat.updated_at).toLocaleString('ko-KR', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
                 </div>
-                {totalUnreadCount > 0 ? (
-                  <span className="ml-2 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-red-500 px-2 text-xs font-bold text-white">
-                    {totalUnreadCount}
-                  </span>
-                ) : (
-                  <svg
-                    className="h-4 w-4 text-gray-300"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M9 5l7 7-7 7" />
-                  </svg>
-                )}
+
+                <span className="ml-2 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-red-500 px-2 text-xs font-bold text-white">
+                  {/* {data} */}
+                </span>
+
+                <svg
+                  className="h-4 w-4 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 5l7 7-7 7" />
+                </svg>
               </div>
             ))}
         </div>

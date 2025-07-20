@@ -3,46 +3,40 @@
 import ChatList from '@/features/chat/ui/ChatList';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { anonSupabase } from '@/shared/lib/supabaseClient';
 import Loading from '@/shared/ui/Loading/Loading';
 import { RecoilRoot } from 'recoil';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function ChatPage() {
   const userId = useAuthStore((state) => state.user?.id);
   const [sessionUser, setSessionUser] = useState<{ id: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [queryClient] = useState(() => new QueryClient());
 
   useEffect(() => {
     const getSession = async () => {
       const {
         data: { session },
-      } = await supabase.auth.getSession();
-
-      const safeUser = session?.user
-        ? {
-            id: session.user.id,
-          }
-        : null;
-
-      setSessionUser(safeUser);
+      } = await anonSupabase.auth.getSession();
+      setSessionUser(session?.user ? { id: session.user.id } : null);
       setLoading(false);
     };
-
     getSession();
   }, []);
 
-  // userId가 있으면 userId를 사용하고, 없으면 sessionUser를 사용
-  const loggedInUser = userId ? { id: userId } : sessionUser;
+  const effectiveUserId =
+    typeof userId === 'object' && userId !== null
+      ? (userId as { id: string }).id
+      : (userId ?? sessionUser?.id ?? null);
 
-  if (loading) {
-    return <Loading />;
-  }
+  if (loading) return <Loading />;
 
   return (
-    <RecoilRoot>
-      <div className="flex h-screen w-full justify-center">
-        {loggedInUser && <ChatList loggedInUser={loggedInUser} />}
-      </div>
-    </RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <div className="flex h-screen w-full justify-center">{effectiveUserId && <ChatList />}</div>
+      </RecoilRoot>
+    </QueryClientProvider>
   );
 }
