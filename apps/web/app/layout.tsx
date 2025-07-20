@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   description: '내 근처 가장 가까운 경매장, Bider',
   manifest: '/manifest.webmanifest',
   icons: {
-    icon: '/favicon.ico',
     shortcut: '/ios/apple-touch-icon.png',
     apple: '/ios/apple-touch-icon.png',
     other: {
@@ -23,6 +22,7 @@ export const metadata: Metadata = {
     title: 'Bider',
     statusBarStyle: 'default',
     startupImage: [
+      '/ios/apple-splash-768x1004.png',
       {
         url: '/ios/apple-splash-640x1136.png',
         media:
