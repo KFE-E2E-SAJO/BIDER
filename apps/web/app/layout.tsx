@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Bider',
     statusBarStyle: 'default',
   },
+  themeColor: '#ffffff',
 };
 
 export const viewport: Viewport = {
@@ -30,11 +31,12 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="ko">
+      <head>
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      </head>
       <body>
         <ReactQueryProvider>
           <div id="container" className="flex min-h-screen flex-col">
-            {/* 'pb-헤더높이'로 수정 */}
-
             {children}
           </div>
         </ReactQueryProvider>
