@@ -24,6 +24,8 @@ export const useFindId = () => {
       setInputValue('');
       setResult('');
       setIsFound(false);
+    } else if (type === null) {
+      setAccountType('email');
     } else {
       router.replace('/find-id?type=email');
     }
@@ -81,9 +83,16 @@ export const useFindId = () => {
           toast({ content: '등록되지 않은 이메일입니다.' });
           return;
         }
+        const getRedirectURL = () => {
+          if (typeof window !== 'undefined') {
+            return `${window.location.origin}/reset-pw`;
+          }
+          const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+          return `${baseURL}/reset-pw`;
+        };
 
         const { error } = await supabase.auth.resetPasswordForEmail(inputValue.trim(), {
-          redirectTo: `http://localhost:3000/reset-pw`,
+          redirectTo: `${getRedirectURL()}`,
         });
 
         if (error) {

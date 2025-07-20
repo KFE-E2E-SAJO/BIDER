@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@repo/ui/components/Button/Button';
-import '@repo/ui/styles.css';
 import { EmailField } from './ui/EmailField';
 import { PasswordField } from './ui/PasswordField';
 import { ConfirmPasswordField } from './ui/ConfirmPassword';
@@ -38,7 +37,7 @@ export const SignUpForm = () => {
   } = useSignUpForm();
 
   return (
-    <form onSubmit={handleSubmitForm} className="space-y-6">
+    <form onSubmit={handleSubmitForm} className="space-y-8">
       <EmailField
         email={email}
         domain={domain}
@@ -74,7 +73,7 @@ export const SignUpForm = () => {
 
       <Button
         type="submit"
-        className="bg-main hover:bg-main-dark text-neutral-0 mt-8 w-full py-3 disabled:cursor-not-allowed disabled:bg-neutral-400"
+        className="bg-main hover:bg-main-dark text-neutral-0 mt-[10px] h-14 w-full py-3 disabled:cursor-not-allowed disabled:bg-neutral-300"
         disabled={isLoading || !isEmailVerified}
       >
         {isLoading ? '처리 중...' : '회원가입'}

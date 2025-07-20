@@ -14,7 +14,7 @@ import ProductSortDropdown from '@/features/product/ui/ProductSortDropdown';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 const productListPage = () => {
   const cate = useCategoryStore((state) => state.selected);
@@ -48,7 +48,7 @@ const productListPage = () => {
     content = (
       <div
         ref={parentRef}
-        style={{ height: 'calc(100vh - 286px)' }}
+        style={{ height: 'calc(100vh - 320px)' }}
         className="p-box overflow-auto"
       >
         <ProductListScroll
@@ -63,7 +63,9 @@ const productListPage = () => {
 
   return (
     <>
-      <Category type="inline" />
+      <Suspense fallback={null}>
+        <Category type="inline" />
+      </Suspense>
       <div className="p-box my-[21px] flex items-center justify-between">
         <LocationPin />
         <ProductSortDropdown setSort={setSort} />

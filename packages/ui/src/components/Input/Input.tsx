@@ -53,8 +53,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const getInputStyles = () => {
       const baseStyles = cn(
-        'placeholder:text-muted-foreground dark:bg-input/30',
-        'border-neutral-400 flex h-13 w-full min-w-0 rounded-sm border bg-transparent px-3 py-1 text-base shadow-xs',
+        'placeholder:text-neutral-600 dark:bg-input/30',
+        'border-neutral-400 flex h-13 w-full min-w-0 rounded-sm border bg-transparent px-[15px] py-[10px] shadow-xs',
         'transition-[color,box-shadow] outline-none',
         'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
       );
@@ -99,7 +99,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600">{icon}</div>
+            <div className="absolute left-[20px] top-1/2 -translate-y-1/2 text-neutral-600">
+              {icon}
+            </div>
           )}
 
           <input
@@ -117,7 +119,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               type === 'time'
                 ? { letterSpacing: '0.35rem', paddingLeft: '1rem' }
                 : type === 'date'
-                  ? { letterSpacing: '0.16rem', paddingLeft: '1rem' }
+                  ? { letterSpacing: '0.16rem', paddingLeft: '1rem', display: 'block' }
                   : {}
             }
             {...props}

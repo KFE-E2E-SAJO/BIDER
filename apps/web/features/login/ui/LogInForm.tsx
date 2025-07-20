@@ -1,7 +1,6 @@
 'use client';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Button } from '@repo/ui/components/Button/Button';
-import '@repo/ui/styles.css';
 import { Mail, LockKeyhole } from 'lucide-react';
 import Link from 'next/link';
 import { useLogin } from '../model/useLogin';
@@ -12,7 +11,7 @@ export const LogInForm = () => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="mt-20 space-y-3">
+        <div className="mt-20 space-y-[12px]">
           <div className="flex items-center gap-2">
             <Input
               type="text"
@@ -21,8 +20,8 @@ export const LogInForm = () => {
               value={fullEmail}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
-              icon={<Mail size={20} />}
-              inputStyle="pl-12 pr-11"
+              icon={<Mail size={20} strokeWidth={1.5} />}
+              inputStyle="px-[50px]"
               required
             />
           </div>
@@ -33,8 +32,8 @@ export const LogInForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
-              icon={<LockKeyhole size={20} />}
-              inputStyle="pl-12 pr-11"
+              icon={<LockKeyhole size={20} strokeWidth={1.5} />}
+              inputStyle="px-[50px]"
               required
             />
           </div>
@@ -43,7 +42,7 @@ export const LogInForm = () => {
 
           <Button
             type="submit"
-            className="hover:bg-main-text text-neutral-0 w-full py-3"
+            className="hover:bg-main-text text-neutral-0 leading-1 w-full py-3 text-[16px] font-bold"
             disabled={isLoading}
           >
             {isLoading ? '로그인 중...' : '로그인'}

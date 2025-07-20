@@ -49,8 +49,11 @@ export const EmailField = ({
   };
 
   return (
-    <div className="space-y-3">
-      <label htmlFor="email-id" className="typo-body-bold block text-neutral-800">
+    <div className="flex flex-col">
+      <label
+        htmlFor="email-id"
+        className="typo-subtitle-small-medium mb-[8px] block text-neutral-900"
+      >
         이메일
         {isEmailVerified && (
           <span className="typo-caption-medium flex text-green-600">
@@ -73,9 +76,12 @@ export const EmailField = ({
 
         <Select defaultValue="default" onValueChange={onChangeDomain} disabled={isEmailVerified}>
           <SelectTrigger
-            className={`h-13 focus:ring-main focus:border-main flex-1 rounded-sm border focus:outline-none focus:ring-2 ${domainError ? 'border-danger' : 'border-neutral-400'} ${isEmailVerified ? 'cursor-not-allowed bg-neutral-300' : ''}`}
+            className={`h-13 focus:ring-main focus:border-main flex-1 rounded-sm border placeholder:text-neutral-600 focus:outline-none focus:ring-2 ${domainError ? 'border-danger' : 'border-neutral-400'} ${isEmailVerified ? 'cursor-not-allowed bg-neutral-300' : ''} typo-body-regular data-[placeholder]:text-neutral-600`}
           >
-            <SelectValue placeholder="도메인을 선택해주세요" />
+            <SelectValue
+              placeholder="도메인을 선택해주세요"
+              className="data-[placeholder]:text-neutral-600"
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -103,7 +109,7 @@ export const EmailField = ({
       {domainError && <p className="typo-caption-regular text-danger">{domainError}</p>}
 
       <Button
-        className={`whitespace-nowrap px-4 ${isEmailVerified ? 'text-neutral-0 cursor-not-allowed bg-green-600' : 'text-neutral-0 bg-neutral-800 hover:bg-neutral-900'}`}
+        className={`typo-body-medium mt-[14px] h-12 whitespace-nowrap px-4 ${isEmailVerified ? 'text-neutral-0 cursor-not-allowed bg-green-600' : 'text-neutral-0 bg-neutral-800 hover:bg-neutral-900'}`}
         type="button"
         disabled={!checkEmailInputs() || isEmailVerified || isLoading}
         onClick={onClickSendVerification}
