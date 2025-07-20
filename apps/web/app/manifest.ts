@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: '가장 가까운 경매장 Bider',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
+    background_color: '#64b5f7',
     theme_color: '#ffffff',
     icons: [
       {
