@@ -34,7 +34,7 @@ jobs:
         run: pnpm turbo typecheck
 
       - name: Build shared packages (@repo/ui 등)
-        run: pnpm turbo run build --filter=packages/ui
+        run: pnpm turbo run build --filter=@repo/ui
 
       - name: Build application packages (apps/web)
-        run: pnpm turbo run build --filter=apps/web...
+        run: pnpm turbo run build --filter=web...
