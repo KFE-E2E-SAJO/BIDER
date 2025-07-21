@@ -26,17 +26,17 @@ export const metadata: Metadata = {
       {
         url: '/ios/apple-splash-640x1136.png',
         media:
-          '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)',
+          '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
       },
       {
         url: '/ios/apple-splash-750x1334.png',
         media:
-          '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)',
+          '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
       },
       {
         url: '/ios/apple-splash-1242x2208.png',
         media:
-          '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)',
+          '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
       },
       {
         url: '/ios/apple-splash-828x1792.png',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
       {
         url: '/ios/apple-splash-1125x2436.png',
         media:
-          '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)',
+          '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
       },
       {
         url: '/ios/apple-splash-1170x2532.png',
@@ -75,7 +75,8 @@ export const metadata: Metadata = {
       },
       {
         url: '/ios/apple-splash-1536x2008.png',
-        media: '(device-width: 768px) and (device-height: 1024px)',
+        media:
+          '(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)',
       },
     ],
   },
