@@ -1,4 +1,4 @@
-name: CI (FSD + Supabase/Prisma)
+name: CI
 
 on:
   push:
@@ -33,29 +33,8 @@ jobs:
       - name: Typecheck (all)
         run: pnpm turbo typecheck
 
-      # - name: Test (all)
-      #   run: pnpm turbo test
+      - name: Build shared packages (@repo/ui 등)
+        run: pnpm turbo run build --filter=packages/ui
 
-      - name: Build (all)
-        run: pnpm turbo build
-
-      - name: Build Storybook (ui)
-        run: pnpm --filter=ui build-storybook
-
-      # Prisma, Supabase 백엔드 Step (주석 해제시)
-      # - name: Prisma Format & Validate
-      #   run: |
-      #     cd backend/prisma
-      #     pnpm prisma format
-      #     pnpm prisma validate
-
-      # - name: Prisma Migrate Check (optional)
-      #   run: |
-      #     cd backend/prisma
-      #     pnpm prisma migrate diff --from-empty --to-schema-datamodel schema.prisma
-
-      # - name: Supabase Functions Lint/Test (optional)
-      #   run: |
-      #     cd backend/supabase
-      #     pnpm lint
-      #     pnpm test
+      - name: Build application packages (apps/web)
+        run: pnpm turbo run build --filter=apps/web...

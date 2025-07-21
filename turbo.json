@@ -17,7 +17,7 @@
       "inputs": ["$TURBO_DEFAULT$", "eslint.config.*", ".eslintrc.*"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "tsconfig.json", "**/*.ts", "**/*.tsx"]
     },
     "test": {
