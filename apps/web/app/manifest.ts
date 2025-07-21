@@ -40,6 +40,11 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: '512x512',
         type: 'image/png',
       },
+      {
+        src: '/android/android-launchericon-1024-2024.png',
+        sizes: '1024x1024',
+        type: 'image/png',
+      },
     ],
   };
 }
