@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack --port 3000",
+    "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
+    "@sentry/nextjs": "^9.40.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.50.1",
     "@tanstack/react-query": "^5.81.5",
