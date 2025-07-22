@@ -2,7 +2,7 @@ name: Auto Release
 
 on:
   push:
-    branches: [main]
+    branches: [deploy]
   workflow_dispatch:
     inputs:
       version_type:
@@ -97,7 +97,7 @@ jobs:
             git push origin ${{ steps.release-notes.outputs.NEW_VERSION }}
             echo "Created and pushed tag ${{ steps.release-notes.outputs.NEW_VERSION }}"
           fi
-          git push origin main
+          git push origin deploy
 
       - name: Create GitHub Release
         if: steps.check-release.outputs.need_release == 'true'
