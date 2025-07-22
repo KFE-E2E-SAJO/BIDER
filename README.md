@@ -74,15 +74,4 @@
   - ~~입찰/낙찰 알림~~
   - ~~채팅 알림~~
   - ~~키워드 알림~~
-1. 기존 구조 분석
-   - 1-1. Monorepo + FSD(Feature Sliced Design) 구조 분석
-   - 1-2. FSD 아키텍처 사용 여부에 대한 논의
-2. 변경 및 개선 진행
-   - 2-1. FSD 아키텍처
-     - 2-1-1. 기존 프로젝트의 폴더 구조 변경
-     - 2-1-2. 진입 장벽이 높은 아키텍처 구조를 보안하고자 온보딩 가이드 생성
-       - [🔗 FSD 온보딩 가이드 바로가기](https://www.notion.so/FSD-Onboarding-Guide-20ea3f519ab88010a4c2faf71acf5ac0?source=copy_link)
-     - storybook 디렉토리 위치 변경
-   - 2-2. 컴포넌트 리팩토링
-
-.
+    .
