@@ -1,4 +1,3 @@
-# 배포 후 도메인 설정 필요
 name: Create Scheduled Auctions
 
 on:
@@ -12,7 +11,7 @@ jobs:
     steps:
       - name: Call auction creation endpoint
         run: |
-          curl -X GET "https://your-domain.com/api/cron/create-auctions" \
+          curl -X GET "https://bider.vercel.app/api/cron/create-auctions" \
                -H "Content-Type: application/json" \
                -H "User-Agent: GitHub-Actions-Cron" \
                --fail-with-body \
