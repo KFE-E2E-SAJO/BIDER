@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import ChatRoom from '@/features/chat/ui/ChatRoom';
 
-export default function ChatRoomClient({ roomId, content }: { roomId: string; content: string }) {
+export default function ChatRoomClient({ roomId }: { roomId: string }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -22,7 +22,7 @@ export default function ChatRoomClient({ roomId, content }: { roomId: string; co
   return (
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
-        <ChatRoom content={content} roomId={roomId} />
+        <ChatRoom roomId={roomId} />
       </RecoilRoot>
     </QueryClientProvider>
   );
