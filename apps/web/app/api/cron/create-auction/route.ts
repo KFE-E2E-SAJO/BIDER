@@ -18,33 +18,56 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: false, error: fetchError.message }, { status: 500 });
     }
 
-    let successCount = 0;
-    let failCount = 0;
+    if (!auctions || auctions.length === 0) {
+      return NextResponse.json({
+        success: true,
+        processed: 0,
+        successCount: 0,
+        failCount: 0,
+        timestamp: now,
+        message: '처리할 경매가 없습니다.',
+      });
+    }
 
     // 각 auction의 auction_status를 '경매 중'으로 변경
-    for (const auction of auctions || []) {
-      try {
-        // auction 테이블에 데이터 생성
-        const { error: updateError } = await supabase
-          .from('auction')
-          .update({
-            auction_status: '경매 중',
-            updated_at: now,
-          })
-          .eq('auction_id', auction.auction_id);
+    const updateResults = await Promise.allSettled(
+      auctions.map(async (auction) => {
+        try {
+          const { error: updateError } = await supabase
+            .from('auction')
+            .update({
+              auction_status: '경매 중',
+              updated_at: now,
+            })
+            .eq('auction_id', auction.auction_id);
 
-        if (updateError) {
-          console.error(`Product ${auction.product_id} 경매 생성 실패:`, updateError);
-          failCount++;
-          continue;
+          if (updateError) {
+            throw new Error(`Auction ${auction.auction_id} 업데이트 실패: ${updateError.message}`);
+          }
+
+          return {
+            success: true,
+            auction_id: auction.auction_id,
+            product_id: auction.product_id,
+          };
+        } catch (error) {
+          console.error(`Product ${auction.product_id} 처리 중 오류:`, error);
+          return {
+            success: false,
+            auction_id: auction.auction_id,
+            product_id: auction.product_id,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          };
         }
+      })
+    );
 
-        successCount++;
-      } catch (error) {
-        console.error(`Product ${auction.product_id} 처리 중 오류:`, error);
-        failCount++;
-      }
-    }
+    // 결과 요약
+    const successCount = updateResults.filter(
+      (result) => result.status === 'fulfilled' && result.value.success
+    ).length;
+
+    const failCount = updateResults.length - successCount;
 
     const result = {
       success: true,
