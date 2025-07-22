@@ -1,0 +1,131 @@
+name: Auto Release
+
+on:
+  push:
+    branches: [deploy]
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version type (major, minor, patch)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - major
+          - minor
+          - patch
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: >-
+      !contains(github.event.head_commit.message, 'skip-release') &&
+      !contains(github.event.head_commit.message, 'chore: bump version')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check if release is needed
+        id: check-release
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            echo "need_release=true" >> $GITHUB_OUTPUT
+            echo "No previous tags found, creating first release"
+          else
+            COMMITS_SINCE_TAG=$(git rev-list $LAST_TAG..HEAD --count)
+            echo "Commits since last tag: $COMMITS_SINCE_TAG"
+            if [ "$COMMITS_SINCE_TAG" -gt 0 ]; then
+              echo "need_release=true" >> $GITHUB_OUTPUT
+              echo "Found $COMMITS_SINCE_TAG new commits, release needed"
+            else
+              echo "need_release=false" >> $GITHUB_OUTPUT
+              echo "No new commits since last tag, skipping release"
+            fi
+          fi
+
+      - name: Generate release notes
+        id: release-notes
+        if: steps.check-release.outputs.need_release == 'true'
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.version_type }}" != "auto" ]; then
+            export FORCE_VERSION_TYPE="${{ github.event.inputs.version_type }}"
+          fi
+          node scripts/generate-release-notes.cjs
+
+      - name: Update package.json version
+        if: steps.check-release.outputs.need_release == 'true'
+        run: |
+          VERSION_NUMBER=$(echo ${{ steps.release-notes.outputs.NEW_VERSION }} | sed 's/^v//')
+          pnpm version $VERSION_NUMBER --no-git-tag-version
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.release-notes.outputs.NEW_VERSION }}"
+
+      - name: Create and push tag
+        if: steps.check-release.outputs.need_release == 'true'
+        run: |
+          # Check if tag already exists
+          if git rev-parse ${{ steps.release-notes.outputs.NEW_VERSION }} >/dev/null 2>&1; then
+            echo "Tag ${{ steps.release-notes.outputs.NEW_VERSION }} already exists, skipping tag creation"
+          else
+            git tag ${{ steps.release-notes.outputs.NEW_VERSION }}
+            git push origin ${{ steps.release-notes.outputs.NEW_VERSION }}
+            echo "Created and pushed tag ${{ steps.release-notes.outputs.NEW_VERSION }}"
+          fi
+          git push origin deploy
+
+      - name: Create GitHub Release
+        if: steps.check-release.outputs.need_release == 'true'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.release-notes.outputs.NEW_VERSION }}
+          name: Release ${{ steps.release-notes.outputs.NEW_VERSION }}
+          body: ${{ steps.release-notes.outputs.RELEASE_NOTES }}
+          draft: false
+          prerelease: false
+          allowUpdates: true
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Upload release notes as artifact
+        if: steps.check-release.outputs.need_release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-${{ steps.release-notes.outputs.NEW_VERSION }}
+          path: release_notes.md
+
+      - name: Summary
+        if: steps.check-release.outputs.need_release == 'true'
+        run: |
+          echo "🎉 Release ${{ steps.release-notes.outputs.NEW_VERSION }} created successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "📋 Release notes have been generated and attached to the release." >> $GITHUB_STEP_SUMMARY
+          echo "🔗 View the release: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.release-notes.outputs.NEW_VERSION }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: No release needed
+        if: steps.check-release.outputs.need_release == 'false'
+        run: |
+          echo "ℹ️ No release needed - no new commits since last tag." >> $GITHUB_STEP_SUMMARY
