@@ -1,30 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../../../shared/lib/supabaseClient';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 
 export default function AuthCallback() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(true);
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // URL에서 인증 관련 파라미터 확인
-        const accessToken = searchParams.get('access_token');
-        const refreshToken = searchParams.get('refresh_token');
-        const error = searchParams.get('error');
-        const errorDescription = searchParams.get('error_description');
+        const params = new URLSearchParams(window.location.search);
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        const error = params.get('error');
+        const errorDescription = params.get('error_description');
 
-        // 에러가 있는 경우
         if (error) {
           console.error('Auth error:', error, errorDescription);
           toast({ content: '이메일 인증 중 오류가 발생했습니다: ' + (errorDescription || error) });
 
-          // 부모 창에 에러 메시지 전송
           if (window.opener) {
             window.opener.postMessage(
               {
@@ -40,7 +37,6 @@ export default function AuthCallback() {
           return;
         }
 
-        // 토큰이 있는 경우 세션 설정
         if (accessToken && refreshToken) {
           const { data, error: sessionError } = await supabase.auth.setSession({
             access_token: accessToken,
@@ -66,7 +62,6 @@ export default function AuthCallback() {
             return;
           }
 
-          // 사용자 정보 확인
           const { data: userData, error: userError } = await supabase.auth.getUser();
 
           if (userError || !userData.user) {
@@ -88,7 +83,6 @@ export default function AuthCallback() {
             return;
           }
 
-          // 이메일 인증 완료 확인
           if (userData.user.email_confirmed_at) {
             if (window.opener) {
               window.opener.postMessage(
@@ -98,9 +92,7 @@ export default function AuthCallback() {
                 },
                 window.location.origin
               );
-              // 성공 메시지 표시 후 창 닫기
               toast({ content: '이메일 인증이 완료되었습니다! 회원가입을 계속 진행해주세요.' });
-
               window.close();
             } else {
               router.replace('/signup?verified=true');
@@ -121,7 +113,7 @@ export default function AuthCallback() {
             }
           }
         } else {
-          // 토큰이 없는 경우 기본 세션 확인
+          // 토큰 없으면 기존 세션 확인
           const { data, error: sessionError } = await supabase.auth.getSession();
 
           if (sessionError) {
@@ -158,11 +150,9 @@ export default function AuthCallback() {
     };
 
     handleAuthCallback();
-  }, [router, searchParams]);
+  }, [router]);
 
-  if (!isProcessing) {
-    return null; // 처리 완료 후 리다이렉트 되므로 아무것도 보여주지 않음
-  }
+  if (!isProcessing) return null;
 
   return (
     <div className="flex min-h-screen items-center justify-center">

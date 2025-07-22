@@ -1,18 +1,20 @@
 import { getProductList } from '@/features/product/api/getProductList';
-import { ProductForList } from '@/features/product/types';
-import { useQuery } from '@tanstack/react-query';
+import { ProductList, ProductListError, ProductListParams } from '@/features/product/types';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
-interface UseProductListParams {
-  userId: string;
-  search?: string;
-  cate?: string;
+interface ProductListResponse {
+  data: ProductList[];
+  nextOffset: number;
 }
 
-export const useProductList = (params: UseProductListParams) => {
-  return useQuery<ProductForList[]>({
-    queryKey: ['productList', params.userId, params.search, params.cate],
-    queryFn: () => getProductList(params),
-    enabled: !!params.userId,
+export const useProductList = (params: ProductListParams) => {
+  return useInfiniteQuery<ProductListResponse, ProductListError>({
+    queryKey: ['productList', params],
+    queryFn: ({ pageParam = 0 }) =>
+      getProductList({ limit: 5, offset: pageParam as number, params }),
+    getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
+    initialPageParam: 0,
     staleTime: 1000 * 60 * 1,
+    retry: 2,
   });
 };

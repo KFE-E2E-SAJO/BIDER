@@ -1,53 +1,23 @@
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { supabase } from '@/shared/lib/supabaseClient';
 import { Input } from '@repo/ui/components/Input/Input';
-import { ChevronLeft, KeyIcon, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
-import { passwordSchema } from '@/shared/lib/validation/signupSchema';
+import { useResetPw } from '@/features/reset-pw/model/useResetPw';
 
 export default function ResetPasswordPage() {
-  const [newPassword, setNewPassword] = useState('');
-  const [newPasswordConfirm, setnewPasswordConfirm] = useState('');
-  const [status, setStatus] = useState('');
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const result = passwordSchema.safeParse(newPassword);
-    const result1 = passwordSchema.safeParse(newPasswordConfirm);
-
-    if (newPassword !== newPasswordConfirm) {
-      setStatus('비밀번호가 일치하지 않습니다. 확인해주세요');
-      return;
-    }
-
-    if (!result.success || !result1.success) {
-      setStatus('비밀번호 형식을 맞춰서 작성해주세요');
-      return false;
-    }
-
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-
-    if (error) {
-      setStatus(error.message);
-      return;
-    } else {
-      setStatus('success');
-      router.push('/login');
-    }
-  };
+  const {
+    newPassword,
+    newPasswordConfirm,
+    status,
+    setNewPassword,
+    setnewPasswordConfirm,
+    handleResetPassword,
+  } = useResetPw();
 
   return (
     <div className="m-3">
-      <ChevronLeft className="mt-[30px]" />
-      <p className='className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]'>
+      <p className="typo-body-medium mt-[11.5rem] flex justify-center text-[1.25rem]">
         비밀번호 재설정
       </p>
       <form onSubmit={handleResetPassword}>
@@ -75,7 +45,10 @@ export default function ResetPasswordPage() {
           required
         />
 
-        {status && <p className="typo-caption-regular text-danger">{status}</p>}
+        {status && status !== 'success' && (
+          <p className="typo-caption-regular text-danger">{status}</p>
+        )}
+
         <Button type="submit" className="mt-[0.81rem]">
           재설정하기
         </Button>

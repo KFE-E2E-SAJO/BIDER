@@ -3,59 +3,76 @@
 import { useCategoryStore } from '@/features/category/model/useCategoryStore';
 import Category from '@/features/category/ui/Category';
 import { useProductList } from '@/features/product/model/useProductList';
+import useProductListErrorHandler from '@/features/product/model/useProductListErrorHandler';
+import useVirtualInfiniteScroll from '@/features/product/model/useVirtualInfiniteScroll';
+import { ProductFilter as ProductFilterType, ProductSort } from '@/features/product/types';
 import LocationPin from '@/features/product/ui/LocationPin';
-import ProductList from '@/features/product/ui/ProductList';
+import ProductFilter from '@/features/product/ui/ProductFilter';
+import ProductListScroll from '@/features/product/ui/ProductListScroll';
+import ProductSortDropdown from '@/features/product/ui/ProductSortDropdown';
 
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-import { toast } from '@repo/ui/components/Toast/Sonner';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+
+import { Suspense, useState } from 'react';
 
 const productListPage = () => {
-  const router = useRouter();
   const cate = useCategoryStore((state) => state.selected);
-  const userId = useAuthStore((state) => state.user?.id);
+  const userId = useAuthStore((state) => state.user?.id) as string;
+  const [sort, setSort] = useState<ProductSort>('latest');
+  const [filter, setFilter] = useState<ProductFilterType[]>(['exclude-ended']);
 
-  const { data, isLoading, error } = useProductList({
-    userId: userId as string,
-    cate,
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useProductList({ userId, cate, sort, filter });
+
+  useProductListErrorHandler(isError, error);
+
+  const productList = data?.pages.flatMap((page) => page.data) ?? [];
+
+  const { parentRef, virtualRows, totalSize } = useVirtualInfiniteScroll({
+    data: productList,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
   });
 
-  useEffect(() => {
-    if (!error) return;
-
-    const message = (error as Error).message;
-
-    if (message === '유저 위치 정보가 없습니다.') {
-      toast({ content: message });
-      router.replace('/setLocation');
-    } else {
-      toast({ content: '로그인이 필요합니다.' });
-      router.replace('/login');
-    }
-  }, [error, router]);
-
-  if (isLoading || error || !data) {
-    return <Loading />;
-  }
   let content = null;
 
-  if (isLoading) {
-    content = <Loading />;
-  } else if (error) {
-    content = <p>에러 발생: {(error as Error).message}</p>;
+  if (isLoading || !data) {
+    content = (
+      <div className="flex flex-1">
+        <Loading />
+      </div>
+    );
   } else {
-    content = <ProductList data={data} />;
+    content = (
+      <div
+        ref={parentRef}
+        style={{ height: 'calc(100vh - 320px)' }}
+        className="p-box overflow-auto"
+      >
+        <ProductListScroll
+          data={productList}
+          virtualRows={virtualRows}
+          totalSize={totalSize}
+          isFetchingNextPage={isFetchingNextPage}
+        />
+      </div>
+    );
   }
 
   return (
     <>
-      <Category type="inline" />
-      <div className="p-box flex flex-1 flex-col">
+      <Suspense fallback={null}>
+        <Category type="inline" />
+      </Suspense>
+      <div className="p-box my-[21px] flex items-center justify-between">
         <LocationPin />
-        {content}
+        <ProductSortDropdown setSort={setSort} />
       </div>
+      <ProductFilter setFilter={setFilter} />
+
+      {content}
     </>
   );
 };

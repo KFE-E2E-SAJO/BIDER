@@ -17,3 +17,5 @@ export const categories = [
 ] as const;
 
 export type CategoryValue = (typeof categories)[number]['value'];
+
+export type CategoryUi = 'inline' | 'grid';
