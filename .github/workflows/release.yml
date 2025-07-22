@@ -74,7 +74,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.version_type }}" != "auto" ]; then
             export FORCE_VERSION_TYPE="${{ github.event.inputs.version_type }}"
           fi
-          node scripts/generate-release-notes.js
+          node scripts/generate-release-notes.cjs
 
       - name: Update package.json version
         if: steps.check-release.outputs.need_release == 'true'
