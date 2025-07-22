@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import { cn } from '@/lib/utils';
-import AvatarFallbackIcon from '../Icon/AvatarFallbakIcon';
+import AvatarFallbackIcon from '@/components/Icon/AvatarFallbakIcon';
 
 interface AvatarProps extends React.ComponentProps<typeof AvatarPrimitive.Root> {
   src?: string;

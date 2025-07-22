@@ -2,7 +2,6 @@
 
 import { Button } from '@repo/ui/components/Button/Button';
 import { usePathname, useRouter } from 'next/navigation';
-import { supabase } from '@/shared/lib/supabaseClient';
 import {
   Dialog,
   DialogContent,
@@ -12,6 +11,7 @@ import {
 import { useState } from 'react';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 
 interface ProductActionBtnProps {
   winnerId?: string | null;
@@ -76,9 +76,9 @@ const ProductActionBtn = ({
 
   return (
     <>
-      {(isBidPage && auctionStatus == '경매 중') ||
+      {(isBidPage && auctionStatus == AUCTION_STATUS.IN_PROGRESS) ||
       (isBidPage && isAwarded) ||
-      (isListingsPage && auctionStatus == '경매 종료' && winnerId) ? (
+      (isListingsPage && auctionStatus == AUCTION_STATUS.ENDED && winnerId) ? (
         <Button
           onClick={handleChatClick}
           variant="secondary"

@@ -1,19 +1,21 @@
 import { Dot } from 'lucide-react';
 import clsx from 'clsx';
+import { useLocationStore } from '@/features/location/model/useLocationStore';
+import { Step } from '@/features/location/types';
 
-interface DotStepperProps {
-  activeIndex: number;
-}
+const steps: Step[] = ['intro', 'confirm', 'success'];
 
-const DotStepper = ({ activeIndex }: DotStepperProps) => {
+const DotStepper = () => {
+  const step = useLocationStore((state) => state.step);
+
   return (
     <div className="text-main mb-[73px] flex">
-      {[0, 1, 2].map((i) => (
+      {steps.map((s) => (
         <Dot
-          key={i}
+          key={s}
           strokeWidth={9}
           size={16}
-          className={clsx(i === activeIndex ? 'text-main' : 'text-neutral-300')}
+          className={clsx(s === step ? 'text-main' : 'text-neutral-300')}
         />
       ))}
     </div>

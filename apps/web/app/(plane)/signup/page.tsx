@@ -1,22 +1,22 @@
-import { SignUpForm } from '../../../features/signup/SignUpForm';
-import { Button } from '@repo/ui/components/Button/Button';
-import '@repo/ui/styles.css';
-import { ChevronLeft } from 'lucide-react';
+'use client';
 
-export default function SignUpPage() {
+import { SignUpForm } from '@/features/signup/SignUpForm';
+import { ChevronLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+const SignUpPage = () => {
+  const router = useRouter();
+
   return (
     <div className="p-box">
-      <ChevronLeft className="mt-[30px]" />
-      <h1 className="typo-h3 mb-8 mt-28 text-center leading-[2.6rem]">회원가입</h1>
-      {/* <p className="">SNS 계정으로 간편하게 회원가입</p>
-
-      <div className="m-3 flex gap-3">
-        <Button className="flex-1"></Button>
-        <Button className="flex-1"></Button>
-      </div>
-
-      <hr className="border-t-1 mb-10 mt-10 border-neutral-300"></hr> */}
+      <ChevronLeft
+        className="mt-[30px] size-[30px] cursor-pointer stroke-[#8C8C8C] stroke-[1.5]"
+        onClick={() => router.back()}
+      />
+      <h1 className="typo-h2 mb-[41px] mt-[56px] text-center">회원가입</h1>
       <SignUpForm />
     </div>
   );
-}
+};
+
+export default SignUpPage;

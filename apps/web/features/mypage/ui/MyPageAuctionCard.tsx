@@ -1,13 +1,8 @@
-interface AuctionCardProps {
-  title1: string;
-  count1: number;
-  title2: string;
-  count2: number;
-}
+import { AuctionCardProps } from '@/features/mypage/types';
 
 const MyPageAuctionCard = ({ title1, count1, title2, count2 }: AuctionCardProps) => {
   return (
-    <ul className="flex w-[47%] rounded-md bg-[#f6f6f6]">
+    <ul className="flex w-[47%] rounded-xl bg-[#f6f6f6]">
       <li
         className={`relative flex w-1/2 flex-col items-center py-[11px] after:absolute after:right-0 after:top-1/2 after:h-9 after:w-[1px] after:translate-y-[-50%] after:bg-neutral-300 after:content-['']`}
       >

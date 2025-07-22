@@ -2,51 +2,88 @@ import { v4 as uuidv4 } from 'uuid';
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextResponse } from 'next/server';
+import { ProductForEdit } from '@/entities/product/model/types';
 
-export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ shortId: string }> }
+): Promise<
+  NextResponse<
+    ProductForEdit | { error: string; details?: string; shortId?: string; decodedId?: any }
+  >
+> {
   const resolvedParams = await params;
   const id = decodeShortId(resolvedParams.shortId);
 
   try {
     // 1. 먼저 경매 정보만 가져오기
-    const { data: imageData, error: imageError } = await supabase
+    const { data, error } = await supabase
       .from('product')
       .select(
         `
                 *,
                 product_image (*),
-                pending_auction(min_price, auction_end_at)
+                auction!inner (
+                  min_price, 
+                  auction_end_at,
+                  deal_longitude,
+                  deal_latitude,
+                  deal_address
+                )
             `
       )
       .eq('product_id', id)
       .single();
 
-    if (imageError || !imageData) {
+    if (error || !data) {
       return NextResponse.json(
         {
-          error: 'Image not found',
-          details: imageError?.message,
+          error: 'Product not found',
+          details: error?.message,
           shortId: resolvedParams.shortId,
           decodedId: id,
         },
         { status: 404 }
       );
     }
-    return NextResponse.json(imageData);
+    // auction 데이터 추출 (배열의 첫 번째 요소)
+    const auctionData = data.auction[0];
+
+    // ProductForEdit 타입에 맞게 데이터 변환
+    const productForEdit: ProductForEdit = {
+      ...data,
+      min_price: auctionData.min_price,
+      auction_end_at: auctionData.auction_end_at,
+      deal_address: auctionData.deal_address,
+      deal_longitude: auctionData.deal_longitude,
+      deal_latitude: auctionData.deal_latitude,
+      auction: undefined, // auction 배열 제거
+    };
+
+    return NextResponse.json(productForEdit);
   } catch (err) {
     return NextResponse.json({ error: '서버 내부 오류 발생' }, { status: 500 });
   }
 }
 
-export async function POST(request: Request, { params }: { params: { shortId: string } }) {
+export async function POST(request: Request) {
+  const url = new URL(request.url);
+  const shortId = url.pathname.split('/').pop();
+
   const formData = await request.formData();
-  const productId = decodeShortId(params.shortId);
+  const productId = decodeShortId(shortId!);
   const title = formData.get('title') as string;
   const category = formData.get('category') as string;
   const description = formData.get('description') as string;
   const minPrice = formData.get('min_price') as string;
   const endAt = formData.get('end_at') as string;
-
+  const dealLatitudeRaw = formData.get('deal_latitude');
+  const dealLongitudeRaw = formData.get('deal_longitude');
+  const dealAddressRaw = formData.get('deal_address');
+  const dealLatitude = dealLatitudeRaw !== null ? Number(dealLatitudeRaw) : null;
+  const dealLongitude = dealLongitudeRaw !== null ? Number(dealLongitudeRaw) : null;
+  const dealAddress =
+    dealAddressRaw !== null && dealAddressRaw !== '' ? String(dealAddressRaw) : null;
   // 새로 업로드할 파일들
   const newImageFiles = formData.getAll('images') as File[];
 
@@ -63,29 +100,19 @@ export async function POST(request: Request, { params }: { params: { shortId: st
   const hasImageChanges = newImageFiles.length > 0 || imageOrders.length > 0;
 
   try {
-    // STEP 0: 수정 제한 시간 체크
-    const { data: pending, error: pendingError } = await supabase
-      .from('pending_auction')
-      .select('scheduled_create_at')
+    // STEP 0: 경매 상태 체크
+    const { data: auction, error: auctionError } = await supabase
+      .from('auction')
+      .select('auction_status')
       .eq('product_id', productId)
       .maybeSingle();
 
-    if (pendingError) {
-      throw new Error(`경매 제한 시간 조회 실패: ${pendingError.message}`);
+    if (auctionError) {
+      throw new Error(`경매 상태 조회 실패: ${auctionError.message}`);
     }
 
-    if (!pending || !pending.scheduled_create_at) {
-      return NextResponse.json(
-        { error: '경매 제한 시간이 설정되어 있지 않습니다.' },
-        { status: 400 }
-      );
-    }
-
-    const scheduledTime = new Date(pending.scheduled_create_at);
-    const now = new Date();
-
-    if (now > scheduledTime) {
-      return NextResponse.json({ error: '상품 수정 가능 시간이 만료되었습니다.' }, { status: 403 });
+    if (!auction || auction.auction_status !== '경매 대기') {
+      return NextResponse.json({ error: '상품 수정 가능 시간이 만료되었습니다.' }, { status: 400 });
     }
 
     // STEP 1: product 테이블 업데이트
@@ -98,23 +125,25 @@ export async function POST(request: Request, { params }: { params: { shortId: st
         updated_at: new Date().toISOString(),
       })
       .eq('product_id', productId);
-
     if (productUpdateError) {
       throw new Error(`상품 정보 업데이트 실패: ${productUpdateError.message}`);
     }
 
-    // STEP 2: pending_auction 테이블 업데이트
-    const { error: pendingUpdateError } = await supabase
-      .from('pending_auction')
+    // STEP 2: auction 테이블 업데이트
+    const { error: auctionUpdateError } = await supabase
+      .from('auction')
       .update({
         min_price: parseInt(minPrice),
         auction_end_at: endAt,
         updated_at: new Date().toISOString(),
+        deal_latitude: dealLatitude,
+        deal_longitude: dealLongitude,
+        deal_address: dealAddress,
       })
       .eq('product_id', productId);
 
-    if (pendingUpdateError) {
-      throw new Error(`경매 정보 업데이트 실패: ${pendingUpdateError.message}`);
+    if (auctionUpdateError) {
+      throw new Error(`경매 정보 업데이트 실패: ${auctionUpdateError.message}`);
     }
 
     // STEP 3: 이미지 처리 로직 (변경이 있는 경우에만)
