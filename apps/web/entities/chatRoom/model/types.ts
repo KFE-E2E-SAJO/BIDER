@@ -1,3 +1,5 @@
+import { Message } from '@/entities/message/model/types';
+
 export interface ChatRoom {
   chatroom_id: string;
   auction_id: string;
@@ -6,23 +8,17 @@ export interface ChatRoom {
   updated_at: string;
 }
 
-export interface ChatRoomWithProfile {
-  chatroom_id: string;
-  auction_id: {
+export interface ChatRoomWithProfile extends ChatRoom {
+  auction: {
     min_price: number;
-    product_id: {
+    product: {
       title: string;
       product_image: {
         image_url: string;
-      }[];
+      };
     };
   };
-  bid_user_id: {
-    user_id: string;
-    nickname: string;
-    profile_img: string | null;
-  };
-  exhibit_user_id: {
+  profiles: {
     user_id: string;
     nickname: string;
     profile_img: string | null;
@@ -30,12 +26,5 @@ export interface ChatRoomWithProfile {
 }
 
 export interface ChatRoomWithMessage extends ChatRoom {
-  message: {
-    message_id: string;
-    chatroom_id: string;
-    sender_id: string;
-    content: string;
-    is_read: boolean;
-    created_at: string;
-  }[];
+  message: Message[];
 }

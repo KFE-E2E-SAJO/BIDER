@@ -8,9 +8,14 @@ import { presenceState, selectedUserIdState, selectedUserIndexState } from '../l
 import { supabase } from '@/shared/lib/supabaseClient';
 import { useAuthStore } from '@/shared/model/authStore';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { filter } from 'lodash';
 import { ChatroomWithInfoProps } from '../types';
+import { Dialog } from '@repo/ui/components/Dialog/Dialog';
+
+type ChatItemSwipeState = {
+  [chatroom_id: string]: 'none' | 'left' | 'right'; // none: 기본, left: 좌로 스와이프(알림/신고), right: 우로 스와이프(차단/나가기)
+};
 
 // Define the Room type
 type Room = {
@@ -24,7 +29,7 @@ const Rooms = async (): Promise<Room[]> => {
   return [];
 };
 
-const categories = [
+const filters = [
   { label: '전체 채팅', value: 'all' },
   { label: '구매 채팅', value: 'buy' },
   { label: '판매 채팅', value: 'sell' },
@@ -39,6 +44,67 @@ export default function ChatList() {
   const [selectedUserIndex, setSelectedUserIndex] = useRecoilState(selectedUserIndexState);
   const [presence, setPresence] = useRecoilState(presenceState);
   const DEFAULT_PROFILE_IMG = '/default-profile.png';
+  const [swipeStates, setSwipeStates] = useState<ChatItemSwipeState>({});
+  const dragStartX = useRef<number | null>(null);
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+
+  // 이벤트 핸들러 (좌우 swipe 감지)
+  const handleTouchStart = (e: React.TouchEvent, id: string) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    dragStartX.current = touch.clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent, id: string) => {
+    if (dragStartX.current === null) return;
+    const touch = e.touches[0]; // Touch | undefined
+
+    if (!touch) return; // 확실하게 undefined 방지
+
+    const diffX = touch.clientX - dragStartX.current;
+
+    if (diffX > 50) {
+      setSwipeStates((prev) => ({ ...prev, [id]: 'right' }));
+    } else if (diffX < -50) {
+      setSwipeStates((prev) => ({ ...prev, [id]: 'left' }));
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent, id: string) => {
+    dragStartX.current = null;
+    // 1초 후에 다시 none으로
+    setTimeout(() => {
+      setSwipeStates((prev) => ({ ...prev, [id]: 'none' }));
+    }, 2000);
+  };
+
+  // 마우스(데스크탑)도 대응
+  const mouseDragStartX = useRef<number | null>(null);
+
+  const handleMouseDown = (e: React.MouseEvent, id: string) => {
+    mouseDragStartX.current = e.clientX;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent, id: string) => {
+    if (mouseDragStartX.current === null) return;
+    const diffX = e.clientX - mouseDragStartX.current;
+
+    if (diffX > 50) setSwipeStates((prev) => ({ ...prev, [id]: 'right' }));
+    else if (diffX < -50) setSwipeStates((prev) => ({ ...prev, [id]: 'left' }));
+  };
+
+  const handleMouseUp = (e: React.MouseEvent, id: string) => {
+    mouseDragStartX.current = null;
+    setTimeout(() => setSwipeStates((prev) => ({ ...prev, [id]: 'none' })), 2000);
+  };
+
+  // 실제 채팅방 삭제 함수 (API 연동 등)
+  const handleDeleteChatRoom = async (chatroomId: string) => {
+    // 예시: API 호출 또는 mutation
+    // await deleteChatRoom(chatroomId);
+    setOpenDialogId(null); // 모달 닫기
+    // 채팅방 목록 새로고침 등 필요시 추가
+  };
 
   useEffect(() => {
     const changes = supabase
@@ -109,19 +175,10 @@ export default function ChatList() {
 
   return (
     <div>
-      {Array.isArray(Rooms) &&
-        Rooms.map((room: any) => (
-          <div
-            key={room.chatroom_id}
-            onClick={() => {
-              router.push(`/chat/${room.chatroom_id}`);
-            }}
-          ></div>
-        ))}
-      <div className="flex h-full w-full flex-col bg-white">
+      <div className="flex h-screen w-screen flex-col bg-white">
         {/* 카테고리 버튼 */}
         <div className="flex gap-2 px-4 pb-2 pt-5">
-          {categories.map((cat) => (
+          {filters.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setSelected(cat.value)}
@@ -135,9 +192,17 @@ export default function ChatList() {
             </button>
           ))}
         </div>
-
+        {Array.isArray(Rooms) &&
+          Rooms.map((room: any) => (
+            <div
+              key={room.chatroom_id}
+              onClick={() => {
+                router.push(`/chat/${room.chatroom_id}`);
+              }}
+            ></div>
+          ))}
         {/* 채팅 목록 */}
-        <div className="flex-1 overflow-y-auto px-2">
+        <div className="overflow-y-auto px-2">
           {isLoading && <div className="py-10 text-center text-sm text-gray-400">로딩 중...</div>}
           {isError && (
             <div className="py-10 text-center text-sm text-red-400">에러가 발생했습니다.</div>
@@ -147,71 +212,147 @@ export default function ChatList() {
           )}
           {!isLoading &&
             !isError &&
-            filteredChats.map((chat: any) => (
-              <div
-                key={chat.chatroom_id}
-                className="flex h-[80px] cursor-pointer items-center gap-3 border-b px-2 last:border-b-0 hover:bg-gray-50"
-                onClick={() => handleChatRoomClick(chat.chatroom_id)}
-              >
-                <img
+            filteredChats.map((chat: any) => {
+              const swipeState = swipeStates[chat.chatroom_id] || 'none';
+              return (
+                <div
                   key={chat.chatroom_id}
-                  src={chat.product_image_url}
-                  alt="Product Image"
-                  className="h-11 w-11 rounded-md object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="flex items-center gap-1 text-sm font-semibold text-gray-900">
-                      {chat.nickname || '알수없음'}
-                      <img
-                        src={chat.profile_img || DEFAULT_PROFILE_IMG}
-                        alt="프로필"
-                        onError={(e) => {
-                          e.currentTarget.src = DEFAULT_PROFILE_IMG;
-                        }}
-                        className="ml-1 h-5 w-5 rounded-full border border-gray-200 object-cover"
-                      />
-                    </span>
-                    {chat.unread > 0 && (
-                      <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-500">
-                        {chat.unread}
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-1 flex items-center gap-2">
-                    <span
-                      key={chat.chatroom_id}
-                      className="block w-44 truncate text-xs text-gray-500"
-                    >
-                      {chat.messages &&
-                        chat.messages.some((msg: any) => msg.content || '메시지가 없습니다.')}
-                    </span>
-                    <span className="ml-1 text-xs text-gray-400">
-                      {new Date(chat.updated_at).toLocaleString('ko-KR', {
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
-                  </div>
-                </div>
-
-                <span className="ml-2 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-red-500 px-2 text-xs font-bold text-white">
-                  {/* {data} */}
-                </span>
-
-                <svg
-                  className="h-4 w-4 text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
+                  className="relative h-[80px] select-none overflow-hidden border-b border-neutral-100 last:border-b-0"
+                  onClick={() => handleChatRoomClick(chat.chatroom_id)}
+                  // 모바일/터치
+                  onTouchStart={(e) => handleTouchStart(e, chat.chatroom_id)}
+                  onTouchMove={(e) => handleTouchMove(e, chat.chatroom_id)}
+                  onTouchEnd={(e) => handleTouchEnd(e, chat.chatroom_id)}
+                  // 데스크탑
+                  onMouseDown={(e) => handleMouseDown(e, chat.chatroom_id)}
+                  onMouseMove={(e) => handleMouseMove(e, chat.chatroom_id)}
+                  onMouseUp={(e) => handleMouseUp(e, chat.chatroom_id)}
                 >
-                  <path d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            ))}
+                  {/* 오른쪽 슬라이드(알림끄기/신고하기) - swipeState === 'right' */}
+                  <div
+                    className={`absolute inset-0 flex h-full w-full transition-all duration-300 ${swipeState === 'right' ? 'z-0' : '-z-10'} `}
+                  >
+                    <button className="h-full w-1/4 bg-green-300 text-base font-semibold text-white">
+                      알림끄기
+                    </button>
+                    <button className="h-full w-1/4 bg-gray-500 text-base font-semibold text-white">
+                      신고하기
+                    </button>
+                  </div>
+                  {/* 왼쪽 슬라이드(차단하기/나가기) - swipeState === 'left' */}
+                  <div
+                    className={`absolute inset-0 flex h-full w-full justify-end transition-all duration-300 ${swipeState === 'left' ? 'z-0' : '-z-10'} `}
+                  >
+                    <button className="h-full w-1/4 bg-pink-200 text-base font-semibold text-red-700">
+                      차단하기
+                    </button>
+                    <button
+                      className="h-full w-1/4 bg-pink-400 text-base font-semibold text-white"
+                      onClick={(e) => {
+                        e.stopPropagation(); // 리스트 클릭 방지
+                        setOpenDialogId(chat.chatroom_id);
+                      }}
+                    >
+                      나가기
+                    </button>
+                  </div>
+                  {/* 채팅방 컨텐츠 (평소엔 translateX 0, 슬라이드시만 이동) */}
+                  <div
+                    className={`relative z-10 flex h-full items-center gap-3 bg-white px-2 transition-transform duration-300 ${
+                      swipeState === 'left'
+                        ? '-translate-x-1/2'
+                        : swipeState === 'right'
+                          ? 'translate-x-1/2'
+                          : ''
+                    } `}
+                    onClick={() => handleChatRoomClick(chat.chatroom_id)}
+                  >
+                    {/* 채팅방 내부 내용 */}
+                    <img
+                      src={chat.product_image_url}
+                      alt="Product"
+                      className="h-11 w-11 rounded-md object-cover"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+                          {chat.nickname || '알수없음'}
+                          <img
+                            src={chat.profile_img || DEFAULT_PROFILE_IMG}
+                            alt="프로필"
+                            onError={(e) => {
+                              e.currentTarget.src = DEFAULT_PROFILE_IMG;
+                            }}
+                            className="ml-1 h-5 w-5 rounded-full border border-gray-200 object-cover"
+                          />
+                        </span>
+                        {chat.unread > 0 && (
+                          <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-500">
+                            {chat.unread}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <span className="block w-44 truncate text-xs text-gray-500">
+                          {chat.messages?.[chat.messages.length - 1]?.content ||
+                            '메시지가 없습니다.'}
+                        </span>
+                        <span className="ml-1 text-xs text-gray-400">
+                          {new Date(chat.updated_at).toLocaleString('ko-KR', {
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                    <svg
+                      className="h-4 w-4 text-gray-300"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  {/* ---- Dialog 모달: 나가기 ---- */}
+                  <Dialog
+                    open={openDialogId === chat.chatroom_id}
+                    onOpenChange={(open) => {
+                      if (!open) setOpenDialogId(null);
+                    }}
+                    title={undefined}
+                    description={undefined}
+                    showCloseButton={false}
+                    className="rounded-t-3xl !bg-white !p-0 !pb-5 !shadow-xl"
+                  >
+                    <div className="flex flex-col items-center px-6 py-7">
+                      <div className="mb-6 text-center text-base text-gray-700">
+                        대화 내용이 모두 삭제됩니다.
+                        <br />
+                        계속하시겠습니까?
+                      </div>
+                      <div className="flex w-full items-center gap-2 border-t border-neutral-100">
+                        <button
+                          onClick={() => setOpenDialogId(null)}
+                          className="bg-neutral-0 flex-1 rounded-xl border-r border-neutral-100 py-3 font-semibold text-gray-500"
+                        >
+                          취소
+                        </button>
+                        <button
+                          onClick={() => handleDeleteChatRoom(chat.chatroom_id)}
+                          className="bg-neutral-0 flex-1 rounded-xl py-3 font-semibold text-pink-500"
+                        >
+                          삭제하기
+                        </button>
+                      </div>
+                    </div>
+                  </Dialog>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
