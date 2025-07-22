@@ -40,7 +40,9 @@ export async function GET(request: NextRequest) {
       )
       .or(`exhibit_user_id.eq.${userId},bid_user_id.eq.${userId}`)
       .order('updated_at', { ascending: false });
+    console.log('chatRooms1:', chatRooms);
     if (error) {
+      console.log('chatRooms2:', chatRooms);
       throw new Error('Supabase 쿼리 실패: ' + error.message);
     }
 

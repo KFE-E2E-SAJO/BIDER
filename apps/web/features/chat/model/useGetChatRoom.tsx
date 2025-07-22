@@ -1,16 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  ChatRoom,
-  ChatRoomWithProfile,
-  ChatRoomWithMessage,
-} from '@/entities/chatRoom/model/types';
+import { ChatRoom } from '@/entities/chatRoom/model/types';
 import { useAuthStore } from '@/shared/model/authStore';
 import { getChatRoom } from '../api/getChatRoom';
 
-export const useGetChatRoom = ({ userId, chatroomId }: { userId: string; chatroomId: string }) => {
-  return useQuery<ChatRoomWithProfile[] | ChatRoom[] | ChatRoomWithMessage[] | null>({
-    queryKey: ['getChatRoom', userId, chatroomId],
-    queryFn: () => getChatRoom(chatroomId, userId!),
-    enabled: !!userId && !!chatroomId,
+export const useGetChatRoom = (content: string, chatroomId: string) => {
+  const userId = useAuthStore((state) => state.user?.id);
+  return useQuery<ChatRoom[] | null>({
+    queryKey: ['getChatRoom', content, userId, chatroomId],
+    queryFn: () => getChatRoom(chatroomId),
+    enabled: !!chatroomId,
   });
 };
