@@ -1,6 +1,6 @@
 {
   "name": "bootup-sajo",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "Bootup Sajo project with monorepo setup using Turbo and pnpm",
   "main": "index.js",
   "private": true,
