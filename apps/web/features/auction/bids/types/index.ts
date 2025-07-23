@@ -2,9 +2,11 @@ export interface BidDialogProps {
   shortId: string;
   auctionEndAt: string | Date;
   title: string;
-  lastPrice: string;
+  lastPrice: number | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isSecret: boolean;
+  minPrice: number;
 }
 
 export interface BidRequest {

@@ -7,7 +7,14 @@ import React, { useEffect, useState } from 'react';
 import { BidDialog } from '../../bids/ui/BidDialog';
 import { BottomBarProps } from '../types';
 
-const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) => {
+const BottomBar = ({
+  shortId,
+  auctionEndAt,
+  title,
+  lastPrice,
+  isSecret,
+  minPrice,
+}: BottomBarProps) => {
   const [countdown, setCountdown] = useState('');
   const [hasMounted, setHasMounted] = useState(false);
   const [openBiddingSheet, setOpenBiddingSheet] = useState(false);
@@ -24,6 +31,9 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
 
   if (!hasMounted) return null;
 
+  const pointColor = isSecret ? 'event' : 'main';
+  const buttonText = isSecret ? '시크릿 입찰하기' : '입찰하기';
+
   return (
     <div className="bg-neutral-0 fixed bottom-0 left-0 z-50 h-[102px] w-full border-t border-neutral-100 px-[16px] pt-[15px]">
       <div className="flex items-center justify-between">
@@ -36,12 +46,12 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
           <Button
             onClick={() => setOpenBiddingSheet(true)}
             disabled={countdown === '마감됨'}
-            className="w-[142px]"
+            className={`w-[142px] bg-${pointColor}`}
           >
-            입찰하기
+            {buttonText}
           </Button>
-          <Button variant="outline" className="w-[53px] border-[1.5px]">
-            <MessageSquareMore className="text-main" strokeWidth={1.5} />
+          <Button variant="outline" className={`w-[53px] border-[1.5px] border-${pointColor}`}>
+            <MessageSquareMore className={`text-${pointColor}`} strokeWidth={1.5} />
           </Button>
         </div>
       </div>
@@ -53,6 +63,8 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
         lastPrice={lastPrice}
         open={openBiddingSheet}
         onOpenChange={setOpenBiddingSheet}
+        isSecret={isSecret}
+        minPrice={minPrice}
       />
     </div>
   );

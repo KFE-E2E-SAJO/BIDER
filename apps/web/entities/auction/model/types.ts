@@ -14,12 +14,14 @@ export interface Auction {
   deal_longitude?: number;
   deal_latitude?: number;
   deal_address?: string;
+  is_secret: boolean;
 }
 
 export interface AuctionDetail extends Auction {
   product: ProductWithUserNImages;
   bid_history: BidHistoryWithUserNickname[];
   current_highest_bid: number;
+  bid_cnt: number;
 }
 
 export interface AuctionForBid {

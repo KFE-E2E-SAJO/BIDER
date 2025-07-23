@@ -54,11 +54,15 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     const sortedBidHistory = bidHistory || [];
 
     // 4. 현재 최고 입찰가 계산
-    const currentHighestBid =
-      sortedBidHistory.length > 0 ? sortedBidHistory[0]?.bid_price : auctionData.min_price;
+    const currentHighestBid = auctionData.is_secret
+      ? null
+      : sortedBidHistory.length > 0
+        ? sortedBidHistory[0]?.bid_price
+        : auctionData.min_price;
 
     const productData = auctionData.product;
     const userData = productData?.exhibit_user;
+    const safeBidHistory = auctionData.is_secret ? [] : sortedBidHistory;
 
     // 5. 응답 데이터 구성
     const response: AuctionDetail = {
@@ -68,7 +72,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
         exhibit_user: userData,
         product_image: productData?.product_image || [],
       },
-      bid_history: sortedBidHistory,
+      bid_cnt: sortedBidHistory.length,
+      bid_history: safeBidHistory,
       current_highest_bid: currentHighestBid,
     } as AuctionDetail;
 

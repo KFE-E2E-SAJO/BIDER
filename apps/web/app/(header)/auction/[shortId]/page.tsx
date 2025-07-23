@@ -27,13 +27,15 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
     minPrice: data.min_price,
     auctionEndAt: data.auction_end_at,
     exhibitUser: data.product?.exhibit_user,
-    currentHighestBid: data.current_highest_bid || data.min_price,
+    currentHighestBid: data.is_secret ? null : data.current_highest_bid || data.min_price,
     bidHistory: data.bid_history,
     dealLocation:
       data.deal_latitude != null && data.deal_longitude != null
         ? { lat: data.deal_latitude, lng: data.deal_longitude }
         : undefined,
     dealAddress: data.deal_address ?? undefined,
+    isSecret: data.is_secret,
+    bidCnt: data.bid_cnt,
   };
 
   const isProductMine = user.user?.id === mapped.exhibitUser.user_id;
@@ -47,7 +49,9 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
           shortId={resolvedParams.shortId}
           auctionEndAt={mapped.auctionEndAt}
           title={mapped.productTitle}
-          lastPrice={String(mapped.currentHighestBid)}
+          lastPrice={mapped.currentHighestBid}
+          isSecret={mapped.isSecret}
+          minPrice={mapped.minPrice}
         />
       )}
     </div>

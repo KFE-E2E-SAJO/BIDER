@@ -12,10 +12,12 @@ export interface AuctionDetailContent {
   minPrice: number;
   auctionEndAt: string;
   exhibitUser: Profiles;
-  currentHighestBid: number;
+  currentHighestBid: number | null;
   bidHistory: BidHistoryWithUserNickname[];
   dealLocation?: Location;
   dealAddress?: string;
+  isSecret: boolean;
+  bidCnt: number;
 }
 
 export type AuctionDetailContentProps = {
@@ -26,7 +28,9 @@ export interface BottomBarProps {
   shortId: string;
   auctionEndAt: string | Date;
   title: string;
-  lastPrice: string;
+  lastPrice: number | null;
+  isSecret: boolean;
+  minPrice: number;
 }
 
 export interface BiddingStatusBoardProps {

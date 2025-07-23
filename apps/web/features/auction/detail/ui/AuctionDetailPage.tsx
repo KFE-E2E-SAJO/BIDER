@@ -8,6 +8,7 @@ import BiddingStatusBoard from './BiddingStatusBoard';
 import { getCategoryLabel } from '@/features/category/lib/utils';
 import { CategoryValue } from '@/features/category/types';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
+import { Button } from '@repo/ui/components/Button/Button';
 
 const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
@@ -24,7 +25,15 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
 
         <div>
           <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
-          <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
+
+          <div className="typo-subtitle-bold">
+            {data.isSecret ? (
+              <span className="text-event">******* </span>
+            ) : (
+              formatNumberWithComma(currentHighestBid as number)
+            )}
+            원
+          </div>
         </div>
 
         <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
@@ -69,19 +78,35 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       {/* 입찰 히스토리 */}
-      <div className="p-box">
-        <div className="items-baseline-last mb-[14px] flex justify-between">
-          <div className="typo-subtitle-small-medium">입찰 현황판</div>
-          <div className="typo-caption-regular flex items-center gap-1 text-neutral-600">
-            <Info size={13} strokeWidth={2} stroke="var(--color-neutral-400)" /> 상위 5등까지만 조회
-            가능합니다.
+      {data.isSecret ? (
+        <div className="p-box">
+          <div className="mb-[14px]">
+            <div className="typo-subtitle-small-medium mb-[14px]">입찰 현황판</div>
+            <p className="typo-body-regular">
+              <span className="typo-body-medium text-event">{data.bidCnt}명</span>이 이 상품에 입찰
+              중이에요!
+            </p>
           </div>
+          <Button className="bg-event-light typo-body-medium text-event">
+            최고 입찰가 확인하기
+          </Button>
         </div>
-        <BiddingStatusBoard
-          data={data.bidHistory}
-          onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
-        />
-      </div>
+      ) : (
+        <div className="p-box">
+          <div className="items-baseline-last mb-[14px] flex justify-between">
+            <div className="typo-subtitle-small-medium">입찰 현황판</div>
+            <div className="typo-caption-regular flex items-center gap-1 text-neutral-600">
+              <Info size={13} strokeWidth={2} stroke="var(--color-neutral-400)" /> 상위 5등까지만
+              조회 가능합니다.
+            </div>
+          </div>
+          <BiddingStatusBoard
+            data={data.bidHistory}
+            onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
+          />
+        </div>
+      )}
+
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       {/* 판매자 정보 */}
