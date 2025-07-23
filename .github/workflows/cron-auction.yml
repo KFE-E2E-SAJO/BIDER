@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Call auction creation endpoint
         run: |
-          curl -X GET "https://bider.vercel.app/api/cron/create-auctions" \
+          curl -X GET "https://bider.vercel.app/api/cron/create-auction" \
                -H "Content-Type: application/json" \
                -H "User-Agent: GitHub-Actions-Cron" \
                --fail-with-body \
