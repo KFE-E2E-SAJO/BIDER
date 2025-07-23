@@ -1,6 +1,7 @@
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { MyPageProfileCardProps } from '@/features/mypage/types';
 import { Star } from 'lucide-react';
+import Link from 'next/link';
 
 const MyPageProfileCard = ({ nickname, email, profile_img }: MyPageProfileCardProps) => {
   return (
@@ -15,7 +16,9 @@ const MyPageProfileCard = ({ nickname, email, profile_img }: MyPageProfileCardPr
       <div className="mt-[18px] flex justify-around border-b border-t border-neutral-100 py-[14px]">
         <div className="flex w-[50%] items-center justify-center gap-[23px] border-r border-neutral-100">
           <div className="typo-caption-regular text-neutral-600">포인트</div>
-          <div className="typo-subtitle-small-medium flex items-center">{'2,580'}</div>
+          <Link href="/mypage/point" className="typo-subtitle-small-medium flex items-center">
+            {'2,580'}
+          </Link>
         </div>
         <div className="flex w-[50%] items-center justify-center gap-[23px]">
           <div className="typo-caption-regular text-neutral-600">별점</div>
