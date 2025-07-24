@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const KEY = process.env.NEXT_PUBLIC_VWORLD_KEY;
+const KEY = process.env.VWORLD_KEY;
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
