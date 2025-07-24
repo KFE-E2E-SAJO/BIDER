@@ -89,6 +89,11 @@ const ProfileInputList = () => {
         <Input type="text" value={newNickname} onChange={(e) => setNewNickname(e.target.value)} />
       </div>
 
+      <div className="w-full space-y-2">
+        <label className="typo-body-medium block text-neutral-800">이메일</label>
+        <Input type="text" value={profile.email} disabled={true} />
+      </div>
+
       <Button type="submit" disabled={!isModified}>
         저장하기
       </Button>
