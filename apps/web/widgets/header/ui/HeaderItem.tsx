@@ -7,6 +7,7 @@ import { Bell, House, Search, Trash2 } from 'lucide-react';
 import BackBtn from '@/shared/ui/button/BackBtn';
 import Logo from '@/shared/ui/icon/Logo';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
   '/': <Logo />,
@@ -60,7 +61,11 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
             <Link href="/search">
               <Search className="mr-4.5" />
             </Link>
-            <Link href="/alarm" className="relative">
+            <Link
+              href="/"
+              className="relative"
+              onClick={() => toast({ content: '준비 중인 기능입니다.' })}
+            >
               <Bell />
               {hasNewAlert && <AlertBadge placementClass="absolute right-0 top-0" />}
             </Link>
