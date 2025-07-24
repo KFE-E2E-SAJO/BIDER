@@ -8,6 +8,8 @@ import BiddingStatusBoard from './BiddingStatusBoard';
 import { getCategoryLabel } from '@/features/category/lib/utils';
 import { CategoryValue } from '@/features/category/types';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
+import Link from 'next/link';
+import { encodeUUID } from '@/shared/lib/shortUuid';
 
 const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
@@ -22,9 +24,17 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
           </u>
         </div>
 
-        <div>
-          <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
-          <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
+        <div className="flex items-end justify-between">
+          <div>
+            <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
+            <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
+          </div>
+          <Link
+            href={`/auction/${encodeUUID(data.auctionId)}/proposal`}
+            className="typo-body-medium border border-neutral-300 px-[15px] py-[5px]"
+          >
+            제안하기
+          </Link>
         </div>
 
         <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
