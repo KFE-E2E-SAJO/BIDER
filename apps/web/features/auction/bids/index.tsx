@@ -1,6 +1,6 @@
-import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import AuctionTopTabs from '@/features/auction/shared/ui/AuctionTopTabs';
 import BidList from '@/features/auction/bids/ui/BidList';
+import UrlSyncTabs from '@/features/auction/shared/ui/UrlSyncTabs';
 
 const AuctionBids = () => {
   const items = [
@@ -13,7 +13,7 @@ const AuctionBids = () => {
   return (
     <div>
       <AuctionTopTabs />
-      <Tabs defaultValue="all" items={items} className="py-[16px]" />
+      <UrlSyncTabs defaultValue="all" items={items} className="py-[16px]" />
     </div>
   );
 };
