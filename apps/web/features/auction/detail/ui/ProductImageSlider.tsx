@@ -15,6 +15,8 @@ export default function ProductImageSlider({ images }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
 
+  const sortedImages = [...images].sort((a, b) => a.order_index - b.order_index);
+
   return (
     <div className="w-full">
       {/* Main Swiper */}
@@ -28,7 +30,7 @@ export default function ProductImageSlider({ images }: Props) {
           onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           className="h-full p-0"
         >
-          {images.map((img) => (
+          {sortedImages.map((img) => (
             <SwiperSlide key={img.image_id} className="flex items-center justify-center">
               <img
                 src={img.image_url}
@@ -42,7 +44,7 @@ export default function ProductImageSlider({ images }: Props) {
 
       {/* Thumbnail Gallery */}
       <div className="p-box mt-4 flex justify-between">
-        {images.map((img, idx) => (
+        {sortedImages.map((img, idx) => (
           <button
             key={img.image_id}
             onClick={() => {
