@@ -35,8 +35,10 @@ export interface MyPageMenuItemProps {
 }
 
 export interface AuctionCardProps {
+  link1: string;
   title1: string;
   count1: number;
+  link2: string;
   title2: string;
   count2: number;
 }

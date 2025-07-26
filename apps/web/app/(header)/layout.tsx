@@ -4,7 +4,7 @@ const HeaderLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <main className="flex flex-1 flex-col pb-[34px]">{children}</main>
+      <main className="flex flex-1 flex-col pb-[40px]">{children}</main>
     </>
   );
 };
