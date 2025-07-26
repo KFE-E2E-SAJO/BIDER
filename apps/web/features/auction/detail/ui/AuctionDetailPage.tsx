@@ -11,7 +11,7 @@ import GoogleMapView from '@/features/location/ui/GoogleMapView';
 import Link from 'next/link';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 
-const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
+const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
   return (
     <>
@@ -29,12 +29,14 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
             <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
             <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
           </div>
-          <Link
-            href={`/auction/${encodeUUID(data.auctionId)}/proposal`}
-            className="typo-body-medium border border-neutral-300 px-[15px] py-[5px]"
-          >
-            제안하기
-          </Link>
+          {!isProductMine && (
+            <Link
+              href={`/auction/${encodeUUID(data.auctionId)}/proposal`}
+              className="typo-body-medium border border-neutral-300 px-[15px] py-[5px]"
+            >
+              제안하기
+            </Link>
+          )}
         </div>
 
         <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">

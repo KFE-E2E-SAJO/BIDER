@@ -1,16 +1,12 @@
-// import { ProductList } from '@/features/product/types';
-// import { useQuery } from '@tanstack/react-query';
-// import getBidList from '@/features/auction/bids/model/getBidList';
+import { useQuery } from '@tanstack/react-query';
+import getTargetProduct from '@/features/proposal/shared/model/getTargetProduct';
+import { TargetProductParams } from '@/features/proposal/shared/types';
 
-// export interface TargetProductParams {
-//   userId: string;
-// }
-
-// export const useTargetProduct = (params: TargetProductParams) => {
-//   return useQuery<ProductList[]>({
-//     queryKey: ['bidList', params.userId],
-//     queryFn: () => getBidList(params),
-//     enabled: !!params.userId,
-//     staleTime: 1000 * 60 * 1,
-//   });
-// };
+export const useTargetProduct = (params: TargetProductParams) => {
+  return useQuery({
+    queryKey: ['targetProduct', params.userId, params.shortId],
+    queryFn: () => getTargetProduct(params),
+    enabled: !!params.userId && !!params.shortId,
+    staleTime: 1000 * 60 * 1,
+  });
+};

@@ -20,6 +20,7 @@ export interface AuctionDetailContent {
 
 export type AuctionDetailContentProps = {
   data: AuctionDetailContent;
+  isProductMine: boolean;
 };
 
 export interface BottomBarProps {

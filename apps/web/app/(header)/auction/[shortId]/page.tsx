@@ -41,7 +41,7 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
   return (
     <div className={`flex flex-col gap-[25px] ${isProductMine ? '' : 'pb-[66px]'}`}>
       <ProductImageSlider images={mapped.images} />
-      <AuctionDetail data={mapped} />
+      <AuctionDetail data={mapped} isProductMine={isProductMine} />
       {!isProductMine && (
         <BottomBar
           shortId={resolvedParams.shortId}
