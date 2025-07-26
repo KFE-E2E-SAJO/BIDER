@@ -58,7 +58,7 @@ function DialogContent({
         className={cn(
           'fixed bottom-0 left-0 right-0 w-full rounded-t-3xl',
           'sm:bottom-auto sm:left-1/2 sm:right-auto sm:top-1/2 sm:w-auto sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg',
-          'p-box z-50 grid gap-4 bg-white pb-[34px] shadow-lg duration-200',
+          'p-box z-50 grid gap-4 bg-white pb-[40px] shadow-lg duration-200',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
           'data-[state=closed]:translate-y-full data-[state=open]:translate-y-0',

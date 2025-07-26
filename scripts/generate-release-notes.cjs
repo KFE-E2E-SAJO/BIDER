@@ -148,7 +148,7 @@ class ReleaseNotesGenerator {
 
     // Conventional Commits 형식 파싱 (콜론 형식)
     const conventionalMatch = message.match(
-      /^(feat|fix|docs|settings|refactor|test|chore|design|comment|rename|remove)(\(.+\))?(!?):\s*(.+)$/
+      /^(feat|fix|hotfix|refactor|chore|docs|design)(\(.+\))?(!?):\s*(.+)$/
     );
 
     if (conventionalMatch) {
@@ -164,9 +164,7 @@ class ReleaseNotesGenerator {
     }
 
     // 대괄호 형식 파싱 [feat], [fix] 등
-    const bracketMatch = message.match(
-      /^\[(feat|fix|docs|settings|refactor|test|chore|design|comment|rename|remove)\]\s*(.+)$/
-    );
+    const bracketMatch = message.match(/^\[(feat|fix|hotfix|refactor|chore|docs|design)\]\s*(.+)$/);
 
     if (bracketMatch) {
       const [, type, description] = bracketMatch;
