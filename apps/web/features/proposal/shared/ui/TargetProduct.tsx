@@ -2,7 +2,7 @@
 
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-import { useTargetProduct } from '../model/useTargetProduct';
+import { useTargetProduct } from '@/features/proposal/shared/model/useTargetProduct';
 import { useParams } from 'next/navigation';
 
 const TargetProduct = () => {
@@ -12,7 +12,7 @@ const TargetProduct = () => {
 
   const { data, isLoading, error } = useTargetProduct({ userId, shortId });
 
-  if (isLoading || error || !data) return <Loading />;
+  if (isLoading || error || !data) return null;
 
   const bidPrices = data.bid_history?.map((bid: { bid_price: number }) => bid.bid_price);
   const highestPrice = bidPrices.length > 0 ? Math.max(...bidPrices) : data.min_price;
