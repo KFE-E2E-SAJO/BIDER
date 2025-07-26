@@ -101,17 +101,17 @@ const RootLayout = ({
         <ReactQueryProvider>
           <div id="container" className="flex min-h-screen flex-col">
             {children}
-            <Script id="clarity-script" strategy="afterInteractive">
-              {`
-                (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                })(window, document, "clarity", "script", "skh5la3rrt");
-              `}
-            </Script>
           </div>
         </ReactQueryProvider>
+        <Script id="clarity-script" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "skh5la3rrt");
+          `}
+        </Script>
         <Toaster />
       </body>
     </html>
