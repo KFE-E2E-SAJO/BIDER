@@ -6,6 +6,7 @@ import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { BidDialog } from '../../bids/ui/BidDialog';
 import { BottomBarProps } from '../types';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) => {
   const [countdown, setCountdown] = useState('');
@@ -40,7 +41,11 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
           >
             입찰하기
           </Button>
-          <Button variant="outline" className="w-[53px] border-[1.5px]">
+          <Button
+            variant="outline"
+            className="w-[53px] border-[1.5px]"
+            onClick={() => toast({ content: '준비 중인 기능입니다.' })}
+          >
             <MessageSquareMore className="text-main" strokeWidth={1.5} />
           </Button>
         </div>

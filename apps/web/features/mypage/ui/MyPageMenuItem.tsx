@@ -2,13 +2,20 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { MyPageMenuItemProps } from '@/features/mypage/types';
 
-const MyPageMenuItem = ({ label, href, rightElement, withBorder = true }: MyPageMenuItemProps) => {
+const MyPageMenuItem = ({
+  label,
+  href,
+  rightElement,
+  withBorder = true,
+  onClick,
+}: MyPageMenuItemProps) => {
   return (
     <Link
       href={href}
       className={`relative flex items-center justify-between px-[11px] py-[15px] ${
         withBorder ? 'border-b border-neutral-100' : ''
       }`}
+      onClick={onClick}
     >
       <p>{label}</p>
       {rightElement}
