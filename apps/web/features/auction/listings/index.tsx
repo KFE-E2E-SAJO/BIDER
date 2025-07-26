@@ -1,3 +1,5 @@
+'use client';
+
 import AuctionTopTabs from '@/features/auction/shared/ui/AuctionTopTabs';
 import ListingList from '@/features/auction/listings/ui/ListingList';
 import UrlSyncTabs from '@/features/auction/shared/ui/UrlSyncTabs';
