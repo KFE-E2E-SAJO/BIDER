@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, MouseEvent } from 'react';
 export interface BidWithAuction {
   auction: { auction_status: string } | null;
 }
@@ -31,11 +31,14 @@ export interface MyPageMenuItemProps {
   href: string;
   rightElement?: ReactNode;
   withBorder?: boolean;
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 }
 
 export interface AuctionCardProps {
+  link1: string;
   title1: string;
   count1: number;
+  link2: string;
   title2: string;
   count2: number;
 }
