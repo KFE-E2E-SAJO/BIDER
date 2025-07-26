@@ -6,6 +6,7 @@ import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { BidDialog } from '../../bids/ui/BidDialog';
 import { BottomBarProps } from '../types';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 const BottomBar = ({
   shortId,
@@ -50,7 +51,12 @@ const BottomBar = ({
           >
             {buttonText}
           </Button>
-          <Button variant="outline" className={`w-[53px] border-[1.5px] border-${pointColor}`}>
+
+          <Button
+            variant="outline"
+            className={`w-[53px] border-[1.5px] border-${pointColor}`}
+            onClick={() => toast({ content: '준비 중인 기능입니다.' })}
+          >
             <MessageSquareMore className={`text-${pointColor}`} strokeWidth={1.5} />
           </Button>
         </div>
