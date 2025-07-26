@@ -1,9 +1,12 @@
-export const dynamic = 'force-dynamic';
-
+import { Suspense } from 'react';
 import AuctionListings from '@/features/auction/listings';
 
 const SetAuctionListings = () => {
-  return <AuctionListings />;
+  return (
+    <Suspense fallback={null}>
+      <AuctionListings />
+    </Suspense>
+  );
 };
 
 export default SetAuctionListings;
