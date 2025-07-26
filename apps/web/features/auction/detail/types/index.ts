@@ -27,6 +27,7 @@ export interface BottomBarProps {
   auctionEndAt: string | Date;
   title: string;
   lastPrice: string;
+  exhibitUserId: string;
 }
 
 export interface BiddingStatusBoardProps {

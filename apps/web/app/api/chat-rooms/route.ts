@@ -120,3 +120,42 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 }
+
+export async function POST(req: NextRequest) {
+  const { auction_id, exhibit_user_id, bid_user_id } = await req.json();
+
+  // 1. 이미 존재하는 채팅방 있는지 조회 (auction_id, bid_user_id 기준)
+  const { data: rooms, error: selectError } = await supabase
+    .from('chat_room')
+    .select('*')
+    .eq('auction_id', auction_id)
+    .eq('bid_user_id', bid_user_id);
+
+  if (selectError) {
+    return NextResponse.json({ error: selectError.message }, { status: 500 });
+  }
+
+  if (rooms && rooms.length > 0) {
+    // 이미 채팅방 있으면 반환
+    return NextResponse.json({ chatRoomId: rooms[0].chatroom_id }, { status: 200 });
+  }
+
+  // 2. 없으면 새로 생성 (exhibit_user_id, bid_user_id, auction_id 지정)
+  const { data: newRoom, error: insertError } = await supabase
+    .from('chat_room')
+    .insert([
+      {
+        auction_id,
+        exhibit_user_id,
+        bid_user_id,
+      },
+    ])
+    .select()
+    .single();
+
+  if (insertError) {
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ chatRoomId: newRoom.chatroom_id }, { status: 201 });
+}

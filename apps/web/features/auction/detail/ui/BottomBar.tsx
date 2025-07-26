@@ -6,12 +6,15 @@ import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { BidDialog } from '../../bids/ui/BidDialog';
 import { BottomBarProps } from '../types';
+import { decodeShortId } from '@/shared/lib/shortUuid';
+import { StartChatButton } from '@/features/chat/ui/startChatButton';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 
-const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) => {
+const BottomBar = ({ shortId, auctionEndAt, title, lastPrice, exhibitUserId }: BottomBarProps) => {
   const [countdown, setCountdown] = useState('');
   const [hasMounted, setHasMounted] = useState(false);
   const [openBiddingSheet, setOpenBiddingSheet] = useState(false);
+  const auctionId = decodeShortId(shortId);
 
   useEffect(() => {
     setHasMounted(true);
@@ -44,7 +47,8 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
           <Button
             variant="outline"
             className="w-[53px] border-[1.5px]"
-            onClick={() => toast({ content: '준비 중인 기능입니다.' })}
+            // onClick={() => toast({ content: '준비 중인 기능입니다.' })}
+            onClick={() => <StartChatButton auctionId={auctionId} exhibitUserId={exhibitUserId} />}
           >
             <MessageSquareMore className="text-main" strokeWidth={1.5} />
           </Button>
