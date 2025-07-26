@@ -1,77 +1,122 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
+import { create } from 'lodash';
+import { ChatRoomWithProfile } from '@/entities/chatRoom/model/types';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
 
-  console.log('userId:', userId);
   if (!userId) {
     return NextResponse.json({ error: 'userId is required' }, { status: 400 });
   }
-  const message = supabase.channel('message');
 
   try {
-    // 1. 통합 쿼리 한 번!
-    const { data: chatRooms, error } = await supabase
+    // 1. 챗룸+프로덕트+프로필 한 번에 가져오기 (조인)
+    const { data: chatRooms, error: chatRoomError } = await supabase
       .from('chat_room')
       .select(
         `
-      *,
-      auction_id (
-        min_price,
-        product_id,
-        product:product_id (
-          title,
-          product_image (
-            image_url
+        chatroom_id,
+        updated_at,
+        auction:auction_id (
+          product:product_id (
+            product_image (
+              image_url,
+              order_index
+            )
           )
+        ),
+        exhibit_profile:exhibit_user_id (
+          user_id,
+          nickname,
+          profile_img
+        ),
+        bid_profile:bid_user_id (
+          user_id,
+          nickname,
+          profile_img
         )
-      ),
-      message (
-        message_id, content, created_at, sender_id, is_read
-      ),
-      exhibit_user_id (
-        user_id,
-        nickname,
-        profile_img
-      )
-    `
+      `
       )
       .or(`exhibit_user_id.eq.${userId},bid_user_id.eq.${userId}`)
       .order('updated_at', { ascending: false });
-    if (error) {
-      throw new Error('Supabase 쿼리 실패: ' + error.message);
-    }
+    if (chatRoomError) throw new Error('Supabase 쿼리 실패: ' + chatRoomError.message);
+    const chatRoomIds = chatRooms.map((room) => room.chatroom_id);
 
-    // 2. 프론트에서 가공해서 필요한 정보만 골라주기
-    const data = (chatRooms ?? []).map((room) => {
-      // 대표 이미지 (여러 개일 땐 0번 index, 아니면 default)
-      const productImages = room.auction_id?.product_id?.product_image ?? [];
-      const product_image_url =
-        productImages.length > 0 ? productImages[0].image_url : '/default-profile.png';
-      // 최신 메시지(미리보기)
-      const messages = (room.message ?? []).sort(
-        (a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      );
-      const latestMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-      // 안읽은 메시지 수
-      const unread = messages.filter((msg: any) => !msg.is_read && msg.sender_id !== userId).length;
+    // 2. 메시지(최신 1개) 모두 쿼리 (각 채팅방별로 한 개씩)
+    // (Supabase group-by가 안되니 JS로 뽑음)
+    const { data: allMessages, error: msgError } = await supabase
+      .from('message')
+      .select('message_id, chatroom_id, content, created_at, sender_id, is_read')
+      .in('chatroom_id', chatRoomIds);
+    if (msgError) throw new Error('메시지 쿼리 실패: ' + msgError.message);
+
+    // 최신 메시지 map (chatroom_id별 1개, 최신순)
+    const latestMsgMap = new Map();
+    (allMessages ?? [])
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .forEach((msg) => {
+        if (!latestMsgMap.has(msg.chatroom_id)) {
+          latestMsgMap.set(msg.chatroom_id, msg);
+        }
+      });
+
+    // 안읽은 개수 map
+    const unreadCountMap: Record<string, number> = {};
+    chatRoomIds.forEach((id) => {
+      const unread = (allMessages ?? []).filter(
+        (msg) => msg.chatroom_id === id && !msg.is_read && msg.sender_id !== userId
+      ).length;
+      unreadCountMap[id] = unread;
+    });
+
+    // 3. 안읽은 메시지 읽음처리
+    await supabase
+      .from('message')
+      .update({ is_read: true })
+      .in('chatroom_id', chatRoomIds)
+      .eq('is_read', false)
+      .neq('sender_id', userId);
+
+    // 4. 최종 데이터 가공 (채팅방별 대표이미지, 프로필, 최신메시지 등)
+    const result = chatRooms.map((room: any) => {
+      const productImages = room.auction?.product?.product_image ?? [];
+      const mainImage = productImages.find((img: any) => img.order_index === 0);
+      const product_image_url = mainImage ? mainImage.image_url : '/default-profile.png';
+      // 대표 이미지
+      console.log('room:', room.auction);
+      // 판매자/구매자 닉네임/프로필
+      const buyer = room.exhibit_profile ?? {};
+      const seller = room.bid_profile ?? {};
+
+      // 최신 메시지/안읽은 개수
+      const latestMessage = latestMsgMap.get(room.chatroom_id) || null;
+      const unread = unreadCountMap[room.chatroom_id] ?? 0;
 
       return {
         chatroom_id: room.chatroom_id,
         product_image_url,
-        nickname: room.exhibit_user_id?.nickname ?? '알수없음',
-        profile_img: room.exhibit_user_id?.profile_img ?? '/default-profile.png',
+        buyer: {
+          user_id: (buyer as any)?.user_id ?? null,
+          nickname: (buyer as any)?.nickname,
+          profile_img: (buyer as any)?.profile_img ?? '/default-profile.png',
+        },
+        seller: {
+          user_id: (seller as any)?.user_id ?? null,
+          nickname: (seller as any)?.nickname,
+          profile_img: (seller as any)?.profile_img ?? '/default-profile.png',
+        },
         latestMessage,
         unread,
         updated_at: room.updated_at,
+        created_at: latestMessage ? latestMessage.created_at : room.updated_at,
       };
     });
-    return NextResponse.json(data);
+
+    return NextResponse.json(result);
   } catch (e) {
     console.error('채팅방 리스트 API 500 오류:', e);
-
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 }

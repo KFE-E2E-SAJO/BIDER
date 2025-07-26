@@ -44,9 +44,24 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
   } = useGetChatRoom({ userId, chatroomId: roomId });
 
   const roomData = Array.isArray(chatRoomData) ? chatRoomData[0] : chatRoomData;
+  // ⬇️ 여기에 바로 추가!
+  const isSeller = (roomData as any)?.seller?.user_id === userId;
+  const isBuyer = (roomData as any)?.buyer?.user_id === userId;
+
+  const myProfile = isSeller
+    ? (roomData as any)?.seller
+    : isBuyer
+      ? (roomData as any)?.buyer
+      : null;
+  const otherProfile = isSeller
+    ? (roomData as any)?.buyer
+    : isBuyer
+      ? (roomData as any)?.seller
+      : null;
+
   const messages = (roomData as any)?.messages || [];
-  console.log('messages', messages);
-  console.log('roomData', roomData);
+  console.log('otherProfile: ', otherProfile);
+
   // 1. 날짜 문자열로 변환 함수 (ex: 2025년 7월 21일)
   function getDateStr(date: string) {
     const d = new Date(date);
@@ -139,7 +154,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
   }, []);
 
   const grouped = groupByDate(messages);
-
+  console.log('roomData:', roomData);
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col bg-white">
       <div className="flex flex-col gap-2 border-b border-t border-neutral-100 px-4 pb-2 pt-4">
@@ -157,10 +172,9 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
                 <path d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <span className="text-base font-semibold">
-              {(roomData as any)?.seller?.nickname || '사용자'}
-            </span>
+            <span className="text-base font-semibold">{otherProfile?.nickname || '사용자'}</span>
           </div>
+
           <button>
             <svg
               width={22}
@@ -196,13 +210,13 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
 
       <div className="flex flex-col items-center gap-1 py-4">
         <img
-          src={(roomData as any)?.seller?.profile_img || '/default-profile.png'} // 곰돌이 이미지
+          src={otherProfile?.profile_img || '/default-profile.png'} // 곰돌이 이미지
           className="h-16 w-16 rounded-full"
           alt="프로필"
         />
 
         <span className="mt-2 text-base font-bold text-gray-900">
-          {(roomData as any)?.seller?.nickname || '사용자'}
+          {otherProfile?.nickname || '사용자'}
         </span>
         <span className="mt-1 flex items-center gap-1 text-xs text-gray-500">
           <svg width={14} height={14} fill="none" viewBox="0 0 24 24" className="mr-0.5 inline">

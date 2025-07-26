@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
     return NextResponse.json({ error: 'chatroom_id는 필수입니다.' }, { status: 400 });
   }
 
-  // 1. chat_room 조인 기반으로 모든 데이터 한 번에!
+  // 1. 채팅방 디테일 정보 쿼리
   const { data: chatRoomData, error: chatRoomError } = await supabase
     .from('chat_room')
     .select(

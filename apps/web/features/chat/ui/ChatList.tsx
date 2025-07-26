@@ -9,7 +9,6 @@ import { supabase } from '@/shared/lib/supabaseClient';
 import { useAuthStore } from '@/shared/model/authStore';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { filter } from 'lodash';
 import { ChatroomWithInfoProps } from '../types';
 import { Dialog } from '@repo/ui/components/Dialog/Dialog';
 
@@ -35,6 +34,31 @@ const filters = [
   { label: '판매 채팅', value: 'sell' },
   { label: '안 읽은 채팅', value: 'unread' },
 ];
+
+function formatRelativeTime(dateString: string) {
+  const now = new Date();
+  const date = new Date(dateString);
+
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+
+  // 오늘 같은 날이면
+  if (
+    now.getFullYear() === date.getFullYear() &&
+    now.getMonth() === date.getMonth() &&
+    now.getDate() === date.getDate()
+  ) {
+    if (diffHour > 0) return `${diffHour}시간`;
+    if (diffMin > 0) return `${diffMin}분`;
+    return '방금';
+  }
+
+  // 어제, 그제 등도 특별히 다르게 처리하려면 추가
+  // 기본적으로는 "7월 22일" 이런식으로
+  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+}
 
 export default function ChatList() {
   const userId = useAuthStore((state) => state.user?.id);
@@ -152,13 +176,12 @@ export default function ChatList() {
 
   // 카테고리별 필터
   const { data: Rooms = [], isLoading, isError } = useGetChatList(userId || '');
-  console.log('Rooms:', Rooms);
   const filteredChats =
     Rooms && Array.isArray(Rooms)
       ? Rooms.filter((chat: any) => {
           if (selected === 'all') return true;
-          if (selected === 'sell') return chat.exhibit_user_id === userId;
-          if (selected === 'buy') return chat.bid_user_id === userId;
+          if (selected === 'sell') return chat.buyer.user_id === userId;
+          if (selected === 'buy') return chat.seller.user_id === userId;
           if (selected === 'unread') {
             return (
               chat.messages &&
@@ -214,6 +237,11 @@ export default function ChatList() {
             !isError &&
             filteredChats.map((chat: any) => {
               const swipeState = swipeStates[chat.chatroom_id] || 'none';
+              const isSeller = chat.seller?.user_id === userId;
+              const isBuyer = chat.buyer?.user_id === userId;
+
+              const myProfile = isSeller ? chat.seller : isBuyer ? chat.buyer : null; // 혹시 seller/buyer가 아닌 경우는 null
+              const otherProfile = isSeller ? chat.buyer : isBuyer ? chat.seller : null;
               return (
                 <div
                   key={chat.chatroom_id}
@@ -276,12 +304,12 @@ export default function ChatList() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="flex items-center gap-1 text-sm font-semibold text-gray-900">
-                          {chat.nickname || '알수없음'}
+                          {otherProfile?.nickname || '알수없음'}
                           <img
-                            src={chat.profile_img || DEFAULT_PROFILE_IMG}
+                            src={otherProfile?.profile_img}
                             alt="프로필"
                             onError={(e) => {
-                              e.currentTarget.src = DEFAULT_PROFILE_IMG;
+                              e.currentTarget.src;
                             }}
                             className="ml-1 h-5 w-5 rounded-full border border-gray-200 object-cover"
                           />
@@ -294,17 +322,14 @@ export default function ChatList() {
                       </div>
                       <div className="mt-1 flex items-center gap-2">
                         <span className="block w-44 truncate text-xs text-gray-500">
-                          {chat.messages?.[chat.messages.length - 1]?.content ||
-                            '메시지가 없습니다.'}
+                          {chat.latestMessage?.content || '메시지가 없습니다.'}
                         </span>
-                        <span className="ml-1 text-xs text-gray-400">
-                          {new Date(chat.updated_at).toLocaleString('ko-KR', {
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </span>
+                        <div className="flex items-center gap-0.5">
+                          <span className="text-xs text-gray-400">
+                            {formatRelativeTime(chat.created_at)}
+                          </span>
+                          <span className="text-[9px] leading-none text-gray-300"></span>
+                        </div>
                       </div>
                     </div>
                     <svg

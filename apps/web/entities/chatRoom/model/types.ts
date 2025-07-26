@@ -10,15 +10,20 @@ export interface ChatRoom {
 
 export interface ChatRoomWithProfile extends ChatRoom {
   auction: {
-    min_price: number;
     product: {
-      title: string;
       product_image: {
         image_url: string;
-      };
+        order_index: number;
+      }[];
     };
   };
-  profiles: {
+
+  exhibit_profile: {
+    user_id: string;
+    nickname: string;
+    profile_img: string | null;
+  };
+  bid_profile: {
     user_id: string;
     nickname: string;
     profile_img: string | null;
