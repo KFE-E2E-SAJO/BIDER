@@ -1,6 +1,17 @@
 'use server';
 
+import { getPushAlarmMessage } from '@/features/alarm/setting/lib/getPushAlarmMessage';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import webpush from 'web-push';
+
+interface PushSubscriptionSerialized {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+}
 
 webpush.setVapidDetails(
   'mailto:haruyam15@gmail.com',
@@ -11,11 +22,58 @@ webpush.setVapidDetails(
 let subscription: PushSubscription | null = null;
 const parsed = JSON.parse(JSON.stringify(subscription));
 
-export async function subscribeUser(sub: PushSubscription) {
-  subscription = sub;
+export async function subscribeUser(subscription: PushSubscriptionSerialized) {
   // In a production environment, you would want to store the subscription in a database
   // For example: await db.subscriptions.create({ data: sub })
-  return { success: true };
+  if (!subscription) return;
+
+  const cookieStore = await cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (!user || userError) {
+    console.error('유저 정보 조회 실패 : ', userError);
+    return;
+  }
+
+  const { error } = await supabase.from('user_push_token').upsert(
+    {
+      user_id: user.id,
+      endpoint: subscription.endpoint,
+      p256dh: subscription.keys.p256dh,
+      auth: subscription.keys.auth,
+    },
+    { onConflict: 'user_id' }
+  );
+
+  if (error) {
+    console.error('푸시토큰 저장 실패 : ', error);
+    return;
+  }
+
+  console.log('푸시토큰 생성완료');
+
+  return { success: true, message: '푸시 토큰이 생성되었습니다.' };
 }
 
 export async function unsubscribeUser() {
@@ -25,23 +83,63 @@ export async function unsubscribeUser() {
   return { success: true };
 }
 
-export async function sendNotification(message: string) {
-  if (!subscription) {
-    throw new Error('No subscription available');
+export async function sendNotification(type: string, message: string) {
+  const cookieStore = await cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        },
+      },
+    }
+  );
+
+  const { data: pushToken, error } = await supabase.from('user_push_token').select('*');
+
+  if (error || !pushToken || pushToken.length === 0) {
+    console.error('푸시 토큰 조회 실패:', error);
+    return { success: false, error: '푸시 토큰 조회 실패' };
   }
 
-  try {
-    await webpush.sendNotification(
-      parsed,
-      JSON.stringify({
-        title: '테스트 알람!',
-        body: message,
-        icon: '/icon.png',
-      })
-    );
-    return { success: true };
-  } catch (error) {
-    console.error('Error sending push notification:', error);
-    return { success: false, error: 'Failed to send notification' };
+  for (const token of pushToken) {
+    const subscription = {
+      endpoint: token.endpoint,
+      keys: {
+        p256dh: token.p256dh,
+        auth: token.auth,
+      },
+    };
+
+    // const payload = await pushAlarmMessageMap(type, message);
+
+    const pushMessage = {
+      title: '알림제목',
+      body: message,
+      image: 'https://yourdomain.com/path/to/bid-photo.jpg', // 입찰 사진
+      time: '2025-07-25 18:30',
+      url: '/mypage',
+    };
+    const payloadData = JSON.stringify(pushMessage);
+
+    try {
+      const test = await webpush.sendNotification(subscription, payloadData);
+    } catch (err: any) {
+      console.error('알림 전송 실패:', err);
+
+      if (err.statusCode === 410 || err.statusCode === 404) {
+        console.log('만료된 구독입니다. DB에서 삭제합니다.');
+
+        await supabase.from('user_push_token').delete().eq('endpoint', subscription.endpoint);
+      }
+    }
   }
 }

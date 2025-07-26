@@ -1,6 +1,8 @@
 self.addEventListener('push', function (event) {
   if (event.data) {
     const data = event.data.json();
+
+    console.log(data);
     const options = {
       body: data.body,
       icon: data.icon || '/icon.png',
