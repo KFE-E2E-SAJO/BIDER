@@ -4,6 +4,7 @@ import '@repo/ui/styles.css';
 import '../styles/global.css';
 import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 import { Toaster } from '@repo/ui/components/Toast/Sonner';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: '가장 가까운 경매장 | Bider',
@@ -96,21 +97,19 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="ko">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(c,l,a,r,i,t,y){
-              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "skh5la3rrt");`,
-          }}
-        />
-      </head>
       <body>
         <ReactQueryProvider>
           <div id="container" className="flex min-h-screen flex-col">
             {children}
+            <Script id="clarity-script" strategy="afterInteractive">
+              {`
+                (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "skh5la3rrt");
+              `}
+            </Script>
           </div>
         </ReactQueryProvider>
         <Toaster />
