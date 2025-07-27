@@ -57,8 +57,13 @@ const LocationConfirm = () => {
         <div className="bg-warning-light text-warning-medium typo-body-medium flex h-[42px] items-center justify-center">
           반경 3km 이내의 오차가 있을 수 있습니다.
         </div>
-        <div className={clsx('h-24 pt-3', isLocationUpdatePending ? 'bg-neutral-300' : 'bg-main')}>
-          <Button onClick={handleNext} disabled={isLocationUpdatePending}>
+        <div
+          className={clsx(
+            'h-24 pt-3',
+            isLocationUpdatePending || !location ? 'bg-neutral-300' : 'bg-main'
+          )}
+        >
+          <Button onClick={handleNext} disabled={isLocationUpdatePending || !location}>
             위치 저장
           </Button>
         </div>
