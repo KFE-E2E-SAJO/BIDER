@@ -9,6 +9,7 @@ import { useTargetProduct } from '@/features/proposal/shared/model/useTargetProd
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { useState } from 'react';
+import { useMemo } from 'react';
 import shortUUID from 'short-uuid';
 
 const translator = shortUUID();
@@ -25,6 +26,13 @@ const MakePrice = () => {
 
   const { data, isLoading, error } = useTargetProduct({ userId, shortId });
   const router = useRouter();
+
+  const formattedPrice = useMemo(() => {
+    if (!price) return '';
+    const numeric = parseInt(price.replaceAll(',', ''), 10);
+    return isNaN(numeric) ? '' : numeric.toLocaleString();
+  }, [price]);
+
   if (isLoading || error || !data) return <Loading />;
 
   const highestBid = data.bid_price ?? data.min_price;
@@ -49,7 +57,7 @@ const MakePrice = () => {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
 
-      //router.push(`/auction/${shortId}`);
+      router.push(`/auction/${shortId}`);
       toast({ content: '제안이 완료되었습니다.' });
       router.refresh();
     } catch (error) {
@@ -70,12 +78,12 @@ const MakePrice = () => {
         <Input
           status={inputStatus}
           errorMessage={errorMessage}
-          value={price}
+          value={formattedPrice}
           onChange={(e) => {
-            const input = e.target.value;
-            setPrice(input);
+            const rawValue = e.target.value.replaceAll(',', '');
+            setPrice(rawValue);
 
-            const parsed = parseInt(input, 10);
+            const parsed = parseInt(rawValue, 10);
             if (isNaN(parsed) || parsed < highestBid) {
               setInputStatus('error');
               setErrorMessage('최고 입찰가보다 높게 제안해 주세요.');

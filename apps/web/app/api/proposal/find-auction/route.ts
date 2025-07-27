@@ -35,23 +35,6 @@ export async function GET(request: NextRequest) {
     .eq('auction_id', auctionId)
     .single();
 
-  // .from('proposal')
-  // .select(
-  //   `
-  //     *,
-  //     auction:proposal_auction_id_fkey(
-  //       *,
-  //       product:product_id(
-  //         *,
-  //         product_image:product_image!product_image_product_id_fkey(*)
-  //       )
-  //     ),
-  //     proposer_id:proposal_proposer_id_fkey(*)
-  //   `
-  // )
-  // .eq("auction_id", auctionId)
-  // .order("created_at", { ascending: false });
-
   if (error || !data) {
     return NextResponse.json(
       { success: false, message: '상품 불러오기 실패', error },
