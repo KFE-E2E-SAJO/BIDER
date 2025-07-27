@@ -1,6 +1,6 @@
 import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import ProposalTopTabs from '@/features/proposal/list/ui/ProposalTopTabs';
-import ReceivedContents from './ReceivedContents';
+import ReceivedContents from '@/features/proposal/list/ui/ReceivedContents';
 
 const ReceivedProposal = () => {
   const items = [
