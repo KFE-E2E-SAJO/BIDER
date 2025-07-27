@@ -5,7 +5,7 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { Input } from '@repo/ui/components/Input/Input';
 import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-import { useTargetProduct } from '@/features/proposal/shared/model/useTargetProduct';
+import { useTargetProduct } from '@/features/proposal/make/model/useTargetProduct';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { useState } from 'react';

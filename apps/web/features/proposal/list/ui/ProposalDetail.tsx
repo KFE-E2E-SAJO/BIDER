@@ -1,5 +1,5 @@
 const ProposalDetail = () => {
-  return <div>수락거절</div>;
+  return <div></div>;
 };
 
 export default ProposalDetail;

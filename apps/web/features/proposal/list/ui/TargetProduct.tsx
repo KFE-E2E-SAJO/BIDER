@@ -1,9 +1,8 @@
 'use client';
 
 import { useAuthStore } from '@/shared/model/authStore';
-import Loading from '@/shared/ui/Loading/Loading';
-import { useTargetProduct } from '@/features/proposal/shared/model/useTargetProduct';
 import { useParams } from 'next/navigation';
+import { useTargetProduct } from '@/features/proposal/make/model/useTargetProduct';
 
 const TargetProduct = () => {
   const userId = useAuthStore((state) => state.user?.id) as string;

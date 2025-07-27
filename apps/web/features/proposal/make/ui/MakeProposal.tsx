@@ -1,5 +1,5 @@
 import MakePrice from '@/features/proposal/make/ui/MakePrice';
-import TargetProduct from '@/features/proposal/shared/ui/TargetProduct';
+import TargetProduct from '@/features/proposal/make/ui/TargetProduct';
 
 const MakeProposal = () => {
   return (

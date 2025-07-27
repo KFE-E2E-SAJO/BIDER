@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import getProposalPrice from '@/features/proposal/make/model/getProposalPrice';
 import { ProposalPriceParams } from '@/features/proposal/make/types';
+import getProposalPrice from '@/features/proposal/make/model/getProposalPrice';
 
 export const useProposalPrice = (params: ProposalPriceParams) => {
   return useQuery({

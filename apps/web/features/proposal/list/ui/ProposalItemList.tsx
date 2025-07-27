@@ -18,6 +18,7 @@ const ProposalItemList = ({ data }: { data: ProposalItem[] }) => {
                   src={item.auction.product.product_image?.[0]?.image_url ?? ''}
                   alt={item.auction.product.title}
                   fill
+                  sizes=""
                   className="rounded-[3px] object-cover object-center"
                 />
               </div>
