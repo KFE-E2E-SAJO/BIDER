@@ -40,8 +40,7 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
         <MyPageMenuItem label="등급" href="/mypage/grade" onClick={handleComingSoonClick} />
         <MyPageMenuItem
           label="내 위치 수정"
-          href="/setLocation"
-          onClick={handleComingSoonClick}
+          href="/update-location"
           rightElement={
             <Button
               shape="rounded"

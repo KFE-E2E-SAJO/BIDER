@@ -13,10 +13,8 @@ const useProductListErrorHandler = (isError: boolean, error: ProductListError | 
 
     if (code === 'NO_USER_ID') {
       toast({ content: message });
-      router.replace('/login');
     } else if (code === 'NO_USER_LOCATION') {
       toast({ content: message });
-      router.replace('/setLocation');
     } else {
       toast({ content: message || '알 수 없는 오류가 발생했습니다.' });
       router.replace('/login');

@@ -65,13 +65,13 @@ export async function handleRedirect(request: NextRequest) {
       if (hasAddress) {
         return NextResponse.redirect(new URL('/', request.url));
       } else {
-        return NextResponse.redirect(new URL('/setLocation', request.url));
+        return NextResponse.redirect(new URL('/set-location', request.url));
       }
     }
     return supabaseResponse;
   }
 
-  if (redirectPage.startsWith('/setLocation')) {
+  if (redirectPage.startsWith('/set-location')) {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL('/splash/welcome', request.url));
     }
@@ -86,7 +86,7 @@ export async function handleRedirect(request: NextRequest) {
       return NextResponse.redirect(new URL('/splash/welcome', request.url));
     }
     if (isLoggedIn && !hasAddress) {
-      return NextResponse.redirect(new URL('/setLocation', request.url));
+      return NextResponse.redirect(new URL('/set-location', request.url));
     }
     return supabaseResponse;
   }
@@ -96,7 +96,7 @@ export async function handleRedirect(request: NextRequest) {
       return NextResponse.redirect(new URL('/splash/welcome', request.url));
     }
     if (isLoggedIn && !hasAddress) {
-      return NextResponse.redirect(new URL('/setLocation', request.url));
+      return NextResponse.redirect(new URL('/set-location', request.url));
     }
     return supabaseResponse;
   }
@@ -139,7 +139,7 @@ export async function handleRedirect(request: NextRequest) {
       if (hasAddress) {
         return NextResponse.redirect(new URL('/', request.url));
       } else {
-        return NextResponse.redirect(new URL('/setLocation', request.url));
+        return NextResponse.redirect(new URL('/set-location', request.url));
       }
     }
   }

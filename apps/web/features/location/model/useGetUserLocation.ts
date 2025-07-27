@@ -1,11 +1,15 @@
 import { getUserLocation } from '@/features/location/api/getUserLocation';
-import { Location } from '@/features/location/types';
-import { useQuery } from '@tanstack/react-query';
+import { LocationWithAddress } from '@/features/location/types';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-export const useGetUserLocation = (userId: string) => {
+export const useGetUserLocation = (
+  userId: string,
+  options?: Partial<UseQueryOptions<LocationWithAddress>>
+) => {
   return useQuery({
-    queryKey: ['userLocation'],
+    queryKey: ['userLocation', userId],
     queryFn: () => getUserLocation(userId),
     enabled: !!userId,
+    ...options,
   });
 };
