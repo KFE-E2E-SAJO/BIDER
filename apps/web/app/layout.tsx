@@ -98,12 +98,14 @@ const RootLayout = ({
   return (
     <html lang="ko">
       <body>
-        <ReactQueryProvider>
-          <div id="container" className="flex min-h-screen flex-col">
-            {children}
-          </div>
-        </ReactQueryProvider>
-        <Toaster />
+        <div className="bg-neutral-0 mx-auto my-0 max-w-[600px]">
+          <ReactQueryProvider>
+            <div id="container" className="flex min-h-screen flex-col">
+              {children}
+            </div>
+          </ReactQueryProvider>
+          <Toaster />
+        </div>
         {process.env.NODE_ENV === 'production' && (
           <Script id="clarity-script" strategy="afterInteractive">
             {`
