@@ -1,13 +1,10 @@
-import { Location, Step } from '@/features/location/types';
+import { Step } from '@/features/location/types';
 import { create } from 'zustand';
 
 type LocationState = {
   step: Step;
+  setStep: (step: Step) => void;
   goNext: () => void;
-  userLocation: Location | null;
-  userAddress: string | null;
-  setUserLocation: (location: Location) => void;
-  setUserAddress: (address: string) => void;
 };
 
 export const useLocationStore = create<LocationState>((set) => ({
@@ -16,8 +13,5 @@ export const useLocationStore = create<LocationState>((set) => ({
     set((state) => ({
       step: state.step === 'intro' ? 'confirm' : state.step === 'confirm' ? 'success' : state.step,
     })),
-  userLocation: null,
-  userAddress: null,
-  setUserLocation: (location) => set({ userLocation: location }),
-  setUserAddress: (address) => set({ userAddress: address }),
+  setStep: (step) => set({ step }),
 }));

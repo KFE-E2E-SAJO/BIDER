@@ -9,3 +9,8 @@ export interface Profiles {
   point: number;
   created_at: string;
 }
+export interface ProfileLocationData {
+  latitude: number;
+  longitude: number;
+  address: string;
+}

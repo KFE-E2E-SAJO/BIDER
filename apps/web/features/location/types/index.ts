@@ -8,3 +8,7 @@ export interface UpdateLocationProps {
   location: Location;
   address: string;
 }
+export type LocationWithAddress = {
+  location: Location;
+  address: string;
+};
