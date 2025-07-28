@@ -50,10 +50,7 @@ export const EmailField = ({
 
   return (
     <div className="flex flex-col">
-      <label
-        htmlFor="email-id"
-        className="typo-subtitle-small-medium mb-[8px] block text-neutral-900"
-      >
+      <label htmlFor="email-id" className="typo-body-bold mb-[8px] block text-neutral-900">
         이메일
         {isEmailVerified && (
           <span className="typo-caption-medium flex text-green-600">
