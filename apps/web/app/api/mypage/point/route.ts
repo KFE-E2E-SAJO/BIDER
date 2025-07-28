@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
   const point =
     bidAmount !== undefined
-      ? getPointValue(reason as PointReason, { bidAmount })
+      ? getPointValue(reason as PointReason, { bidAmount: bidAmount })
       : getPointValue(reason as PointReason);
 
   const { error: pointError } = await supabase.from('point').insert({
