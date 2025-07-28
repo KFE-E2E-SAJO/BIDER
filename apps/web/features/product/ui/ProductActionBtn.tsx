@@ -36,8 +36,10 @@ const ProductActionBtn = ({
   const isListingsPage = pathname === '/auction/listings';
   const [open, setOpen] = useState(false);
 
-  const handleChatClick = () => {
-    isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
+  const handleChatClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast({ content: '준비 중인 기능입니다.' });
+    // isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
   };
   const handleEditClick = () => {
     router.push(`/product/edit/${encodeUUID(itemId)}`);

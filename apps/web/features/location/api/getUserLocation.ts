@@ -1,6 +1,6 @@
-import { Location } from '@/features/location/types';
+import { LocationWithAddress } from '@/features/location/types';
 
-export const getUserLocation = async (userId: string): Promise<Location> => {
+export const getUserLocation = async (userId: string): Promise<LocationWithAddress> => {
   const res = await fetch(`/api/location?userId=${userId}`);
 
   if (!res.ok) {

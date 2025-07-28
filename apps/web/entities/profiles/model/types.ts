@@ -8,3 +8,8 @@ export interface Profiles {
   profile_img?: string;
   created_at: string;
 }
+export interface ProfileLocationData {
+  latitude: number;
+  longitude: number;
+  address: string;
+}

@@ -1,5 +1,7 @@
-import { Location } from '@/features/location/types';
+import { ProfileLocationData } from '@/entities/profiles/model/types';
+import { LocationWithAddress } from '@/features/location/types';
 import { supabase } from '@/shared/lib/supabaseClient';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 interface ErrorResponse {
@@ -10,6 +12,13 @@ interface ErrorResponse {
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { userId, lat, lng, address } = body;
+  const cookieStore = await cookies();
+  cookieStore.set('user-has-address', 'true', {
+    path: '/',
+    expires: new Date('2099-12-31'),
+    sameSite: 'lax',
+    httpOnly: true,
+  });
 
   if (!userId || !lat || !lng || !address) {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
@@ -33,26 +42,37 @@ export async function POST(req: NextRequest) {
 
 export async function GET(
   req: NextRequest
-): Promise<NextResponse<{ data: Location } | ErrorResponse>> {
+): Promise<NextResponse<{ data: LocationWithAddress } | ErrorResponse>> {
   const { searchParams } = req.nextUrl;
   const userId = searchParams.get('userId');
+  const cookieStore = await cookies();
 
   const { data, error } = await supabase
     .from('profiles')
-    .select('latitude, longitude')
+    .select('latitude, longitude, address')
     .eq('user_id', userId)
-    .single();
+    .single<ProfileLocationData>();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  const { latitude, longitude, address } = data;
+  const isValid = latitude != null && longitude != null && address?.trim();
+
+  if (!isValid) {
+    cookieStore.delete('user-has-address');
+  }
+
   const location = {
-    lat: data.latitude,
-    lng: data.longitude,
-  } as Location;
+    lat: latitude,
+    lng: longitude,
+  };
 
   return NextResponse.json({
-    data: location,
+    data: {
+      location,
+      address: data.address,
+    },
   });
 }
