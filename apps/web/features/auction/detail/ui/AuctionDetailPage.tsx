@@ -12,6 +12,7 @@ import ProposalActionButton from './ProposalActionButton';
 
 const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
+  console.log(data);
   return (
     <>
       {/* 경매 상품 내용 */}
@@ -28,7 +29,10 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
             <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
             <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
           </div>
-          {!isProductMine && <ProposalActionButton auctionId={data.auctionId} />}
+          {/* 제안하기 */}
+          {!isProductMine && data.auctionStatus !== '경매 종료' && (
+            <ProposalActionButton auctionId={data.auctionId} userPoint={0} />
+          )}
         </div>
 
         <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
