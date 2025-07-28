@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
-import { create } from 'lodash';
+import { create, update } from 'lodash';
 import { ChatRoomWithProfile } from '@/entities/chatRoom/model/types';
 
 export async function GET(request: NextRequest) {
@@ -129,8 +129,11 @@ export async function POST(req: NextRequest) {
     .from('chat_room')
     .select('*')
     .eq('auction_id', auction_id)
-    .eq('bid_user_id', bid_user_id);
-
+    .or(
+      `and(bid_user_id.eq.${bid_user_id},exhibit_user_id.eq.${exhibit_user_id}),` +
+        `and(bid_user_id.eq.${exhibit_user_id},exhibit_user_id.eq.${bid_user_id})`
+    );
+  console.log('rooms:', rooms);
   if (selectError) {
     return NextResponse.json({ error: selectError.message }, { status: 500 });
   }
@@ -148,6 +151,7 @@ export async function POST(req: NextRequest) {
         auction_id,
         exhibit_user_id,
         bid_user_id,
+        updated_at: new Date().toISOString(),
       },
     ])
     .select()

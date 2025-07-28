@@ -29,9 +29,9 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
   const [plusMode, setPlusMode] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const plusItems = ['location', 'photo', 'file', 'contact'];
-  const selectedUserId = useRecoilValue(selectedUserIdState);
-  const selectedUserIndex = useRecoilValue(selectedUserIndexState);
-  const presence = useRecoilValue(presenceState);
+  //const selectedUserId = useRecoilValue(selectedUserIdState);
+  //const selectedUserIndex = useRecoilValue(selectedUserIndexState);
+  //const presence = useRecoilValue(presenceState);
   const router = useRouter();
   const sendMessageMutation = useSendMessage();
   const messagesEndRef = useRef<HTMLDivElement>(null);

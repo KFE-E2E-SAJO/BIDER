@@ -71,8 +71,12 @@ const Nav = () => {
             className="relative flex w-1/5 flex-col items-center justify-center"
             onClick={(e) => {
               if (label === '채팅') {
-                e.preventDefault();
-                toast({ content: '준비 중인 기능입니다.' });
+                // e.preventDefault();
+                // toast({ content: '준비 중인 기능입니다.' });
+                if (!isChat) {
+                  // 채팅 페이지로 이동
+                  window.location.href = '/chat';
+                }
               }
             }}
           >

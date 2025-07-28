@@ -64,9 +64,9 @@ export default function ChatList() {
   const userId = useAuthStore((state) => state.user?.id);
   const router = useRouter();
   const [selected, setSelected] = useState('all');
-  const [selectedUserId, setSelectedUserId] = useRecoilState(selectedUserIdState);
-  const [selectedUserIndex, setSelectedUserIndex] = useRecoilState(selectedUserIndexState);
-  const [presence, setPresence] = useRecoilState(presenceState);
+  //const [selectedUserId, setSelectedUserId] = useRecoilState(selectedUserIdState);
+  //const [selectedUserIndex, setSelectedUserIndex] = useRecoilState(selectedUserIndexState);
+  //const [presence, setPresence] = useRecoilState(presenceState);
   const DEFAULT_PROFILE_IMG = '/default-profile.png';
   const [swipeStates, setSwipeStates] = useState<ChatItemSwipeState>({});
   const dragStartX = useRef<number | null>(null);
