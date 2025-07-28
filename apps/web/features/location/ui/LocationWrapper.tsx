@@ -3,8 +3,6 @@
 import LocationIntro from '@/features/location/ui/LocationIntro';
 import LocationConfirm from '@/features/location/ui/LocationConfirm';
 import LocationSuccess from '@/features/location/ui/LocationSuccess';
-import { useState } from 'react';
-import { Step } from '@/features/location/types';
 import { useLocationStore } from '@/features/location/model/useLocationStore';
 
 const LocationWrapper = () => {
