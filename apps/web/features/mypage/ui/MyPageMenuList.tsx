@@ -17,7 +17,7 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
         <p className="typo-caption-regular py-[5px] text-neutral-600">내 쇼핑</p>
         <MyPageMenuItem
           label="내 별점"
-          href="/mypage/reviews"
+          href="/"
           onClick={handleComingSoonClick}
           // rightElement={
           //   <StatusBadge
@@ -27,12 +27,14 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
           //   />
           // }
         />
+        {/* /mypage/reviews */}
         <MyPageMenuItem
           label="경매 제안"
-          href="/mypage/proposal/received"
+          href="/"
           withBorder={false}
           onClick={handleComingSoonClick}
         />
+        {/* /mypage/proposal/received */}
       </div>
       <div className="p-box border-t-8 border-neutral-100 py-[15px]">
         <p className="typo-caption-regular py-[5px] text-neutral-600">내 계정 정보</p>
@@ -67,10 +69,11 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
         {/* /support */}
         <MyPageMenuItem
           label="약관 및 정책"
-          href="/terms"
+          href="/"
           withBorder={false}
           onClick={handleComingSoonClick}
         />
+        {/* /terms */}
       </div>
     </div>
   );
