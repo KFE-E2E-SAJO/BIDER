@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '../supabase/server';
 
 export async function handleRedirect(request: NextRequest) {
   const redirectPage = request.nextUrl.pathname;
@@ -11,37 +11,14 @@ export async function handleRedirect(request: NextRequest) {
     return NextResponse.json({ error: 'Missing Supabase environment variables' }, { status: 500 });
   }
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_KEY!,
-    {
-      cookies: {
-        // 쿠키 읽기
-        getAll() {
-          return request.cookies.getAll();
-        },
-
-        // 쿠키 쓰기(토큰 자동 갱신)
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            request.cookies.set(name, value);
-          });
-          supabaseResponse = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+  const supabase = await createClient();
 
   // JWT 토큰 검증
   const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const user = session?.user;
   const isLoggedIn = !!user;
 
   const userHasAddress = request.cookies.get('user-has-address');
@@ -148,5 +125,5 @@ export async function handleRedirect(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|auth|.*\\.css|.*\\.js|.*\\.map).*)'],
+  matcher: ['/((?!api|_next|favicon.ico).*)'],
 };
