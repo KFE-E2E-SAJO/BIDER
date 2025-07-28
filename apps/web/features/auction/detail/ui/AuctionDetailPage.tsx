@@ -102,11 +102,11 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
           </div>
           <BiddingStatusBoard
             data={data.bidHistory}
+            auctionId={data.auctionId}
             onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
           />
         </div>
       )}
-
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       {/* 판매자 정보 */}

@@ -35,7 +35,7 @@ export interface AuctionForBid {
 
 export type AuctionForList = Pick<
   Auction,
-  'auction_id' | 'product_id' | 'auction_status' | 'min_price' | 'auction_end_at'
+  'auction_id' | 'product_id' | 'auction_status' | 'min_price' | 'auction_end_at' | 'created_at'
 >;
 
 export type MapAuction = Pick<Auction, 'auction_id' | 'product_id'>;
