@@ -1,10 +1,18 @@
-export const createPointByReason = async (reason: string) => {
+export const createPointByReason = async (
+  reason: string,
+  targetUser: string,
+  bidAmount?: number
+) => {
+  const body = JSON.stringify(
+    bidAmount !== undefined ? { reason, targetUser, bidAmount } : { reason, targetUser }
+  );
+
   const response = await fetch(`/api/mypage/point`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: reason,
+    body,
   });
   const result = await response.json();
 

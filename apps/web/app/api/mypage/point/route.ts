@@ -5,18 +5,25 @@ import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
-  const authSupabase = await createClient();
-  const {
-    data: { session },
-  } = await authSupabase.auth.getSession();
-  const reason = await req.text();
-  const point = getPointValue(reason as PointReason);
+  const body = await req.json();
+  const reason = body.reason;
+  const bidAmount = body.bidAmount;
+  let targetUser = body.targetUser;
 
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { success: false, message: '로그인 정보가 없습니다.' },
-      { status: 401 }
-    );
+  if (targetUser === 'loginUser') {
+    const authSupabase = await createClient();
+    const {
+      data: { session },
+    } = await authSupabase.auth.getSession();
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, message: '로그인 정보가 없습니다.' },
+        { status: 401 }
+      );
+    }
+
+    targetUser = session?.user.id;
   }
 
   if (!validateReason(reason)) {
@@ -26,8 +33,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const point =
+    bidAmount !== undefined
+      ? getPointValue(reason as PointReason, { bidAmount })
+      : getPointValue(reason as PointReason);
+
   const { error: pointError } = await supabase.from('point').insert({
-    user_id: session?.user.id,
+    user_id: targetUser,
     point: point,
     reason: reason,
   });
@@ -37,7 +49,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { error: profileError } = await supabase.rpc('update_user_point', {
-    p_user_id: session.user.id,
+    p_user_id: targetUser,
     amount: point,
   });
 
