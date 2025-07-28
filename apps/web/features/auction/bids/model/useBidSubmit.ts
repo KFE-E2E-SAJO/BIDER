@@ -2,12 +2,13 @@ import { useAuthStore } from '@/shared/model/authStore';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { parseBidPrice, validateBidPrice } from '../lib/utils';
 import { submitBid } from '../api/doBid';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { BidResponse, SubmitBidContext } from '../types';
 import { useBidStore } from '@/features/auction/bids/model/bidStore';
 import { useRouter } from 'next/navigation';
 
 export const useBidSubmit = (shortId: string) => {
+  const queryClient = useQueryClient();
   const user = useAuthStore();
   const router = useRouter();
   const { setBidInfo } = useBidStore();
@@ -29,6 +30,10 @@ export const useBidSubmit = (shortId: string) => {
       });
     },
     onSuccess: (result, _, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ['auctionDetail', shortId],
+      });
+
       const bidData = result.bidData;
       if (bidData) {
         setBidInfo({
