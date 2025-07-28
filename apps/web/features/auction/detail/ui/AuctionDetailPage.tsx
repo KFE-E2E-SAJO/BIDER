@@ -12,7 +12,6 @@ import ProposalActionButton from './ProposalActionButton';
 
 const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
-  console.log(data);
   return (
     <>
       {/* 경매 상품 내용 */}

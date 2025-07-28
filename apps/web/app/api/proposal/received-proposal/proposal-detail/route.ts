@@ -49,8 +49,6 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { proposalId, proposalStatus, userId } = body;
 
-  console.log(proposalId, proposalStatus, userId);
-
   if (!proposalId || !proposalStatus || !userId) {
     return NextResponse.json(
       { success: false, message: '필수 정보가 누락되었습니다.' },
