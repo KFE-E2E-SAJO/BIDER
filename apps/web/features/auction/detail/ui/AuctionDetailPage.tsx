@@ -83,6 +83,7 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
         </div>
         <BiddingStatusBoard
           data={data.bidHistory}
+          auctionId={data.auctionId}
           onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
         />
       </div>

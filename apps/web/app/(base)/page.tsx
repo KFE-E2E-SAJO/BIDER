@@ -36,20 +36,24 @@ const HomePage = () => {
   });
 
   if (isLoading || isUserLocationLoading || isMarkerLoading) return <Loading />;
+
+  const location = userLocationData?.location;
+  const address = userLocationData?.address;
+
   return (
     <>
-      {showMap && userLocationData && (
+      {showMap && location && (
         <GoogleMapView
           mapId="productList"
           height="h-[300px]"
-          location={userLocationData}
+          location={location}
           showMyLocation={false}
           markers={productMarkers}
           showMarkers={true}
         />
       )}
       <div className="p-box my-[21px] flex items-center justify-between">
-        <LocationPin />
+        <LocationPin address={address} />
         <ProductSortDropdown setSort={setSort} />
       </div>
       <div

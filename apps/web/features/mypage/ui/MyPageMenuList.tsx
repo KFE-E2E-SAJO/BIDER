@@ -17,7 +17,7 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
         <p className="typo-caption-regular py-[5px] text-neutral-600">내 쇼핑</p>
         <MyPageMenuItem
           label="내 별점"
-          href="/mypage/reviews"
+          href="/"
           onClick={handleComingSoonClick}
           // rightElement={
           //   <StatusBadge
@@ -27,16 +27,22 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
           //   />
           // }
         />
-        <MyPageMenuItem label="경매 제안" href="/mypage/proposal/received" withBorder={false} />
+        <MyPageMenuItem
+          label="경매 제안"
+          href="/mypage/proposal/received"
+          withBorder={false}
+          onClick={handleComingSoonClick}
+        />
       </div>
       <div className="p-box border-t-8 border-neutral-100 py-[15px]">
         <p className="typo-caption-regular py-[5px] text-neutral-600">내 계정 정보</p>
-        <MyPageMenuItem label="포인트" href="/mypage/point" onClick={handleComingSoonClick} />
-        <MyPageMenuItem label="등급" href="/mypage/grade" onClick={handleComingSoonClick} />
+        <MyPageMenuItem label="포인트" href="/" onClick={handleComingSoonClick} />
+        {/* /mypage/point */}
+        <MyPageMenuItem label="등급" href="/" onClick={handleComingSoonClick} />
+        {/* mypage/grade */}
         <MyPageMenuItem
           label="내 위치 수정"
-          href="/setLocation"
-          onClick={handleComingSoonClick}
+          href="/update-location"
           rightElement={
             <Button
               shape="rounded"
@@ -48,21 +54,24 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
             </Button>
           }
         />
-
         <MyPageMenuItem label="회원 정보 수정" href="/mypage/edit" withBorder={false} />
       </div>
 
       <div className="p-box border-t-8 border-neutral-100 py-[15px]">
         <p className="typo-caption-regular py-[5px] text-neutral-600">고객지원</p>
-        <MyPageMenuItem label="앱 설정" href="/settings" onClick={handleComingSoonClick} />
-        <MyPageMenuItem label="공지사항" href="/notice" onClick={handleComingSoonClick} />
-        <MyPageMenuItem label="고객센터" href="/support" onClick={handleComingSoonClick} />
+        <MyPageMenuItem label="앱 설정" href="/" onClick={handleComingSoonClick} />
+        {/* /settings */}
+        <MyPageMenuItem label="공지사항" href="/" onClick={handleComingSoonClick} />
+        {/* /notice */}
+        <MyPageMenuItem label="고객센터" href="/" onClick={handleComingSoonClick} />
+        {/* /support */}
         <MyPageMenuItem
           label="약관 및 정책"
-          href="/terms"
+          href="/"
           withBorder={false}
           onClick={handleComingSoonClick}
         />
+        {/* /terms */}
       </div>
     </div>
   );
