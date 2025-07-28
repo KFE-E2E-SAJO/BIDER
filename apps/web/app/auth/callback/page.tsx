@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../../shared/lib/supabaseClient';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import { Button } from '@repo/ui/components/Button/Button';
 
 export default function AuthCallback() {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(true);
+  const [isPwa, setIsPwa] = useState(false);
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -95,7 +97,9 @@ export default function AuthCallback() {
               toast({ content: '이메일 인증이 완료되었습니다! 회원가입을 계속 진행해주세요.' });
               window.close();
             } else {
-              router.replace('/signup?verified=true');
+              //여기에 pwa 앱으로 이동할수있게 버튼 생성
+              // router.replace('/signup?verified=true');
+              setIsPwa(true);
             }
           } else {
             toast({ content: '이메일 인증이 완료되지 않았습니다.' });
@@ -145,6 +149,12 @@ export default function AuthCallback() {
           router.replace('/signup');
         }
       } finally {
+        // 인증 처리 끝난 후에 PWA 여부 감지 및 상태 업데이트
+        const isStandalone =
+          window.matchMedia('(display-mode: standalone)').matches ||
+          (navigator as any).standalone === true;
+
+        setIsPwa(isStandalone);
         setIsProcessing(false);
       }
     };
@@ -152,17 +162,33 @@ export default function AuthCallback() {
     handleAuthCallback();
   }, [router]);
 
-  if (!isProcessing) return null;
-
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <div className="mb-4">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+  if (isProcessing) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+          </div>
+          <p className="text-neutral-600">이메일 인증을 처리하고 있습니다...</p>
+          <p className="mt-2 text-sm text-neutral-400">잠시만 기다려주세요.</p>
         </div>
-        <p className="text-neutral-600">이메일 인증을 처리하고 있습니다...</p>
-        <p className="mt-2 text-sm text-neutral-400">잠시만 기다려주세요.</p>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (isPwa) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+          </div>
+          <p className="text-neutral-600">이메일 인증이 완료 되었습니다</p>
+          <Button onClick={() => router.push('/signup?verified=true')}>앱으로 이동하기</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isProcessing) return null;
 }
