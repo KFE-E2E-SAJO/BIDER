@@ -144,7 +144,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
             )}
             <Button
               size="icon"
-              className="absolute right-1 top-1 h-[20px] w-[20px] -translate-y-1/2 translate-x-1/2 rounded-full bg-neutral-800"
+              className="absolute right-1 top-1 size-[20px] -translate-y-1/2 translate-x-1/2 rounded-full bg-neutral-800"
               onClick={() => removeImage(image.id)}
             >
               <X size={12} />

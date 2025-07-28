@@ -10,9 +10,9 @@ const Footer = () => {
   const logout = useAuthStore((state) => state.logout);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await fetch('/api/auth/logout', { method: 'POST' });
     logout();
-    router.replace('/splash');
+    router.replace('/splash/welcome');
   };
 
   return (
