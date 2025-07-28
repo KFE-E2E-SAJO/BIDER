@@ -17,11 +17,14 @@ export const sendEmailVerification = async (email: string) => {
     return `${baseURL}/auth/callback`;
   };
 
+  const redirectURL = getRedirectURL();
+  console.log('redirectURL : ', redirectURL);
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password: 'temp_password',
     options: {
-      emailRedirectTo: `${getRedirectURL()}`,
+      emailRedirectTo: `${redirectURL}`,
     },
   });
 
