@@ -3,7 +3,7 @@ import { ProposalPriceParams } from '@/features/proposal/make/types';
 const getProposalPrice = async (params: ProposalPriceParams) => {
   const { userId, shortId } = params;
 
-  const res = await fetch(`/api/proposal/make-proposal?userId=${userId}&shortId=${shortId}`);
+  const res = await fetch(`/api/auction/${shortId}/proposal?userId=${userId}&shortId=${shortId}`);
   const result = await res.json();
 
   if (!res.ok || !result.success) {

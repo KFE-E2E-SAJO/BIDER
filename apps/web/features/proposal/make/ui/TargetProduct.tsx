@@ -19,7 +19,7 @@ const TargetProduct = () => {
   return (
     <div className="p-box flex gap-[10px] border-b border-t border-neutral-100 py-[13px]">
       <div className="w-[37px]">
-        <img src={data.product.product_image[0].image_url} />
+        <img src={data.product.product_image[data.product.product_image.length - 1].image_url} />
       </div>
       <ul>
         <li className="typo-caption-regular">{data.product.title}</li>

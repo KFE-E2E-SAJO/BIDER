@@ -4,7 +4,7 @@ const getTargetProduct = async (params: ProposalPriceParams) => {
   const { userId, shortId } = params;
 
   const res = await fetch(
-    `/api/proposal/make-proposal/find-auction?userId=${userId}&shortId=${shortId}`
+    `/api/auction/${shortId}/proposal/target-product?userId=${userId}&shortId=${shortId}`
   );
   const result = await res.json();
 

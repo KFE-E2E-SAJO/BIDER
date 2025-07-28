@@ -32,3 +32,8 @@ export interface ProposalItem {
     profile_img: string | null;
   };
 }
+
+export interface ProposalDetailParams {
+  userId: string;
+  proposalId: string;
+}

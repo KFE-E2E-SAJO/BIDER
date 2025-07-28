@@ -1,38 +1,38 @@
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
-import shortUUID from 'short-uuid';
-
-const translator = shortUUID();
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
-  const shortId = searchParams.get('shortId');
+  const proposalId = searchParams.get('proposalId');
 
-  if (!userId || !shortId) {
+  if (!userId || !proposalId) {
     return NextResponse.json(
       { success: false, message: '요청 정보가 부족합니다.' },
       { status: 400 }
     );
   }
 
-  const auctionId = translator.toUUID(shortId);
-
   const { data, error } = await supabase
-    .from('auction')
+    .from('proposal')
     .select(
       `
-      auction_id,
-      product_id,
-      min_price,
-      product:product_id(
-        *,
-        product_image:product_image!product_image_product_id_fkey(*)
-      ),
-       bid_history!auction_id(bid_price)
+      *,
+      auction:proposal_auction_id_fkey(
+        auction_id,
+        min_price,
+        bid_history!auction_id(bid_price),
+        product:product_id(
+          product_id,
+          title,
+          product_image:product_image!product_image_product_id_fkey(image_url),
+            exhibit_user_id
+          )
+        ),
+      proposer_id:proposal_proposer_id_fkey(nickname, profile_img, user_id)    
     `
     )
-    .eq('auction_id', auctionId)
+    .eq('proposal_id', proposalId)
     .single();
 
   if (error || !data) {
