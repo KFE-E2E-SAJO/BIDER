@@ -7,6 +7,6 @@ export const useReceivedProposal = (params: ProposalListParams) => {
     queryKey: ['receivedProposalList', params.userId, params.filter],
     queryFn: () => getReceivedProposal(params),
     enabled: !!params.userId,
-    staleTime: 0,
+    staleTime: 1000 * 10,
   });
 };

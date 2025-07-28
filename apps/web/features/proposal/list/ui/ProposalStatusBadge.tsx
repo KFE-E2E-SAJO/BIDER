@@ -14,7 +14,11 @@ const ProposalStatusBadge = ({ status }: { status: string }) => {
       bgColor = 'warning-light';
       ((textColor = 'warning-medium'), (text = '제안 대기'));
       break;
-    case PROPOSAL_STATUS.EXPIRED || PROPOSAL_STATUS.REJECTED:
+    case PROPOSAL_STATUS.EXPIRED:
+      bgColor = 'neutral-300';
+      ((textColor = 'neutral-700'), (text = '종료'));
+      break;
+    case PROPOSAL_STATUS.REJECTED:
       bgColor = 'neutral-300';
       ((textColor = 'neutral-700'), (text = '종료'));
       break;

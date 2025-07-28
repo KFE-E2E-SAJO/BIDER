@@ -1,4 +1,3 @@
-import StatusBadge from '@/shared/ui/badge/StatusBadge';
 import { Heart, MapPin } from 'lucide-react';
 import { Button } from '@repo/ui/components/Button/Button';
 import MyPageMenuItem from '@/features/mypage/ui/MyPageMenuItem';
@@ -27,12 +26,7 @@ const MyPageMenuList = ({ address }: MyPageMenuListProps) => {
           //   />
           // }
         />
-        <MyPageMenuItem
-          label="경매 제안"
-          href="/mypage/proposal/received"
-          withBorder={false}
-          onClick={handleComingSoonClick}
-        />
+        <MyPageMenuItem label="경매 제안" href="/mypage/proposal/received" withBorder={false} />
       </div>
       <div className="p-box border-t-8 border-neutral-100 py-[15px]">
         <p className="typo-caption-regular py-[5px] text-neutral-600">내 계정 정보</p>

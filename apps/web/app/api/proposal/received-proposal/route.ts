@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
       *,
       auction:proposal_auction_id_fkey(
         auction_id,
+        auction_status,
+        auction_end_at,
         product:product_id(
           product_id,
           title,
