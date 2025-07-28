@@ -11,8 +11,8 @@ import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 
 const PointPageContent = () => {
   const userId = useAuthStore((state) => state.user?.id) as string;
-  const { data: profile, isLoading: profileLoading } = useUserProfile(userId);
-  const { data: pointList, isLoading: listLoading, error } = useGetPointList(userId);
+  const { data: profile, isLoading: profileLoading, error: profileError } = useUserProfile(userId);
+  const { data: pointList, isLoading: listLoading, error: listError } = useGetPointList(userId);
 
   const isLoading = profileLoading || listLoading;
 
@@ -23,6 +23,9 @@ const PointPageContent = () => {
       </div>
     );
   }
+
+  if (profileError) return <p>오류: {(profileError as Error).message}</p>;
+  if (listError) return <p>오류: {(listError as Error).message}</p>;
 
   const items = [
     { value: 'all', label: '전체', content: <PointList filter="all" data={pointList ?? []} /> },

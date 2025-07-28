@@ -19,12 +19,6 @@ export const POINT_REASONS = [
     type: 'earn',
   },
   {
-    label: '거래 후기 작성',
-    value: 'write_review',
-    point: 100,
-    type: 'earn',
-  },
-  {
     label: '회원 가입',
     value: 'signup',
     point: 500,
