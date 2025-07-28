@@ -206,7 +206,8 @@ export async function GET(
   ),
   bid_history!auction_id (
     bid_price
-  )
+  ),
+  created_at
 `);
 
   if (error) {
@@ -247,6 +248,7 @@ export async function GET(
         minPrice: highestBid ?? item.min_price,
         auctionEndAt: item.auction_end_at,
         auctionStatus: item.auction_status,
+        createdAt: item.created_at,
       };
     });
 
@@ -257,7 +259,7 @@ export async function GET(
     if (sort === 'popular') {
       return b.bidCount - a.bidCount;
     } else {
-      return new Date(b.auctionEndAt).getTime() - new Date(a.auctionEndAt).getTime();
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
   });
 
