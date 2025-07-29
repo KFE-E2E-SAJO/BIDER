@@ -38,6 +38,15 @@ export async function POST(req: NextRequest) {
       ? getPointValue(reason as PointReason, { bidAmount: bidAmount })
       : getPointValue(reason as PointReason);
 
+  const { error: profileError } = await supabase.rpc('update_user_point', {
+    p_user_id: targetUser,
+    amount: point,
+  });
+
+  if (profileError) {
+    return NextResponse.json({ success: false, error: profileError.message }, { status: 400 });
+  }
+
   const { error: pointError } = await supabase.from('point').insert({
     user_id: targetUser,
     point: point,
@@ -46,15 +55,6 @@ export async function POST(req: NextRequest) {
 
   if (pointError) {
     return NextResponse.json({ success: false, message: pointError.message });
-  }
-
-  const { error: profileError } = await supabase.rpc('update_user_point', {
-    p_user_id: targetUser,
-    amount: point,
-  });
-
-  if (profileError) {
-    return NextResponse.json({ success: false, message: profileError.message });
   }
 
   return NextResponse.json({ success: true });
