@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { anonSupabase } from '@/shared/lib/supabaseClient';
 import { BidHistory, BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
-import { useQueryClient } from '@tanstack/react-query';
-import { encodeUUID } from '@/shared/lib/shortUuid';
 
 export function useBidHistoryRealtime({
   auctionId,
@@ -11,8 +9,6 @@ export function useBidHistoryRealtime({
   auctionId: string;
   onNewBid: (newBid: BidHistoryWithUserNickname) => void;
 }) {
-  const queryClient = useQueryClient();
-
   useEffect(() => {
     const channel = anonSupabase
       .channel('bid_history_changes')
@@ -26,10 +22,6 @@ export function useBidHistoryRealtime({
         },
         async (payload) => {
           const newBid = payload.new;
-
-          queryClient.invalidateQueries({
-            queryKey: ['auctionDetail', encodeUUID(auctionId)],
-          });
 
           const { data: profiles, error } = await anonSupabase
             .from('profiles')

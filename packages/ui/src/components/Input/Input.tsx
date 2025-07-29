@@ -51,6 +51,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onChange?.(e);
     };
 
+    const getToday = () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    };
+
     const getInputStyles = () => {
       const baseStyles = cn(
         'placeholder:text-neutral-600 dark:bg-input/30',
@@ -122,6 +130,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                   ? { letterSpacing: '0.16rem', paddingLeft: '1rem', display: 'block' }
                   : {}
             }
+            min={type === 'date' ? getToday() : props.min}
             {...props}
           />
         </div>
