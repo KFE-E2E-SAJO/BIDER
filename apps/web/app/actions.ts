@@ -1,6 +1,11 @@
 'use server';
 
-import { getPushAlarmMessage } from '@/features/alarm/setting/lib/getPushAlarmMessage';
+import {
+  getPushAlarmMessage,
+  PushAlarmData,
+  PushAlarmType,
+} from '@/features/alarm/setting/lib/getPushAlarmMessage';
+import { createClient } from '@/shared/lib/supabase/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import webpush from 'web-push';
@@ -83,25 +88,8 @@ export async function unsubscribeUser() {
   return { success: true };
 }
 
-export async function sendNotification(type: string, message: string) {
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options);
-          });
-        },
-      },
-    }
-  );
+export async function sendNotification(type: PushAlarmType, subType: string, data: PushAlarmData) {
+  const supabase = await createClient();
 
   const { data: pushToken, error } = await supabase.from('user_push_token').select('*');
 
@@ -119,19 +107,32 @@ export async function sendNotification(type: string, message: string) {
       },
     };
 
-    // const payload = await pushAlarmMessageMap(type, message);
+    const customMessage = getPushAlarmMessage(type, subType, data);
 
     const pushMessage = {
-      title: '알림제목',
-      body: message,
-      image: 'https://yourdomain.com/path/to/bid-photo.jpg', // 입찰 사진
-      time: '2025-07-25 18:30',
-      url: '/mypage',
+      title: customMessage.title,
+      body: customMessage.body,
+      image: 'https://yourdomain.com/path/to/bid-photo.jpg',
+      time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      url: customMessage.link,
     };
+
     const payloadData = JSON.stringify(pushMessage);
 
     try {
       const test = await webpush.sendNotification(subscription, payloadData);
+
+      const { data: AlarmItem, error: insertError } = await supabase.from('alarm').insert({
+        user_id: token.user_id,
+        type: type,
+        title: pushMessage.title,
+        body: pushMessage.body,
+        link: pushMessage.url,
+      });
+
+      if (insertError) {
+        return { success: false, error: 'Alarm DB 추가 실패' };
+      }
     } catch (err: any) {
       console.error('알림 전송 실패:', err);
 
@@ -142,4 +143,6 @@ export async function sendNotification(type: string, message: string) {
       }
     }
   }
+
+  return { success: true };
 }

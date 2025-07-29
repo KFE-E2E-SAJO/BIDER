@@ -1,10 +1,15 @@
-// app/api/send-push/route.ts
 import { NextResponse } from 'next/server';
 import { sendNotification } from '@/app/actions';
 
 export async function POST(request: Request) {
   try {
-    const result = await sendNotification('auction', '새 입찰이 도착했습니다!');
+    const result = await sendNotification('auction', 'bidUpdated', {
+      productName: '노트북',
+      productId: '555',
+      // price: 1000000,
+      // nickname:'개발하다 치친다'
+      image: '이미지 경로',
+    });
 
     // result가 undefined인 경우 기본값 설정
     if (result === undefined || result === null) {
