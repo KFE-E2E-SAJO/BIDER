@@ -95,12 +95,14 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
     if (e) {
       e.preventDefault();
     }
-
-    if (!userId || !roomId || !input.trim()) return;
-
+    const trimmed = input.trim();
+    if (!userId || !roomId || trimmed.length === 0) {
+      // 빈 입력 방지: 공백만 입력 시 아무 동작 X
+      return;
+    }
     try {
       await sendMessageMutation.mutateAsync({
-        content: input.trim(),
+        content: trimmed,
         userId,
         chatroomId: roomId,
       });
@@ -311,6 +313,12 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
                 onChange={(e) => {
                   setInput(e.target.value);
                 }}
+                // 아래 두 줄로 엔터/버튼 모두 빈 메시지 방지!
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && input.trim().length === 0) {
+                    e.preventDefault(); // 엔터 막기!
+                  }
+                }}
                 disabled={sendMessageMutation.isPending}
               />
             </div>
@@ -322,7 +330,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
             className={`ml-1 flex-shrink-0 ${
               input.length > 0 ? 'text-blue-400' : 'text-gray-400'
             } transition hover:text-blue-500`}
-            disabled={sendMessageMutation.isPending || !input.trim()}
+            disabled={sendMessageMutation.isPending || input.trim().length === 0}
           >
             <svg
               width={26}

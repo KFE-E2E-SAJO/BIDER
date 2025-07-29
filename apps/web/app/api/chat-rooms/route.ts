@@ -71,14 +71,6 @@ export async function GET(request: NextRequest) {
       unreadCountMap[id] = unread;
     });
 
-    // 3. 안읽은 메시지 읽음처리
-    await supabase
-      .from('message')
-      .update({ is_read: true })
-      .in('chatroom_id', chatRoomIds)
-      .eq('is_read', false)
-      .neq('sender_id', userId);
-
     // 4. 최종 데이터 가공 (채팅방별 대표이미지, 프로필, 최신메시지 등)
     const result = chatRooms.map((room: any) => {
       const productImages = room.auction?.product?.product_image ?? [];

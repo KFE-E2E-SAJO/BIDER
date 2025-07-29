@@ -183,10 +183,7 @@ export default function ChatList() {
           if (selected === 'sell') return chat.buyer.user_id === userId;
           if (selected === 'buy') return chat.seller.user_id === userId;
           if (selected === 'unread') {
-            return (
-              chat.messages &&
-              chat.messages.some((msg: any) => !msg.is_read && msg.sender_id !== userId)
-            );
+            return chat.unread > 0;
           }
           return true;
         })
@@ -242,6 +239,12 @@ export default function ChatList() {
 
               const myProfile = isSeller ? chat.seller : isBuyer ? chat.buyer : null; // 혹시 seller/buyer가 아닌 경우는 null
               const otherProfile = isSeller ? chat.buyer : isBuyer ? chat.seller : null;
+
+              const unread = Array.isArray(chat.messages)
+                ? chat.messages.filter((msg: any) => !msg.is_read && msg.sender_id !== userId)
+                    .length
+                : 0;
+
               return (
                 <div
                   key={chat.chatroom_id}

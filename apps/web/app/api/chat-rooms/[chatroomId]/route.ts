@@ -77,6 +77,14 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
     return NextResponse.json({ error: msgError.message }, { status: 500 });
   }
 
+  // 3. 안읽은 메시지 읽음처리
+  await supabase
+    .from('message')
+    .update({ is_read: true })
+    .eq('chatroom_id', chatroomId)
+    .eq('is_read', false)
+    .neq('sender_id', userId);
+
   // 최신 메시지/안읽은 개수
   const latestMessage = messages?.[messages.length - 1] || null;
   const unreadCount =
@@ -159,6 +167,9 @@ export async function POST(req: NextRequest, { params }: { params: { chatroomId:
       })
       .select();
 
+    if (!content || !content.trim()) {
+      return NextResponse.json({ error: '메시지는 비어 있을 수 없습니다.' }, { status: 400 });
+    }
     if (sendMessageError) {
       console.error('Message send error:', sendMessageError);
       return NextResponse.json({ error: sendMessageError.message }, { status: 500 });
