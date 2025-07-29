@@ -26,10 +26,10 @@ const ProposalItemList = ({ data }: { data: ProposalItem[] }) => {
               />
             </div>
 
-            <div className="flex flex-1 flex-col justify-between text-neutral-900">
+            <div>
               <div>{item.auction.product.title}</div>
               <div>
-                <p className="text-[10px] text-neutral-600">받은 제안가</p>
+                <p className="mt-[17px] text-[10px] text-neutral-600">받은 제안가</p>
                 <div className="align-center flex">
                   <div className="typo-body-bold">
                     {item.proposed_price.toLocaleString()}

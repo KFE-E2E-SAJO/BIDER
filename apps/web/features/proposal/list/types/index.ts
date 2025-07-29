@@ -12,7 +12,7 @@ export interface ProposalItem {
   proposal_id: string;
   auction_id: string;
   proposed_price: number;
-  proposal_status: 'pending' | 'accepted' | 'rejected' | 'expired';
+  proposal_status: 'pending' | 'accepted' | 'rejected';
   created_at: string;
   responded_at: string | null;
 

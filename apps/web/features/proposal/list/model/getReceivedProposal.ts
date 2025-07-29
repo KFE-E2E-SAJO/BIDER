@@ -20,9 +20,7 @@ const getReceivedProposal = async (params: ProposalListParams) => {
       case 'accepted':
         return proposal.proposal_status === PROPOSAL_STATUS.ACCEPTED;
       case 'ended':
-        return [PROPOSAL_STATUS.REJECTED, PROPOSAL_STATUS.EXPIRED].includes(
-          proposal.proposal_status
-        );
+        return proposal.proposal_status === PROPOSAL_STATUS.REJECTED;
       case 'all':
       default:
         return true;
