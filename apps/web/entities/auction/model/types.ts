@@ -39,3 +39,15 @@ export type AuctionForList = Pick<
 >;
 
 export type MapAuction = Pick<Auction, 'auction_id' | 'product_id'>;
+
+export type SecretViewHistory =
+  | {
+      hasPaid: false;
+      isValid: false;
+      viewedAt?: never;
+    }
+  | {
+      hasPaid: true;
+      isValid: boolean;
+      viewedAt: string;
+    };

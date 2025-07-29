@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { BidDialog } from '../../bids/ui/BidDialog';
 import { BottomBarProps } from '../types';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import clsx from 'clsx';
 
 const BottomBar = ({
   shortId,
@@ -32,8 +33,10 @@ const BottomBar = ({
 
   if (!hasMounted) return null;
 
-  const pointColor = isSecret ? 'event' : 'main';
   const buttonText = isSecret ? '시크릿 입찰하기' : '입찰하기';
+  const bgColorClass = isSecret ? 'bg-event' : 'bg-main';
+  const borderColorClass = isSecret ? 'border-event' : 'border-main';
+  const iconColorClass = isSecret ? 'text-event' : 'text-main';
 
   return (
     <div className="bg-neutral-0 fixed bottom-0 left-0 z-50 h-[102px] w-full border-t border-neutral-100 px-[16px] pt-[15px]">
@@ -47,17 +50,17 @@ const BottomBar = ({
           <Button
             onClick={() => setOpenBiddingSheet(true)}
             disabled={countdown === '마감됨'}
-            className={`w-[142px] bg-${pointColor}`}
+            className={clsx('w-[142px]', bgColorClass)}
           >
             {buttonText}
           </Button>
 
           <Button
             variant="outline"
-            className={`w-[53px] border-[1.5px] border-${pointColor}`}
+            className={clsx('w-[53px] border-[1.5px]', borderColorClass)}
             onClick={() => toast({ content: '준비 중인 기능입니다.' })}
           >
-            <MessageSquareMore className={`text-${pointColor}`} strokeWidth={1.5} />
+            <MessageSquareMore className={clsx(iconColorClass)} strokeWidth={1.5} />
           </Button>
         </div>
       </div>
