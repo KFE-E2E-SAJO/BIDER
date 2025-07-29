@@ -6,6 +6,7 @@ export interface Profiles {
   longitude?: number;
   address?: string;
   profile_img?: string;
+  point: number;
   created_at: string;
 }
 export interface ProfileLocationData {
