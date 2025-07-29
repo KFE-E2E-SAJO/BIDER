@@ -30,7 +30,7 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
           </div>
           {/* 제안하기 */}
           {!isProductMine && data.auctionStatus !== '경매 종료' && (
-            <ProposalActionButton auctionId={data.auctionId} userPoint={0} />
+            <ProposalActionButton auctionId={data.auctionId} />
           )}
         </div>
 

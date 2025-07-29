@@ -7,22 +7,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@repo/ui/components/Dialog/Dialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useRouter } from 'next/navigation';
 
-const ProposalActionButton = ({
-  auctionId,
-  userPoint,
-}: {
-  auctionId: string;
-  userPoint: number;
-}) => {
+const ProposalActionButton = ({ auctionId }: { auctionId: string }) => {
   const [open, setOpen] = useState(false);
+  const [userPoint, setUserPoint] = useState<number | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchUserPoint = async () => {
+      const res = await fetch('/api/mypage/point');
+      const result = await res.json();
+
+      if (res.ok && Array.isArray(result) && result.length > 0) {
+        setUserPoint(result[0].point);
+      } else {
+        setUserPoint(0);
+      }
+    };
+
+    fetchUserPoint();
+  }, []);
+
   const handleClick = () => {
-    if (userPoint >= 100) {
+    if ((userPoint ?? 0) >= 100) {
       router.push(`/auction/${encodeUUID(auctionId)}/proposal`);
     } else {
       setOpen(true);
