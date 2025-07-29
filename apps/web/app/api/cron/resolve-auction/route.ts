@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
+import { createPointByReason } from '@/features/point/api/createPointByReason';
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,8 +9,16 @@ export async function GET(request: NextRequest) {
 
     const { data: auctions, error: fetchError } = await supabase
       .from('auction')
-      .select('*')
-      .lte('auction_end_at', now); // 경매 시간이 지난 것들
+      .select(
+        `
+        *,
+        product (
+          exhibit_user_id
+        )
+      `
+      )
+      .lte('auction_end_at', now) // 경매 시간이 지난 것들
+      .eq('auction_status', '경매 중');
 
     if (fetchError) {
       console.error('auction 조회 실패:', fetchError);
@@ -56,12 +65,15 @@ export async function GET(request: NextRequest) {
             }
           } else {
             // 낙찰 처리
+            const winning_bid = bidHistory[0];
+            const winning_user_id = winning_bid.bid_user_id;
+
             const { error: auctionUpdateError } = await supabase
               .from('auction')
               .update({
                 auction_status: '경매 종료',
-                winning_bid_user_id: bidHistory[0].bid_user_id,
-                winning_bid_id: bidHistory[0].bid_id,
+                winning_bid_user_id: winning_user_id,
+                winning_bid_id: winning_bid.bid_id,
                 updated_at: new Date().toISOString(),
               })
               .eq('auction_id', auction.auction_id);
@@ -75,10 +87,26 @@ export async function GET(request: NextRequest) {
               .update({
                 is_awarded: true,
               })
-              .eq('bid_id', bidHistory[0].bid_id);
+              .eq('bid_id', winning_bid.bid_id);
 
             if (bidHistoryError) {
               throw new Error(`낙찰 상태 업데이트 실패: ${bidHistoryError.message}`);
+            }
+
+            try {
+              await createPointByReason('deal_complete_seller', auction.product.exhibit_user_id);
+            } catch (error) {
+              console.error('출품자 포인트 지급 실패:', error);
+            }
+
+            try {
+              await createPointByReason(
+                'deal_complete_buyer',
+                winning_user_id,
+                winning_bid.bid_price
+              );
+            } catch (error) {
+              console.error('낙찰자 포인트 지급 실패:', error);
             }
           }
 
