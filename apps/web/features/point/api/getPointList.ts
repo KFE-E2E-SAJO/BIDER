@@ -1,11 +1,10 @@
 import { Point } from '@/entities/point/model/types';
 
-export const getPointList = async (userId: string): Promise<Point[] | []> => {
+export const getPointList = async (): Promise<Point[] | []> => {
   const res = await fetch(`/api/mypage/point`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-User-Id': userId,
     },
   });
 

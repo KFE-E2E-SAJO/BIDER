@@ -61,7 +61,19 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const userId = req.headers.get('x-user-id');
+  const authSupabase = await createClient();
+  const {
+    data: { session },
+  } = await authSupabase.auth.getSession();
+
+  if (!session?.user?.id) {
+    return NextResponse.json(
+      { success: false, message: '로그인 정보가 없습니다.' },
+      { status: 401 }
+    );
+  }
+
+  const userId = session.user.id;
 
   const { data, error } = await supabase
     .from('point')

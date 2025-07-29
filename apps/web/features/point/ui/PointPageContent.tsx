@@ -8,8 +8,6 @@ import { useUserProfile } from '../model/useUserProfile';
 import { useGetPointList } from '../model/useGetPointList';
 import Loading from '@/shared/ui/Loading/Loading';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
-import { Button } from '@repo/ui/components/Button/Button';
-import { createPointByReason } from '../api/createPointByReason';
 
 const PointPageContent = () => {
   const userId = useAuthStore((state) => state.user?.id) as string;

@@ -1,9 +1,8 @@
-export const getUserPoint = async (userId: string) => {
+export const getUserPoint = async () => {
   const res = await fetch(`/api/profile`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-User-Id': userId,
     },
   });
 

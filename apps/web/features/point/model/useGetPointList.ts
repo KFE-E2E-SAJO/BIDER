@@ -5,7 +5,7 @@ import { getPointList } from '../api/getPointList';
 export const useGetPointList = (userId: string) => {
   return useQuery<Point[] | []>({
     queryKey: ['pointList', userId],
-    queryFn: () => getPointList(userId),
+    queryFn: () => getPointList(),
     enabled: !!userId,
     staleTime: 1000 * 60 * 1,
   });
