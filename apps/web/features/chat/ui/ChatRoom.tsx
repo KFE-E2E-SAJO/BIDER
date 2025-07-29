@@ -237,7 +237,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
         {/* 자동스크롤 포커스 */}
         <div ref={messagesEndRef} />
 
-        <div className="flex flex-1 flex-col gap-3 bg-white px-4 py-3">
+        <div className="flex flex-1 flex-col gap-3 bg-white px-4 py-3 pb-20">
           {grouped.map((group, idx) => (
             <React.Fragment key={group.date}>
               {/* 날짜 구분선 */}
