@@ -245,6 +245,17 @@ export default function ChatList() {
                     .length
                 : 0;
 
+              const latestMessage = chat.latestMessage;
+              const isMyMessage = latestMessage?.sender_id === userId;
+
+              // 내가 보낸 메시지면 항상 회색
+              // 상대가 보냈고 아직 is_read가 false면 검정(안읽음), 아니면 회색(읽음)
+              let previewTextClass = 'text-gray-400';
+              if (!isMyMessage) {
+                previewTextClass =
+                  latestMessage?.is_read === false ? 'text-black' : 'text-gray-400';
+              }
+
               return (
                 <div
                   key={chat.chatroom_id}
@@ -324,7 +335,7 @@ export default function ChatList() {
                         )}
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <span className="block w-44 truncate text-xs text-gray-500">
+                        <span className={`block w-44 truncate text-xs ${previewTextClass} `}>
                           {chat.latestMessage?.content || '메시지가 없습니다.'}
                         </span>
                         <div className="flex items-center gap-0.5">
