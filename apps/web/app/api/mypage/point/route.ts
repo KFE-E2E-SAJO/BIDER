@@ -70,8 +70,7 @@ export async function GET(req: NextRequest) {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('포인트 내역 API 실패:', error);
-    return null;
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 
   return NextResponse.json(data);
