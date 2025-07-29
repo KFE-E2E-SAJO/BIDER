@@ -3,20 +3,14 @@ import { getDistanceKm } from '@/features/product/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { MapAuction } from '@/entities/auction/model/types';
 import { ProductForMapList } from '@/entities/product/model/types';
+import getUserId from '@/shared/lib/getUserId';
 
 type MapAuctuionFromDB = MapAuction & {
   product: ProductForMapList;
 };
 
-export async function GET(req: NextRequest) {
-  const userId = req.nextUrl.searchParams.get('userId');
-
-  if (!userId || userId === 'undefined') {
-    return NextResponse.json(
-      { error: '로그인이 필요합니다.', code: 'NO_USER_ID' },
-      { status: 401 }
-    );
-  }
+export async function GET() {
+  const userId = await getUserId();
 
   const { data: userData, error: userError } = await supabase
     .from('profiles')

@@ -1,5 +1,6 @@
 import { ProfileLocationData } from '@/entities/profiles/model/types';
 import { LocationWithAddress } from '@/features/location/types';
+import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -40,11 +41,8 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ success: true });
 }
 
-export async function GET(
-  req: NextRequest
-): Promise<NextResponse<{ data: LocationWithAddress } | ErrorResponse>> {
-  const { searchParams } = req.nextUrl;
-  const userId = searchParams.get('userId');
+export async function GET(): Promise<NextResponse<{ data: LocationWithAddress } | ErrorResponse>> {
+  const userId = await getUserId();
   const cookieStore = await cookies();
 
   const { data, error } = await supabase
