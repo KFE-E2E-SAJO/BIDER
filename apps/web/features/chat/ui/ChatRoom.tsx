@@ -60,7 +60,6 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
       : null;
 
   const messages = (roomData as any)?.messages || [];
-  console.log('otherProfile: ', otherProfile);
 
   // 1. 날짜 문자열로 변환 함수 (ex: 2025년 7월 21일)
   function getDateStr(date: string) {
@@ -154,7 +153,6 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
   }, []);
 
   const grouped = groupByDate(messages);
-  console.log('roomData:', roomData);
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col bg-white">
       <div className="flex flex-col gap-2 border-b border-t border-neutral-100 px-4 pb-2 pt-4">
