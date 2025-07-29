@@ -1,5 +1,6 @@
 'use Client';
 
+import { createPointByReason } from '@/features/point/api/createPointByReason';
 import { supabase } from './supabaseClient';
 
 export interface SignUpData {
@@ -95,6 +96,12 @@ export const completeSignUp = async ({
 
       if (insertError) {
         return { success: false, error: insertError.message };
+      }
+
+      try {
+        await createPointByReason('signup', user.id);
+      } catch (error) {
+        console.error('회원가입 포인트 지급 실패:', error);
       }
     }
 
