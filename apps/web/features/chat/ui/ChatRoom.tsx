@@ -267,7 +267,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
         </div>
       </div>
 
-      <div className="w-full border-t border-neutral-100 bg-white">
+      <div className="fixed bottom-0 left-0 w-full border-t border-neutral-100 bg-white">
         <form className="flex items-center gap-2 px-2 py-4" onSubmit={handleSendMessage}>
           {!plusMode ? (
             <button
