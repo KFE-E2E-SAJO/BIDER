@@ -1,14 +1,14 @@
 import { InfoWindow, useMap } from '@vis.gl/react-google-maps';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { type Marker, MarkerClusterer } from '@googlemaps/markerclusterer';
-import { ProductMapList } from '@/features/product/types';
 import { MarkerItem } from '@/features/location/ui/MarkerItem';
 import Image from 'next/image';
 import Link from 'next/link';
 import { encodeUUID } from '@/shared/lib/shortUuid';
+import { AuctionMarkerResponse } from '@/features/auction/list/types';
 
 export type MapMarkersProps = {
-  pois: ProductMapList[];
+  pois: AuctionMarkerResponse[];
 };
 
 export const MapMarkers = ({ pois }: MapMarkersProps) => {
@@ -52,7 +52,7 @@ export const MapMarkers = ({ pois }: MapMarkersProps) => {
     setSelectedMarkerKey(null);
   }, []);
 
-  const handleMarkerClick = useCallback((marker: ProductMapList) => {
+  const handleMarkerClick = useCallback((marker: AuctionMarkerResponse) => {
     setSelectedMarkerKey(marker.id);
   }, []);
 

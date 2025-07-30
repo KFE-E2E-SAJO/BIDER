@@ -1,38 +1,44 @@
 'use client';
 
 import Loading from '@/shared/ui/Loading/Loading';
-import { useProductList } from '@/features/product/model/useProductList';
-import LocationPin from '@/features/product/ui/LocationPin';
-import useProductListErrorHandler from '@/features/product/model/useProductListErrorHandler';
-import { useAuthStore } from '@/shared/model/authStore';
-import useVirtualInfiniteScroll from '@/features/product/model/useVirtualInfiniteScroll';
-import ProductListScroll from '@/features/product/ui/ProductListScroll';
-import { useState } from 'react';
-import { ProductFilter as ProductFilterType, ProductSort } from '@/features/product/types';
-import ProductSortDropdown from '@/features/product/ui/ProductSortDropdown';
-import ProductFilter from '@/features/product/ui/ProductFilter';
+import { AuctionFilter as AuctionFilterType, AuctionSort } from '@/features/auction/list/types';
+import useProductListErrorHandler from '@/features/auction/list/model/useAuctionListErrorHandler';
+import useVirtualInfiniteScroll from '@/features/auction/list/model/useVirtualInfiniteScroll';
+import { useMemo, useState } from 'react';
 import CategoryFilter from '@/features/category/ui/CategoryFilter';
+import { useAuctionList } from '@/features/auction/list/model/useAuctionList';
+import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
 import { CategoryValue } from '@/features/category/types';
+import AuctionList from '@/features/auction/list/ui/AuctionList';
+import AuctionFilter from '@/features/auction/list/ui/AuctionFilter';
+import AuctionSortDropdown from '@/features/auction/list/ui/AuctionSortDropdown';
 
 interface ResultSectionProps {
   search: string;
 }
 
 const ResultSection = ({ search }: ResultSectionProps) => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
-  const [sort, setSort] = useState<ProductSort>('latest');
-  const [filter, setFilter] = useState<ProductFilterType[]>(['exclude-ended']);
-  const [cate, setCate] = useState<CategoryValue>('all');
+  const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
+  const [filter, setFilter] = useState<AuctionFilterType[]>(DEFAULT_AUCTION_LIST_PARAMS.filter);
+
+  const [cate, setCate] = useState<CategoryValue>(DEFAULT_AUCTION_LIST_PARAMS.cate);
+
+  const params = useMemo(
+    () => ({ ...DEFAULT_AUCTION_LIST_PARAMS, sort, filter, cate }),
+    [sort, filter, cate]
+  );
 
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useProductList({ userId, search, sort, filter, cate });
+    useAuctionList({
+      params,
+    });
 
   useProductListErrorHandler(isError, error);
 
-  const productList = data?.pages.flatMap((page) => page.data) ?? [];
+  const auctionList = data?.pages.flatMap((page) => page.data) ?? [];
 
   const { parentRef, virtualRows, totalSize } = useVirtualInfiniteScroll({
-    data: productList,
+    data: auctionList,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
@@ -54,8 +60,8 @@ const ResultSection = ({ search }: ResultSectionProps) => {
         style={{ height: 'calc(100vh - 173px)' }}
         className="p-box overflow-auto"
       >
-        <ProductListScroll
-          data={productList}
+        <AuctionList
+          data={auctionList}
           virtualRows={virtualRows}
           totalSize={totalSize}
           isFetchingNextPage={isFetchingNextPage}
@@ -68,13 +74,12 @@ const ResultSection = ({ search }: ResultSectionProps) => {
     <>
       <div className="p-box my-[21px] flex items-center justify-between">
         <div className="flex gap-[11px]">
-          <LocationPin />
           <CategoryFilter setCate={setCate} />
         </div>
 
-        <ProductSortDropdown setSort={setSort} />
+        <AuctionSortDropdown sort={sort} setSort={setSort} />
       </div>
-      <ProductFilter setFilter={setFilter} />
+      <AuctionFilter setFilter={setFilter} />
       {content}
     </>
   );

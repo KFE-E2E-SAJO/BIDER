@@ -26,6 +26,7 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
     images: data.product?.product_image ?? [],
     minPrice: data.min_price,
     auctionEndAt: data.auction_end_at,
+    auctionStatus: data.auction_status,
     exhibitUser: data.product?.exhibit_user,
     currentHighestBid: data.current_highest_bid || data.min_price,
     bidHistory: data.bid_history,
@@ -41,7 +42,7 @@ const AuctionDetailPage = ({ params }: { params: Promise<{ shortId: string }> })
   return (
     <div className={`flex flex-col gap-[25px] ${isProductMine ? '' : 'pb-[66px]'}`}>
       <ProductImageSlider images={mapped.images} />
-      <AuctionDetail data={mapped} />
+      <AuctionDetail data={mapped} isProductMine={isProductMine} />
       {!isProductMine && (
         <BottomBar
           shortId={resolvedParams.shortId}

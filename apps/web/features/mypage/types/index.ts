@@ -24,6 +24,7 @@ export interface MyPageProfileCardProps {
 
 export interface MyPageMenuListProps {
   address: string;
+  point: number;
 }
 
 export interface MyPageMenuItemProps {
