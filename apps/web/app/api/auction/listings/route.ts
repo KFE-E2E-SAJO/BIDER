@@ -24,15 +24,19 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const { data, error } = await supabase.from('product').select(`
+  const { data, error } = await supabase
+    .from('product')
+    .select(
+      `
     *,
     product_image:product_image!product_image_product_id_fkey(*),
     auction:auction!auction_product_id_fkey(
       *,
       bid_history:BidHistory_auction_id_fkey(*)
     )
-  `);
-
+  `
+    )
+    .order('created_at', { ascending: false });
   if (error || !data) {
     return NextResponse.json(
       { success: false, message: '출품 데이터 로딩 실패', error },
