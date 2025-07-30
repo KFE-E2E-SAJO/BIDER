@@ -17,19 +17,14 @@ const HomePage = async () => {
 
   const dehydratedState = dehydrate(queryClient);
 
-  const initialData = await getAuctionListAction({ params: DEFAULT_AUCTION_LIST_PARAMS });
   const userLocation = await getUserLocationAction();
   const auctionMarkers = await getAuctionMarkersAction();
 
-  if (!initialData || !userLocation || !auctionMarkers) return null;
+  if (!userLocation || !auctionMarkers) return null;
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <HomeClientPage
-        initialData={initialData}
-        userLocation={userLocation}
-        auctionMarkers={auctionMarkers}
-      />
+      <HomeClientPage userLocation={userLocation} auctionMarkers={auctionMarkers} />
     </HydrationBoundary>
   );
 };

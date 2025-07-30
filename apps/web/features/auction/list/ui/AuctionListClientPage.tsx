@@ -23,11 +23,10 @@ import { useMemo, useState } from 'react';
 import useAuctionListErrorHandler from '@/features/auction/list/model/useAuctionListErrorHandler';
 
 interface AuctionListClientPageProps {
-  initialData: AuctionListResponse;
   userLocation: LocationWithAddress;
 }
 
-const AuctionListClientPage = ({ initialData, userLocation }: AuctionListClientPageProps) => {
+const AuctionListClientPage = ({ userLocation }: AuctionListClientPageProps) => {
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
   const [filter, setFilter] = useState<AuctionFilterType[]>(DEFAULT_AUCTION_LIST_PARAMS.filter);
   const cate = useCategoryStore((state) => state.selected ?? DEFAULT_AUCTION_LIST_PARAMS.cate);
@@ -40,7 +39,6 @@ const AuctionListClientPage = ({ initialData, userLocation }: AuctionListClientP
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useAuctionList({
       params,
-      initialData,
     });
 
   useAuctionListErrorHandler(isError, error);

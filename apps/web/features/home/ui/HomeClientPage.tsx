@@ -20,12 +20,11 @@ import { LocationWithAddress } from '@/features/location/types';
 import useAuctionListErrorHandler from '@/features/auction/list/model/useAuctionListErrorHandler';
 
 interface HomeClientPageProps {
-  initialData: AuctionListResponse;
   userLocation: LocationWithAddress;
   auctionMarkers: AuctionMarkerResponse[];
 }
 
-const HomeClientPage = ({ initialData, userLocation, auctionMarkers }: HomeClientPageProps) => {
+const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) => {
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
   const [showMap, setShowMap] = useState(true);
   const params = useMemo(() => ({ ...DEFAULT_AUCTION_LIST_PARAMS, sort }), [sort]);
@@ -33,7 +32,6 @@ const HomeClientPage = ({ initialData, userLocation, auctionMarkers }: HomeClien
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useAuctionList({
       params,
-      initialData,
     });
   useAuctionListErrorHandler(isError, error);
   const auctionList = data?.pages.flatMap((page) => page.data) ?? [];
