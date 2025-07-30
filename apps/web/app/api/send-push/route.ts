@@ -6,9 +6,6 @@ export async function POST(request: Request) {
     const result = await sendNotification('auction', 'bidUpdated', {
       productName: '노트북',
       productId: '555',
-      // price: 1000000,
-      // nickname:'개발하다 치친다'
-      image: '이미지 경로',
     });
 
     // result가 undefined인 경우 기본값 설정
