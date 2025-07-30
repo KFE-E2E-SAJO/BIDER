@@ -50,6 +50,19 @@ export async function GET(request: NextRequest) {
             throw new Error(`bid_history 조회 실패: ${bidHistoryError.message}`);
           }
 
+          const { error: ProposalUpdateError } = await supabase
+            .from('proposal')
+            .update({
+              proposal_status: 'rejected',
+              responded_at: new Date().toISOString(),
+            })
+            .eq('auction_id', auction.auction_id)
+            .eq('proposal_status', 'pending');
+
+          if (ProposalUpdateError) {
+            throw new Error(`제안하기 상태 업데이트 실패: ${ProposalUpdateError.message}`);
+          }
+
           if (!bidHistory || bidHistory.length === 0) {
             // 유찰 처리
             const { error } = await supabase
