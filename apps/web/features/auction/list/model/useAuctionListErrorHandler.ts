@@ -1,9 +1,9 @@
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProductListError } from '@/features/product/types';
+import { AuctionListError } from '@/features/auction/list/types';
 
-const useProductListErrorHandler = (isError: boolean, error: ProductListError | null) => {
+const useAuctionListErrorHandler = (isError: boolean, error: AuctionListError | null) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -24,4 +24,4 @@ const useProductListErrorHandler = (isError: boolean, error: ProductListError | 
   }, [isError]);
 };
 
-export default useProductListErrorHandler;
+export default useAuctionListErrorHandler;
