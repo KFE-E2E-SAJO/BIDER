@@ -2,6 +2,7 @@ import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import { AuctionDetail, AuctionForBid } from '@/entities/auction/model/types';
+import { generateBlurDataURL } from '@/features/auction/detail/lib/generateBlurImg';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
   const resolvedParams = await params;
@@ -54,6 +55,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
 
     const productData = auctionData.product;
     const userData = productData?.exhibit_user;
+
+    const mainImage = { ...productData?.product_image[0] };
+    mainImage.blurDataUrl = await generateBlurDataURL(mainImage.image_url);
+    productData.product_image[0] = mainImage;
 
     // 응답 데이터 구성
     const response: AuctionDetail = {
