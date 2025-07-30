@@ -5,6 +5,7 @@ import { CategoryUi, CategoryValue } from '@/features/category/types';
 import GridCategory from '@/features/category/ui/GridCategory';
 import InlineCategory from '@/features/category/ui/InlineCategory';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 interface CategoryProps {
   type?: CategoryUi;
@@ -15,12 +16,19 @@ const Category = ({ type = 'grid' }: CategoryProps) => {
   const searchParams = useSearchParams();
   const setSelected = useCategoryStore((state) => state.setSelected);
 
+  useEffect(() => {
+    const cate = searchParams.get('cate') as CategoryValue;
+    if (cate) {
+      setSelected(cate);
+    }
+  }, [searchParams, setSelected]);
+
   const handleClick = (cate: CategoryValue) => {
     setSelected(cate);
     const params = new URLSearchParams(searchParams);
     params.set('cate', cate);
 
-    const url = `/product?${params.toString()}`;
+    const url = `/auction?${params.toString()}`;
     type === 'grid' ? router.push(url) : router.replace(url);
   };
 
