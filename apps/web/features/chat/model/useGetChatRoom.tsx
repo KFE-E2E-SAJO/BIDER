@@ -7,10 +7,10 @@ import {
 import { useAuthStore } from '@/shared/model/authStore';
 import { getChatRoom } from '../api/getChatRoom';
 
-export const useGetChatRoom = ({ userId, chatroomId }: { userId: string; chatroomId: string }) => {
+export const useGetChatRoom = ({ userId, roomId }: { userId: string; roomId: string }) => {
   return useQuery<ChatRoomWithProfile[] | ChatRoom[] | ChatRoomWithMessage[] | null>({
-    queryKey: ['getChatRoom', userId, chatroomId],
-    queryFn: () => getChatRoom(chatroomId, userId!),
-    enabled: !!userId && !!chatroomId,
+    queryKey: ['getChatRoom', userId, roomId],
+    queryFn: () => getChatRoom(roomId, userId!),
+    enabled: !!userId && !!roomId,
   });
 };

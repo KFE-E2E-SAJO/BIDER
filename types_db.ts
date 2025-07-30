@@ -8,12 +8,63 @@ export type Database = {
   };
   public: {
     Tables: {
+      alarm: {
+        Row: {
+          alarm_id: string;
+          body: string;
+          create_at: string;
+          is_deleted: boolean;
+          is_read: boolean;
+          link: string;
+          title: string;
+          type: string;
+          updated_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          alarm_id?: string;
+          body: string;
+          create_at?: string;
+          is_deleted?: boolean;
+          is_read?: boolean;
+          link: string;
+          title: string;
+          type: string;
+          updated_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          alarm_id?: string;
+          body?: string;
+          create_at?: string;
+          is_deleted?: boolean;
+          is_read?: boolean;
+          link?: string;
+          title?: string;
+          type?: string;
+          updated_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'alarm_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['user_id'];
+          },
+        ];
+      };
       auction: {
         Row: {
           auction_end_at: string;
           auction_id: string;
           auction_status: string;
           created_at: string;
+          deal_address: string | null;
+          deal_latitude: number | null;
+          deal_longitude: number | null;
+          is_secret: boolean;
           min_price: number;
           product_id: string;
           updated_at: string | null;
@@ -25,6 +76,10 @@ export type Database = {
           auction_id?: string;
           auction_status: string;
           created_at?: string;
+          deal_address?: string | null;
+          deal_latitude?: number | null;
+          deal_longitude?: number | null;
+          is_secret?: boolean;
           min_price: number;
           product_id: string;
           updated_at?: string | null;
@@ -36,6 +91,10 @@ export type Database = {
           auction_id?: string;
           auction_status?: string;
           created_at?: string;
+          deal_address?: string | null;
+          deal_latitude?: number | null;
+          deal_longitude?: number | null;
+          is_secret?: boolean;
           min_price?: number;
           product_id?: string;
           updated_at?: string | null;
@@ -132,6 +191,13 @@ export type Database = {
         };
         Relationships: [
           {
+            foreignKeyName: 'chat_room_bid_user_id_fkey';
+            columns: ['bid_user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'chat_room_exhibit_user_id_fkey';
             columns: ['exhibit_user_id'];
             isOneToOne: false;
@@ -183,6 +249,38 @@ export type Database = {
           {
             foreignKeyName: 'message_sender_id_fkey';
             columns: ['sender_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['user_id'];
+          },
+        ];
+      };
+      point: {
+        Row: {
+          created_at: string;
+          point: number;
+          point_id: string;
+          reason: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          point: number;
+          point_id?: string;
+          reason: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          point?: number;
+          point_id?: string;
+          reason?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'point_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'profiles';
             referencedColumns: ['user_id'];
@@ -273,6 +371,7 @@ export type Database = {
           latitude: number | null;
           longitude: number | null;
           nickname: string;
+          point: number;
           profile_img: string | null;
           user_id: string;
         };
@@ -283,6 +382,7 @@ export type Database = {
           latitude?: number | null;
           longitude?: number | null;
           nickname: string;
+          point?: number;
           profile_img?: string | null;
           user_id: string;
         };
@@ -293,10 +393,130 @@ export type Database = {
           latitude?: number | null;
           longitude?: number | null;
           nickname?: string;
+          point?: number;
           profile_img?: string | null;
           user_id?: string;
         };
         Relationships: [];
+      };
+      proposal: {
+        Row: {
+          auction_id: string;
+          created_at: string;
+          proposal_id: string;
+          proposal_status: string;
+          proposed_price: number;
+          proposer_id: string;
+          responded_at: string | null;
+        };
+        Insert: {
+          auction_id?: string;
+          created_at?: string;
+          proposal_id?: string;
+          proposal_status: string;
+          proposed_price: number;
+          proposer_id?: string;
+          responded_at?: string | null;
+        };
+        Update: {
+          auction_id?: string;
+          created_at?: string;
+          proposal_id?: string;
+          proposal_status?: string;
+          proposed_price?: number;
+          proposer_id?: string;
+          responded_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'proposal_auction_id_fkey';
+            columns: ['auction_id'];
+            isOneToOne: false;
+            referencedRelation: 'auction';
+            referencedColumns: ['auction_id'];
+          },
+          {
+            foreignKeyName: 'proposal_proposer_id_fkey';
+            columns: ['proposer_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['user_id'];
+          },
+        ];
+      };
+      secret_bid_view_history: {
+        Row: {
+          auction_id: string;
+          secret_view_id: string;
+          user_id: string;
+          viewed_at: string;
+        };
+        Insert: {
+          auction_id: string;
+          secret_view_id?: string;
+          user_id: string;
+          viewed_at?: string;
+        };
+        Update: {
+          auction_id?: string;
+          secret_view_id?: string;
+          user_id?: string;
+          viewed_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'secret_bid_view_log_auction_id_fkey';
+            columns: ['auction_id'];
+            isOneToOne: false;
+            referencedRelation: 'auction';
+            referencedColumns: ['auction_id'];
+          },
+          {
+            foreignKeyName: 'secret_bid_view_log_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['user_id'];
+          },
+        ];
+      };
+      user_push_token: {
+        Row: {
+          auth: string;
+          create_at: string;
+          endpoint: string;
+          is_active: boolean;
+          p256dh: string;
+          user_id: string;
+          user_push_token_id: string;
+        };
+        Insert: {
+          auth: string;
+          create_at?: string;
+          endpoint: string;
+          is_active?: boolean;
+          p256dh: string;
+          user_id: string;
+          user_push_token_id?: string;
+        };
+        Update: {
+          auth?: string;
+          create_at?: string;
+          endpoint?: string;
+          is_active?: boolean;
+          p256dh?: string;
+          user_id?: string;
+          user_push_token_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_push_token_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'profiles';
+            referencedColumns: ['user_id'];
+          },
+        ];
       };
     };
     Views: {
@@ -306,6 +526,14 @@ export type Database = {
       bytea_to_text: {
         Args: { data: string };
         Returns: string;
+      };
+      get_auction_detail_rpc: {
+        Args: { auction_id: string };
+        Returns: Json;
+      };
+      get_current_highest_bid: {
+        Args: { auction_uuid: string };
+        Returns: number;
       };
       get_my_bid_products_with_counts: {
         Args: { user_id: string };
@@ -367,6 +595,10 @@ export type Database = {
       text_to_bytea: {
         Args: { data: string };
         Returns: string;
+      };
+      update_user_point: {
+        Args: { p_user_id: string; amount: number };
+        Returns: undefined;
       };
       urlencode: {
         Args: { data: Json } | { string: string } | { string: string };

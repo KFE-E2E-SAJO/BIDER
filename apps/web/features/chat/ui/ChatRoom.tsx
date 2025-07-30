@@ -36,12 +36,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
   const sendMessageMutation = useSendMessage();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data: chatRoomData,
-    isLoading,
-    isError,
-    error,
-  } = useGetChatRoom({ userId, chatroomId: roomId });
+  const { data: chatRoomData, isLoading, isError, error } = useGetChatRoom({ userId, roomId });
 
   const roomData = Array.isArray(chatRoomData) ? chatRoomData[0] : chatRoomData;
   // ⬇️ 여기에 바로 추가!
@@ -132,27 +127,16 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
   useEffect(() => {
     const channel = anonSupabase
       .channel('message_postgres_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'message',
-        },
-        (payload) => {
-          if (payload.eventType === 'INSERT' && !payload.errors) {
-            queryClient.invalidateQueries({
-              queryKey: ['messages', roomId],
-            });
-          }
-        }
-      )
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'message' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['getChatRoom', userId, roomId] });
+      })
+
       .subscribe();
 
     return () => {
       channel.unsubscribe();
     };
-  }, []);
+  }, [userId, roomId]);
 
   const grouped = groupByDate(messages);
   return (

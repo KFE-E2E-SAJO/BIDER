@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useGetChatList } from '@/features/chat/model/useGetChatList';
 import { useRouter } from 'next/navigation';
 import { useRecoilState } from 'recoil';
@@ -61,6 +61,7 @@ function formatRelativeTime(dateString: string) {
 }
 
 export default function ChatList() {
+  const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id);
   const router = useRouter();
   const [selected, setSelected] = useState('all');
@@ -102,7 +103,7 @@ export default function ChatList() {
     }, 2000);
   };
 
-  // 마우스(데스크탑)도 대응
+  // 마우스(데스크탑)도 대응s
   const mouseDragStartX = useRef<number | null>(null);
 
   const handleMouseDown = (e: React.MouseEvent, id: string) => {
@@ -131,19 +132,19 @@ export default function ChatList() {
   };
 
   useEffect(() => {
-    const changes = supabase
-      .channel('table-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'chat_room',
-        },
-        (payload) => console.log(payload)
-      )
+    const channel = supabase
+      .channel('chatlist-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'message' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['chat_room', userId] });
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_room' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['chat_room', userId] });
+      })
       .subscribe();
-  }, []);
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [userId]);
 
   //   const channel = anonSupabase.channel('online_users', {
   //     config: {
