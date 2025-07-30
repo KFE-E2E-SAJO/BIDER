@@ -1,13 +1,8 @@
 import { supabase } from '@/shared/lib/supabaseClient';
 import { getDistanceKm } from '@/features/product/lib/utils';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { MapAuction } from '@/entities/auction/model/types';
-import { ProductForMapList } from '@/entities/product/model/types';
 import getUserId from '@/shared/lib/getUserId';
-
-type MapAuctuionFromDB = MapAuction & {
-  product: ProductForMapList;
-};
 
 export async function GET() {
   const userId = await getUserId();
@@ -44,7 +39,7 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const markers = (data as unknown as MapAuctuionFromDB[])
+  const markers = (data as unknown as MapAuction[])
     .filter((item) => {
       const { product } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
