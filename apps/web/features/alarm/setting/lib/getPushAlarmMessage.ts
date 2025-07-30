@@ -22,6 +22,7 @@ export interface PushAlarmData {
   amount?: number;
   auctionId?: string;
   image?: string;
+  chatroomId?: string;
 }
 
 type PushAlarmKey = `${PushAlarmType}:${string}`;
@@ -46,13 +47,13 @@ const pushAlarmMessage: Record<
   'auction:auctionWon': (data) => ({
     title: '경매 낙찰 성공',
     body: `축하합니다! ${data.productName}을 낙찰받았습니다. 지금 ${data.nickname}님과 대화를 시작해 보세요.`,
-    link: '/chat', //이거 변경해야함
+    link: `/chat/${data.chatroomId}`,
     image: `${data.image}`,
   }),
   'auction:proposalAccepted': (data) => ({
     title: '제안 수락',
     body: `${data.productName}에 대한 제안이 수락되었습니다. ${data.nickname}님과 대화를 시작해보세요.`,
-    link: `/chat`, //이거 변경해야함
+    link: `/chat/${data.chatroomId}`,
     image: `${data.image}`,
   }),
   'auction:auctionStarted': (data) => ({
@@ -70,7 +71,7 @@ const pushAlarmMessage: Record<
   'auction:auctionEndedWon': (data) => ({
     title: '경매 종료 - 낙찰',
     body: `${data.productName}의 경매가 종료 되었습니다. ${data.nickname}님과 대화를 시작해보세요.`,
-    link: '/chat', //이거 변경해야함
+    link: `/chat/${data.chatroomId}`,
     image: `${data.image}`,
   }),
   'auction:auctionEndedLost': (data) => ({
@@ -112,7 +113,7 @@ const pushAlarmMessage: Record<
   'chat:newMessage': (data) => ({
     title: '새 메시지 도착',
     body: `${data.nickname}님이 메시지를 보냈습니다. 확인해보세요.`,
-    link: '/chat', //이거 변경해야함
+    link: `/chat/${data.chatroomId}`,
     image: `${data.image}`,
   }),
 };
