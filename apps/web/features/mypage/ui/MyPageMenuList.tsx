@@ -17,7 +17,7 @@ const MyPageMenuList = ({ address, point }: MyPageMenuListProps) => {
         <MyPageMenuItem label="경매 제안" href="/mypage/proposal/received" />
         <MyPageMenuItem
           label="포인트"
-          href="/"
+          href="/mypage/point"
           rightElement={
             <Button
               shape="rounded"

@@ -17,6 +17,8 @@ export const createPointByReason = async (
   });
   const result = await response.json();
 
+  console.log('point result = ', result);
+
   if (!response.ok) {
     throw new Error(result.error || result.message || '포인트 반영 중 오류가 발생했습니다.');
   }
