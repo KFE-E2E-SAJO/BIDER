@@ -106,7 +106,7 @@ export async function sendNotification(type: PushAlarmType, subType: string, dat
     const pushMessage = {
       title: customMessage.title,
       body: customMessage.body,
-      image: 'https://yourdomain.com/path/to/bid-photo.jpg',
+      image: customMessage.image ?? '',
       time: new Date().toISOString().slice(0, 19).replace('T', ' '),
       url: customMessage.link,
     };
