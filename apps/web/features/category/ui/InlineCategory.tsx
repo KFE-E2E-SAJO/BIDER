@@ -26,7 +26,10 @@ const InlineCategory = ({ onSelect }: InlineCategoryProps) => {
                 onClick={() => onSelect(item.value)}
                 className="flex flex-col items-center gap-2"
               >
-                <Image src={item.src} alt={item.label} width={42} height={42} />
+                <picture>
+                  <source srcSet={item.src.replace('.png', '.webp')} type="image/webp" />
+                  <Image src={item.src} alt={item.label} width={42} height={42} />
+                </picture>
               </button>
             </div>
             <span className="typo-body-regular whitespace-nowrap text-center text-neutral-900">
