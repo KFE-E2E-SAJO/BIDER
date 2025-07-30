@@ -1,0 +1,2 @@
+export const SECRET_AUCTION_VIEW_FIRST_COST = 500;
+export const PROPOSAL_COST = 100;
