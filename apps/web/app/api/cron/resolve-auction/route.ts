@@ -50,18 +50,18 @@ export async function GET(request: NextRequest) {
             throw new Error(`bid_history 조회 실패: ${bidHistoryError.message}`);
           }
 
-          // const { error: ProposalUpdateError } = await supabase
-          //   .from('proposal')
-          //   .update({
-          //     proposal_status: 'rejected',
-          //     responded_at: new Date().toISOString(),
-          //   })
-          //   .eq('auction_id', auction.auction_id)
-          //   .eq('proposal_status', 'pending');
+          const { error: ProposalUpdateError } = await supabase
+            .from('proposal')
+            .update({
+              proposal_status: 'rejected',
+              responded_at: new Date().toISOString(),
+            })
+            .eq('auction_id', auction.auction_id)
+            .eq('proposal_status', 'pending');
 
-          // if (ProposalUpdateError) {
-          //   throw new Error(`제안하기 상태 업데이트 실패: ${ProposalUpdateError.message}`);
-          // }
+          if (ProposalUpdateError) {
+            throw new Error(`제안하기 상태 업데이트 실패: ${ProposalUpdateError.message}`);
+          }
 
           if (!bidHistory || bidHistory.length === 0) {
             // 유찰 처리
@@ -109,7 +109,6 @@ export async function GET(request: NextRequest) {
             try {
               await createPointByReason('deal_complete_seller', auction.product.exhibit_user_id);
             } catch (error) {
-              console.log('출품자 포인트 지급 실패:', error);
               console.error('출품자 포인트 지급 실패:', error);
             }
 
@@ -120,7 +119,6 @@ export async function GET(request: NextRequest) {
                 winning_bid.bid_price
               );
             } catch (error) {
-              console.log('낙찰자 포인트 지급 실패:', error);
               console.error('낙찰자 포인트 지급 실패:', error);
             }
           }
