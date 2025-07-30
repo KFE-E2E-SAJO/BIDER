@@ -3,7 +3,7 @@
 import {
   getPushAlarmMessage,
   PushAlarmData,
-  PushAlarmType,
+  AuctionPushAlarmType,
 } from '@/features/alarm/setting/lib/getPushAlarmMessage';
 import { createClient } from '@/shared/lib/supabase/server';
 import { createServerClient } from '@supabase/ssr';
@@ -88,7 +88,11 @@ export async function unsubscribeUser() {
   return { success: true };
 }
 
-export async function sendNotification(type: PushAlarmType, subType: string, data: PushAlarmData) {
+export async function sendNotification(
+  type: AuctionPushAlarmType,
+  subType: string,
+  data: PushAlarmData
+) {
   const supabase = await createClient();
 
   const { data: pushToken, error } = await supabase.from('user_push_token').select('*');
