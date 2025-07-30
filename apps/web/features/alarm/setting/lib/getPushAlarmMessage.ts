@@ -1,4 +1,4 @@
-type PushAlarmType = 'auction' | 'point' | 'review' | 'chat';
+export type PushAlarmType = 'auction' | 'point' | 'review' | 'chat';
 
 export type AuctionPushAlarmType =
   | 'bid'
