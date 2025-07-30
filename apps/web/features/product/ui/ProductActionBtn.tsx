@@ -38,7 +38,7 @@ const ProductActionBtn = ({
   const [open, setOpen] = useState(false);
 
   const handleChatClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
+    // e.preventDefault();
     // toast({ content: '준비 중인 기능입니다.' });
     // isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
     // 필수값 방어
@@ -47,12 +47,6 @@ const ProductActionBtn = ({
       console.error('누락 정보:', { itemId, sellerId, winnerId });
       return;
     }
-
-    console.log('채팅 생성에 보낼 값:', {
-      auction_id: itemId,
-      exhibit_user_id: sellerId,
-      bid_user_id: winnerId,
-    });
 
     try {
       const res = await fetch('/api/chat-rooms', {
@@ -67,16 +61,25 @@ const ProductActionBtn = ({
 
       const data = await res.json();
 
-      const chatroomId = data.chatroomId || data.chatroom_id || data.id;
+      const chatroomId =
+        data?.chatroomId ||
+        data?.chatroom_id ||
+        data?.rooms?.chatroomId ||
+        data?.rooms?.chatroom_id ||
+        (Array.isArray(data) && data[0]?.rooms?.chatroom_id) ||
+        data?.chatRoomId;
 
-      if (!res.ok || !chatroomId) {
-        toast({ content: data.error || '채팅방 생성에 실패했습니다.' });
-        console.log('Chat room creation response:', data);
-        console.log('chatroomId:', chatroomId);
+      console.log('chatroomId:', chatroomId);
+
+      // chatroomId가 있으면 무조건 이동!
+      if (chatroomId) {
+        router.push(`/chat/${chatroomId}`);
         return;
       }
 
-      router.push(`/chat/${chatroomId}`);
+      // chatroomId가 없으면 실패 처리
+      toast({ content: data.error || '채팅방 생성에 실패했습니다.' });
+      console.log('Chat room creation response:', data);
     } catch (err) {
       toast({ content: '채팅방 생성 중 오류가 발생했습니다.' });
       console.error(err);
