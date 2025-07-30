@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { sendNotification } from '@/app/actions';
+import webpush from 'web-push';
 
 export async function POST(request: Request) {
+  webpush.setVapidDetails(
+    'mailto:haruyam15@gmail.com',
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
+
   try {
     const result = await sendNotification('auction', 'bidUpdated', {
       productName: '노트북',

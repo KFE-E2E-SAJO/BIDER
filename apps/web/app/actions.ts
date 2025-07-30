@@ -18,12 +18,6 @@ interface PushSubscriptionSerialized {
   };
 }
 
-webpush.setVapidDetails(
-  'mailto:haruyam15@gmail.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 let subscription: PushSubscription | null = null;
 const parsed = JSON.parse(JSON.stringify(subscription));
 
