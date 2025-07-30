@@ -13,7 +13,7 @@ export default function SplashWelcomePage() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white">
+    <div className="fixed left-[50%] top-0 z-50 flex h-screen w-full max-w-[600px] translate-x-[-50%] flex-col bg-white">
       <div className="flex-1"></div>
 
       <div className="flex items-center justify-center">

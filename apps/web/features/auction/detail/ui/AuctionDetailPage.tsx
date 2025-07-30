@@ -34,7 +34,7 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
           )}
         </div>
 
-        <div className="bg-neutral-050 flex w-full items-center justify-between px-[12px] py-[9px]">
+        <div className="bg-neutral-050 flex w-full items-center justify-around px-[12px] py-[9px]">
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center gap-[3px]">
               <PencilLine size={12} className="text-neutral-600" />
