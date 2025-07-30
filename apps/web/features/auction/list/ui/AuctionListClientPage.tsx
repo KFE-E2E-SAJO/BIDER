@@ -2,11 +2,7 @@
 
 import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
 import { useAuctionList } from '@/features/auction/list/model/useAuctionList';
-import {
-  AuctionFilter as AuctionFilterType,
-  AuctionListResponse,
-  AuctionSort,
-} from '@/features/auction/list/types';
+import { AuctionFilter as AuctionFilterType, AuctionSort } from '@/features/auction/list/types';
 import AuctionFilter from '@/features/auction/list/ui/AuctionFilter';
 import AuctionList from '@/features/auction/list/ui/AuctionList';
 import AuctionSortDropdown from '@/features/auction/list/ui/AuctionSortDropdown';
@@ -30,16 +26,12 @@ const AuctionListClientPage = ({ userLocation }: AuctionListClientPageProps) => 
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
   const [filter, setFilter] = useState<AuctionFilterType[]>(DEFAULT_AUCTION_LIST_PARAMS.filter);
   const cate = useCategoryStore((state) => state.selected ?? DEFAULT_AUCTION_LIST_PARAMS.cate);
-
   const params = useMemo(
     () => ({ ...DEFAULT_AUCTION_LIST_PARAMS, sort, filter, cate }),
     [sort, filter, cate]
   );
-
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useAuctionList({
-      params,
-    });
+    useAuctionList({ params });
 
   useAuctionListErrorHandler(isError, error);
 

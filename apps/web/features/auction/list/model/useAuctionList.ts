@@ -1,4 +1,5 @@
 import { getAuctionListApi } from '@/features/auction/list/api/getAuctionListApi';
+import { auctionListQueryKey } from '@/features/auction/list/lib/utils';
 import {
   AuctionListError,
   AuctionListParams,
@@ -14,7 +15,7 @@ interface UseAuctionListProps {
 export const useAuctionList = (props: UseAuctionListProps) => {
   const { params } = props;
   return useInfiniteQuery<AuctionListResponse, AuctionListError>({
-    queryKey: ['auctionList', params],
+    queryKey: auctionListQueryKey(params),
     queryFn: ({ pageParam = 0 }) => getAuctionListApi({ offset: pageParam as number, params }),
     getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
     initialPageParam: 0,

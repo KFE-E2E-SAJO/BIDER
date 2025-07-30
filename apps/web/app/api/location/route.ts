@@ -1,14 +1,6 @@
-import { ProfileLocationData } from '@/entities/profiles/model/types';
-import { LocationWithAddress } from '@/features/location/types';
-import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-
-interface ErrorResponse {
-  error: string;
-  code?: string;
-}
 
 export async function POST(req: NextRequest) {
   const body = await req.json();

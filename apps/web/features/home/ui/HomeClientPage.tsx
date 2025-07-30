@@ -7,11 +7,7 @@ import { useMemo, useState } from 'react';
 import { Button } from '@repo/ui/components/Button/Button';
 import { List, Map } from 'lucide-react';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
-import {
-  AuctionListResponse,
-  AuctionMarkerResponse,
-  AuctionSort,
-} from '@/features/auction/list/types';
+import { AuctionMarkerResponse, AuctionSort } from '@/features/auction/list/types';
 import { useAuctionList } from '@/features/auction/list/model/useAuctionList';
 import AuctionList from '@/features/auction/list/ui/AuctionList';
 import AuctionSortDropdown from '@/features/auction/list/ui/AuctionSortDropdown';
@@ -28,11 +24,8 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
   const [showMap, setShowMap] = useState(true);
   const params = useMemo(() => ({ ...DEFAULT_AUCTION_LIST_PARAMS, sort }), [sort]);
-
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useAuctionList({
-      params,
-    });
+    useAuctionList({ params });
   useAuctionListErrorHandler(isError, error);
   const auctionList = data?.pages.flatMap((page) => page.data) ?? [];
 
