@@ -40,8 +40,7 @@ const navItems: NavItems[] = [
     matchPath: (pathname) => pathname === '/product/registration',
   },
   {
-    href: '/',
-    // href: '/chat',
+    href: '/chat',
     label: '채팅',
     icon: MessageSquareMore,
     matchPath: (pathname) => pathname === '/chat',
@@ -66,15 +65,9 @@ const Nav = () => {
 
         return (
           <Link
-            key={label}
+            key={href}
             href={href}
             className="relative flex w-1/5 flex-col items-center justify-center"
-            onClick={(e) => {
-              if (label === '채팅') {
-                e.preventDefault();
-                toast({ content: '준비 중인 기능입니다.' });
-              }
-            }}
           >
             <Icon
               className={`w-6 ${isActive ? 'fill-neutral-900 stroke-neutral-900' : 'fill-neutral-0 stroke-neutral-400'}`}
