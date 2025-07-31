@@ -5,7 +5,7 @@ import YourMessage from './YourMessage';
 
 const MessageList = () => {
   return (
-    <div>
+    <div className="p-box h-full pb-[77px]">
       <DateDivider isoDate={'2025-06-17T09:32:00.000Z'} />
       <MyMessage
         text={'안녕하세요! 제품 상태에 대해 더 자세히 알 수 있을까요?'}

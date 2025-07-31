@@ -7,7 +7,7 @@ import { ChatItemProps } from '../types';
 const ChatItem = ({ onClick }: ChatItemProps) => {
   return (
     <div onClick={onClick} className="flex items-center justify-between">
-      <div className="flex">
+      <div className="flex items-center">
         <div className="relative size-[46px] overflow-hidden rounded">
           <Image
             src={
@@ -30,14 +30,14 @@ const ChatItem = ({ onClick }: ChatItemProps) => {
             <div className="typo-body-medium">{'입찰매니아'}</div>
           </div>
           <div className="flex">
-            <div className="typo-caption-regular w-[50vw] truncate">
+            <div className="typo-caption-regular max-w-[50vw] truncate">
               {'구매 가능한가요?구매 가능한가요?구매 가능한가요?'}
             </div>
-            <div className="typo-caption-regular text-neutral-400"> · {'1시간'}</div>
+            <div className="typo-caption-regular ml-[4px] text-neutral-400">· {'1시간'}</div>
           </div>
         </div>
       </div>
-      <div className="flex gap-[8px]">
+      <div className="flex items-center gap-[8px]">
         <div className="bg-alert text-neutral-0 typo-caption-medium flex size-[21px] items-center justify-center rounded-full">
           {1}
         </div>
