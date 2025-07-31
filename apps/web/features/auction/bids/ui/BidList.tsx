@@ -2,20 +2,15 @@
 
 import ProductList from '@/features/product/ui/ProductList';
 import { useGetBidList } from '@/features/auction/bids/model/useGetBidList';
-import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
+
 export interface BidListProps {
   filter: 'all' | 'progress' | 'win' | 'fail';
+  userId: string;
 }
 
-const BidList = ({ filter }: BidListProps) => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
-
-  const { data, isLoading, error } = useGetBidList({
-    userId,
-    filter,
-  });
-
+const BidList = ({ userId, filter }: BidListProps) => {
+  const { data, isLoading, error } = useGetBidList({ userId, filter });
   if (isLoading || error || !data) return <Loading />;
 
   return (

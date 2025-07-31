@@ -2,20 +2,15 @@
 
 import ProductList from '@/features/product/ui/ProductList';
 import { useGetListingList } from '@/features/auction/listings/model/useGetListingList';
-import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
-interface ListingListProps {
+
+export interface ListingListProps {
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';
+  userId: string;
 }
 
-const ListingList = ({ filter }: ListingListProps) => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
-
-  const { data, isLoading, error } = useGetListingList({
-    userId,
-    filter,
-  });
-
+const ListingList = ({ filter, userId }: ListingListProps) => {
+  const { data, isLoading, error } = useGetListingList({ userId, filter });
   if (isLoading || error || !data) return <Loading />;
 
   return (

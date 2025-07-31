@@ -1,9 +1,11 @@
+import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
+  const filter = searchParams.get('filter') ?? 'all';
 
   if (!userId) {
     return NextResponse.json(
@@ -74,5 +76,24 @@ export async function GET(request: NextRequest) {
     maxPrice: maxPriceMap[item.auction_id] ?? item.auction?.min_price ?? 0,
   }));
 
-  return NextResponse.json({ success: true, data: enriched });
+  // 필터링 조건 적용
+  const filtered = enriched.filter((item) => {
+    const { auction, is_awarded } = item;
+    const { product, auction_status } = auction;
+
+    if (!product?.latitude || !product?.longitude) return false;
+
+    switch (filter) {
+      case 'progress':
+        return auction_status === AUCTION_STATUS.IN_PROGRESS;
+      case 'win':
+        return auction_status === AUCTION_STATUS.ENDED && is_awarded === true;
+      case 'fail':
+        return auction_status === AUCTION_STATUS.ENDED && is_awarded === false;
+      default:
+        return true;
+    }
+  });
+
+  return NextResponse.json({ success: true, data: filtered });
 }

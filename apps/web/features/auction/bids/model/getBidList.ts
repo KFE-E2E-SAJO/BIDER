@@ -1,40 +1,19 @@
 import { ProductList } from '@/features/product/types';
 import { BidDataWithStats, BidListParams } from '@/features/auction/bids/types';
-import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 
 const getBidList = async (params: BidListParams): Promise<ProductList[]> => {
   const { filter, userId } = params;
 
-  const res = await fetch(`/api/auction/bids?userId=${userId}`);
+  const res = await fetch(`/api/auction/bids?userId=${userId}&filter=${filter}`);
   const result = await res.json();
 
   if (!res.ok || !result.success) {
     throw new Error(result.error || '데이터 로딩 실패');
   }
 
-  const typedData: BidDataWithStats[] = result.data;
+  console.log(filter);
 
-  const shouldInclude = (item: BidDataWithStats) => {
-    const { auction, is_awarded } = item;
-    const { product, auction_status } = auction;
-
-    if (product.latitude == null || product.longitude == null) return false;
-
-    switch (filter) {
-      case 'progress':
-        return auction_status === AUCTION_STATUS.IN_PROGRESS;
-      case 'win':
-        return auction_status === AUCTION_STATUS.ENDED && is_awarded === true;
-      case 'fail':
-        return auction_status === AUCTION_STATUS.ENDED && is_awarded === false;
-      default:
-        return true;
-    }
-  };
-
-  const filtered = typedData.filter(shouldInclude);
-
-  return filtered.map((item) => ({
+  return result.data.map((item: BidDataWithStats) => ({
     id: item.auction.auction_id,
     thumbnail:
       item.auction.product.product_image.find((img) => img.order_index === 0)?.image_url ??

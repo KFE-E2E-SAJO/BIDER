@@ -1,12 +1,7 @@
-import { Suspense } from 'react';
-import AuctionListings from '@/features/auction/listings';
+import AuctionListings from '@/features/auction/listings/ui/AuctionListings';
 
 const SetAuctionListings = () => {
-  return (
-    <Suspense fallback={null}>
-      <AuctionListings />
-    </Suspense>
-  );
+  return <AuctionListings />;
 };
 
 export default SetAuctionListings;
