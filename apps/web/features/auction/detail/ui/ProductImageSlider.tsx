@@ -1,11 +1,13 @@
 'use client';
+
 import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Swiper as SwiperType } from 'swiper';
-import { ProductImage } from '@/entities/productImage/model/types';
+import { ProductImage, ProductImageWithBlur } from '@/entities/productImage/model/types';
+import Image from 'next/image';
 
 interface Props {
   images: ProductImage[];
@@ -30,12 +32,22 @@ export default function ProductImageSlider({ images }: Props) {
           onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           className="h-full p-0"
         >
-          {sortedImages.map((img) => (
+          {sortedImages.map((img: ProductImageWithBlur, index) => (
             <SwiperSlide key={img.image_id} className="flex items-center justify-center">
-              <img
+              <Image
                 src={img.image_url}
-                alt="Product"
-                className="mx-auto h-full w-auto object-contain"
+                alt="product"
+                width={1000} // dummy value, 실제 이미지 비율에 따라 렌더링됨
+                height={1000}
+                style={{
+                  height: '100%',
+                  width: 'auto',
+                  objectFit: 'contain',
+                }}
+                placeholder={index === 0 ? 'blur' : 'empty'}
+                blurDataURL={index === 0 ? img.blurDataUrl : undefined}
+                sizes="100vw"
+                className="mx-auto"
               />
             </SwiperSlide>
           ))}
@@ -50,11 +62,19 @@ export default function ProductImageSlider({ images }: Props) {
             onClick={() => {
               swiperRef.current?.slideTo(idx);
             }}
-            className={`size-[60px] shrink-0 border ${
+            className={`relative size-[60px] shrink-0 border ${
               activeIndex === idx ? 'border-neutral-900' : 'border-transparent'
             } overflow-hidden`}
           >
-            <img src={img.image_url} alt="thumbnail" className="h-full w-full object-cover" />
+            <Image
+              src={img.image_url}
+              alt="thumbnail"
+              fill
+              style={{ objectFit: 'cover' }}
+              sizes="60px"
+              loading="lazy"
+              decoding="async"
+            />
           </button>
         ))}
         {[...Array(5 - images.length)].map((_, idx) => (

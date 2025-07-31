@@ -4,3 +4,7 @@ export interface ProductImage {
   image_url: string;
   order_index: number;
 }
+
+export interface ProductImageWithBlur extends ProductImage {
+  blurDataUrl?: string;
+}

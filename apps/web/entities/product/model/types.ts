@@ -1,4 +1,4 @@
-import { ProductImage } from '@/entities/productImage/model/types';
+import { ProductImage, ProductImageWithBlur } from '@/entities/productImage/model/types';
 import { Profiles } from '@/entities/profiles/model/types';
 
 export interface Product {
@@ -16,7 +16,7 @@ export interface Product {
 
 export interface ProductWithUserNImages extends Product {
   exhibit_user: Profiles;
-  product_image: ProductImage[];
+  product_image: ProductImageWithBlur[];
 }
 
 export interface ProductForEdit extends Product {
