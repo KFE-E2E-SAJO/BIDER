@@ -83,6 +83,12 @@ export async function unsubscribeUser() {
 }
 
 export async function sendNotification(type: PushAlarmType, subType: string, data: PushAlarmData) {
+  webpush.setVapidDetails(
+    'mailto:haruyam15@gmail.com',
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
+
   const supabase = await createClient();
 
   const { data: pushToken, error } = await supabase.from('user_push_token').select('*');
@@ -114,7 +120,7 @@ export async function sendNotification(type: PushAlarmType, subType: string, dat
     const payloadData = JSON.stringify(pushMessage);
 
     try {
-      const test = await webpush.sendNotification(subscription, payloadData);
+      await webpush.sendNotification(subscription, payloadData);
 
       const { data: AlarmItem, error: insertError } = await supabase.from('alarm').insert({
         user_id: token.user_id,
@@ -122,6 +128,7 @@ export async function sendNotification(type: PushAlarmType, subType: string, dat
         title: pushMessage.title,
         body: pushMessage.body,
         link: pushMessage.url,
+        image_url: pushMessage.image,
       });
 
       if (insertError) {

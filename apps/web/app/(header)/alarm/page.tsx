@@ -12,15 +12,9 @@ import Line from '@/shared/ui/Line/Line';
 import Image from 'next/image';
 import {
   Dialog,
-  DialogRoot,
-  DialogTrigger,
   DialogContent,
-  DialogOverlay,
-  DialogClose,
   DialogHeader,
-  DialogFooter,
   DialogTitle,
-  DialogDescription,
 } from '@repo/ui/components/Dialog/Dialog';
 import { Button } from '@repo/ui/components/Button/Button';
 import { useState } from 'react';

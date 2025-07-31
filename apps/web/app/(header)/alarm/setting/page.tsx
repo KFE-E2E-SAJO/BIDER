@@ -23,17 +23,6 @@ const AlarmSetting = () => {
 
   useCreatePushToken(checked);
 
-  async function sendPush() {
-    const res = await fetch('/api/send-push', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'auction', message: '새 입찰 알림!' }),
-    });
-    const data = await res.json();
-    console.log('서버 응답:', data);
-    // alert('서버 응답: ' + JSON.stringify(data));
-  }
-
   return (
     <div className="m-6 flex flex-col space-y-8">
       <div className="block flex justify-between">
@@ -59,10 +48,6 @@ const AlarmSetting = () => {
       <div className="flex justify-between">
         <p className="typo-body-regular">별점 알림</p>
         <Switch checked={isStarChecked} onCheckedChange={setIsStarChecked}></Switch>
-      </div>
-
-      <div>
-        <Button onClick={sendPush}>푸시 알림 테스트</Button>
       </div>
     </div>
   );
