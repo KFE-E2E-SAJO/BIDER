@@ -1,4 +1,4 @@
-import ChatListPageContent from '@/features/chat/ui/ChatListPageContent';
+import ChatListPageContent from '@/features/chat/list/ui/ChatListPageContent';
 import React from 'react';
 
 const ChatListPage = () => {

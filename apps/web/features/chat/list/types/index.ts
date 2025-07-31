@@ -4,3 +4,7 @@ export interface ChatListProps {
   filter: 'all' | 'buy' | 'sell' | 'unread';
   data: ChatRoom[];
 }
+
+export interface ChatItemProps {
+  onClick?: () => void;
+}

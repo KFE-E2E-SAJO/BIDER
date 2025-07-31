@@ -1,7 +1,6 @@
 import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import React from 'react';
 import ChatList from './ChatList';
-import { ChatRoom } from '@/entities/chatRoom/model/types';
 
 const ChatListPageContent = () => {
   const items = [

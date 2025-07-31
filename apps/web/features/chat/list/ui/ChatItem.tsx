@@ -2,10 +2,11 @@ import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
+import { ChatItemProps } from '../types';
 
-const ChatItem = () => {
+const ChatItem = ({ onClick }: ChatItemProps) => {
   return (
-    <div className="flex items-center justify-between">
+    <div onClick={onClick} className="flex items-center justify-between">
       <div className="flex">
         <div className="relative size-[46px] overflow-hidden rounded">
           <Image
