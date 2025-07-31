@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
+import { sendNotification } from '@/app/actions';
 
 export async function GET(request: NextRequest) {
   try {
@@ -43,6 +44,30 @@ export async function GET(request: NextRequest) {
 
           if (updateError) {
             throw new Error(`Auction ${auction.auction_id} 업데이트 실패: ${updateError.message}`);
+          }
+
+          //푸시 알림
+          const { data: PushAlarmData, error } = await supabase
+            .from('product')
+            .select(`title, product_image (image_url)`)
+            .eq('product_id', auction.product_id);
+
+          if (error || !PushAlarmData) {
+            throw new Error(`pushAlarm 조회 실패: ${error.message}`);
+          }
+
+          const { success: result, error: pushAlarmError } = await sendNotification(
+            'auction',
+            'auctionStarted',
+            {
+              productName: `${PushAlarmData?.[0]?.title}`,
+              auctionId: `${auction.auction_id}`,
+              image: `${PushAlarmData?.[0]?.product_image[0]?.image_url}`,
+            }
+          );
+
+          if (pushAlarmError) {
+            throw new Error(`pushAlarm 전송 실패: ${pushAlarmError}`);
           }
 
           return {

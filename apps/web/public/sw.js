@@ -7,8 +7,8 @@ self.addEventListener('push', function (event) {
       badge: '/icon.png',
       vibrate: [100, 50, 100],
       data: {
-        dateOfArrival: Date.now(),
-        primaryKey: '2',
+        url: data.url,
+        time: data.time,
       },
     };
     event.waitUntil(self.registration.showNotification(data.title, options));
@@ -17,6 +17,8 @@ self.addEventListener('push', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
   console.log('Notification click received.');
+  const urlToOpen = event.notification.data?.url || '/';
+
+  event.waitUntil(clients.openWindow(urlToOpen));
   event.notification.close();
-  event.waitUntil(clients.openWindow('https://bider.vercel.app/'));
 });

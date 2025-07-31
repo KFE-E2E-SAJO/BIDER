@@ -199,6 +199,9 @@ importers:
       react-dom:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
+      react-swipeable-list:
+        specifier: ^1.10.0
+        version: 1.10.0
       sharp:
         specifier: ^0.34.3
         version: 0.34.3
@@ -4724,6 +4727,9 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-swipeable-list@1.10.0:
+    resolution: {integrity: sha512-Ap85a3c5sgvglZBlaansfT6VfwuMad5U4puxFW4sJbUU6alE7epzW39CHvs5AohUZi7wjlP1KFunpXoD+iUyGQ==}
 
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
@@ -10329,6 +10335,8 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@types/react': 19.1.0
+
+  react-swipeable-list@1.10.0: {}
 
   react@19.1.0: {}
 
