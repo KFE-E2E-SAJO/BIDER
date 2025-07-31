@@ -12,8 +12,13 @@ const MessageList = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'auto' });
   }, []);
 
+  // 메시지 수가 변할 때마다 아래로 스크롤
+  //   useEffect(() => {
+  //     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  //     }, [messages.length]);
+
   return (
-    <div className="p-box h-full pb-[77px]">
+    <div className="p-box h-full overflow-y-auto pb-[77px] pt-[65px]">
       <DateDivider isoDate={'2025-06-17T09:32:00.000Z'} />
       <MyMessage
         text={'안녕하세요! 제품 상태에 대해 더 자세히 알 수 있을까요?'}

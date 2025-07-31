@@ -4,7 +4,7 @@ import React from 'react';
 
 const AuctionInfo = () => {
   return (
-    <div className="bg-neutral-0 sticky left-0 top-[67px] flex w-full items-center justify-between border-b border-t border-neutral-100 px-[23px] py-[13px]">
+    <div className="bg-neutral-0 fixed left-[50%] top-[67px] z-10 flex w-full max-w-[600px] translate-x-[-50%] items-center justify-between border-b border-t border-neutral-100 px-[23px] py-[13px]">
       <div className="flex items-center">
         <div className="relative size-[37px] overflow-hidden rounded">
           <Image

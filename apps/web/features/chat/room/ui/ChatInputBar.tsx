@@ -9,10 +9,16 @@ const ChatInputBar = () => {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [bottomOffset, setBottomOffset] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 600); // 모바일 기준 너비
+
+      if (window.visualViewport) {
+        const offset = window.innerHeight - window.visualViewport.height;
+        setBottomOffset(offset > 0 ? offset : 0);
+      }
     };
 
     handleResize(); // 초기 판단
@@ -24,6 +30,7 @@ const ChatInputBar = () => {
 
   return (
     <div
+      style={{ bottom: bottomOffset }}
       className={cn(
         'bg-neutral-0 fixed bottom-0 left-[50%] flex w-full max-w-[600px] translate-x-[-50%] items-center gap-[12px] border-t border-neutral-100 px-[16px] pt-[12px]',
         !isMobile ? 'pb-[34px]' : isFocused ? 'pb-[12px]' : 'pb-[34px]'
