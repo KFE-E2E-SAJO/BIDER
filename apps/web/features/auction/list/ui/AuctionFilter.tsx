@@ -1,4 +1,4 @@
-import { ProductFilter as ProductFilterType } from '@/features/product/types';
+import { AuctionFilter as AuctionFilterType } from '@/features/auction/list/types';
 import Checkbox from '@repo/ui/components/Checkbox/Checkbox';
 import { useEffect, useState } from 'react';
 import {
@@ -8,11 +8,11 @@ import {
   TooltipTrigger,
 } from '@repo/ui/components/Tooltip/Tooltip';
 
-interface ProductFilterProps {
-  setFilter: (filters: ProductFilterType[]) => void;
+interface AuctionFilterProps {
+  setFilter: (filters: AuctionFilterType[]) => void;
 }
 
-const ProductFilter = ({ setFilter }: ProductFilterProps) => {
+const AuctionFilter = ({ setFilter }: AuctionFilterProps) => {
   const [isDeadlineToday, setIsDeadlineToday] = useState(false);
   const [isExcludeEnded, setIsExcludeEnded] = useState(true);
 
@@ -25,7 +25,7 @@ const ProductFilter = ({ setFilter }: ProductFilterProps) => {
   };
 
   useEffect(() => {
-    const newFilters: ProductFilterType[] = [];
+    const newFilters: AuctionFilterType[] = [];
     if (isDeadlineToday) newFilters.push('deadline-today');
     if (isExcludeEnded) newFilters.push('exclude-ended');
     setFilter(newFilters);
@@ -65,4 +65,4 @@ const ProductFilter = ({ setFilter }: ProductFilterProps) => {
   );
 };
 
-export default ProductFilter;
+export default AuctionFilter;

@@ -1,39 +1,39 @@
 'use client';
 
-import Loading from '@/shared/ui/Loading/Loading';
-import { AuctionFilter as AuctionFilterType, AuctionSort } from '@/features/auction/list/types';
-import useProductListErrorHandler from '@/features/auction/list/model/useAuctionListErrorHandler';
-import useVirtualInfiniteScroll from '@/features/auction/list/model/useVirtualInfiniteScroll';
-import { useMemo, useState } from 'react';
-import CategoryFilter from '@/features/category/ui/CategoryFilter';
-import { useAuctionList } from '@/features/auction/list/model/useAuctionList';
 import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
-import { CategoryValue } from '@/features/category/types';
-import AuctionList from '@/features/auction/list/ui/AuctionList';
+import { useAuctionList } from '@/features/auction/list/model/useAuctionList';
+import { AuctionFilter as AuctionFilterType, AuctionSort } from '@/features/auction/list/types';
 import AuctionFilter from '@/features/auction/list/ui/AuctionFilter';
+import AuctionList from '@/features/auction/list/ui/AuctionList';
 import AuctionSortDropdown from '@/features/auction/list/ui/AuctionSortDropdown';
+import { useCategoryStore } from '@/features/category/model/useCategoryStore';
+import Category from '@/features/category/ui/Category';
+import { LocationWithAddress } from '@/features/location/types';
 
-interface ResultSectionProps {
-  search: string;
+import useVirtualInfiniteScroll from '@/features/auction/list/model/useVirtualInfiniteScroll';
+
+import LocationPin from '@/features/location/ui/LocationPin';
+import Loading from '@/shared/ui/Loading/Loading';
+
+import { useMemo, useState } from 'react';
+import useAuctionListErrorHandler from '@/features/auction/list/model/useAuctionListErrorHandler';
+
+interface AuctionListClientPageProps {
+  userLocation: LocationWithAddress;
 }
 
-const ResultSection = ({ search }: ResultSectionProps) => {
+const AuctionListClientPage = ({ userLocation }: AuctionListClientPageProps) => {
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
   const [filter, setFilter] = useState<AuctionFilterType[]>(DEFAULT_AUCTION_LIST_PARAMS.filter);
-
-  const [cate, setCate] = useState<CategoryValue>(DEFAULT_AUCTION_LIST_PARAMS.cate);
-
+  const cate = useCategoryStore((state) => state.selected ?? DEFAULT_AUCTION_LIST_PARAMS.cate);
   const params = useMemo(
     () => ({ ...DEFAULT_AUCTION_LIST_PARAMS, sort, filter, cate }),
     [sort, filter, cate]
   );
-
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useAuctionList({
-      params,
-    });
+    useAuctionList({ params });
 
-  useProductListErrorHandler(isError, error);
+  useAuctionListErrorHandler(isError, error);
 
   const auctionList = data?.pages.flatMap((page) => page.data) ?? [];
 
@@ -43,21 +43,20 @@ const ResultSection = ({ search }: ResultSectionProps) => {
     isFetchingNextPage,
     fetchNextPage,
   });
+
   let content = null;
 
-  if (isLoading || !data) {
+  if (isLoading) {
     content = (
       <div className="flex flex-1">
         <Loading />
       </div>
     );
-  } else if (!search.trim()) {
-    content = <p className="mt-10 text-center text-neutral-500">검색어를 입력해주세요.</p>;
   } else {
     content = (
       <div
         ref={parentRef}
-        style={{ height: 'calc(100vh - 173px)' }}
+        style={{ height: 'calc(100vh - 326px)' }}
         className="p-box overflow-auto"
       >
         <AuctionList
@@ -72,17 +71,16 @@ const ResultSection = ({ search }: ResultSectionProps) => {
 
   return (
     <>
+      <Category type="inline" />
       <div className="p-box my-[21px] flex items-center justify-between">
-        <div className="flex gap-[11px]">
-          <CategoryFilter setCate={setCate} />
-        </div>
-
+        <LocationPin address={userLocation.address} />
         <AuctionSortDropdown sort={sort} setSort={setSort} />
       </div>
       <AuctionFilter setFilter={setFilter} />
+
       {content}
     </>
   );
 };
 
-export default ResultSection;
+export default AuctionListClientPage;

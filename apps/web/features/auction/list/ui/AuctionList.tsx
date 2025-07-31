@@ -1,22 +1,17 @@
-import { ProductList as ProductListType } from '@/features/product/types';
-import ProductItem from '@/features/product/ui/ProductItem';
+import { AuctionList as AuctionListType } from '@/features/auction/list/types';
+import AuctionItem from '@/features/auction/list/ui/AuctionItem';
 import Skeleton from '@/features/product/ui/Skeleton';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 import { VirtualItem } from '@tanstack/react-virtual';
 import Link from 'next/link';
 
-interface ProductListScrollProps {
-  data: ProductListType[];
+interface AuctionListProps {
+  data: AuctionListType[];
   virtualRows: VirtualItem[];
   totalSize: number;
   isFetchingNextPage: boolean;
 }
-const ProductListScroll = ({
-  data,
-  virtualRows,
-  totalSize,
-  isFetchingNextPage,
-}: ProductListScrollProps) => {
+const AuctionList = ({ data, virtualRows, totalSize, isFetchingNextPage }: AuctionListProps) => {
   if (data.length === 0) {
     return <p className="mt-10 text-center text-neutral-500">상품이 존재하지 않습니다.</p>;
   }
@@ -42,7 +37,7 @@ const ProductListScroll = ({
 
             {item && (
               <Link href={`/auction/${encodeUUID(item.id)}`}>
-                <ProductItem {...item} />
+                <AuctionItem {...item} />
               </Link>
             )}
           </li>
@@ -52,4 +47,4 @@ const ProductListScroll = ({
   );
 };
 
-export default ProductListScroll;
+export default AuctionList;

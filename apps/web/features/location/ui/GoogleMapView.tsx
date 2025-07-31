@@ -3,8 +3,8 @@
 import { AdvancedMarker, APIProvider, Map, Pin } from '@vis.gl/react-google-maps';
 import { useEffect, useState } from 'react';
 import { Location } from '@/features/location/types';
-import { ProductMapList } from '@/features/product/types';
 import { MapMarkers } from '@/features/location/ui/MapMarkers';
+import { AuctionMarkerResponse } from '@/features/auction/list/types';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
@@ -12,7 +12,7 @@ export interface GoogleMapViewProps {
   height?: string;
   mapId: string;
   location: Location;
-  markers?: ProductMapList[];
+  markers?: AuctionMarkerResponse[];
   showMyLocation?: boolean;
   showMarkers?: boolean;
 }
