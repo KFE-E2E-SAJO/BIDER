@@ -7,10 +7,12 @@ import { useRecoilState } from 'recoil';
 import { presenceState, selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { useAuthStore } from '@/shared/model/authStore';
+import { deleteChatRoom } from '@/features/chat/api/deleteChatRoom';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatroomWithInfoProps } from '../types';
 import { Dialog } from '@repo/ui/components/Dialog/Dialog';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 type ChatItemSwipeState = {
   [chatroom_id: string]: 'none' | 'left' | 'right'; // none: 기본, left: 좌로 스와이프(알림/신고), right: 우로 스와이프(차단/나가기)
@@ -126,9 +128,17 @@ export default function ChatList() {
   // 실제 채팅방 삭제 함수 (API 연동 등)
   const handleDeleteChatRoom = async (chatroomId: string) => {
     // 예시: API 호출 또는 mutation
-    // await deleteChatRoom(chatroomId);
-    setOpenDialogId(null); // 모달 닫기
-    // 채팅방 목록 새로고침 등 필요시 추가
+    try {
+      await deleteChatRoom(chatroomId);
+      setOpenDialogId(null); // 모달 닫기
+      queryClient.invalidateQueries({ queryKey: ['chat_room', userId] });
+      if (window.location.pathname === `/chat/${chatroomId}`) {
+        router.push('/chat');
+        toast({ content: '삭제되었습니다.' });
+      }
+    } catch (err) {
+      alert('채팅방 삭제에 실패했습니다.');
+    }
   };
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import { anonSupabase } from '@/shared/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useGetChatRoom } from '../model/useGetChatRoom';
 import { useSendMessage } from '../model/useSendMessage';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 function formatKoreanTime(dateString: string | Date | undefined) {
   if (!dateString) return '';
@@ -137,6 +138,13 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
       channel.unsubscribe();
     };
   }, [userId, roomId]);
+
+  if (isError && (error as any)?.status === 404) {
+    // useRouter로 리스트로 보냄
+    router.replace('/chat');
+    toast({ content: '삭제되었습니다.' });
+    return null;
+  }
 
   const grouped = groupByDate(messages);
   return (

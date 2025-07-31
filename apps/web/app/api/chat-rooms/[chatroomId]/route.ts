@@ -181,3 +181,36 @@ export async function POST(req: NextRequest, { params }: { params: { chatroomId:
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: { chatroomId: string } }) {
+  const { chatroomId } = params;
+
+  if (!chatroomId) {
+    return NextResponse.json({ error: 'chatroomId is required' }, { status: 400 });
+  }
+
+  try {
+    // 메시지 먼저 삭제
+    const { error: deleteError1 } = await supabase
+      .from('message')
+      .delete()
+      .eq('chatroom_id', chatroomId);
+    if (deleteError1) {
+      return NextResponse.json({ error: deleteError1.message }, { status: 500 });
+    }
+
+    // 채팅방 삭제
+    const { error: deleteError2 } = await supabase
+      .from('chat_room')
+      .delete()
+      .eq('chatroom_id', chatroomId);
+    if (deleteError2) {
+      return NextResponse.json({ error: deleteError2.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (e) {
+    console.error('채팅방 삭제 API 오류:', e);
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+  }
+}
