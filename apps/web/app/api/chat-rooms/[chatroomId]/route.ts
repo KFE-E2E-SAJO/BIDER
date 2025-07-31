@@ -23,6 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
         updated_at,
         auction:auction_id (
           min_price,
+          auction_status,
           product_id,
           product:product_id (
             title,
@@ -101,6 +102,7 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
   const response = {
     chatroom_id: chatRoomData.chatroom_id,
     min_price: (chatRoomData?.auction as any)?.min_price ?? null,
+    auction_status: (chatRoomData?.auction as any)?.auction_status ?? null,
     title: (chatRoomData?.auction as any)?.product?.title ?? null,
     product_image_url,
     buyer: {

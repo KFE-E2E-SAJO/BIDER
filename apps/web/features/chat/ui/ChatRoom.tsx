@@ -194,8 +194,14 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
               {((roomData as any)?.min_price || 0).toLocaleString()}원
             </div>
           </div>
-          <span className="ml-auto rounded bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600">
-            경매 종료
+          <span
+            className={`ml-auto rounded px-2 py-0.5 text-xs font-medium ${
+              (roomData as any)?.auction_status === '경매 종료'
+                ? 'bg-gray-200 text-gray-600'
+                : 'bg-blue-100 text-blue-500'
+            } `}
+          >
+            {(roomData as any)?.auction_status === '경매 종료' ? '경매 종료' : '경매 진행 중'}
           </span>
         </div>
       </div>
