@@ -156,35 +156,6 @@ export default function ChatList() {
     };
   }, [userId]);
 
-  //   const channel = anonSupabase.channel('online_users', {
-  //     config: {
-  //       presence: {
-  //         key: userId,
-  //       },
-  //     },
-  //   });
-
-  //   channel.on('presence', { event: 'sync' }, () => {
-  //     const newState = channel.presenceState();
-  //     const newStateObj = JSON.parse(JSON.stringify(newState));
-  //     setPresence(newStateObj);
-  //   });
-
-  //   channel.subscribe(async (status: string) => {
-  //     if (status !== 'SUBSCRIBED') {
-  //       return;
-  //     }
-
-  //     const newPresenceStatus: unknown = await channel.track({
-  //       onlineAt: new Date().toISOString(),
-  //     });
-  //   });
-
-  //   return () => {
-  //     channel.unsubscribe();
-  //   };
-  // }, []);
-
   // 카테고리별 필터
   const { data: Rooms = [], isLoading, isError } = useGetChatList(userId || '');
   const filteredChats =
@@ -244,6 +215,7 @@ export default function ChatList() {
           {!isLoading &&
             !isError &&
             filteredChats.map((chat: any) => {
+              console.log('chat:', chat);
               const swipeState = swipeStates[chat.chatroom_id] || 'none';
               const isSeller = chat.seller?.user_id === userId;
               const isBuyer = chat.buyer?.user_id === userId;
@@ -320,51 +292,64 @@ export default function ChatList() {
                     } `}
                     onClick={() => handleChatRoomClick(chat.chatroom_id)}
                   >
-                    {/* 채팅방 내부 내용 */}
+                    {/* 상품 이미지 */}
                     <img
                       src={chat.product_image_url}
                       alt="Product"
                       className="h-11 w-11 rounded-md object-cover"
                     />
+                    {/* 채팅방 주요 정보 (flex-1로 좌측) */}
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+                      {/* 프로필+닉네임+뱃지 */}
+                      <div className="flex items-center gap-1">
+                        <img
+                          src={otherProfile?.profile_img || DEFAULT_PROFILE_IMG}
+                          alt="프로필"
+                          onError={(e) => {
+                            e.currentTarget.src = DEFAULT_PROFILE_IMG;
+                          }}
+                          className="h-5 w-5 rounded-full border border-gray-200 object-cover"
+                        />
+                        <span className="text-sm font-semibold text-gray-900">
                           {otherProfile?.nickname || '알수없음'}
-                          <img
-                            src={otherProfile?.profile_img}
-                            alt="프로필"
-                            onError={(e) => {
-                              e.currentTarget.src;
-                            }}
-                            className="ml-1 h-5 w-5 rounded-full border border-gray-200 object-cover"
-                          />
                         </span>
-                        {chat.unread > 0 && (
-                          <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-500">
-                            {chat.unread}
-                          </span>
-                        )}
+                        {chat.winning_bid_user_id === userId &&
+                          chat.winning_bid_user_id !== null && (
+                            <span className="ml-1 bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-500">
+                              낙찰
+                            </span>
+                          )}
                       </div>
+                      {/* 메시지 미리보기+시간 */}
                       <div className="mt-1 flex items-center gap-2">
-                        <span className={`block w-44 truncate text-xs ${previewTextClass} `}>
+                        <span className={`block w-44 truncate text-xs ${previewTextClass}`}>
                           {chat.latestMessage?.content || '메시지가 없습니다.'}
                         </span>
-                        <div className="flex items-center gap-0.5">
-                          <span className="text-xs text-gray-400">
-                            {formatRelativeTime(chat.created_at)}
-                          </span>
-                          <span className="text-[9px] leading-none text-gray-300"></span>
-                        </div>
+                        <span className="text-xs text-gray-400">
+                          {formatRelativeTime(chat.created_at)}
+                        </span>
                       </div>
                     </div>
+                    {/* 맨 오른쪽: 안읽은 메시지 > 아이콘 */}
+                    {chat.unread > 0 && (
+                      <span className="ml-2 flex h-6 min-w-[24px] items-center justify-center rounded-full bg-green-500 px-2 text-xs font-bold text-white">
+                        {chat.unread}
+                      </span>
+                    )}
                     <svg
-                      className="h-4 w-4 text-gray-300"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="16"
+                      viewBox="0 0 10 16"
                       fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      viewBox="0 0 24 24"
                     >
-                      <path d="M9 5l7 7-7 7" />
+                      <path
+                        d="M1.5 15L8.5 8L1.5 1"
+                        stroke="#B4B4B4"
+                        strokeWidth="1.25"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </div>
                   {/* ---- Dialog 모달: 나가기 ---- */}

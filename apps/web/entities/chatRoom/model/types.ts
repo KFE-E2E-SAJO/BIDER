@@ -10,6 +10,7 @@ export interface ChatRoom {
 
 export interface ChatRoomWithProfile extends ChatRoom {
   auction: {
+    winning_bid_user_id: string | null;
     product: {
       product_image: {
         image_url: string;

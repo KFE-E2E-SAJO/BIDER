@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
         chatroom_id,
         updated_at,
         auction:auction_id (
+        winning_bid_user_id,
           product:product_id (
             product_image (
               image_url,
@@ -88,6 +89,7 @@ export async function GET(request: NextRequest) {
 
       return {
         chatroom_id: room.chatroom_id,
+        winning_bid_user_id: room.auction?.winning_bid_user_id ?? null,
         product_image_url,
         buyer: {
           user_id: (buyer as any)?.user_id ?? null,
