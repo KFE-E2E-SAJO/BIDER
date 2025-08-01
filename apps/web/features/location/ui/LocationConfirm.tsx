@@ -4,7 +4,7 @@ import { Button } from '@repo/ui/components/Button/Button';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
-import GoogleMap from '@/features/location/ui/GoggleMap';
+import GoogleMap from '@/features/location/ui/GooggleMap';
 import useUpdateLocation from '@/features/location/model/useUpdateLocation';
 import clsx from 'clsx';
 import { Location } from '@/features/location/types';

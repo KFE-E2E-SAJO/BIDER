@@ -2,69 +2,69 @@ import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import { AuctionDetail, AuctionForBid } from '@/entities/auction/model/types';
+import { generateBlurDataURL } from '@/features/auction/detail/lib/generateBlurImg';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
   const resolvedParams = await params;
   const id = decodeShortId(resolvedParams.shortId);
 
   try {
-    // 1. 경매 정보 조회
-    const { data: auctionData, error: auctionError } = await supabase
-      .from('auction')
-      .select(
-        `
-        *,
-        product (
+    // 병렬로 데이터 조회
+    const [auctionResult, bidHistoryResult, currentHighestBidResult] = await Promise.all([
+      supabase
+        .from('auction')
+        .select(
+          `
           *,
-          exhibit_user:exhibit_user_id (
-            *
-          ), 
-          product_image (
-            *
+          product (
+            *,
+            exhibit_user:exhibit_user_id (*), 
+            product_image (*)
           )
+        `
         )
-      `
-      )
-      .eq('auction_id', id)
-      .single();
+        .eq('auction_id', id)
+        .single(),
+
+      supabase
+        .from('bid_history')
+        .select(
+          `
+          *,
+          bid_user_nickname:bid_user_id (nickname)
+        `
+        )
+        .eq('auction_id', id)
+        .order('bid_price', { ascending: false })
+        .limit(5),
+
+      supabase.rpc('get_current_highest_bid', { auction_uuid: id }),
+    ]);
+
+    const { data: auctionData, error: auctionError } = auctionResult;
+    const { data: bidHistory, error: bidError } = bidHistoryResult;
+    const { data: currentHighestBid, error: bidPriceError } = currentHighestBidResult;
 
     if (auctionError || !auctionData) {
       return NextResponse.json({ error: '경매 조회 실패' }, { status: 500 });
     }
 
-    // 2. 입찰 내역 조회
-    const { data: bidHistory, error: bidError } = await supabase
-      .from('bid_history')
-      .select(
-        `
-        *,
-        bid_user_nickname:bid_user_id (
-          nickname
-        )
-      `
-      )
-      .eq('auction_id', id)
-      .order('bid_price', { ascending: false });
-
-    if (bidError) {
-      return NextResponse.json({ error: '입찰 내역 조회 실패' }, { status: 500 });
+    if (bidError || bidPriceError) {
+      return NextResponse.json({ error: '입찰 정보 조회 실패' }, { status: 500 });
     }
-
-    // 3. 입찰 히스토리가 없어도 괜찮음 (빈 배열로 처리)
-    const sortedBidHistory = bidHistory || [];
-
-    // 4. 현재 최고 입찰가 계산
-    const currentHighestBid = auctionData.is_secret
-      ? null
-      : sortedBidHistory.length > 0
-        ? sortedBidHistory[0]?.bid_price
-        : auctionData.min_price;
 
     const productData = auctionData.product;
     const userData = productData?.exhibit_user;
-    const safeBidHistory = auctionData.is_secret ? [] : sortedBidHistory;
 
-    // 5. 응답 데이터 구성
+    const mainImage = { ...productData?.product_image[0] };
+    mainImage.blurDataUrl = await generateBlurDataURL(mainImage.image_url);
+    productData.product_image[0] = mainImage;
+    const safeBidHistory = auctionData.is_secret ? [] : bidHistory || [];
+    const safeCurrentHighestBid = auctionData.is_secret
+      ? null
+      : currentHighestBid || auctionData.min_price;
+
+    // 응답 데이터 구성
     const response: AuctionDetail = {
       ...auctionData,
       product: {
@@ -72,9 +72,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
         exhibit_user: userData,
         product_image: productData?.product_image || [],
       },
-      bid_cnt: sortedBidHistory.length,
       bid_history: safeBidHistory,
-      current_highest_bid: currentHighestBid,
+      current_highest_bid: safeCurrentHighestBid,
     } as AuctionDetail;
 
     return NextResponse.json(response);

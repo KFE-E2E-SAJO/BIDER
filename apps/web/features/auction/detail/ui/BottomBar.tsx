@@ -31,25 +31,27 @@ const BottomBar = ({
     return () => clearInterval(timer);
   }, [auctionEndAt]);
 
-  if (!hasMounted) return null;
-
   const buttonText = isSecret ? '시크릿 입찰하기' : '입찰하기';
   const bgColorClass = isSecret ? 'bg-event' : 'bg-main';
   const borderColorClass = isSecret ? 'border-event' : 'border-main';
   const iconColorClass = isSecret ? 'text-event' : 'text-main';
 
   return (
-    <div className="bg-neutral-0 fixed bottom-0 left-0 z-50 h-[102px] w-full border-t border-neutral-100 px-[16px] pt-[15px]">
+    <div className="bg-neutral-0 fixed bottom-0 left-[50%] z-50 h-[102px] w-full max-w-[600px] translate-x-[-50%] border-t border-neutral-100 px-[16px] pt-[15px]">
       <div className="flex items-center justify-between">
         <div>
           <div className="typo-subtitle-small-medium">입찰 마감 시간</div>
-          <span className="text-sm text-neutral-700">{countdown}</span>
+          {!hasMounted ? (
+            <span className="text-sm text-neutral-700">-</span>
+          ) : (
+            <span className="text-sm text-neutral-700">{countdown}</span>
+          )}
         </div>
 
         <div className="flex shrink-0 items-center gap-[12px]">
           <Button
             onClick={() => setOpenBiddingSheet(true)}
-            disabled={countdown === '마감됨'}
+            disabled={countdown === '마감됨' || !hasMounted}
             className={clsx('w-[142px]', bgColorClass)}
           >
             {buttonText}

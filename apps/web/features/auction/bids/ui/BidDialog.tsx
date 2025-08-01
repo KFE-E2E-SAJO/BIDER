@@ -44,7 +44,7 @@ export const BidDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} className="w-full">
       {/* 타이틀 (공통컴포넌트 설정과 달라서 화면에서 안 보이게 처리) */}
       <DialogHeader className="sr-only">
         <DialogTitle>{title}</DialogTitle>

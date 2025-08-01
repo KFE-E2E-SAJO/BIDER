@@ -1,11 +1,11 @@
 import type { Marker } from '@googlemaps/markerclusterer';
 import React, { useCallback } from 'react';
 import { AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
-import { ProductMapList } from '@/features/product/types';
+import { AuctionMarkerResponse } from '@/features/auction/list/types';
 
 export type MarkerProps = {
-  poi: ProductMapList;
-  onClick: (poi: ProductMapList) => void;
+  poi: AuctionMarkerResponse;
+  onClick: (poi: AuctionMarkerResponse) => void;
   setMarkerRef: (marker: Marker | null, key: string) => void;
 };
 

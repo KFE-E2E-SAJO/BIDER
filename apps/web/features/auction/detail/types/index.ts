@@ -11,6 +11,7 @@ export interface AuctionDetailContent {
   images: ProductImage[];
   minPrice: number;
   auctionEndAt: string;
+  auctionStatus: string;
   exhibitUser: Profiles;
   currentHighestBid: number | null;
   bidHistory: BidHistoryWithUserNickname[];
@@ -22,6 +23,7 @@ export interface AuctionDetailContent {
 
 export type AuctionDetailContentProps = {
   data: AuctionDetailContent;
+  isProductMine: boolean;
 };
 
 export interface BottomBarProps {
