@@ -7,6 +7,7 @@ import { getKoreanAddress } from '@/features/location/api/getKoreanAddress';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Button } from '@repo/ui/components/Button/Button';
 import { Location } from '@/features/location/types';
+import { getGeoPermissionState } from '@/features/location/lib/utils';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
@@ -31,10 +32,24 @@ const GoogleMap = ({
   const [loading, setLoading] = useState(true);
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
+  const [showGuide, setShowGuide] = useState(false);
+  const openGuide = () => {
+    setShowGuide(true);
+    toast({ content: '위치 접근이 차단되어 있어요. 브라우저 설정에서 허용으로 변경해주세요.' });
+  };
 
-  const fetchLocation = () => {
+  const fetchLocation = async () => {
     setLoading(true);
     setError(false);
+
+    const state = await getGeoPermissionState();
+
+    if (state === 'denied') {
+      openGuide();
+      setError(true);
+      setLoading(false);
+      return;
+    }
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -42,6 +57,7 @@ const GoogleMap = ({
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
         };
+        console.log(coords);
         setCurrentLocation(coords);
         setLocation(coords);
         const koreanAddress = await getKoreanAddress(coords);
@@ -55,8 +71,12 @@ const GoogleMap = ({
         setLoading(false);
       },
       (err) => {
-        toast({ content: '지도를 불러오는 데 문제가 발생했습니다.' });
-        console.error('지도를 불러오는 데 문제가 발생했습니다.', err);
+        if (err.code === err.PERMISSION_DENIED) {
+          openGuide();
+        } else {
+          toast({ content: '지도를 불러오는 데 문제가 발생했습니다.' });
+          console.error('지도를 불러오는 데 문제가 발생했습니다.', err);
+        }
         setError(true);
         setLoading(false);
       }
@@ -99,6 +119,32 @@ const GoogleMap = ({
       setAddress?.(koreanAddress);
     }
   };
+
+  if (showGuide) {
+    return (
+      <div className="bg-neutral-050 rounded-xl border p-3 text-sm">
+        <div className="mb-2 font-medium">위치 접근이 차단되었습니다</div>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>사이트가 HTTPS인지 확인</li>
+          <li>
+            브라우저 주소창 자물쇠 아이콘 → 사이트 설정 → <b>위치: 허용</b>
+          </li>
+          <li>
+            iOS Safari: 설정 앱 → 개인정보 보호/보안 → 위치 서비스 → <b>Safari 웹사이트</b> → 허용
+          </li>
+          <li>Android: 설정 → 위치 켜기, 브라우저 앱 권한 허용</li>
+        </ul>
+        <div className="mt-2 flex gap-8">
+          <Button size="sm" variant="outline" onClick={() => setShowGuide(false)}>
+            닫기
+          </Button>
+          <Button size="sm" onClick={fetchLocation}>
+            다시 시도
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
