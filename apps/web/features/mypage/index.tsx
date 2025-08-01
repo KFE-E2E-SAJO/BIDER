@@ -18,7 +18,7 @@ const MyPage = () => {
     <div>
       <MyPageProfileCard {...data.profile} />
       <MyPageAuction {...data.auction} />
-      <MyPageMenuList address={data.profile.address} />
+      <MyPageMenuList address={data.profile.address} point={data.profile.point} />
       <Footer />
     </div>
   );

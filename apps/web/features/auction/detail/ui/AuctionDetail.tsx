@@ -8,8 +8,10 @@ import BiddingStatusBoard from './BiddingStatusBoard';
 import { getCategoryLabel } from '@/features/category/lib/utils';
 import { CategoryValue } from '@/features/category/types';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
+import Link from 'next/link';
+import ProposalActionButton from '@/features/auction/detail/ui/ProposalActionButton';
 
-const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
+const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
   return (
     <>
@@ -17,14 +19,22 @@ const AuctionDetail = ({ data }: AuctionDetailContentProps) => {
       <div className="p-box flex flex-col gap-[25px]">
         <div className="flex flex-col gap-[14px]">
           <div className="typo-subtitle-bold">{data.productTitle}</div>
-          <u className="typo-caption-regular w-fit text-neutral-700">
-            {getCategoryLabel(data.productCategory as CategoryValue)}
-          </u>
+          <Link href={`/product?cate=${data.productCategory}`}>
+            <u className="typo-caption-regular w-fit text-neutral-700">
+              {getCategoryLabel(data.productCategory as CategoryValue)}
+            </u>
+          </Link>
         </div>
 
-        <div>
-          <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
-          <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
+        <div className="flex items-end justify-between">
+          <div>
+            <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
+            <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
+          </div>
+          {/* 제안하기 */}
+          {!isProductMine && data.auctionStatus !== '경매 종료' && (
+            <ProposalActionButton auctionId={data.auctionId} />
+          )}
         </div>
 
         <div className="bg-neutral-050 flex w-full items-center justify-around px-[12px] py-[9px]">
