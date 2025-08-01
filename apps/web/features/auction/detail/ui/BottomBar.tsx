@@ -23,20 +23,22 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
     return () => clearInterval(timer);
   }, [auctionEndAt]);
 
-  if (!hasMounted) return null;
-
   return (
     <div className="bg-neutral-0 fixed bottom-0 left-[50%] z-50 h-[102px] w-full max-w-[600px] translate-x-[-50%] border-t border-neutral-100 px-[16px] pt-[15px]">
       <div className="flex items-center justify-between">
         <div>
           <div className="typo-subtitle-small-medium">입찰 마감 시간</div>
-          <span className="text-sm text-neutral-700">{countdown}</span>
+          {!hasMounted ? (
+            <span className="text-sm text-neutral-700">-</span>
+          ) : (
+            <span className="text-sm text-neutral-700">{countdown}</span>
+          )}
         </div>
 
         <div className="flex shrink-0 items-center gap-[12px]">
           <Button
             onClick={() => setOpenBiddingSheet(true)}
-            disabled={countdown === '마감됨'}
+            disabled={countdown === '마감됨' || !hasMounted}
             className="w-[142px]"
           >
             입찰하기
