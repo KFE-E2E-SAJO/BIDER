@@ -15,7 +15,7 @@ import useVirtualInfiniteScroll from '@/features/auction/list/model/useVirtualIn
 import LocationPin from '@/features/location/ui/LocationPin';
 import Loading from '@/shared/ui/Loading/Loading';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useAuctionListErrorHandler from '@/features/auction/list/model/useAuctionListErrorHandler';
 
 interface AuctionListClientPageProps {
@@ -23,17 +23,19 @@ interface AuctionListClientPageProps {
 }
 
 const AuctionListClientPage = ({ userLocation }: AuctionListClientPageProps) => {
+  const [hydrated, setHydrated] = useState(false);
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
   const [filter, setFilter] = useState<AuctionFilterType[]>(DEFAULT_AUCTION_LIST_PARAMS.filter);
   const cate = useCategoryStore((state) => state.selected ?? DEFAULT_AUCTION_LIST_PARAMS.cate);
-  const params = useMemo(
-    () => ({ ...DEFAULT_AUCTION_LIST_PARAMS, sort, filter, cate }),
-    [sort, filter, cate]
-  );
+
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useAuctionList({ params });
+    useAuctionList({ params: { ...DEFAULT_AUCTION_LIST_PARAMS, sort, filter, cate } });
 
   useAuctionListErrorHandler(isError, error);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const auctionList = data?.pages.flatMap((page) => page.data) ?? [];
 
@@ -46,7 +48,7 @@ const AuctionListClientPage = ({ userLocation }: AuctionListClientPageProps) => 
 
   let content = null;
 
-  if (isLoading) {
+  if (isLoading || !hydrated) {
     content = (
       <div className="flex flex-1">
         <Loading />

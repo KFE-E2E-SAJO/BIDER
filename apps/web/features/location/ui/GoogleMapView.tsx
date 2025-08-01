@@ -36,7 +36,7 @@ const GoogleMapView = ({
   if (!currentLocation) return null;
 
   return (
-    <div className={`${height}`}>
+    <div className={`${height} bg-neutral-100`}>
       <APIProvider apiKey={MAPAPIKEY}>
         <Map
           defaultZoom={13}
