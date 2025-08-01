@@ -17,5 +17,5 @@ export interface ChatRoomForList extends ChatRoom {
   your_profile: Profiles;
   last_message: Message | null;
   unread_count: number;
-  isWin: boolean;
+  is_win: boolean;
 }

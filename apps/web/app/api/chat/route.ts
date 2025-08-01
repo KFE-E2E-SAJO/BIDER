@@ -7,8 +7,15 @@ import { createClient } from '@/shared/lib/supabase/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
-type RawRow = Omit<ChatRoomForList, 'last_message'> & {
-  last_message: any;
+type RawRow = Omit<
+  ChatRoomForList,
+  'last_message' | 'your_profile' | 'product_image' | 'unread_count' | 'is_win'
+> & {
+  last_message: Message | null;
+  your_profile: Profiles | null;
+  product_image: ProductImage | null;
+  unread_count: number | null;
+  is_win: boolean;
 };
 
 export async function GET(_req: Request) {
@@ -37,7 +44,7 @@ export async function GET(_req: Request) {
     your_profile: row.your_profile as Profiles,
     product_image: row.product_image as ProductImage,
     unread_count: (row.unread_count as number) ?? 0,
-    isWin: row.isWin as boolean,
+    is_win: row.is_win as boolean,
   }));
 
   return NextResponse.json(chatRooms);
