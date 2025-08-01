@@ -3,7 +3,7 @@ import { ChatRoomForList } from '@/entities/chatRoom/model/types';
 export const getChatList = async (): Promise<ChatRoomForList[] | []> => {
   const baseURL =
     process.env.NODE_ENV === 'production'
-      ? 'bider-git-feat-chatroom-349-bider-aac1a071.vercel.app'
+      ? 'https://bider-git-feat-chatroom-349-bider-aac1a071.vercel.app'
       : 'http://localhost:3000';
 
   const res = await fetch(`${baseURL}/api/chat`);
