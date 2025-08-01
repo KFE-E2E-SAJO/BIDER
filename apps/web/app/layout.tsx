@@ -98,7 +98,7 @@ const RootLayout = ({
     <html lang="ko">
       <body>
         <div className="bg-neutral-0 mx-auto my-0 max-w-[600px]">
-          <div id="container" className="flex min-h-screen flex-col">
+          <div id="container" className="flex min-h-dvh flex-col">
             {children}
           </div>
           <Toaster />

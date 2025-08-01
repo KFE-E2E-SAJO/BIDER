@@ -5,7 +5,7 @@ import MessageList from '@/features/chat/room/ui//MessageList';
 
 const ChatPageContent = () => {
   return (
-    <div className="flex h-screen w-full flex-col overflow-hidden">
+    <div className="flex h-dvh w-full flex-col overflow-hidden">
       {/* 경매 상품 설명 */}
       <AuctionInfo />
 
