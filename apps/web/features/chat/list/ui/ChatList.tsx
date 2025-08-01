@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ChatListProps } from '../types';
 import ChatItem from './ChatItem';
 import Link from 'next/link';
-import { useChatStore } from '../../room/model/chatStore';
 import { useAuthStore } from '@/shared/model/authStore';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 import SwipeableItem from '@/shared/ui/listItem/SwipeableItem';
@@ -19,7 +18,6 @@ import { Button } from '@repo/ui/components/Button/Button';
 
 const ChatList = ({ filter, data }: ChatListProps) => {
   const queryClient = useQueryClient();
-  const setNickname = useChatStore((s) => s.setNickname);
   const userId = useAuthStore((state) => state.user?.id) as string;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{
@@ -99,12 +97,10 @@ const ChatList = ({ filter, data }: ChatListProps) => {
                 if (openItemId === chat.chatroom_id) {
                   e.preventDefault(); // 열린 상태일 땐 링크 막고
                   setOpenItemId(null); // 닫기만
-                } else {
-                  setNickname(chat.your_profile.nickname);
                 }
               }}
             >
-              <ChatItem onClick={() => setNickname(chat.your_profile.nickname)} data={chat} />
+              <ChatItem data={chat} />
             </Link>
           </SwipeableItem>
         </div>

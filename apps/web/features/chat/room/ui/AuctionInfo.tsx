@@ -3,17 +3,14 @@
 import StatusBadge from '@/shared/ui/badge/StatusBadge';
 import Image from 'next/image';
 import React from 'react';
-import { useChatStore } from '@/features/chat/room/model/chatStore';
 import BackBtn from '@/shared/ui/button/BackBtn';
 
 const AuctionInfo = () => {
-  const nickname = useChatStore((s) => s.nickname);
-
   return (
     <div className="bg-neutral-0 w-full">
       <div className="p-box flex w-full items-center pb-[10px] pt-[30px]">
         <BackBtn />
-        <span className="typo-body-medium pl-[20px]">{nickname}</span>
+        <span className="typo-body-medium pl-[20px]">{'입찰매니아'}</span>
       </div>
       <div className="flex items-center justify-between border-b border-t border-neutral-100 px-[23px] py-[13px]">
         <div className="flex items-center">
