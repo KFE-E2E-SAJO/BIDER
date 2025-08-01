@@ -16,7 +16,7 @@ import ImageUploadPreview from '@/shared/lib/ImageUploadPreview';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useProductEdit } from '../model/useProductEdit';
 import { Switch } from '@repo/ui/components/Switch/Switch';
-import GoogleMap from '@/features/location/ui/GoggleMap';
+import GoogleMap from '@/features/location/ui/GooggleMap';
 import { Location } from '@/features/location/types';
 
 interface ProductEditFormProps {

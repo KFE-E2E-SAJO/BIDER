@@ -22,8 +22,12 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
   const lat = userData.latitude;
   const lng = userData.longitude;
 
-  const { data, error } = await supabase.from('auction').select(`
+  const { data, error } = await supabase
+    .from('auction')
+    .select(
+      `
     auction_id,
+    auction_status,
     product:product_id (
       latitude,
       longitude,
@@ -32,7 +36,9 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
         order_index
       )
     )
-  `);
+  `
+    )
+    .neq('auction_status', '경매 종료');
 
   if (error) {
     return null;
@@ -40,7 +46,8 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
   const filtered = (data as unknown as MapAuction[]).filter((item) => {
     const { product } = item;
     const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
-    return distance <= 5;
+    const within5km = distance <= 5;
+    return within5km;
   });
 
   const markers = filtered.map((item) => ({

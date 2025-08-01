@@ -1,12 +1,8 @@
 import { AuctionFilter as AuctionFilterType } from '@/features/auction/list/types';
+import AuctionTooltip from '@/features/auction/list/ui/AuctionTooltip';
 import Checkbox from '@repo/ui/components/Checkbox/Checkbox';
+
 import { useEffect, useState } from 'react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@repo/ui/components/Tooltip/Tooltip';
 
 interface AuctionFilterProps {
   setFilter: (filters: AuctionFilterType[]) => void;
@@ -34,16 +30,7 @@ const AuctionFilter = ({ setFilter }: AuctionFilterProps) => {
   return (
     <div className="p-box relative flex gap-[17px] pb-5">
       <div className="absolute">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <p className="opacity-0">툴팁</p>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="mt-1">
-              오늘이 입찰 마지막 기회!
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <AuctionTooltip />
       </div>
 
       <Checkbox

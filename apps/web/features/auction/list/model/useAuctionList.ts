@@ -1,5 +1,5 @@
 import { getAuctionListApi } from '@/features/auction/list/api/getAuctionListApi';
-import { auctionListQueryKey } from '@/features/auction/list/lib/utils';
+import { createAuctionListQueryKey } from '@/features/auction/list/lib/utils';
 import {
   AuctionListError,
   AuctionListParams,
@@ -9,13 +9,11 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 interface UseAuctionListProps {
   params: AuctionListParams;
-  initialData?: AuctionListResponse;
 }
 
-export const useAuctionList = (props: UseAuctionListProps) => {
-  const { params } = props;
+export const useAuctionList = ({ params }: UseAuctionListProps) => {
   return useInfiniteQuery<AuctionListResponse, AuctionListError>({
-    queryKey: auctionListQueryKey(params),
+    queryKey: createAuctionListQueryKey(params),
     queryFn: ({ pageParam = 0 }) => getAuctionListApi({ offset: pageParam as number, params }),
     getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
     initialPageParam: 0,

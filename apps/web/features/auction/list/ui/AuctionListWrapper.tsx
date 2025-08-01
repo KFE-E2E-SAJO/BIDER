@@ -1,5 +1,5 @@
 import { getAuctionListAction } from '@/features/auction/list/actions/getAuctionListAction';
-import { auctionListQueryKey } from '@/features/auction/list/lib/utils';
+import { createAuctionListQueryKey } from '@/features/auction/list/lib/utils';
 import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
 import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
 import { AuctionListParams } from '@/features/auction/list/types';
@@ -16,7 +16,7 @@ const AuctionListWrapper = async ({
   const queryClient = new QueryClient();
 
   await queryClient.prefetchInfiniteQuery({
-    queryKey: auctionListQueryKey(params),
+    queryKey: createAuctionListQueryKey(params),
     queryFn: ({ pageParam = 0 }) => getAuctionListAction({ offset: pageParam, params }),
     initialPageParam: 0,
   });

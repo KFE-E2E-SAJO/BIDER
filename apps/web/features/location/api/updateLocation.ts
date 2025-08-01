@@ -1,11 +1,11 @@
 import { UpdateLocationProps } from '@/features/location/types';
 
-export const updateLocation = async ({ userId, location, address }: UpdateLocationProps) => {
+export const updateLocation = async ({ location, address }: UpdateLocationProps) => {
   const { lat, lng } = location;
   const res = await fetch('/api/location', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, lat, lng, address }),
+    body: JSON.stringify({ lat, lng, address }),
   });
 
   if (!res.ok) {

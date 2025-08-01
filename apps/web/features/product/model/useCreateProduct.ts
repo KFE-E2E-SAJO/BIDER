@@ -46,15 +46,20 @@ export const useCreateProductWithValidation = (options?: UseCreateProductOptions
   const createProductWithValidation = (data: CreateProductRequest) => {
     // 기본 검증
     if (
-      !data.title ||
+      !data.title.trim() ||
       !data.category ||
-      !data.description ||
+      !data.description.trim() ||
       !data.minPrice ||
       !data.endDate ||
       !data.endTime ||
       data.images.length === 0
     ) {
       toast({ content: '모든 필수 항목을 입력해 주세요' });
+      return;
+    }
+
+    if (data.dealLatitude && !data.dealAddress) {
+      toast({ content: '위치 설명을 작성해 주세요.' });
       return;
     }
 

@@ -18,7 +18,7 @@ import {
 import { formatPriceInput, isEndDateValid } from '../lib/utils';
 import { useCreateProductWithValidation } from '../model/useCreateProduct';
 import { useProductFormWithoutSubmitting } from '../model/useProductForm';
-import GoogleMap from '@/features/location/ui/GoggleMap';
+import GoogleMap from '@/features/location/ui/GooggleMap';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import { Location } from '@/features/location/types';

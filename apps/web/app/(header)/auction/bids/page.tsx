@@ -1,10 +1,13 @@
 import { Suspense } from 'react';
 import AuctionBids from '@/features/auction/bids';
+import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 
 const SetAuctionBids = () => {
   return (
     <Suspense fallback={null}>
-      <AuctionBids />
+      <ReactQueryProvider>
+        <AuctionBids />
+      </ReactQueryProvider>
     </Suspense>
   );
 };

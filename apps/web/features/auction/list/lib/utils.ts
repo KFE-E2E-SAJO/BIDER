@@ -1,12 +1,15 @@
-import { AuctionFilter, AuctionSort } from '@/features/auction/list/types';
-import { CategoryValue } from '@/features/category/types';
+import { AuctionListParams } from '@/features/auction/list/types';
 
-export const auctionListQueryKey = (params: {
-  search: string;
-  cate: CategoryValue;
-  sort: AuctionSort;
-  filter: AuctionFilter[];
-}) => {
-  const filterKey = params.filter.join(',');
-  return ['auctionList', params.search, params.cate, params.sort, filterKey];
+export const createAuctionListQueryKey = ({ cate, sort, filter, search }: AuctionListParams) => {
+  const key = ['auctionList', cate, sort];
+
+  if (filter?.length) {
+    key.push([...filter].sort().join(','));
+  }
+
+  if (search?.trim()) {
+    key.push(search.trim());
+  }
+
+  return key;
 };
