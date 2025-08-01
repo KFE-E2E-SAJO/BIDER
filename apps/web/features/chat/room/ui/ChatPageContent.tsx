@@ -1,11 +1,11 @@
 import React from 'react';
-import ChatInputBar from './ChatInputBar';
-import AuctionInfo from './AuctionInfo';
-import MessageList from './MessageList';
+import ChatInputBar from '@/features/chat/room/ui/ChatInputBar';
+import AuctionInfo from '@/features/chat/room/ui//AuctionInfo';
+import MessageList from '@/features/chat/room/ui//MessageList';
 
 const ChatPageContent = () => {
   return (
-    <div className="flex flex-col overflow-hidden">
+    <div className="flex h-screen w-full flex-col overflow-hidden">
       {/* 경매 상품 설명 */}
       <AuctionInfo />
 

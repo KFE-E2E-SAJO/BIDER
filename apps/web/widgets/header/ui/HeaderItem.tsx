@@ -2,13 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
 import { Bell, House, Search, Settings } from 'lucide-react';
 import BackBtn from '@/shared/ui/button/BackBtn';
 import Logo from '@/shared/ui/icon/Logo';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
 import { toast } from '@repo/ui/components/Toast/Sonner';
-import { useChatStore } from '@/features/chat/room/model/chatStore';
 
 // 좌측 타이틀
 const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
@@ -46,13 +44,10 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
   const headerTitle = HEADER_TITLE_MAP[pathname];
   let centerLabel = HEADER_CENTER_TEXT_MAP[pathname];
 
-  const nickname = useChatStore((s) => s.nickname);
   if (pathname.startsWith('/product/edit/')) {
     centerLabel = '상품 수정';
   } else if (pathname.startsWith('/auction/') && pathname.includes('/proposal')) {
     centerLabel = '제안하기';
-  } else if (pathname.startsWith('/chat/') && pathname !== '/chat') {
-    centerLabel = nickname || '채팅방';
   }
 
   return (

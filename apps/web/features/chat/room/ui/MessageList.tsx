@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { DateDivider } from './DateDivider';
-import MyMessage from './MyMessage';
-import YourMessage from './YourMessage';
+import { DateDivider } from '@/features/chat/room/ui/DateDivider';
+import MyMessage from '@/features/chat/room/ui/MyMessage';
+import YourMessage from '@/features/chat/room/ui/YourMessage';
 
 const MessageList = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -18,7 +18,7 @@ const MessageList = () => {
   //     }, [messages.length]);
 
   return (
-    <div className="p-box h-full overflow-y-auto pb-[77px] pt-[65px]">
+    <div className="p-box flex-1 overflow-y-auto py-[30px]">
       <DateDivider isoDate={'2025-06-17T09:32:00.000Z'} />
       <MyMessage
         text={'안녕하세요! 제품 상태에 대해 더 자세히 알 수 있을까요?'}

@@ -32,7 +32,7 @@ const ChatInputBar = () => {
     <div
       style={{ bottom: bottomOffset }}
       className={cn(
-        'bg-neutral-0 fixed bottom-0 left-[50%] flex w-full max-w-[600px] translate-x-[-50%] items-center gap-[12px] border-t border-neutral-100 px-[16px] pt-[12px]',
+        'bg-neutral-0 flex w-full max-w-[600px] items-center gap-[12px] border-t border-neutral-100 px-[16px] pt-[12px]',
         !isMobile ? 'pb-[34px]' : isFocused ? 'pb-[12px]' : 'pb-[34px]'
       )}
     >
