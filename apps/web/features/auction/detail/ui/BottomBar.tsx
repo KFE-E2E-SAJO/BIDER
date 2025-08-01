@@ -10,12 +10,9 @@ import { toast } from '@repo/ui/components/Toast/Sonner';
 
 const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) => {
   const [countdown, setCountdown] = useState('');
-  const [hasMounted, setHasMounted] = useState(false);
   const [openBiddingSheet, setOpenBiddingSheet] = useState(false);
 
   useEffect(() => {
-    setHasMounted(true);
-
     const update = () => setCountdown(getCountdown(auctionEndAt));
     update(); // 초기 렌더
     const timer = setInterval(update, 1000);
@@ -28,17 +25,13 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
       <div className="flex items-center justify-between">
         <div>
           <div className="typo-subtitle-small-medium">입찰 마감 시간</div>
-          {!hasMounted ? (
-            <span className="text-sm text-neutral-700">-</span>
-          ) : (
-            <span className="text-sm text-neutral-700">{countdown}</span>
-          )}
+          <span className="text-sm text-neutral-700">{countdown}</span>
         </div>
 
         <div className="flex shrink-0 items-center gap-[12px]">
           <Button
             onClick={() => setOpenBiddingSheet(true)}
-            disabled={countdown === '마감됨' || !hasMounted}
+            disabled={countdown === '마감됨'}
             className="w-[142px]"
           >
             입찰하기
