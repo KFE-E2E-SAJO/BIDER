@@ -18,7 +18,7 @@ const MessageList = () => {
   //     }, [messages.length]);
 
   return (
-    <div className="p-box flex-1 overflow-y-auto py-[30px]">
+    <div className="p-box flex-1 overflow-y-auto pt-[30px]">
       <DateDivider isoDate={'2025-06-17T09:32:00.000Z'} />
       <MyMessage
         text={'안녕하세요! 제품 상태에 대해 더 자세히 알 수 있을까요?'}
