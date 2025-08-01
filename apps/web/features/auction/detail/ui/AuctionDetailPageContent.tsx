@@ -2,6 +2,7 @@ import React from 'react';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { getAuctionDetail } from '../api/getAuctionDetail';
 import AuctionDetailClient from './AuctionDetailClient';
+import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 
 const AuctionDetailPageContent = async ({ shortId }: { shortId: string }) => {
   const queryClient = new QueryClient();
@@ -13,9 +14,11 @@ const AuctionDetailPageContent = async ({ shortId }: { shortId: string }) => {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <HydrationBoundary state={dehydratedState}>
-      <AuctionDetailClient shortId={shortId} />
-    </HydrationBoundary>
+    <ReactQueryProvider>
+      <HydrationBoundary state={dehydratedState}>
+        <AuctionDetailClient shortId={shortId} />
+      </HydrationBoundary>
+    </ReactQueryProvider>
   );
 };
 

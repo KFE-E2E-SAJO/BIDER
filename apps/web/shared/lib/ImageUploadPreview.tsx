@@ -61,7 +61,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
       if (file?.type.startsWith('image/')) {
         const preview = URL.createObjectURL(file);
         newImages.push({
-          id: `${Date.now()}-${i}`,
+          id: `image-${i}`,
           file,
           preview,
           order_index: images.length === 0 && i === 0 ? 0 : 1,
