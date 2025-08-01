@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import type { Viewport } from 'next';
 import '@repo/ui/styles.css';
 import '../styles/global.css';
-import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 import { Toaster } from '@repo/ui/components/Toast/Sonner';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: '가장 가까운 경매장 | Bider',
@@ -97,13 +97,23 @@ const RootLayout = ({
   return (
     <html lang="ko">
       <body>
-        <ReactQueryProvider>
+        <div className="bg-neutral-0 mx-auto my-0 max-w-[600px]">
           <div id="container" className="flex min-h-screen flex-col">
             {children}
           </div>
-        </ReactQueryProvider>
-
-        <Toaster />
+          <Toaster />
+        </div>
+        {process.env.NODE_ENV === 'production' && (
+          <Script id="clarity-script" strategy="afterInteractive">
+            {`
+              (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "skh5la3rrt");
+            `}
+          </Script>
+        )}
       </body>
     </html>
   );

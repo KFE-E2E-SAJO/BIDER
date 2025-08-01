@@ -18,22 +18,6 @@ export interface ProductList {
   isPending?: boolean;
 }
 
-export interface ProductListError {
-  message: string;
-  code?: string;
-  status: number;
-}
-export type ProductSort = 'latest' | 'popular';
-export type ProductFilter = 'deadline-today' | 'exclude-ended';
-
-export interface ProductListParams {
-  userId: string;
-  search?: string;
-  cate?: string;
-  sort?: ProductSort;
-  filter?: ProductFilter[];
-}
-
 export interface ProductFormData {
   title: string;
   category: CategoryValue | string;
@@ -122,10 +106,4 @@ export interface ProductEditPageProps {
 export interface ProductEditResponse {
   success: boolean;
   error?: string;
-}
-
-export interface ProductMapList {
-  id: string;
-  location: Location;
-  thumbnail: string;
 }

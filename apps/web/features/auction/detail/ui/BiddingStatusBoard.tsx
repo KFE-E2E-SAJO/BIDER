@@ -5,12 +5,12 @@ import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
 import { useBidHistoryRealtime } from '../api/useBidHistoryRealtime';
 
-const BiddingStatusBoard = ({ data, onNewHighestBid }: BiddingStatusBoardProps) => {
+const BiddingStatusBoard = ({ data, auctionId, onNewHighestBid }: BiddingStatusBoardProps) => {
   const [bidData, setBidData] = useState<BidHistoryWithUserNickname[]>(data);
   const [latestBid, setLatestBid] = useState<BidHistoryWithUserNickname | null>(null);
 
   useBidHistoryRealtime({
-    auctionId: data[0]?.auction_id || '',
+    auctionId: auctionId,
     onNewBid: (newBid) => {
       setBidData((prev) => [newBid, ...prev]);
       setLatestBid(newBid);

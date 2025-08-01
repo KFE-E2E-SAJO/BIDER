@@ -1,7 +1,7 @@
 import { ProductList } from '@/features/product/types';
 import { useQuery } from '@tanstack/react-query';
 import getListingList from '@/features/auction/listings/model/getListingList';
-import { ListingListParams } from '../types';
+import { ListingListParams } from '@/features/auction/listings/types';
 
 export const useGetListingList = (params: ListingListParams) => {
   return useQuery<ProductList[]>({

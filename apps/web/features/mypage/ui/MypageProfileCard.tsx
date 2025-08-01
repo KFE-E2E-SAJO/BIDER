@@ -3,8 +3,8 @@ import { MyPageProfileCardProps } from '@/features/mypage/types';
 
 const MyPageProfileCard = ({ nickname, email, profile_img }: MyPageProfileCardProps) => {
   return (
-    <div className="mx-[16px] flex items-center justify-between border-b border-neutral-100 pb-[25px] pt-[16px]">
-      <div className="max-w-3/4 flex items-center">
+    <div className="mx-[16px] flex flex-col border-b border-neutral-100 pb-[25px] pt-[16px]">
+      <div className="flex items-center">
         <Avatar className="size-[60px]" src={profile_img ?? undefined} />
         <ul className="pl-[18px]">
           <li>{nickname}</li>

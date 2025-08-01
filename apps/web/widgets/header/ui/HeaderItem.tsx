@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Bell, House, Search, Trash2 } from 'lucide-react';
+import { Bell, House, Search, Settings } from 'lucide-react';
 import BackBtn from '@/shared/ui/button/BackBtn';
 import Logo from '@/shared/ui/icon/Logo';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
+// 좌측 타이틀
 const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
   '/': <Logo />,
   '/index': <Logo />,
@@ -16,9 +18,25 @@ const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
   '/mypage': <span className="typo-subtitle-medium">마이페이지</span>,
 };
 
+// 중간 타이틀
 const HEADER_CENTER_TEXT_MAP: Record<string, string> = {
   '/product/registration': '출품하기',
   '/alarm': '알림',
+  '/alarm/setting': '알림 설정',
+  '/mypage/proposal/received': '경매 제안',
+  '/mypage/proposal/sent': '경매 제안',
+};
+
+// 검색,알림 아이콘 노출할 페이지
+const SHOW_RIGHTICON = (pathname: string) => {
+  return (
+    pathname === '/' ||
+    pathname === '/index' ||
+    pathname === '/category' ||
+    pathname === '/chat' ||
+    pathname === '/mypage' ||
+    pathname === '/product'
+  );
 };
 
 const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
@@ -29,6 +47,8 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
 
   if (pathname.startsWith('/product/edit/')) {
     centerLabel = '상품 수정';
+  } else if (pathname.startsWith('/auction/') && pathname.includes('/proposal')) {
+    centerLabel = '제안하기';
   }
 
   return (
@@ -54,18 +74,22 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
 
       <div className="flex items-center justify-end">
         {pathname === '/alarm' ? (
-          <Trash2 />
-        ) : pathname === '/mypage/edit' ? null : (
+          <Settings />
+        ) : SHOW_RIGHTICON(pathname) ? (
           <>
             <Link href="/search">
               <Search className="mr-4.5" />
             </Link>
-            <Link href="/alarm" className="relative">
+            <Link
+              href="/"
+              className="relative"
+              onClick={() => toast({ content: '준비 중인 기능입니다.' })}
+            >
               <Bell />
               {hasNewAlert && <AlertBadge placementClass="absolute right-0 top-0" />}
             </Link>
           </>
-        )}
+        ) : null}
       </div>
     </>
   );

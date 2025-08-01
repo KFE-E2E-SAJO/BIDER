@@ -15,15 +15,13 @@ const ProductList = ({ data }: ProductListProps) => {
     <ul>
       {data.map((item) => (
         <li key={item.id} className="border-b border-neutral-100 py-[20px] last:border-none">
-          <Link
-            href={
-              !item.isPending
-                ? `/auction/${encodeUUID(item.id)}` //aucid
-                : `/product/edit/${encodeUUID(item.id)}` //proid
-            }
-          >
+          {!item.isPending ? (
+            <Link href={`/auction/${encodeUUID(item.id)}`}>
+              <ProductItem {...item} />
+            </Link>
+          ) : (
             <ProductItem {...item} />
-          </Link>
+          )}
           <div>
             <ProductActionBtn
               {...{

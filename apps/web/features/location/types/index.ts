@@ -4,7 +4,10 @@ export type Location = {
   lng: number;
 };
 export interface UpdateLocationProps {
-  userId: string;
   location: Location;
   address: string;
 }
+export type LocationWithAddress = {
+  location: Location;
+  address: string;
+};

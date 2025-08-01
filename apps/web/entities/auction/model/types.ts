@@ -1,5 +1,9 @@
-import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
-import { ProductWithUserNImages } from '@/entities/product/model/types';
+import { BidHistory, BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
+import {
+  ProductForList,
+  ProductForMapList,
+  ProductWithUserNImages,
+} from '@/entities/product/model/types';
 
 export interface Auction {
   auction_id: string;
@@ -31,9 +35,14 @@ export interface AuctionForBid {
   };
 }
 
-export type AuctionForList = Pick<
+export type AuctionList = Pick<
   Auction,
-  'auction_id' | 'product_id' | 'auction_status' | 'min_price' | 'auction_end_at'
->;
+  'auction_id' | 'product_id' | 'auction_status' | 'min_price' | 'auction_end_at' | 'created_at'
+> & {
+  product: ProductForList;
+  bid_history: Pick<BidHistory, 'bid_price'>[];
+};
 
-export type MapAuction = Pick<Auction, 'auction_id' | 'product_id'>;
+export type MapAuction = Pick<Auction, 'auction_id' | 'product_id'> & {
+  product: ProductForMapList;
+};

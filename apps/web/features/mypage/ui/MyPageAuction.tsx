@@ -21,14 +21,18 @@ const MyPageAuction = ({
 
       <div className="flex items-center justify-between">
         <MyPageAuctionCard
+          link1="/auction/bids"
           title1="입찰 전체"
           count1={bidCount}
+          link2="/auction/bids?tab=progress"
           title2="진행 중"
           count2={bidProgressCount}
         />
         <MyPageAuctionCard
+          link1="/auction/listings"
           title1="출품 전체"
           count1={listingCount}
+          link2="/auction/listings?tab=progress"
           title2="진행 중"
           count2={listingProgressCount}
         />

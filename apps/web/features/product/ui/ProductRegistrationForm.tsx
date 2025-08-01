@@ -18,10 +18,11 @@ import {
 import { formatPriceInput, isEndDateValid } from '../lib/utils';
 import { useCreateProductWithValidation } from '../model/useCreateProduct';
 import { useProductFormWithoutSubmitting } from '../model/useProductForm';
-import GoogleMap from '@/features/location/ui/GoggleMap';
+import GoogleMap from '@/features/location/ui/GooggleMap';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import { Location } from '@/features/location/types';
+import { Info } from 'lucide-react';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
@@ -234,6 +235,24 @@ export const ProductRegistrationForm = () => {
         >
           {isSubmitting ? '출품 중...' : '출품하기'}
         </Button>
+
+        <div className="bg-warning-light text-warning-medium typo-caption-medium rounded-[3px] p-[14px]">
+          <div className="flex items-center">
+            <Info strokeWidth={2} size={14} />
+            <span className="pl-1">출품 전 안내사항</span>
+          </div>
+          <ul className="list-disc pl-[30px]">
+            <li>상품을 출품하면 1시간 동안 ‘경매 대기’ 상태로 유지됩니다.</li>
+            <li>
+              이 기간 동안에는 상품 목록에 노출되지 않으며, 내 경매 &gt; 출품 내역 페이지에서만
+              확인할 수 있습니다.
+            </li>
+            <li>‘경매 대기’ 상태에서는 상품 정보를 자유롭게 수정하거나 삭제할 수 있습니다.</li>
+            <li>
+              1시간이 지나면 경매가 시작되며, 이후에는 수정 및 삭제가 불가능하니 주의해 주세요.
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );
