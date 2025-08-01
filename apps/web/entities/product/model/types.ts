@@ -19,6 +19,10 @@ export interface ProductWithUserNImages extends Product {
   product_image: ProductImageWithBlur[];
 }
 
+export interface ProductWithMainImage extends Product {
+  product_image: ProductImage;
+}
+
 export interface ProductForEdit extends Product {
   product_image: ProductImage[];
   min_price: number;
