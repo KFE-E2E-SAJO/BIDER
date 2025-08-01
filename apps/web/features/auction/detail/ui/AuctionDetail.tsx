@@ -8,7 +8,8 @@ import BiddingStatusBoard from './BiddingStatusBoard';
 import { getCategoryLabel } from '@/features/category/lib/utils';
 import { CategoryValue } from '@/features/category/types';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
-import ProposalActionButton from './ProposalActionButton';
+import Link from 'next/link';
+import ProposalActionButton from '@/features/auction/detail/ui/ProposalActionButton';
 
 const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
@@ -18,9 +19,11 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
       <div className="p-box flex flex-col gap-[25px]">
         <div className="flex flex-col gap-[14px]">
           <div className="typo-subtitle-bold">{data.productTitle}</div>
-          <u className="typo-caption-regular w-fit text-neutral-700">
-            {getCategoryLabel(data.productCategory as CategoryValue)}
-          </u>
+          <Link href={`/product?cate=${data.productCategory}`}>
+            <u className="typo-caption-regular w-fit text-neutral-700">
+              {getCategoryLabel(data.productCategory as CategoryValue)}
+            </u>
+          </Link>
         </div>
 
         <div className="flex items-end justify-between">
