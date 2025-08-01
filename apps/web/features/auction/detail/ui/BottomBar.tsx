@@ -30,7 +30,11 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
       <div className="flex items-center justify-between">
         <div>
           <div className="typo-subtitle-small-medium">입찰 마감 시간</div>
-          <span className="text-sm text-neutral-700">{countdown}</span>
+          {!hasMounted ? (
+            <span className="text-sm text-neutral-700">-</span>
+          ) : (
+            <span className="text-sm text-neutral-700">{countdown}</span>
+          )}
         </div>
 
         <div className="flex shrink-0 items-center gap-[12px]">
