@@ -10,20 +10,6 @@ import dynamic from 'next/dynamic';
 
 const BottomBar = dynamic(() => import('./BottomBar'), {
   ssr: false,
-  loading: () => (
-    <div className="bg-neutral-0 fixed bottom-0 left-[50%] z-50 h-[102px] w-full max-w-[600px] translate-x-[-50%] border-t border-neutral-100 px-[16px] pt-[15px]">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="typo-subtitle-small-medium">입찰 마감 시간</div>
-          <span className="text-sm text-neutral-700">-</span>
-        </div>
-        <div className="flex shrink-0 items-center gap-[12px]">
-          <div className="h-[40px] w-[142px] animate-pulse rounded bg-neutral-200"></div>
-          <div className="h-[40px] w-[53px] animate-pulse rounded bg-neutral-200"></div>
-        </div>
-      </div>
-    </div>
-  ),
 });
 
 const AuctionDetailClient = ({ shortId }: { shortId: string }) => {
