@@ -1,81 +1,53 @@
 'use client';
 
-import Loading from '@/shared/ui/Loading/Loading';
-import { useProductList } from '@/features/product/model/useProductList';
-import LocationPin from '@/features/product/ui/LocationPin';
-import useProductListErrorHandler from '@/features/product/model/useProductListErrorHandler';
-import { useAuthStore } from '@/shared/model/authStore';
-import useVirtualInfiniteScroll from '@/features/product/model/useVirtualInfiniteScroll';
-import ProductListScroll from '@/features/product/ui/ProductListScroll';
+import { AuctionFilter as AuctionFilterType, AuctionSort } from '@/features/auction/list/types';
 import { useState } from 'react';
-import { ProductFilter as ProductFilterType, ProductSort } from '@/features/product/types';
-import ProductSortDropdown from '@/features/product/ui/ProductSortDropdown';
-import ProductFilter from '@/features/product/ui/ProductFilter';
-import CategoryFilter from '@/features/category/ui/CategoryFilter';
+import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
 import { CategoryValue } from '@/features/category/types';
+import AuctionList from '@/features/auction/list/ui/AuctionList';
+import dynamic from 'next/dynamic';
+import LocationPin from '@/features/location/ui/LocationPin';
+import AuctionFilter from '@/features/auction/list/ui/AuctionFilter';
+
+const AuctionSortDropdown = dynamic(
+  () => import('@/features/auction/list/ui/AuctionSortDropdown'),
+  {
+    ssr: false,
+  }
+);
+
+const CategoryFilter = dynamic(() => import('@/features/category/ui/CategoryFilter'), {
+  ssr: false,
+});
 
 interface ResultSectionProps {
   search: string;
+  address: string;
 }
 
-const ResultSection = ({ search }: ResultSectionProps) => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
-  const [sort, setSort] = useState<ProductSort>('latest');
-  const [filter, setFilter] = useState<ProductFilterType[]>(['exclude-ended']);
-  const [cate, setCate] = useState<CategoryValue>('all');
-
-  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useProductList({ userId, search, sort, filter, cate });
-
-  useProductListErrorHandler(isError, error);
-
-  const productList = data?.pages.flatMap((page) => page.data) ?? [];
-
-  const { parentRef, virtualRows, totalSize } = useVirtualInfiniteScroll({
-    data: productList,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-  });
-  let content = null;
-
-  if (isLoading || !data) {
-    content = (
-      <div className="flex flex-1">
-        <Loading />
-      </div>
-    );
-  } else if (!search.trim()) {
-    content = <p className="mt-10 text-center text-neutral-500">검색어를 입력해주세요.</p>;
-  } else {
-    content = (
-      <div
-        ref={parentRef}
-        style={{ height: 'calc(100vh - 173px)' }}
-        className="p-box overflow-auto"
-      >
-        <ProductListScroll
-          data={productList}
-          virtualRows={virtualRows}
-          totalSize={totalSize}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      </div>
-    );
-  }
+const ResultSection = ({ search, address }: ResultSectionProps) => {
+  const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
+  const [filter, setFilter] = useState<AuctionFilterType[]>(DEFAULT_AUCTION_LIST_PARAMS.filter);
+  const [cate, setCate] = useState<CategoryValue>(DEFAULT_AUCTION_LIST_PARAMS.cate);
+  const isEmpty = !search.trim();
 
   return (
     <>
       <div className="p-box my-[21px] flex items-center justify-between">
         <div className="flex gap-[11px]">
-          <LocationPin />
+          <LocationPin address={address} />
           <CategoryFilter setCate={setCate} />
         </div>
 
-        <ProductSortDropdown setSort={setSort} />
+        <AuctionSortDropdown sort={sort} setSort={setSort} />
       </div>
-      <ProductFilter setFilter={setFilter} />
-      {content}
+      <AuctionFilter setFilter={setFilter} />
+
+      {isEmpty ? (
+        <p className="mt-10 text-center text-neutral-500">검색어를 입력해주세요.</p>
+      ) : (
+        <AuctionList sort={sort} filter={filter} cate={cate} search={search} />
+      )}
     </>
   );
 };

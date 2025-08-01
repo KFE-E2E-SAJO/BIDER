@@ -16,7 +16,7 @@ export default function SplashLoadingPage() {
   }, [router]);
 
   return (
-    <div className="bg-main fixed inset-0 z-50 flex items-center justify-center">
+    <div className="bg-main fixed left-[50%] top-0 z-50 flex h-screen w-full max-w-[600px] translate-x-[-50%] items-center justify-center">
       <div className="flex flex-1 scale-[2.5] items-center justify-center">
         <Logo variant="reversal" />
       </div>
