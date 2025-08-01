@@ -37,7 +37,6 @@ const GoogleMap = ({
     setShowGuide(true);
     toast({ content: '위치 접근이 차단되어 있어요. 브라우저 설정에서 허용으로 변경해주세요.' });
   };
-
   const fetchLocation = async () => {
     setLoading(true);
     setError(false);
@@ -75,7 +74,6 @@ const GoogleMap = ({
           openGuide();
         } else {
           toast({ content: '지도를 불러오는 데 문제가 발생했습니다.' });
-          console.error('지도를 불러오는 데 문제가 발생했습니다.', err);
         }
         setError(true);
         setLoading(false);
@@ -155,7 +153,8 @@ const GoogleMap = ({
           <Loading />
         ) : error || !currentLocation ? (
           <div className="text-danger typo-body-medium flex flex-col items-center gap-2">
-            위치 정보를 가져올 수 없습니다.
+            <p>위치 정보를 가져올 수 없습니다.</p>
+            <p>사용기기의 ‘위치정보’ 사용 설정을 확인해 주시기 바랍니다.</p>
             <Button onClick={fetchLocation} size="sm" variant="outline">
               다시 시도
             </Button>
