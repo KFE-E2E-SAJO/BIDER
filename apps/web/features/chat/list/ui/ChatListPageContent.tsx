@@ -11,9 +11,8 @@ const ChatListPageContent = () => {
 
   if (isLoading) return <Loading />;
   if (error) return <p>오류: {(error as Error).message}</p>;
-  if (!data) return <p>채팅 정보를 찾을 수 없습니다.</p>;
-
-  console.log(data);
+  if (!data || data.length === 0)
+    return <p className="mt-[30px] text-center">채팅 내역이 없습니다.</p>;
 
   const items = [
     { value: 'all', label: '전체 채팅', content: <ChatList filter="all" data={data ?? []} /> },
