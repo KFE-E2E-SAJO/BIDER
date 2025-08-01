@@ -1,4 +1,4 @@
-import HeaderItem from './ui/HeaderItem';
+import HeaderItem from '@/widgets/header/ui/HeaderItem';
 
 const Header = () => {
   const hasNewAlert = false; //새로운 alert 여부 받아오기
