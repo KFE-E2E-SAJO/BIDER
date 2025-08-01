@@ -56,7 +56,6 @@ const GoogleMap = ({
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
         };
-        console.log(coords);
         setCurrentLocation(coords);
         setLocation(coords);
         const koreanAddress = await getKoreanAddress(coords);

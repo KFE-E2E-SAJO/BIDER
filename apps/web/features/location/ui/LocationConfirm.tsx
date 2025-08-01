@@ -14,11 +14,9 @@ const LocationConfirm = () => {
 
   const handleNext = async () => {
     if (!location) {
-      console.error('사용자 위치 정보(location) 없음.');
       return;
     }
     if (!address) {
-      console.error('사용자 주소 정보(address) 없음.');
       return;
     }
 
@@ -52,7 +50,7 @@ const LocationConfirm = () => {
             isLocationUpdatePending || !location ? 'bg-neutral-300' : 'bg-main'
           )}
         >
-          <Button onClick={handleNext} disabled={isLocationUpdatePending || !location}>
+          <Button onClick={handleNext} disabled={isLocationUpdatePending || !location || !address}>
             위치 저장
           </Button>
         </div>
