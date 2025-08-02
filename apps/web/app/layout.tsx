@@ -99,11 +99,9 @@ const RootLayout = ({
     <html lang="ko">
       <body>
         <div className="bg-neutral-0 mx-auto my-0 max-w-[600px]">
-          <ReactQueryProvider>
-            <div id="container" className="flex min-h-screen flex-col">
-              {children}
-            </div>
-          </ReactQueryProvider>
+          <div id="container" className="flex min-h-screen flex-col">
+            {children}
+          </div>
           <Toaster />
         </div>
         {process.env.NODE_ENV === 'production' && (
