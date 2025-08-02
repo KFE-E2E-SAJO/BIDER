@@ -1,7 +1,6 @@
 'use client';
 
 import { Tabs } from '@repo/ui/components/Tabs/Tabs';
-import dynamic from 'next/dynamic';
 import Loading from '@/shared/ui/Loading/Loading';
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';

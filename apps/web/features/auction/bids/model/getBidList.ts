@@ -11,8 +11,6 @@ const getBidList = async (params: BidListParams): Promise<ProductList[]> => {
     throw new Error(result.error || '데이터 로딩 실패');
   }
 
-  console.log(filter);
-
   return result.data.map((item: BidDataWithStats) => ({
     id: item.auction.auction_id,
     thumbnail:
