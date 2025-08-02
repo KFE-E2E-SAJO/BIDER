@@ -1,39 +1,26 @@
 'use client';
 
 import { Button } from '@repo/ui/components/Button/Button';
-import { useAuthStore } from '@/shared/model/authStore';
-import { useRouter } from 'next/navigation';
-import { toast } from '@repo/ui/components/Toast/Sonner';
-import GoogleMap from '@/features/location/ui/GoggleMap';
+import GoogleMap from '@/features/location/ui/GooggleMap';
 import useUpdateLocation from '@/features/location/model/useUpdateLocation';
 import clsx from 'clsx';
 import { Location } from '@/features/location/types';
 import { useState } from 'react';
 
 const LocationConfirm = () => {
-  const router = useRouter();
-  const userId = useAuthStore((state) => state.user?.id);
   const [location, setLocation] = useState<Location | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const { mutate: locationMutate, isPending: isLocationUpdatePending } = useUpdateLocation();
 
   const handleNext = async () => {
-    if (!userId) {
-      toast({ content: '로그인이 필요합니다.' });
-      router.replace('/login');
-      return;
-    }
     if (!location) {
-      console.error('사용자 위치 정보(location) 없음.');
       return;
     }
     if (!address) {
-      console.error('사용자 주소 정보(address) 없음.');
       return;
     }
 
     locationMutate({
-      userId,
       location,
       address,
     });
@@ -63,7 +50,7 @@ const LocationConfirm = () => {
             isLocationUpdatePending || !location ? 'bg-neutral-300' : 'bg-main'
           )}
         >
-          <Button onClick={handleNext} disabled={isLocationUpdatePending || !location}>
+          <Button onClick={handleNext} disabled={isLocationUpdatePending || !location || !address}>
             위치 저장
           </Button>
         </div>

@@ -94,7 +94,7 @@ export const EmailField = ({
 
       {domain === 'custom' && (
         <input
-          className={`typo-body-regular h-13 focus:ring-main focus:border-main w-full rounded-sm border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${domainError ? 'border-danger' : 'border-neutral-400'} ${isEmailVerified ? 'cursor-not-allowed bg-neutral-300' : ''}`}
+          className={`typo-body-regular h-13 focus:ring-main focus:border-main mt-2 w-full rounded-sm border px-3 py-2 text-neutral-700 focus:outline-none focus:ring-2 ${domainError ? 'border-danger' : 'border-neutral-400'} ${isEmailVerified ? 'cursor-not-allowed bg-neutral-300' : ''}`}
           type="text"
           placeholder="도메인을 입력해주세요"
           value={customDomain}

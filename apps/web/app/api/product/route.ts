@@ -3,9 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { searcher } from '@/features/search/lib/utils';
 import { getDistanceKm } from '@/features/product/lib/utils';
-import { AuctionForList } from '@/entities/auction/model/types';
-import { ProductForList } from '@/entities/product/model/types';
-import { BidHistory } from '@/entities/bidHistory/model/types';
+import { AuctionList } from '@/entities/auction/model/types';
+import { AuctionListResponse } from '@/features/auction/list/types';
 
 export async function POST(req: NextRequest) {
   try {
@@ -119,26 +118,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-//나중에 auction으로 이사 시킬껍니다!
-type AuctionListFromDB = AuctionForList & {
-  product: ProductForList;
-  bid_history: Pick<BidHistory, 'bid_price'>[];
-};
-
-interface AuctionResponse {
-  data: {
-    id: string;
-    thumbnail: string;
-    title: string;
-    address: string;
-    bidCount: number;
-    minPrice: number;
-    auctionEndAt: string;
-    auctionStatus: string;
-  }[];
-  nextOffset: number | null;
-}
-
 interface ErrorResponse {
   error: string;
   code?: string;
@@ -146,7 +125,7 @@ interface ErrorResponse {
 
 export async function GET(
   req: NextRequest
-): Promise<NextResponse<AuctionResponse | ErrorResponse>> {
+): Promise<NextResponse<AuctionListResponse | ErrorResponse>> {
   const { searchParams } = req.nextUrl;
   const userId = searchParams.get('userId');
   const search = searchParams.get('search')?.toLowerCase() || '';
@@ -214,7 +193,7 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const filtered = (auctionData as unknown as AuctionListFromDB[])
+  const filtered = (auctionData as unknown as AuctionList[])
     .filter((item) => {
       const { product, auction_status, auction_end_at } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
@@ -245,7 +224,7 @@ export async function GET(
         title: item.product.title,
         address: item.product.address,
         bidCount: item.bid_history?.length ?? 0,
-        minPrice: highestBid ?? item.min_price,
+        bidPrice: highestBid ?? item.min_price,
         auctionEndAt: item.auction_end_at,
         auctionStatus: item.auction_status,
         createdAt: item.created_at,

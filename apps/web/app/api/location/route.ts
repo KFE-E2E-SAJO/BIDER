@@ -1,18 +1,13 @@
-import { ProfileLocationData } from '@/entities/profiles/model/types';
-import { LocationWithAddress } from '@/features/location/types';
+import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-interface ErrorResponse {
-  error: string;
-  code?: string;
-}
-
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { userId, lat, lng, address } = body;
+  const { lat, lng, address } = body;
   const cookieStore = await cookies();
+  const userId = await getUserId();
   cookieStore.set('user-has-address', 'true', {
     path: '/',
     expires: new Date('2099-12-31'),
@@ -38,41 +33,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ success: true });
-}
-
-export async function GET(
-  req: NextRequest
-): Promise<NextResponse<{ data: LocationWithAddress } | ErrorResponse>> {
-  const { searchParams } = req.nextUrl;
-  const userId = searchParams.get('userId');
-  const cookieStore = await cookies();
-
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('latitude, longitude, address')
-    .eq('user_id', userId)
-    .single<ProfileLocationData>();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  const { latitude, longitude, address } = data;
-  const isValid = latitude != null && longitude != null && address?.trim();
-
-  if (!isValid) {
-    cookieStore.delete('user-has-address');
-  }
-
-  const location = {
-    lat: latitude,
-    lng: longitude,
-  };
-
-  return NextResponse.json({
-    data: {
-      location,
-      address: data.address,
-    },
-  });
 }
