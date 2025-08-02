@@ -31,7 +31,11 @@ const ChatItem = ({ onClick, data }: ChatItemProps) => {
           <div>
             {data.last_message ? (
               <div className="flex">
-                <div className="typo-caption-regular max-w-[50vw] truncate">
+                <div
+                  className={`typo-caption-regular max-w-[50vw] truncate ${
+                    data.last_message?.is_read ? 'text-neutral-400' : ''
+                  }`}
+                >
                   {data.last_message?.content}
                 </div>
                 <div className="typo-caption-regular ml-[4px] text-neutral-400">
