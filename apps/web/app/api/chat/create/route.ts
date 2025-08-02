@@ -1,5 +1,4 @@
-import { decodeShortId } from '@/shared/lib/shortUuid';
-import { createClient } from '@/shared/lib/supabase/server';
+import { decodeShortId, encodeUUID } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -31,5 +30,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ data });
+  const encodedChatRoomId = data ? encodeUUID(data.chatroom_id) : null;
+  return NextResponse.json({ encodedChatRoomId });
 }

@@ -1,4 +1,4 @@
-import { decodeShortId } from '@/shared/lib/shortUuid';
+import { decodeShortId, encodeUUID } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextResponse } from 'next/server';
 
@@ -23,7 +23,9 @@ export async function POST(request: Request) {
       throw new Error(`chat_room 존재 여부 조회 실패: ${error.message}`);
     }
 
-    return NextResponse.json({ data });
+    const encodedChatRoomId = data ? encodeUUID(data.chatroom_id) : null;
+
+    return NextResponse.json({ encodedChatRoomId });
   } catch (error) {
     return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
