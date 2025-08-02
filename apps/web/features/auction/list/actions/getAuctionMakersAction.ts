@@ -38,7 +38,7 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
     )
   `
     )
-    .neq('auction_status', '경매 종료');
+    .eq('auction_status', '경매 중');
 
   if (error) {
     return null;
