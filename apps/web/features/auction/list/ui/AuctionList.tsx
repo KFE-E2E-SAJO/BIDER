@@ -44,12 +44,8 @@ const AuctionList = ({
     return <p className="mt-10 text-center text-neutral-500">상품이 존재하지 않습니다.</p>;
   }
   return (
-    <div
-      ref={parentRef}
-      style={{ height: listOnly ? 'calc(100vh - 235px)' : 'calc(100vh - 535px)' }}
-      className="p-box overflow-auto"
-    >
-      <ul className="relative w-full" style={{ height: `${totalSize}px` }}>
+    <div ref={parentRef} className="p-box h-full overflow-auto">
+      <ul className="relative w-full">
         {virtualRows.map((virtualRow) => {
           const index = virtualRow.index;
           const item = auctionList[index];
