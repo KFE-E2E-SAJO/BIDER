@@ -6,9 +6,12 @@ import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { BidDialog } from '../../bids/ui/BidDialog';
 import { BottomBarProps } from '../types';
-import { toast } from '@repo/ui/components/Toast/Sonner';
+import { useRouter } from 'next/navigation';
+import { getChatRoomLink } from '@/features/chat/room/model/getChatRoomLink';
+import { encodeUUID } from '@/shared/lib/shortUuid';
 
-const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) => {
+const BottomBar = ({ shortId, auctionEndAt, title, lastPrice, exhibitUser }: BottomBarProps) => {
+  const router = useRouter();
   const [countdown, setCountdown] = useState('');
   const [hasMounted, setHasMounted] = useState(false);
   const [openBiddingSheet, setOpenBiddingSheet] = useState(false);
@@ -22,6 +25,15 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
 
     return () => clearInterval(timer);
   }, [auctionEndAt]);
+
+  const linkChatRoom = async () => {
+    const chatRoomShortId = await getChatRoomLink(
+      shortId,
+      encodeUUID(exhibitUser.user_id),
+      'loginUser'
+    );
+    router.push(`/chat/${chatRoomShortId}`);
+  };
 
   return (
     <div className="bg-neutral-0 fixed bottom-0 left-[50%] z-50 h-[102px] w-full max-w-[600px] translate-x-[-50%] border-t border-neutral-100 px-[16px] pt-[15px]">
@@ -43,11 +55,7 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
           >
             입찰하기
           </Button>
-          <Button
-            variant="outline"
-            className="w-[53px] border-[1.5px]"
-            onClick={() => toast({ content: '준비 중인 기능입니다.' })}
-          >
+          <Button variant="outline" className="w-[53px] border-[1.5px]" onClick={linkChatRoom}>
             <MessageSquareMore className="text-main" strokeWidth={1.5} />
           </Button>
         </div>

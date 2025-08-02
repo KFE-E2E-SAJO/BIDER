@@ -26,6 +26,10 @@ export async function GET(_req: Request) {
   } = await authSupabase.auth.getSession();
   const userId = session?.user.id;
 
+  if (!userId) {
+    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
+  }
+
   const { data, error } = await supabase.rpc('get_chatrooms_with_profile_and_last_message', {
     user_uuid: userId,
   });
