@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
+import { getChatRoomLink } from '@/features/chat/room/model/getChatRoomLink';
 
 interface ProductActionBtnProps {
   winnerId?: string | null;
@@ -36,10 +37,16 @@ const ProductActionBtn = ({
   const isListingsPage = pathname === '/auction/listings';
   const [open, setOpen] = useState(false);
 
-  const handleChatClick = (e: React.MouseEvent) => {
+  const handleChatClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    toast({ content: '준비 중인 기능입니다.' });
-    // isBidPage ? router.push(`/chat/${sellerId}`) : router.push(`/chat/${winnerId}`);
+    if (sellerId && winnerId) {
+      const chatRoomShortId = await getChatRoomLink(
+        encodeUUID(itemId),
+        encodeUUID(sellerId),
+        encodeUUID(winnerId)
+      );
+      router.push(`/chat/${chatRoomShortId}`);
+    }
   };
   const handleEditClick = () => {
     router.push(`/product/edit/${encodeUUID(itemId)}`);
