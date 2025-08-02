@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import type { Viewport } from 'next';
 import '@repo/ui/styles.css';
 import '../styles/global.css';
-import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 import { Toaster } from '@repo/ui/components/Toast/Sonner';
 import Script from 'next/script';
 
