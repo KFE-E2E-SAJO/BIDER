@@ -64,9 +64,11 @@ export const SignUpForm = () => {
         <EmailVerifiedField
           verifiedCode={verifiedCode}
           verifiedCodeError={verifiedCodeError}
+          isEmailVerified={isEmailVerified}
+          verifiedEmail={verifiedEmail}
           onChangeVerifiedCode={setVerifiedCode}
           onClickVerifyCode={onClickVerifyCode}
-          disabled={!(isEmailSent || verifiedEmail)}
+          disabled={!isEmailSent || !verifiedEmail}
           isLoading={isLoading}
         />
       )}

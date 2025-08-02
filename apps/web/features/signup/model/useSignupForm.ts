@@ -117,10 +117,9 @@ export const useSignUpForm = () => {
       if (data.user) {
         setIsEmailVerified(true);
         toast({ content: '이메일 인증이 완료되었습니다!' });
-        setIsdisabled(true);
 
         // 인증 완료 후 세션 종료 (회원가입 완료 전까지)
-        // await supabase.auth.signOut();
+        await supabase.auth.signOut();
       } else {
         setIsEmailVerified(false);
       }
