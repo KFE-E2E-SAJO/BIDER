@@ -1,24 +1,16 @@
 import { sendNotification } from '@/app/actions';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { getPointValue } from '@/features/point/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const pointValue = await req.json();
 
   try {
-    const { data: PushAlarmData, error } = await supabase
-      .from('point')
-      .select(
-        ` 
-          point
-        `
-      )
-      .order('created_at', { ascending: false })
-      .eq('user_id', pointValue.user_id)
-      .eq('reason', pointValue.reason);
-
-    if (error || !PushAlarmData) {
-      throw new Error(`pushAlarm 조회 실패: ${error.message}`);
+    let point;
+    if (pointValue.type === 'accepted') {
+      point = getPointValue(pointValue.reason);
+    } else {
+      point = getPointValue(pointValue.reason, { bidAmount: pointValue.price });
     }
 
     //포인트 알림 전송
@@ -26,7 +18,7 @@ export async function POST(req: NextRequest) {
       `${pointValue.user_id}`,
       'point',
       'pointAdded',
-      { amount: PushAlarmData[0]?.point }
+      { amount: point }
     );
 
     if (exhibitAlarmError) {
