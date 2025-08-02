@@ -11,12 +11,6 @@ export async function POST(req: NextRequest) {
   const exhibitUserId = decodeShortId(exhibitUser);
   const bidUserId = decodeShortId(bidUser);
 
-  const authSupabase = await createClient();
-  const {
-    data: { session },
-  } = await authSupabase.auth.getSession();
-  const userId = session?.user.id;
-
   const { data, error } = await supabase
     .from('chat_room')
     .insert([
@@ -37,6 +31,5 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  console.log('success!! : ', data);
-  return NextResponse.json({ success: true, message: '채팅방 생성 완료' });
+  return NextResponse.json({ data });
 }
