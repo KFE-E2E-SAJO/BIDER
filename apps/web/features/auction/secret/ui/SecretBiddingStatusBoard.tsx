@@ -1,7 +1,7 @@
 import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
 import BiddingStatusBoard from '@/features/auction/detail/ui/BiddingStatusBoard';
-import { checkHighestBid } from '@/features/auction/secret/model/checkHighestBid';
-import { useSecretBidDialog } from '@/features/auction/secret/model/useSecretBidModal';
+import { checkSecretBoard } from '@/features/auction/secret/model/checkSecretBoard';
+import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
 import { Button } from '@repo/ui/components/Button/Button';
 import {
   Tooltip,
@@ -30,11 +30,10 @@ const SecretBidStatusBoard = ({
   const [showHighestBid, setShowHighestBid] = useState(false);
   const [bidHistory, setBidHistory] = useState<BidHistoryWithUserNickname[] | null>(null);
 
-  const { DialogHost, alertTimeLimit, alertNotEnoughPoint, confirmSpendPoints } =
-    useSecretBidDialog();
+  const { DialogHost, alertTimeLimit, alertNotEnoughPoint, confirmSpendPoints } = useSecretDialog();
 
   const handleCheck = async () => {
-    const history = await checkHighestBid({
+    const history = await checkSecretBoard({
       auctionId,
       auctionEndAt,
       bidCnt,

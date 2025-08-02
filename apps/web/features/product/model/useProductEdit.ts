@@ -28,6 +28,7 @@ export const useProductEdit = (shortId: string) => {
   const [dealAddress, setDealAddress] = useState('');
   const [dealLatitude, setDealLatitude] = useState<number | null>(null);
   const [dealLongitude, setDealLongitude] = useState<number | null>(null);
+  const [isSecret, setIsSecret] = useState(false);
 
   const mappedImages = useMemo(() => mapProductImagesToUploadedImages(data?.product_image), [data]);
 
@@ -40,6 +41,7 @@ export const useProductEdit = (shortId: string) => {
       setDealAddress(data.deal_address || '');
       setDealLongitude(data.deal_longitude || null);
       setDealLatitude(data.deal_latitude || null);
+      setIsSecret(data.is_secret);
 
       if (data.deal_latitude !== null && data.deal_longitude !== null) {
         setDealLocationUse(true);
@@ -86,6 +88,7 @@ export const useProductEdit = (shortId: string) => {
       dealAddress,
       dealLatitude,
       dealLongitude,
+      isSecret,
     };
     if (!validateProductEditForm(formData)) {
       toast({ content: '모든 필수 항목을 입력해 주세요' });
@@ -123,6 +126,7 @@ export const useProductEdit = (shortId: string) => {
     images,
     endDate,
     endTime,
+    isSecret,
 
     setTitle,
     setCategory,
@@ -134,6 +138,7 @@ export const useProductEdit = (shortId: string) => {
     setImages,
     setEndDate,
     setEndTime,
+    setIsSecret,
     handleMinPriceUpdate,
     handleSubmit,
   };

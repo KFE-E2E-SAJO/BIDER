@@ -41,6 +41,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     images,
     endDate,
     endTime,
+    isSecret,
     setTitle,
     setCategory,
     setDescription,
@@ -51,6 +52,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     setImages,
     setEndDate,
     setEndTime,
+    setIsSecret,
     handleMinPriceUpdate,
     handleSubmit,
   } = useProductEdit(shortId);
@@ -151,6 +153,12 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       <div className="p-box flex flex-col gap-[26px]">
+        {/* 시크릿 경매 */}
+        <div className="flex items-center justify-between">
+          <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+          <Switch checked={isSecret} onCheckedChange={setIsSecret} />
+        </div>
+
         {/* 시작가 */}
         <div className="flex flex-col gap-[13px]">
           <div className="typo-subtitle-small-medium">

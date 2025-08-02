@@ -28,7 +28,8 @@ export async function GET(
                   auction_end_at,
                   deal_longitude,
                   deal_latitude,
-                  deal_address
+                  deal_address,
+                  is_secret
                 )
             `
       )
@@ -58,6 +59,7 @@ export async function GET(
       deal_longitude: auctionData.deal_longitude,
       deal_latitude: auctionData.deal_latitude,
       auction: undefined, // auction 배열 제거
+      is_secret: auctionData.is_secret,
     };
 
     return NextResponse.json(productForEdit);
@@ -69,7 +71,6 @@ export async function GET(
 export async function POST(request: Request) {
   const url = new URL(request.url);
   const shortId = url.pathname.split('/').pop();
-
   const formData = await request.formData();
   const productId = decodeShortId(shortId!);
   const title = formData.get('title') as string;
@@ -82,6 +83,8 @@ export async function POST(request: Request) {
   const dealAddressRaw = formData.get('deal_address');
   const dealLatitude = dealLatitudeRaw !== null ? Number(dealLatitudeRaw) : null;
   const dealLongitude = dealLongitudeRaw !== null ? Number(dealLongitudeRaw) : null;
+  const isSecret = formData.get('is_secret') as string;
+
   const dealAddress =
     dealAddressRaw !== null && dealAddressRaw !== '' ? String(dealAddressRaw) : null;
   // 새로 업로드할 파일들
@@ -139,6 +142,7 @@ export async function POST(request: Request) {
         deal_latitude: dealLatitude,
         deal_longitude: dealLongitude,
         deal_address: dealAddress,
+        is_secret: isSecret,
       })
       .eq('product_id', productId);
 

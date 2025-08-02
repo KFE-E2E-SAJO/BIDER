@@ -14,19 +14,19 @@ export type UIAdapter = {
   confirmSpendPoints: () => Promise<boolean>;
 };
 
-interface CheckHighestBidOptions {
+interface CheckSecretBoardProps {
   auctionId: string;
   auctionEndAt: string;
   bidCnt: number;
   ui: UIAdapter;
 }
 
-export async function checkHighestBid({
+export async function checkSecretBoard({
   auctionId,
   auctionEndAt,
   bidCnt,
   ui,
-}: CheckHighestBidOptions): Promise<BidHistoryWithUserNickname[] | null> {
+}: CheckSecretBoardProps): Promise<BidHistoryWithUserNickname[] | null> {
   // 마감 한 시간 이하면 확인불가 모달
   if (!isMoreThanOneHour(auctionEndAt)) {
     await ui.alertTimeLimit();

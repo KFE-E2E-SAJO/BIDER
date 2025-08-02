@@ -62,6 +62,7 @@ export interface CreateProductRequest {
   endTime: string;
   images: UploadedImage[];
   userId: string;
+  isSecret: boolean;
 }
 
 export interface CreateProductResponse {
@@ -97,6 +98,7 @@ export interface ProductEditFormData {
   dealAddress?: string | null;
   dealLatitude?: number | null;
   dealLongitude?: number | null;
+  isSecret: boolean;
 }
 
 export interface ProductEditPageProps {

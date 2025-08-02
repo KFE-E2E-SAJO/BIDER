@@ -11,7 +11,7 @@ import { Button } from '@repo/ui/components/Button/Button';
 
 type DialogKind = 'timeLimit' | 'pointShort' | 'confirm' | null;
 
-export function useSecretBidDialog() {
+export function useSecretDialog() {
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<DialogKind>(null);
 
@@ -66,7 +66,7 @@ export function useSecretBidDialog() {
         closeOnBackdropClick={false}
         closeOnEscape={false}
       >
-        <DialogHeader className="invisible">
+        <DialogHeader className="sr-only">
           <DialogTitle>알림</DialogTitle>
         </DialogHeader>
 
@@ -117,7 +117,8 @@ export function useSecretBidDialog() {
           {kind === 'confirm' && (
             <>
               <div className="typo-subtitle-small-medium py-[25px] text-center">
-                500포인트를 사용하여 최고 입찰가를 확인하시겠어요?
+                <p>500포인트를 사용하여 최고 입찰가를 확인하시겠어요?</p>
+                <span className="text-sm">(확인 후 10분 동안 다시 확인할 수 있어요)</span>
               </div>
               <div className="relative flex items-center justify-center border-t border-neutral-100">
                 <Button
@@ -134,7 +135,7 @@ export function useSecretBidDialog() {
                 <span className="translate-[-50%] absolute left-1/2 top-1/2 h-[18px] w-[1px] bg-neutral-100" />
                 <Button
                   variant="ghost"
-                  className="text-main typo-body-medium w-1/2"
+                  className="text-event typo-body-medium w-1/2"
                   onClick={() => {
                     setOpen(false);
                     resolveOnceBool(true);

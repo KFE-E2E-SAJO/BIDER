@@ -26,6 +26,7 @@ export interface ProductForEdit extends Product {
   deal_address: string;
   deal_longitude: number;
   deal_latitude: number;
+  is_secret: boolean;
 }
 
 export type ProductForList = Pick<

@@ -23,10 +23,12 @@ import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import { Location } from '@/features/location/types';
 import { Info } from 'lucide-react';
+import { SecretInfoDialog } from '@/features/auction/secret/ui/SecretInfoDialog';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
   const user = useAuthStore();
+  const [openSecretInfo, setOpenSecretInfo] = useState(false);
 
   const {
     // State
@@ -89,12 +91,14 @@ export const ProductRegistrationForm = () => {
       endTime,
       images,
       userId: user.user.id,
+      isSecret,
     });
   };
 
   const isSubmitting = createProduct.isPending;
 
   const [dealLocationUse, setDealLocationUse] = useState(false);
+  const [isSecret, setIsSecret] = useState(false);
 
   return (
     <div className="flex flex-col gap-[26px]">
@@ -184,6 +188,12 @@ export const ProductRegistrationForm = () => {
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       <div className="p-box flex flex-col gap-[26px]">
+        {/* 시크릿 경매 */}
+        <div className="flex items-center justify-between">
+          <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+          <Switch checked={isSecret} onCheckedChange={setIsSecret} />
+        </div>
+
         {/* 입찰 시작가 */}
         <div className="flex flex-col gap-[10px]">
           <div className="typo-subtitle-small-medium">
@@ -254,6 +264,8 @@ export const ProductRegistrationForm = () => {
           </ul>
         </div>
       </div>
+
+      <SecretInfoDialog open={openSecretInfo} onOpenChange={setOpenSecretInfo} />
     </div>
   );
 };
