@@ -6,7 +6,7 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import type { Swiper as SwiperType } from 'swiper';
-import { ProductImage, ProductImageWithBlur } from '@/entities/productImage/model/types';
+import { ProductImage } from '@/entities/productImage/model/types';
 import Image from 'next/image';
 
 interface Props {
@@ -32,7 +32,7 @@ export default function ProductImageSlider({ images }: Props) {
           onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           className="h-full p-0"
         >
-          {sortedImages.map((img: ProductImageWithBlur, index) => (
+          {sortedImages.map((img) => (
             <SwiperSlide key={img.image_id} className="flex items-center justify-center">
               <Image
                 src={img.image_url}
@@ -44,10 +44,9 @@ export default function ProductImageSlider({ images }: Props) {
                   width: 'auto',
                   objectFit: 'contain',
                 }}
-                placeholder={index === 0 ? 'blur' : 'empty'}
-                blurDataURL={index === 0 ? img.blurDataUrl : undefined}
                 sizes="100vw"
                 className="mx-auto"
+                priority
               />
             </SwiperSlide>
           ))}
