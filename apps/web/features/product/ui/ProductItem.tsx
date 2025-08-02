@@ -33,8 +33,6 @@ const ProductItem = ({
           alt={title}
           fill
           sizes="140"
-          fetchPriority="high"
-          loading="lazy"
           className="object-cover object-center"
         />
       </div>
