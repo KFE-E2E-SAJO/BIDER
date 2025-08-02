@@ -18,12 +18,14 @@ export interface Auction {
   deal_longitude?: number;
   deal_latitude?: number;
   deal_address?: string;
+  is_secret: boolean;
 }
 
 export interface AuctionDetail extends Auction {
   product: ProductWithUserNImages;
   bid_history: BidHistoryWithUserNickname[];
   current_highest_bid: number;
+  bid_cnt: number;
 }
 
 export interface AuctionForBid {
@@ -46,3 +48,15 @@ export type AuctionList = Pick<
 export type MapAuction = Pick<Auction, 'auction_id' | 'product_id'> & {
   product: ProductForMapList;
 };
+
+export type SecretViewHistory =
+  | {
+      hasPaid: false;
+      isValid: false;
+      viewedAt?: never;
+    }
+  | {
+      hasPaid: true;
+      isValid: boolean;
+      viewedAt: string;
+    };

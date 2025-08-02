@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     const dealLatitude = dealLatitudeRaw !== null ? Number(dealLatitudeRaw) : null;
     const dealLongitude = dealLongitudeRaw !== null ? Number(dealLongitudeRaw) : null;
     const dealAddress = formData.get('deal_address') as string;
+    const isSecret = formData.get('is_secret') as string;
 
     // STEP 0: 로그인한 회원 정보 조회
     const { data: userData, error: userError } = await supabase
@@ -105,6 +106,7 @@ export async function POST(req: NextRequest) {
       deal_longitude: dealLongitude,
       deal_latitude: dealLatitude,
       deal_address: dealAddress,
+      is_secret: isSecret,
     });
 
     if (auctionError) {

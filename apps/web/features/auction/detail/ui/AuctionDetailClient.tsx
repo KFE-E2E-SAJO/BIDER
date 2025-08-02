@@ -1,12 +1,14 @@
 'use client';
 
 import Loading from '@/shared/ui/Loading/Loading';
-import { useAuctionDetail } from '../model/useAuctionDetail';
-import ProductImageSlider from './ProductImageSlider';
-import AuctionDetail from './AuctionDetail';
-import BottomBar from './BottomBar';
-import { AuctionDetailContent } from '../types';
+
 import { useAuthStore } from '@/shared/model/authStore';
+import { AuctionDetailContent } from '@/features/auction/detail/types';
+import { useAuctionDetail } from '@/features/auction/detail/model/useAuctionDetail';
+import ProductImageSlider from '@/features/auction/detail/ui/ProductImageSlider';
+import AuctionDetail from '@/features/auction/detail/ui/AuctionDetail';
+import BottomBar from '@/features/auction/detail/ui/BottomBar';
+import { useEffect, useState } from 'react';
 
 const AuctionDetailClient = ({ shortId }: { shortId: string }) => {
   const { data, isLoading, error } = useAuctionDetail(shortId);
@@ -24,15 +26,17 @@ const AuctionDetailClient = ({ shortId }: { shortId: string }) => {
     images: data.product?.product_image ?? [],
     minPrice: data.min_price,
     auctionEndAt: data.auction_end_at,
-    exhibitUser: data.product?.exhibit_user,
-    currentHighestBid: data.current_highest_bid || data.min_price,
     bidHistory: data.bid_history,
+    exhibitUser: data.product?.exhibit_user,
+    currentHighestBid: data.is_secret ? null : data.current_highest_bid || data.min_price,
     dealLocation:
       data.deal_latitude != null && data.deal_longitude != null
         ? { lat: data.deal_latitude, lng: data.deal_longitude }
         : undefined,
     dealAddress: data.deal_address ?? undefined,
     auctionStatus: data.auction_status,
+    isSecret: data.is_secret,
+    bidCnt: data.bid_cnt,
   };
 
   const isProductMine = user.user?.id === mapped.exhibitUser.user_id;
@@ -46,7 +50,9 @@ const AuctionDetailClient = ({ shortId }: { shortId: string }) => {
           shortId={shortId}
           auctionEndAt={mapped.auctionEndAt}
           title={mapped.productTitle}
-          lastPrice={String(mapped.currentHighestBid)}
+          lastPrice={mapped.currentHighestBid}
+          isSecret={mapped.isSecret}
+          minPrice={mapped.minPrice}
         />
       )}
     </div>

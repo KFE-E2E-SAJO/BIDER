@@ -12,6 +12,7 @@ export const createProduct = async (data: CreateProductRequest): Promise<CreateP
   formData.append('end_at', endAt.toISOString());
   formData.append('category', data.category);
   formData.append('user_id', data.userId);
+  formData.append('is_secret', String(data.isSecret));
   if (data.dealLongitude !== undefined) {
     formData.append('deal_longitude', data.dealLongitude.toString());
   }

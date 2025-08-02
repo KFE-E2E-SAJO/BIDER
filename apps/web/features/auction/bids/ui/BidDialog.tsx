@@ -17,8 +17,11 @@ export const BidDialog = ({
   lastPrice,
   open,
   onOpenChange,
+  isSecret,
+  minPrice,
 }: BidDialogProps) => {
-  const [biddingPrice, setBiddingPrice] = useState(getInitialBidPrice(lastPrice));
+  const initialPrice = isSecret ? minPrice : lastPrice;
+  const [biddingPrice, setBiddingPrice] = useState(getInitialBidPrice(initialPrice));
   const [countdown, setCountdown] = useState('');
 
   const { onSubmitBid, isSubmitting } = useBidSubmit(shortId);
@@ -48,10 +51,18 @@ export const BidDialog = ({
       </DialogHeader>
       <div className="typo-subtitle-bold mb-[22px] text-left">{title}</div>
       <div className="bg-neutral-050 flex w-full items-center justify-around px-[21px] py-[11px]">
-        <div className="flex flex-col">
-          <div className="typo-caption-medium text-neutral-600">최고 입찰가</div>
-          <div className="typo-body-bold">{formatNumberWithComma(lastPrice)}원</div>
-        </div>
+        {isSecret ? (
+          <div className="flex flex-col">
+            <div className="typo-caption-medium text-neutral-600">입찰 시작가</div>
+            <div className="typo-body-bold">{formatNumberWithComma(minPrice)}원</div>
+          </div>
+        ) : (
+          <div className="flex flex-col">
+            <div className="typo-caption-medium text-neutral-600">최고 입찰가</div>
+            <div className="typo-body-bold">{formatNumberWithComma(lastPrice as number)}원</div>
+          </div>
+        )}
+
         <div className="h-[38px] w-[1px] bg-neutral-300"></div>
         <div className="flex flex-col">
           <div className="typo-caption-medium text-neutral-600">입찰 마감</div>
@@ -72,9 +83,15 @@ export const BidDialog = ({
           <div className="typo-body-medium">원</div>
         </div>
       </div>
-      <Button className="mt-[33px]" onClick={handleBidSubmit} disabled={isSubmitting}>
-        {isSubmitting ? '입찰 중...' : '입찰하기'}
-      </Button>
+      {isSecret ? (
+        <Button className="bg-event mt-[33px]" onClick={handleBidSubmit} disabled={isSubmitting}>
+          {isSubmitting ? '입찰 중...' : '시크릿 입찰하기'}
+        </Button>
+      ) : (
+        <Button className="mt-[33px]" onClick={handleBidSubmit} disabled={isSubmitting}>
+          {isSubmitting ? '입찰 중...' : '입찰하기'}
+        </Button>
+      )}
     </Dialog>
   );
 };

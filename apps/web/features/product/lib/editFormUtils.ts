@@ -27,6 +27,7 @@ export const createFormDataFromProduct = (
       formData.append('deal_address', data.dealAddress);
     }
   }
+  formData.append('is_secret', String(data.isSecret));
 
   images.forEach((img, index) => {
     if (img.file) {

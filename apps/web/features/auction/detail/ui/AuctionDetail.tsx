@@ -2,17 +2,19 @@ import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { AlarmClock, Info, PencilLine } from 'lucide-react';
 import React, { useState } from 'react';
-import { AuctionDetailContentProps } from '../types';
 import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
 import BiddingStatusBoard from './BiddingStatusBoard';
 import { getCategoryLabel } from '@/features/category/lib/utils';
 import { CategoryValue } from '@/features/category/types';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
+import ProposalActionButton from './ProposalActionButton';
+import { AuctionDetailContentProps } from '@/features/auction/detail/types';
+import SecretBidStatusBoard from '@/features/auction/secret/ui/SecretBiddingStatusBoard';
 import Link from 'next/link';
-import ProposalActionButton from '@/features/auction/detail/ui/ProposalActionButton';
 
 const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
+
   return (
     <>
       {/* 경매 상품 내용 */}
@@ -29,10 +31,17 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
         <div className="flex items-end justify-between">
           <div>
             <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
-            <div className="typo-subtitle-bold">{formatNumberWithComma(currentHighestBid)}원</div>
+            <div className="typo-subtitle-bold">
+              {data.isSecret ? (
+                <span className="text-event">******* </span>
+              ) : (
+                formatNumberWithComma(currentHighestBid as number)
+              )}
+              원
+            </div>
           </div>
           {/* 제안하기 */}
-          {!isProductMine && data.auctionStatus !== '경매 종료' && (
+          {!isProductMine && data.auctionStatus !== '경매 종료' && data.isSecret && (
             <ProposalActionButton auctionId={data.auctionId} />
           )}
         </div>
@@ -78,21 +87,31 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
 
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
-      {/* 입찰 히스토리 */}
-      <div className="p-box">
-        <div className="items-baseline-last mb-[14px] flex justify-between">
-          <div className="typo-subtitle-small-medium">입찰 현황판</div>
-          <div className="typo-caption-regular flex items-center gap-1 text-neutral-600">
-            <Info size={13} strokeWidth={2} stroke="var(--color-neutral-400)" /> 상위 5등까지만 조회
-            가능합니다.
-          </div>
-        </div>
-        <BiddingStatusBoard
-          data={data.bidHistory}
+      {data.isSecret ? (
+        <SecretBidStatusBoard
           auctionId={data.auctionId}
+          auctionEndAt={data.auctionEndAt}
+          bidCnt={data.bidCnt}
+          isSecret={data.isSecret}
           onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
         />
-      </div>
+      ) : (
+        <div className="p-box">
+          <div className="items-baseline-last mb-[14px] flex justify-between">
+            <div className="typo-subtitle-small-medium">입찰 현황판</div>
+            <div className="typo-caption-regular flex items-center gap-1 text-neutral-600">
+              <Info size={13} strokeWidth={2} stroke="var(--color-neutral-400)" /> 상위 5등까지만
+              조회 가능합니다.
+            </div>
+          </div>
+          <BiddingStatusBoard
+            data={data.bidHistory}
+            auctionId={data.auctionId}
+            onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
+          />
+        </div>
+      )}
+
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       {/* 판매자 정보 */}
