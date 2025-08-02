@@ -2,16 +2,24 @@
 
 import ProductList from '@/features/product/ui/ProductList';
 import { useGetBidList } from '@/features/auction/bids/model/useGetBidList';
-import Loading from '@/shared/ui/Loading/Loading';
+import Skeleton from '@/features/product/ui/Skeleton';
+import { BidListParams } from '@/features/auction/bids/types';
 
-export interface BidListProps {
-  filter: 'all' | 'progress' | 'win' | 'fail';
-  userId: string;
-}
-
-const BidList = ({ userId, filter }: BidListProps) => {
+const BidList = ({ userId, filter }: BidListParams) => {
   const { data, isLoading, error } = useGetBidList({ userId, filter });
-  if (isLoading || error || !data) return <Loading />;
+
+  if (isLoading) {
+    return (
+      <div className="p-box">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
+  }
+
+  if (error) return <div>경매 정보를 찾을 수 없습니다.</div>;
+  if (!data || data.length === 0) return <div>입찰한 경매가 없습니다.</div>;
 
   return (
     <div className="flex flex-col gap-4 px-4">

@@ -62,3 +62,7 @@ export interface BidDataWithStats extends BidData {
   bidCount: number;
   maxPrice: number;
 }
+
+export interface AuctionBidTabsProps {
+  userId: string;
+}

@@ -5,12 +5,8 @@ import dynamic from 'next/dynamic';
 import Loading from '@/shared/ui/Loading/Loading';
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-export interface AuctionBidTabsProps {
-  userId: string;
-}
-
-const BidListLazy = dynamic(() => import('@/features/auction/bids/ui/BidList'), { ssr: false });
+import { AuctionBidTabsProps } from '@/features/auction/bids/types';
+import BidList from '@/features/auction/bids/ui/BidList';
 
 const AuctionBidsTabs = ({ userId }: AuctionBidTabsProps) => {
   const searchParams = useSearchParams();
@@ -27,14 +23,14 @@ const AuctionBidsTabs = ({ userId }: AuctionBidTabsProps) => {
   };
 
   const items = [
-    { value: 'all', label: '전체', content: <BidListLazy filter="all" userId={userId} /> },
+    { value: 'all', label: '전체', content: <BidList filter="all" userId={userId} /> },
     {
       value: 'progress',
       label: '경매 중',
-      content: <BidListLazy filter="progress" userId={userId} />,
+      content: <BidList filter="progress" userId={userId} />,
     },
-    { value: 'win', label: '낙찰', content: <BidListLazy filter="win" userId={userId} /> },
-    { value: 'fail', label: '패찰', content: <BidListLazy filter="fail" userId={userId} /> },
+    { value: 'win', label: '낙찰', content: <BidList filter="win" userId={userId} /> },
+    { value: 'fail', label: '패찰', content: <BidList filter="fail" userId={userId} /> },
   ];
 
   return (
