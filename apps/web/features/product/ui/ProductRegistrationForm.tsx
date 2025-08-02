@@ -23,12 +23,12 @@ import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import { Location } from '@/features/location/types';
 import { Info } from 'lucide-react';
-import { SecretInfoDialog } from '@/features/auction/secret/ui/SecretInfoDialog';
+import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
   const user = useAuthStore();
-  const [openSecretInfo, setOpenSecretInfo] = useState(false);
+  const { DialogHost, openSecretGuide } = useSecretDialog();
 
   const {
     // State
@@ -190,7 +190,12 @@ export const ProductRegistrationForm = () => {
       <div className="p-box flex flex-col gap-[26px]">
         {/* 시크릿 경매 */}
         <div className="flex items-center justify-between">
-          <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+          <div className="flex gap-[5px]">
+            <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+            <button onClick={() => openSecretGuide()}>
+              <Info className="stroke-event size-[17px]" />
+            </button>
+          </div>
           <Switch checked={isSecret} onCheckedChange={setIsSecret} />
         </div>
 
@@ -242,6 +247,7 @@ export const ProductRegistrationForm = () => {
           onClick={handleSubmit}
           variant={isSubmitting ? 'loading' : 'default'}
           disabled={isSubmitting}
+          className={`${isSubmitting && 'animate-pulse'}`}
         >
           {isSubmitting ? '출품 중...' : '출품하기'}
         </Button>
@@ -264,8 +270,7 @@ export const ProductRegistrationForm = () => {
           </ul>
         </div>
       </div>
-
-      <SecretInfoDialog open={openSecretInfo} onOpenChange={setOpenSecretInfo} />
+      <DialogHost />
     </div>
   );
 };

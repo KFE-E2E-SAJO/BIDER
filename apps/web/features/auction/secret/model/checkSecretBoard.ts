@@ -1,12 +1,12 @@
 'use client';
 
 import { toast } from '@repo/ui/components/Toast/Sonner';
-import { isMoreThanOneHour } from '../lib/utils';
-import checkSecretViewHistory from '../actions/checkSecretViewHistory';
-import getBidHistory from '../actions/getBidHistory';
 import { createPointByReason } from '@/features/point/api/createPointByReason';
-import { saveSecretViewHistory } from '../actions/saveSecretViewHistory';
 import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
+import checkSecretViewHistory from '@/features/auction/secret/actions/checkSecretViewHistory';
+import { saveSecretViewHistory } from '@/features/auction/secret/actions/saveSecretViewHistory';
+import { isMoreThanOneHour } from '@/features/auction/secret/lib/utils';
+import getBidHistory from '@/features/auction/secret/actions/getBidHistory';
 
 export type UIAdapter = {
   alertTimeLimit: () => Promise<void>;

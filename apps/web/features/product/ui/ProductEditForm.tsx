@@ -18,6 +18,8 @@ import { useProductEdit } from '../model/useProductEdit';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import GoogleMap from '@/features/location/ui/GooggleMap';
 import { Location } from '@/features/location/types';
+import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
+import { Info } from 'lucide-react';
 
 interface ProductEditFormProps {
   shortId: string;
@@ -56,6 +58,8 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     handleMinPriceUpdate,
     handleSubmit,
   } = useProductEdit(shortId);
+
+  const { DialogHost, openSecretGuide } = useSecretDialog();
 
   if (loading) return <Loading />;
   if (error) return <p>오류: {error}</p>;
@@ -155,7 +159,12 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
       <div className="p-box flex flex-col gap-[26px]">
         {/* 시크릿 경매 */}
         <div className="flex items-center justify-between">
-          <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+          <div className="flex gap-[5px]">
+            <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+            <button onClick={() => openSecretGuide()}>
+              <Info className="stroke-event size-[17px]" />
+            </button>
+          </div>
           <Switch checked={isSecret} onCheckedChange={setIsSecret} />
         </div>
 
@@ -206,10 +215,12 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
           onClick={handleSubmit}
           variant={isSubmitting ? 'loading' : 'default'}
           disabled={isSubmitting}
+          className={`${isSubmitting && 'animate-pulse'}`}
         >
           {isSubmitting ? '수정 중...' : '수정하기'}
         </Button>
       </div>
+      <DialogHost />
     </div>
   );
 };

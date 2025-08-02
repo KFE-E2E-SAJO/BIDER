@@ -3,13 +3,8 @@ import BiddingStatusBoard from '@/features/auction/detail/ui/BiddingStatusBoard'
 import { checkSecretBoard } from '@/features/auction/secret/model/checkSecretBoard';
 import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
 import { Button } from '@repo/ui/components/Button/Button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@repo/ui/components/Tooltip/Tooltip';
 import { throttle } from 'lodash';
+import { Info } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SecretBidStatusBoardProps {
@@ -30,7 +25,8 @@ const SecretBidStatusBoard = ({
   const [showHighestBid, setShowHighestBid] = useState(false);
   const [bidHistory, setBidHistory] = useState<BidHistoryWithUserNickname[] | null>(null);
 
-  const { DialogHost, alertTimeLimit, alertNotEnoughPoint, confirmSpendPoints } = useSecretDialog();
+  const { DialogHost, alertTimeLimit, alertNotEnoughPoint, confirmSpendPoints, openSecretGuide } =
+    useSecretDialog();
 
   const handleCheck = async () => {
     const history = await checkSecretBoard({
@@ -58,37 +54,42 @@ const SecretBidStatusBoard = ({
 
   return (
     <div className="p-box">
-      <div className="mb-[14px]">
-        <div className="typo-subtitle-small-medium mb-[14px]">입찰 현황판</div>
-        <p className="typo-body-regular">
-          <span className="typo-body-medium text-event">{bidCnt}명</span>이 이 상품에 입찰 중이에요!
-        </p>
+      <div className="flex items-center justify-between">
+        <div className="typo-subtitle-small-medium">입찰 현황판</div>
+        {showHighestBid && (
+          <p className="typo-caption-regular text-neutral-600">10분간 확인 가능합니다</p>
+        )}
       </div>
       {showHighestBid ? (
         bidHistory && (
-          <BiddingStatusBoard
-            data={bidHistory}
-            auctionId={auctionId}
-            onNewHighestBid={onNewHighestBid}
-            isSecret={isSecret}
-          />
+          <div className="mt-[14px]">
+            <BiddingStatusBoard
+              data={bidHistory}
+              auctionId={auctionId}
+              onNewHighestBid={onNewHighestBid}
+              isSecret={isSecret}
+            />
+          </div>
         )
       ) : (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                className="bg-event-light typo-body-medium text-event"
-                onClick={handleCheckThrottled}
-              >
-                최고 입찰가 확인하기
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" align="end" className="mt-1">
-              500포인트로 최고 입찰가를 확인할 수 있어요
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <>
+          <p className="typo-caption-regular mt-[7px] flex items-center gap-[3px] text-neutral-600">
+            <span>500포인트로 최고 입찰가를 확인할 수 있어요</span>
+            <button onClick={() => openSecretGuide()}>
+              <Info className="strock-event size-[13px]" />
+            </button>
+          </p>
+          <Button
+            className="bg-event-light typo-body-medium text-event mt-[20px]"
+            onClick={handleCheckThrottled}
+          >
+            최고 입찰가 확인하기
+          </Button>
+          <p className="typo-body-regular mt-[7px] text-center">
+            <span className="typo-body-medium text-event">{bidCnt}명</span>이 이 상품에 입찰
+            중이에요!
+          </p>
+        </>
       )}
 
       <DialogHost />
