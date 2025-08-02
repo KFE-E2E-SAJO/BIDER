@@ -18,11 +18,11 @@ const ProposalActionButton = ({ auctionId }: { auctionId: string }) => {
 
   useEffect(() => {
     const fetchUserPoint = async () => {
-      const res = await fetch('/api/mypage/point');
+      const res = await fetch('/api/profile');
       const result = await res.json();
 
-      if (res.ok && Array.isArray(result) && result.length > 0) {
-        setUserPoint(result[0].point);
+      if (res.ok) {
+        setUserPoint(result.point);
       } else {
         setUserPoint(0);
       }
