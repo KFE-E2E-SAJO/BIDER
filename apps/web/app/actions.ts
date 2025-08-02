@@ -82,7 +82,12 @@ export async function unsubscribeUser() {
   return { success: true };
 }
 
-export async function sendNotification(type: PushAlarmType, subType: string, data: PushAlarmData) {
+export async function sendNotification(
+  user_id: string,
+  type: PushAlarmType,
+  subType: string,
+  data: PushAlarmData
+) {
   webpush.setVapidDetails(
     'mailto:haruyam15@gmail.com',
     process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
@@ -91,7 +96,10 @@ export async function sendNotification(type: PushAlarmType, subType: string, dat
 
   const supabase = await createClient();
 
-  const { data: pushToken, error } = await supabase.from('user_push_token').select('*');
+  const { data: pushToken, error } = await supabase
+    .from('user_push_token')
+    .select('*')
+    .eq('user_id', user_id);
 
   if (error || !pushToken || pushToken.length === 0) {
     console.error('푸시 토큰 조회 실패:', error);

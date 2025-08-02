@@ -34,6 +34,9 @@ export const useCreatePushToken = (isChecked: boolean) => {
           updateViaCache: 'none',
         });
 
+        console.log('registration : ', registration);
+        console.log('Notification.permission:', Notification.permission);
+
         const sub = await registration.pushManager.getSubscription();
 
         if (sub === null) {

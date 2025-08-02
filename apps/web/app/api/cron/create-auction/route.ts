@@ -46,28 +46,21 @@ export async function GET(request: NextRequest) {
             throw new Error(`Auction ${auction.auction_id} 업데이트 실패: ${updateError.message}`);
           }
 
-          //푸시 알림
-          const { data: PushAlarmData, error } = await supabase
-            .from('product')
-            .select(`title, product_image (image_url)`)
-            .eq('product_id', auction.product_id);
-
-          if (error || !PushAlarmData) {
-            throw new Error(`pushAlarm 조회 실패: ${error.message}`);
-          }
-
-          const { success: result, error: pushAlarmError } = await sendNotification(
-            'auction',
-            'auctionStarted',
-            {
-              productName: `${PushAlarmData?.[0]?.title}`,
-              auctionId: `${auction.auction_id}`,
-              image: `${PushAlarmData?.[0]?.product_image[0]?.image_url}`,
-            }
-          );
-
-          if (pushAlarmError) {
-            throw new Error(`pushAlarm 전송 실패: ${pushAlarmError}`);
+          //푸시 알림(경매 시작)
+          try {
+            const { origin } = new URL(request.url);
+            const test = await fetch(`${origin}/api/acution/startBid`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                product_id: auction.product_id,
+                auction_id: auction.auction_id,
+              }),
+            });
+          } catch (e) {
+            console.error('경매 시작 전송 실패:', e);
           }
 
           return {

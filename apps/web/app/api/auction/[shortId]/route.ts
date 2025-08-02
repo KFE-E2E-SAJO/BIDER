@@ -3,6 +3,7 @@ import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import { AuctionDetail, AuctionForBid } from '@/entities/auction/model/types';
 import { generateBlurDataURL } from '@/features/auction/detail/lib/generateBlurImg';
+import { sendNotification } from '@/app/actions';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
   const resolvedParams = await params;
@@ -167,6 +168,19 @@ export async function POST(req: NextRequest) {
       console.error('입찰 삽입 오류:', bidError);
       return NextResponse.json({ error: '입찰 처리 중 오류가 발생했습니다.' }, { status: 500 });
     }
+
+    const { origin } = new URL(req.url);
+
+    // 푸시 알람 전송(판매자, 입찰자)
+    await fetch(`${origin}/api/acution/bid`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        auction_id: auctionId,
+      }),
+    });
 
     const auctionTyped = auctionData as unknown as AuctionForBid;
     const productTitle = auctionTyped.product.title;

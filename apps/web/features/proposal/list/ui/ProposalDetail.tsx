@@ -38,9 +38,26 @@ const ProposalDetail = () => {
     respondProposal(
       { proposalId, proposalStatus: 'accept', userId },
       {
-        onSuccess: () => {
-          toast({ content: '제안이 수락되었습니다.' });
-          router.push('/mypage/proposal/received');
+        onSuccess: async () => {
+          try {
+            toast({ content: '제안이 수락되었습니다.' });
+
+            await fetch('/api/alarm/proposal-accepted', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                proposalId,
+                type: 'accepted',
+                user_id: userId,
+              }),
+            });
+
+            router.push('/mypage/proposal/received');
+          } catch (error) {
+            console.error('알림 전송 실패:', error);
+          }
         },
         onError: (error) => {
           toast({ content: '수락 처리에 실패했습니다.' });

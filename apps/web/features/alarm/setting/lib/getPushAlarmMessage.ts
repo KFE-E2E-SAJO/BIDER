@@ -31,7 +31,6 @@ const pushAlarmMessage: Record<
   PushAlarmKey,
   (data: PushAlarmData) => { title: string; body: string; link: string; image?: string }
 > = {
-  // 예시: auction 알림
   'auction:bid': (data) => ({
     title: '입찰 완료',
     body: `${data.productName}에 ${data.price}원으로 입찰되었습니다.`,
@@ -40,7 +39,7 @@ const pushAlarmMessage: Record<
   }),
   'auction:bidUpdated': (data) => ({
     title: '입찰 금액 갱신',
-    body: `${data.productName}의 입찰 금액이 갱신되었습니다. 다시 입찰해보세요.`,
+    body: `${data.productName}의 입찰 금액이 갱신되었습니다. 다시 입찰해 보세요`,
     link: `/product/${data.productId}`,
     image: `${data.image}`,
   }),
@@ -92,20 +91,6 @@ const pushAlarmMessage: Record<
     title: '포인트 적립',
     body: `${data.amount} 포인트가 적립되었습니다.`,
     link: '/mypage/point',
-    image: `${data.image}`,
-  }),
-  'point:pointUsed': (data) => ({
-    title: '포인트 사용',
-    body: `${data.amount} 포인트가 사용되었습니다.`,
-    link: '/mypage/point',
-    image: `${data.image}`,
-  }),
-
-  // 별점
-  'review:newReview': (data) => ({
-    title: '새 별점 도착',
-    body: `${data.nickname}님이 별점을 등록했습니다.`,
-    link: '/review',
     image: `${data.image}`,
   }),
 

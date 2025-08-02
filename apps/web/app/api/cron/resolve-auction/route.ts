@@ -63,6 +63,8 @@ export async function GET(request: NextRequest) {
             throw new Error(`제안하기 상태 업데이트 실패: ${ProposalUpdateError.message}`);
           }
 
+          const { origin } = new URL(request.url);
+
           if (!bidHistory || bidHistory.length === 0) {
             // 유찰 처리
             const { error } = await supabase
@@ -72,6 +74,17 @@ export async function GET(request: NextRequest) {
                 updated_at: new Date().toISOString(),
               })
               .eq('auction_id', auction.auction_id);
+
+            // 푸시 알림 전송
+            await fetch(`${origin}/api/acution/noBid`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                auction_id: auction.auction_id,
+              }),
+            });
 
             if (error) {
               throw new Error(`유찰 처리 실패: ${error.message}`);
@@ -106,8 +119,35 @@ export async function GET(request: NextRequest) {
               throw new Error(`낙찰 상태 업데이트 실패: ${bidHistoryError.message}`);
             }
 
+            // 푸시 알람 전송(낙찰자, 출품자)
+            await fetch(`${origin}/api/acution/winningBid`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                auction_id: auction.auction_id,
+              }),
+            });
+
             try {
               await createPointByReason('deal_complete_seller', auction.product.exhibit_user_id);
+              try {
+                // 푸시 알람 전송(출품자 포인트 적립)
+                await fetch(`${origin}/api/point`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    user_id: auction.product.exhibit_user_id,
+                    reason: 'deal_complete_seller',
+                    test: 'testestest',
+                  }),
+                });
+              } catch (e) {
+                console.error('출품자 알림 전송 실패:', e);
+              }
             } catch (error) {
               console.error('출품자 포인트 지급 실패:', error);
             }
@@ -118,6 +158,24 @@ export async function GET(request: NextRequest) {
                 winning_user_id,
                 winning_bid.bid_price
               );
+
+              try {
+                // 푸시 알람 전송(낙찰자 포인트 적립)
+                await fetch(`${origin}/api/point`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    type: 'winning_user',
+                    user_id: winning_user_id,
+                    price: winning_bid.bid_price,
+                    reason: 'deal_complete_seller',
+                  }),
+                });
+              } catch (e) {
+                console.error('낙찰자 알림 전송 실패:', e);
+              }
             } catch (error) {
               console.error('낙찰자 포인트 지급 실패:', error);
             }

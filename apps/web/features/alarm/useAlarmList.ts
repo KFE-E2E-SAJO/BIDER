@@ -40,7 +40,7 @@ export const useAlarmList = () => {
           user_id: item.user_Id,
           contents: item.body,
           time: getTimeDiff(item.create_at),
-          image: item.image ?? '/alarm_thumb.png',
+          image: item.image_url ?? '/alarm_thumb.png',
           isRead: item.is_read ?? false,
         }));
 
