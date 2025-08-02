@@ -18,6 +18,7 @@ export const SignUpForm = () => {
     nickname,
 
     isEmailSent,
+    verifiedEmail,
     isEmailVerified,
     isLoading,
     disabled,
@@ -38,7 +39,7 @@ export const SignUpForm = () => {
     setNickname,
 
     sendVerificationEmail,
-    verifyCode,
+    onClickVerifyCode,
     handleSubmitForm,
   } = useSignUpForm();
 
@@ -59,13 +60,13 @@ export const SignUpForm = () => {
         onClickSendVerification={sendVerificationEmail}
       />
 
-      {isEmailSent && !isEmailVerified && (
+      {isEmailSent && verifiedEmail && (
         <EmailVerifiedField
           verifiedCode={verifiedCode}
           verifiedCodeError={verifiedCodeError}
           onChangeVerifiedCode={setVerifiedCode}
-          onClickVerifyCode={verifyCode}
-          disabled={disabled}
+          onClickVerifyCode={onClickVerifyCode}
+          disabled={!(isEmailSent || verifiedEmail)}
           isLoading={isLoading}
         />
       )}

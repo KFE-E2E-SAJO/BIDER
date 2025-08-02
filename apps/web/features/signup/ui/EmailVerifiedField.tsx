@@ -1,4 +1,6 @@
 import { Button } from '@repo/ui/components/Button/Button';
+import { Check } from 'lucide-react';
+import { useSignUpForm } from '../model/useSignupForm';
 
 interface EmailVerifiedFieldProps {
   verifiedCode: string;
@@ -17,6 +19,7 @@ export const EmailVerifiedField = ({
   disabled,
   isLoading,
 }: EmailVerifiedFieldProps) => {
+  const isEmailVerified = useSignUpForm();
   return (
     <div className="space-y-2">
       <label className="typo-body-bold mb-[8px] block text-neutral-900">인증 코드</label>
@@ -33,7 +36,7 @@ export const EmailVerifiedField = ({
         <Button
           type="button"
           onClick={onClickVerifyCode}
-          disabled={isLoading || !verifiedCode || verifiedCode.length !== 6}
+          disabled={isLoading || !verifiedCode || verifiedCode.length !== 6 || disabled}
           className="flex-1 rounded-md px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-gray-300"
         >
           {isLoading ? '확인 중...' : '인증 확인'}

@@ -52,11 +52,6 @@ export const EmailField = ({
     <div className="flex flex-col">
       <label htmlFor="email-id" className="typo-body-bold mb-[8px] block text-neutral-900">
         이메일
-        {isEmailVerified && (
-          <span className="typo-caption-medium flex text-green-600">
-            <Check className="flex" size={15} /> 인증완료
-          </span>
-        )}
       </label>
       <div className="flex items-center gap-2">
         <Input
@@ -108,7 +103,7 @@ export const EmailField = ({
       <Button
         className={`typo-body-medium mt-[14px] h-12 whitespace-nowrap px-4 ${isEmailVerified ? 'text-neutral-0 cursor-not-allowed bg-green-600' : 'text-neutral-0 bg-neutral-800 hover:bg-neutral-900'}`}
         type="button"
-        disabled={!checkEmailInputs() || isEmailVerified || isLoading}
+        disabled={!checkEmailInputs() || isEmailSent || isLoading}
         onClick={onClickSendVerification}
       >
         {isLoading ? (

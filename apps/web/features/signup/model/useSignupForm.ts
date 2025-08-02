@@ -68,7 +68,7 @@ export const useSignUpForm = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabase.auth.signInWithOtp({
         email: fullEmail,
         options: {
           shouldCreateUser: true,
@@ -92,7 +92,7 @@ export const useSignUpForm = () => {
     }
   };
 
-  const verifyCode = async () => {
+  const onClickVerifyCode = async () => {
     if (!verifiedCode || !verifiedEmail) {
       setVerifiedCodeError('인증 코드를 입력해주세요.');
       return;
@@ -117,9 +117,12 @@ export const useSignUpForm = () => {
       if (data.user) {
         setIsEmailVerified(true);
         toast({ content: '이메일 인증이 완료되었습니다!' });
+        setIsdisabled(true);
 
         // 인증 완료 후 세션 종료 (회원가입 완료 전까지)
-        await supabase.auth.signOut();
+        // await supabase.auth.signOut();
+      } else {
+        setIsEmailVerified(false);
       }
     } catch (error) {
       console.error('인증 코드 확인 오류:', error);
@@ -231,7 +234,7 @@ export const useSignUpForm = () => {
 
     handleSelectChange,
     sendVerificationEmail,
-    verifyCode, // 새로 추가된 함수
+    onClickVerifyCode,
     handleSubmitForm,
   };
 };
