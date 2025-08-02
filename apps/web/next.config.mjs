@@ -23,11 +23,7 @@ const nextConfig = {
     ];
   },
   transpilePackages: [],
-  experimental: {
-    turbo: {
-      rules: {},
-    },
-  },
+
   images: {
     domains: ['nrxemenkpeejarhejbbk.supabase.co', 'maps.googleapis.com'],
   },
