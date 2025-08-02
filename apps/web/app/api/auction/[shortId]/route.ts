@@ -59,7 +59,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     const mainImage = { ...productData?.product_image[0] };
     mainImage.blurDataUrl = await generateBlurDataURL(mainImage.image_url);
     productData.product_image[0] = mainImage;
-    const safeBidHistory = auctionData.is_secret ? [] : bidHistory || [];
+    const fallbackBidHistory = bidHistory || [];
+    const safeBidHistory = auctionData.is_secret ? [] : fallbackBidHistory;
     const safeCurrentHighestBid = auctionData.is_secret
       ? null
       : currentHighestBid || auctionData.min_price;
@@ -72,6 +73,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
         exhibit_user: userData,
         product_image: productData?.product_image || [],
       },
+      bid_cnt: fallbackBidHistory.length,
       bid_history: safeBidHistory,
       current_highest_bid: safeCurrentHighestBid,
     } as AuctionDetail;

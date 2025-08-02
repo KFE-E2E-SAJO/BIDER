@@ -5,9 +5,15 @@ import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
 import { useBidHistoryRealtime } from '../api/useBidHistoryRealtime';
 
-const BiddingStatusBoard = ({ data, auctionId, onNewHighestBid }: BiddingStatusBoardProps) => {
+const BiddingStatusBoard = ({
+  data,
+  auctionId,
+  onNewHighestBid,
+  isSecret = false,
+}: BiddingStatusBoardProps) => {
   const [bidData, setBidData] = useState<BidHistoryWithUserNickname[]>(data);
   const [latestBid, setLatestBid] = useState<BidHistoryWithUserNickname | null>(null);
+  const pointColor = isSecret ? 'text-event' : 'text-main';
 
   useBidHistoryRealtime({
     auctionId: auctionId,
@@ -33,11 +39,11 @@ const BiddingStatusBoard = ({ data, auctionId, onNewHighestBid }: BiddingStatusB
         <div
           key={bid.bid_id}
           className={`flex justify-between border-b border-dashed border-neutral-300 px-[16px] py-[9px] ${
-            index === 0 ? 'text-main typo-body-bold' : 'text-neutral-700'
+            index === 0 ? `${pointColor} typo-body-bold` : 'text-neutral-700'
           }`}
         >
           <div className="flex items-center gap-[6px]">
-            {index === 0 && <Crown size={14} className="text-main fill-current" />}
+            {index === 0 && <Crown size={14} className={`${pointColor} fill-current`} />}
             <div>{bid.bid_user_nickname.nickname}</div>
           </div>
           <div>{formatNumberWithComma(bid.bid_price)}원</div>

@@ -39,4 +39,5 @@ export interface BiddingStatusBoardProps {
   data: BidHistoryWithUserNickname[];
   auctionId: string;
   onNewHighestBid?: (price: number) => void;
+  isSecret?: boolean;
 }

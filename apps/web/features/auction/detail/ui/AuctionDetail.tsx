@@ -9,65 +9,11 @@ import { CategoryValue } from '@/features/category/types';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
 import ProposalActionButton from './ProposalActionButton';
 import { AuctionDetailContentProps } from '@/features/auction/detail/types';
-import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
-import { isMoreThanOneHour } from '@/features/auction/secret/lib/utils';
-import { toast } from '@repo/ui/components/Toast/Sonner';
-import checkSecretViewHistory from '@/features/auction/secret/actions/checkSecretViewHistory';
-import getBidHistory from '@/features/auction/secret/actions/getBidHistory';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@repo/ui/components/Tooltip/Tooltip';
-import { Button } from '@repo/ui/components/Button/Button';
+import SecretBidStatusBoard from '@/features/auction/secret/ui/SecretBiddingStatusBoard';
 
 const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
-  const [showHighestBid, setShowHighestBid] = useState(false);
-  const [bidHistory, setBidHistory] = useState<BidHistoryWithUserNickname[] | null>(null);
 
-  const checkHighestBid = async () => {
-    // 마감 한 시간 이하면 확인불가 모달
-    if (!isMoreThanOneHour(data.auctionEndAt)) {
-      toast({ content: '⏰ 최고 입찰가는 마감 1시간 전까지만 확인할 수 있어요.' });
-      return;
-    }
-    //아직 아무도 입찰을 안했을 경우
-    if (data.bidCnt <= 0) {
-      toast({ content: '첫 번째 입찰자가 되어보세요!' });
-      return;
-    }
-    // 사용자가 포인트 결제했는지 여부
-    // 이미 했고 10분 안지났으면
-    // 최고입찰가 보여주기 (BiddingStatusBoard 띄우기)
-    const { hasPaid, isValid } = await checkSecretViewHistory(data.auctionId);
-
-    if (hasPaid && isValid) {
-      const history = await getBidHistory(data.auctionId);
-      setBidHistory(history);
-      setShowHighestBid(true);
-      return;
-    }
-    // 이미 했고 10분 지났거나 아예 한적 없다면
-    // 유저 포인트 조회
-    let userPoint = 400;
-    // 유저 포인트가 500미만이면 포인트 부족 모달
-    if (userPoint < 500) {
-      //500포인트 이상 있어야 최고 입찰가를 확인할 수 있어요.
-      toast({ content: '500포인트 이상 있어야 최고 입찰가를 확인할 수 있어요.' });
-      return;
-    }
-    // 포인트 500이상이면 포인트 차감 API 호출
-    userPoint = userPoint - 500;
-    if (true) {
-      //포인트 차감 api성공
-      //secret_bid_view_history에 데이터 추가해주고
-      const history = await getBidHistory(data.auctionId);
-      setBidHistory(history);
-      setShowHighestBid(true);
-    }
-  };
   return (
     <>
       {/* 경매 상품 내용 */}
@@ -92,7 +38,7 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
             </div>
           </div>
           {/* 제안하기 */}
-          {!isProductMine && data.auctionStatus !== '경매 종료' && (
+          {!isProductMine && data.auctionStatus !== '경매 종료' && data.isSecret && (
             <ProposalActionButton auctionId={data.auctionId} />
           )}
         </div>
@@ -138,42 +84,14 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
 
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
-      {/* 입찰 히스토리 */}
       {data.isSecret ? (
-        <div className="p-box">
-          <div className="mb-[14px]">
-            <div className="typo-subtitle-small-medium mb-[14px]">입찰 현황판</div>
-            <p className="typo-body-regular">
-              <span className="typo-body-medium text-event">{data.bidCnt}명</span>이 이 상품에 입찰
-              중이에요!
-            </p>
-          </div>
-          {showHighestBid ? (
-            bidHistory && (
-              <BiddingStatusBoard
-                data={bidHistory}
-                auctionId={data.auctionId}
-                onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
-              />
-            )
-          ) : (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="bg-event-light typo-body-medium text-event"
-                    onClick={checkHighestBid}
-                  >
-                    최고 입찰가 확인하기
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" align="end" className="mt-1">
-                  500포인트로 최고 입찰가를 확인할 수 있어요
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
+        <SecretBidStatusBoard
+          auctionId={data.auctionId}
+          auctionEndAt={data.auctionEndAt}
+          bidCnt={data.bidCnt}
+          isSecret={data.isSecret}
+          onNewHighestBid={(newPrice) => setCurrentHighestBid(newPrice)}
+        />
       ) : (
         <div className="p-box">
           <div className="items-baseline-last mb-[14px] flex justify-between">
@@ -190,6 +108,7 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
           />
         </div>
       )}
+
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       {/* 판매자 정보 */}

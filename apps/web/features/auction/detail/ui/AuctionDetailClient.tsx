@@ -8,6 +8,7 @@ import { useAuctionDetail } from '@/features/auction/detail/model/useAuctionDeta
 import ProductImageSlider from '@/features/auction/detail/ui/ProductImageSlider';
 import AuctionDetail from '@/features/auction/detail/ui/AuctionDetail';
 import BottomBar from '@/features/auction/detail/ui/BottomBar';
+import { useEffect, useState } from 'react';
 
 const AuctionDetailClient = ({ shortId }: { shortId: string }) => {
   const { data, isLoading, error } = useAuctionDetail(shortId);
