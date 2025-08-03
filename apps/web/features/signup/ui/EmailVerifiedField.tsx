@@ -25,7 +25,7 @@ export const EmailVerifiedField = ({
   return (
     <div className="space-y-2">
       <label className="typo-body-bold mb-[8px] block text-neutral-900">인증 코드</label>
-      <p className="typo-body-regular mb-2 text-neutral-600">
+      <p className="typo-caption-regular mb-[13px] text-neutral-600">
         {verifiedEmail}로 전송된 인증 코드를 입력해주세요.
       </p>
       <div className="flex gap-2">

@@ -19,7 +19,7 @@ export const FindAccountConfig = (accountType: string) => {
       inputType: 'text' as const,
       buttonText: '재설정 이메일 발송',
       resultPrefix: '',
-      description: '입력하신 이메일로 재설정 링크를 확인해주세요.',
+      description: '아래의 인증코드를 입력해주세요.',
     };
   }
 };
