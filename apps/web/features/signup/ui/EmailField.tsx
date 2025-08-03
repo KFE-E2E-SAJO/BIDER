@@ -61,7 +61,7 @@ export const EmailField = ({
         <div className="flex items-center gap-2">
           <Input
             id="email-id"
-            type="text"
+            type="email"
             placeholder="이메일"
             className="flex-1"
             value={email}
