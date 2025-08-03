@@ -13,7 +13,12 @@ export async function GET(request: NextRequest) {
         `
         *,
         product (
-          exhibit_user_id
+          title,
+          exhibit_user_id,
+          product_image (
+            image_url,
+            order_index
+          )
         )
       `
       )
@@ -105,6 +110,90 @@ export async function GET(request: NextRequest) {
             if (bidHistoryError) {
               throw new Error(`낙찰 상태 업데이트 실패: ${bidHistoryError.message}`);
             }
+
+            // 낙찰자 닉네임 조회
+            const { data: winnerUser, error: winnerUserError } = await supabase
+              .from('profiles')
+              .select('nickname')
+              .eq('user_id', winning_user_id)
+              .single();
+
+            if (winnerUserError) {
+              throw new Error('낙찰자 닉네임 조회 실패: ' + winnerUserError.message);
+            }
+
+            // 상품 이미지 URL 처리
+            let product_images = [];
+            if (auction.product && auction.product.product_image) {
+              if (Array.isArray(auction.product.product_image)) {
+                product_images = auction.product.product_image;
+              } else if (typeof auction.product.product_image === 'object') {
+                product_images = [auction.product.product_image];
+              }
+            }
+            const ordered =
+              product_images.find((img: any) => img.order_index === 0) || product_images[0];
+            const product_image_url = ordered?.image_url ?? null;
+            // (1) chat_room 테이블에서 chatroom_id 조회
+            // 1. chat_room 존재여부 확인
+            const { data: chatRoom, error: chatRoomError } = await supabase
+              .from('chat_room')
+              .select('chatroom_id')
+              .eq('auction_id', auction.auction_id)
+              .eq('bid_user_id', winning_bid.bid_user_id)
+              .eq('exhibit_user_id', auction.product.exhibit_user_id)
+              .maybeSingle();
+
+            let chatroom_id = chatRoom?.chatroom_id;
+
+            if (!chatroom_id) {
+              // 2. 없으면 chat_room 새로 생성 (active 상태 true로!)
+              const { data: newChatRoom, error: createError } = await supabase
+                .from('chat_room')
+                .insert([
+                  {
+                    auction_id: auction.auction_id,
+                    bid_user_id: winning_bid.bid_user_id,
+                    exhibit_user_id: auction.product.exhibit_user_id,
+                    bid_user_active: true,
+                    exhibit_user_active: true,
+                    created_at: new Date().toISOString(),
+                  },
+                ])
+                .select('chatroom_id')
+                .single();
+
+              if (createError) {
+                throw new Error('채팅방 생성 실패: ' + createError.message);
+              }
+              chatroom_id = newChatRoom.chatroom_id;
+            }
+
+            // (2) system_message insert에 chatroom_id 사용
+            if (!chatroom_id) throw new Error('chatroom_id 없음: system_message insert 불가');
+
+            const { error: systemMessageError } = await supabase.from('system_message').insert([
+              {
+                chatroom_id, // 분기처리된 chatroom_id
+                product_image_url,
+                product_title: auction.product.title,
+                nickname: winnerUser.nickname,
+                bid_price: winning_bid.bid_price,
+                created_at: new Date().toISOString(),
+              },
+            ]);
+
+            if (systemMessageError) {
+              throw new Error('system_message 인서트 실패: ' + systemMessageError.message);
+            }
+            console.log('system_message insert 직후:', {
+              chatroom_id: chatroom_id,
+              product_image_url: product_image_url,
+              product_title: auction.product.title,
+              nickname: winnerUser.nickname,
+              bid_price: winning_bid.bid_price,
+              created_at: new Date().toISOString(),
+            });
 
             try {
               await createPointByReason('deal_complete_seller', auction.product.exhibit_user_id);

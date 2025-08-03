@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
+import { useEffect, useState } from 'react';
 
 // GET: 채팅방 상세+관련정보+메시지
 export async function GET(request: NextRequest, { params }: { params: { chatroomId: string } }) {
@@ -19,11 +20,14 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
     .select(
       `
         chatroom_id,
+        bid_user_active,
+        exhibit_user_active,
         auction_id,
-        updated_at,
+        created_at,
         auction:auction_id (
           min_price,
           auction_status,
+          winning_bid_user_id,
           product_id,
           product:product_id (
             title,
@@ -55,8 +59,29 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
     return NextResponse.json({ error: '채팅방을 찾을 수 없습니다.' }, { status: 404 });
   }
 
-  // 2. 메시지 쿼리 (이 방의 모든 메시지)
-  const { data: messages, error: msgError } = await supabase
+  if (
+    !chatRoomData ||
+    chatRoomData.bid_user_active === false ||
+    chatRoomData.exhibit_user_active === false
+  ) {
+    return NextResponse.json({ error: '비활성화된 채팅방입니다.' }, { status: 403 });
+  }
+
+  // 2. bid_history의 bid_price 가져오기
+  const { data: bidHistoryData, error: bidHistoryError } = await supabase
+    .from('bid_history')
+    .select(`*`)
+    .eq(`bid_user_id`, userId);
+
+  if (bidHistoryError) {
+    return NextResponse.json({ error: bidHistoryError.message }, { status: 500 });
+  }
+  if (!bidHistoryData) {
+    return NextResponse.json({ error: 'bid_history를 찾을 수 없습니다.' }, { status: 404 });
+  }
+
+  // 3. 메시지 쿼리 (이 방의 모든 메시지)
+  const { data: messages = [], error: msgError } = await supabase
     .from('message')
     .select(
       `
@@ -78,7 +103,24 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
     return NextResponse.json({ error: msgError.message }, { status: 500 });
   }
 
-  // 3. 안읽은 메시지 읽음처리
+  // 4. 시스템 메시지 보여주기
+  const { data: systemMessages = [], error: sysMsgError } = await supabase
+    .from('system_message')
+    .select(
+      `
+      system_message_id,
+    chatroom_id,
+    product_image_url,
+    product_title,
+    nickname,
+    bid_price,
+    created_at
+  `
+    )
+    .eq('chatroom_id', chatroomId)
+    .order('created_at', { ascending: true });
+
+  // 5. 안읽은 메시지 읽음처리
   await supabase
     .from('message')
     .update({ is_read: true })
@@ -86,6 +128,27 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
     .eq('is_read', false)
     .neq('sender_id', userId);
 
+  if (sysMsgError) {
+    return NextResponse.json({ error: sysMsgError.message }, { status: 500 });
+  }
+
+  // message → is_read 등 message만의 필드 포함
+  const normalMsgs = (messages || []).map((msg) => ({
+    ...msg,
+    type: 'message', // type: message
+  }));
+
+  // system_message → system_message_id 등 시스템메시지만의 필드 포함
+  const sysMsgs = (systemMessages || []).map((msg) => ({
+    ...msg,
+    type: 'system', // type: system
+  }));
+
+  // 합쳐서 created_at 기준 정렬 (날짜 비교 위해 Date 객체로 변환)
+  const allMessages = [...normalMsgs, ...sysMsgs].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+  console.log('모든 메시지:', allMessages);
   // 최신 메시지/안읽은 개수
   const latestMessage = messages?.[messages.length - 1] || null;
   const unreadCount =
@@ -97,12 +160,19 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
   const productImages = (chatRoomData?.auction as any)?.product?.product_image || [];
   const product_image_url =
     productImages.find((img: any) => img.order_index === 0)?.image_url || '/default-profile.png';
+  const bid_price =
+    bidHistoryData?.find(
+      (b: any) => b.bid_user_id === (chatRoomData?.auction as any)?.winning_bid_user_id
+    )?.bid_price ?? null;
 
   // 채팅방 상세 조립
   const response = {
     chatroom_id: chatRoomData.chatroom_id,
+    auction_id: chatRoomData.auction_id,
+    bid_price,
     min_price: (chatRoomData?.auction as any)?.min_price ?? null,
     auction_status: (chatRoomData?.auction as any)?.auction_status ?? null,
+    winning_bid_user_id: (chatRoomData?.auction as any)?.winning_bid_user_id ?? null,
     title: (chatRoomData?.auction as any)?.product?.title ?? null,
     product_image_url,
     buyer: {
@@ -115,20 +185,10 @@ export async function GET(request: NextRequest, { params }: { params: { chatroom
       nickname: (chatRoomData?.bid_profile as any)?.nickname ?? '알수없음',
       profile_img: (chatRoomData?.bid_profile as any)?.profile_img ?? '/default-profile.png',
     },
-    messages: messages?.map((msg: any) => ({
-      message_id: msg.message_id,
-      content: msg.content,
-      created_at: msg.created_at,
-      is_read: msg.is_read,
-      sender: {
-        user_id: msg.profile?.user_id ?? msg.sender_id,
-        nickname: msg.profile?.nickname ?? '익명',
-        profile_img: msg.profile?.profile_img ?? '/default-profile.png',
-      },
-    })),
+    messages: allMessages,
     latestMessage,
     unreadCount,
-    updated_at: chatRoomData.updated_at,
+    created_at: chatRoomData.created_at,
   };
 
   return NextResponse.json(response);

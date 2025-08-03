@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       .select(
         `
         chatroom_id,
-        updated_at,
+        created_at,
         auction:auction_id (
         winning_bid_user_id,
           product:product_id (
@@ -41,21 +41,47 @@ export async function GET(request: NextRequest) {
       `
       )
       .or(`exhibit_user_id.eq.${userId},bid_user_id.eq.${userId}`)
-      .order('updated_at', { ascending: false });
+      .order('created_at', { ascending: false });
     if (chatRoomError) throw new Error('Supabase 쿼리 실패: ' + chatRoomError.message);
     const chatRoomIds = chatRooms.map((room) => room.chatroom_id);
 
     // 2. 메시지(최신 1개) 모두 쿼리 (각 채팅방별로 한 개씩)
-    // (Supabase group-by가 안되니 JS로 뽑음)
+    // (1) 일반 메시지 쿼리
     const { data: allMessages, error: msgError } = await supabase
       .from('message')
       .select('message_id, chatroom_id, content, created_at, sender_id, is_read')
       .in('chatroom_id', chatRoomIds);
+
     if (msgError) throw new Error('메시지 쿼리 실패: ' + msgError.message);
 
-    // 최신 메시지 map (chatroom_id별 1개, 최신순)
+    // (2) 시스템 메시지 쿼리
+    const { data: allSystemMessages, error: sysMsgError } = await supabase
+      .from('system_message')
+      .select('system_message_id, chatroom_id, created_at')
+      .in('chatroom_id', chatRoomIds);
+
+    if (sysMsgError) throw new Error('시스템메시지 쿼리 실패: ' + sysMsgError.message);
+
+    // (3) 메시지 데이터 구조 통일 (일반/시스템 통합)
+    const normalizedSystemMessages = (allSystemMessages ?? []).map((msg) => ({
+      ...msg,
+      is_system: true, // 시스템 메시지 플래그
+      is_read: true, // 시스템메시지는 '안읽음' 개수에 포함 X
+      sender_id: null, // 시스템 메시지라 sender_id 없음
+      message_id: msg.system_message_id,
+    }));
+
+    const normalizedMessages = (allMessages ?? []).map((msg) => ({
+      ...msg,
+      is_system: false,
+    }));
+
+    // (4) 합치기 (일반 + 시스템 메시지)
+    const allMsgs = [...normalizedMessages, ...normalizedSystemMessages];
+
+    // (5) 최신 메시지 map
     const latestMsgMap = new Map();
-    (allMessages ?? [])
+    allMsgs
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .forEach((msg) => {
         if (!latestMsgMap.has(msg.chatroom_id)) {
@@ -63,11 +89,15 @@ export async function GET(request: NextRequest) {
         }
       });
 
-    // 안읽은 개수 map
+    // (6) 안읽은 개수 map
     const unreadCountMap: Record<string, number> = {};
     chatRoomIds.forEach((id) => {
-      const unread = (allMessages ?? []).filter(
-        (msg) => msg.chatroom_id === id && !msg.is_read && msg.sender_id !== userId
+      const unread = (allMsgs ?? []).filter(
+        (msg) =>
+          msg.chatroom_id === id &&
+          !msg.is_read && // 읽지 않은 메시지
+          !msg.is_system && // 시스템 메시지는 안읽은 개수에서 제외
+          msg.sender_id !== userId // 내가 보낸 메시지는 제외
       ).length;
       unreadCountMap[id] = unread;
     });
@@ -78,7 +108,7 @@ export async function GET(request: NextRequest) {
       const mainImage = productImages.find((img: any) => img.order_index === 0);
       const product_image_url = mainImage ? mainImage.image_url : '/default-profile.png';
       // 대표 이미지
-      console.log('room:', room.auction);
+
       // 판매자/구매자 닉네임/프로필
       const buyer = room.exhibit_profile ?? {};
       const seller = room.bid_profile ?? {};
@@ -103,8 +133,8 @@ export async function GET(request: NextRequest) {
         },
         latestMessage,
         unread,
-        updated_at: room.updated_at,
-        created_at: latestMessage ? latestMessage.created_at : room.updated_at,
+        created_at: room.created_at,
+        created_at2: latestMessage ? latestMessage.created_at : room.created_at,
       };
     });
 
@@ -127,17 +157,24 @@ export async function POST(req: NextRequest) {
       `and(bid_user_id.eq.${bid_user_id},exhibit_user_id.eq.${exhibit_user_id}),` +
         `and(bid_user_id.eq.${exhibit_user_id},exhibit_user_id.eq.${bid_user_id})`
     );
-  console.log('rooms:', rooms);
+
   if (selectError) {
     return NextResponse.json({ error: selectError.message }, { status: 500 });
   }
 
   if (rooms && rooms.length > 0) {
-    // 이미 채팅방 있으면 반환
-    return NextResponse.json({ chatRoomId: rooms[0].chatroom_id }, { status: 200 });
+    const existRoom = rooms[0];
+    // 둘 다 active면 반환
+    if (existRoom.bid_user_active && existRoom.exhibit_user_active) {
+      return NextResponse.json({ chatRoomId: existRoom.chatroom_id }, { status: 200 });
+    }
+    // 하나라도 false면 403 반환
+    if (existRoom.bid_user_active === false || existRoom.exhibit_user_active === false) {
+      return NextResponse.json({ error: '비활성화된(삭제된) 채팅방입니다.' }, { status: 403 });
+    }
   }
 
-  // 2. 없으면 새로 생성 (exhibit_user_id, bid_user_id, auction_id 지정)
+  // 2. 없으면 새로 생성 (두 active 필드 true로)
   const { data: newRoom, error: insertError } = await supabase
     .from('chat_room')
     .insert([
@@ -145,7 +182,9 @@ export async function POST(req: NextRequest) {
         auction_id,
         exhibit_user_id,
         bid_user_id,
-        updated_at: new Date().toISOString(),
+        bid_user_active: true,
+        exhibit_user_active: true,
+        created_at: new Date().toISOString(),
       },
     ])
     .select()

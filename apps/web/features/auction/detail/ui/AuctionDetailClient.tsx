@@ -47,6 +47,7 @@ const AuctionDetailClient = ({ shortId }: { shortId: string }) => {
           auctionEndAt={mapped.auctionEndAt}
           title={mapped.productTitle}
           lastPrice={String(mapped.currentHighestBid)}
+          exhibitUserId={mapped.exhibitUser.user_id}
         />
       )}
     </div>

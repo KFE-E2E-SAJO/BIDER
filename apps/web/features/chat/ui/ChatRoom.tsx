@@ -1,16 +1,15 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Message } from './Message';
-import { useRecoilValue } from 'recoil';
-import { presenceState, selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
 import { useAuthStore } from '@/shared/model/authStore';
 import { anonSupabase } from '@/shared/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useGetChatRoom } from '../model/useGetChatRoom';
 import { useSendMessage } from '../model/useSendMessage';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import SystemMessage from './SystemMessage';
 
 function formatKoreanTime(dateString: string | Date | undefined) {
   if (!dateString) return '';
@@ -23,24 +22,37 @@ function formatKoreanTime(dateString: string | Date | undefined) {
   return `${ampm} ${hours}:${minutes.toString().padStart(2, '0')}`;
 }
 
-export default function ChatRoom({ roomId }: { roomId: string }) {
+export default function ChatRoom({
+  apiData,
+  roomId,
+}: {
+  apiData: { messages?: any[]; systemMessages?: any[] };
+  roomId: string;
+}) {
   const queryClient = useQueryClient();
   const userId = useAuthStore((state) => state.user?.id) as string;
   const [input, setInput] = useState('');
   const [plusMode, setPlusMode] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const plusItems = ['location', 'photo', 'file', 'contact'];
-  //const selectedUserId = useRecoilValue(selectedUserIdState);
-  //const selectedUserIndex = useRecoilValue(selectedUserIndexState);
-  //const presence = useRecoilValue(presenceState);
   const router = useRouter();
   const sendMessageMutation = useSendMessage();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const messages = apiData.messages || [];
+  const systemMessages = apiData.systemMessages || [];
+
+  const mergedMessages = useMemo(() => {
+    const chatMsgs = messages.map((msg: any) => ({ ...msg, type: 'chat' }));
+    const sysMsgs = systemMessages.map((msg: any) => ({ ...msg, type: 'system' }));
+    return [...chatMsgs, ...sysMsgs].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+  }, [messages, systemMessages]);
+
   const { data: chatRoomData, isLoading, isError, error } = useGetChatRoom({ userId, roomId });
 
   const roomData = Array.isArray(chatRoomData) ? chatRoomData[0] : chatRoomData;
-  // ⬇️ 여기에 바로 추가!
   const isSeller = (roomData as any)?.seller?.user_id === userId;
   const isBuyer = (roomData as any)?.buyer?.user_id === userId;
 
@@ -55,7 +67,7 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
       ? (roomData as any)?.seller
       : null;
 
-  const messages = (roomData as any)?.messages || [];
+  //const messages = (roomData as any)?.messages || [];
 
   // 1. 날짜 문자열로 변환 함수 (ex: 2025년 7월 21일)
   function getDateStr(date: string) {
@@ -146,7 +158,8 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
     return null;
   }
 
-  const grouped = groupByDate(messages);
+  const grouped = useMemo(() => groupByDate(mergedMessages), [mergedMessages]);
+
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col bg-white">
       <div className="flex flex-col gap-2 border-b border-t border-neutral-100 px-4 pb-2 pt-4">
@@ -191,7 +204,8 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
           <div className="flex min-w-0 flex-col justify-center">
             <div className="truncate text-[13px] font-medium">{(roomData as any)?.title}</div>
             <div className="text-[15px] font-bold">
-              {((roomData as any)?.min_price || 0).toLocaleString()}원
+              {((roomData as any)?.bid_price ?? (roomData as any)?.min_price ?? 0).toLocaleString()}
+              원
             </div>
           </div>
           <span
@@ -216,19 +230,6 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
         <span className="mt-2 text-base font-bold text-gray-900">
           {otherProfile?.nickname || '사용자'}
         </span>
-        <span className="mt-1 flex items-center gap-1 text-xs text-gray-500">
-          <svg width={14} height={14} fill="none" viewBox="0 0 24 24" className="mr-0.5 inline">
-            <path
-              fill="#4884FF"
-              d="M12 2l2.39 7.26H22l-6.19 4.51 2.36 7.23L12 16.01l-6.17 4.49L8.19 13.8 2 9.26h7.61z"
-            />
-          </svg>
-          <span className="font-bold text-blue-500">5.0</span>
-          <span className="mx-1">
-            · 후기 <span className="font-bold text-gray-700">5</span> · 거래내역{' '}
-            <span className="font-bold text-gray-700">10</span>
-          </span>
-        </span>
       </div>
 
       <div className="flex-1 overflow-y-auto bg-white px-4 py-3">
@@ -245,18 +246,20 @@ export default function ChatRoom({ roomId }: { roomId: string }) {
                 <div className="h-px flex-1 bg-gray-200" />
               </div>
               {Array.isArray(group.messages) && group.messages.length > 0 ? (
-                group.messages.map((message: any, index: number) => {
-                  return (
+                group.messages.map((msg: any, idx: number) =>
+                  msg.system_message_id ? (
+                    <SystemMessage key={msg.system_message_id || `sys-${idx}`} message={msg} />
+                  ) : (
                     <Message
-                      key={message?.message_id || `message-${index}`}
-                      isFromMe={message?.sender.user_id === userId}
-                      avatar={message?.sender.profile_img}
-                      time={formatKoreanTime(message?.created_at)}
-                      read={message?.unreadCount}
-                      message={message?.content}
+                      key={msg.message_id || `chat-${idx}`}
+                      isFromMe={msg.sender_id === userId}
+                      avatar={msg.sender?.profile_img}
+                      time={formatKoreanTime(msg.created_at)}
+                      read={msg.is_read}
+                      message={msg.content}
                     />
-                  );
-                })
+                  )
+                )
               ) : (
                 <div className="text-center text-gray-500">메시지가 없습니다.</div>
               )}

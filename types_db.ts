@@ -13,6 +13,7 @@ export type Database = {
           alarm_id: string;
           body: string;
           create_at: string;
+          image_url: string | null;
           is_deleted: boolean;
           is_read: boolean;
           link: string;
@@ -25,6 +26,7 @@ export type Database = {
           alarm_id?: string;
           body: string;
           create_at?: string;
+          image_url?: string | null;
           is_deleted?: boolean;
           is_read?: boolean;
           link: string;
@@ -37,6 +39,7 @@ export type Database = {
           alarm_id?: string;
           body?: string;
           create_at?: string;
+          image_url?: string | null;
           is_deleted?: boolean;
           is_read?: boolean;
           link?: string;
@@ -170,24 +173,30 @@ export type Database = {
       chat_room: {
         Row: {
           auction_id: string;
+          bid_user_active: boolean;
           bid_user_id: string;
           chatroom_id: string;
+          created_at: string;
+          exhibit_user_active: boolean;
           exhibit_user_id: string;
-          updated_at: string | null;
         };
         Insert: {
           auction_id: string;
+          bid_user_active?: boolean;
           bid_user_id: string;
           chatroom_id?: string;
+          created_at?: string;
+          exhibit_user_active?: boolean;
           exhibit_user_id?: string;
-          updated_at?: string | null;
         };
         Update: {
           auction_id?: string;
+          bid_user_active?: boolean;
           bid_user_id?: string;
           chatroom_id?: string;
+          created_at?: string;
+          exhibit_user_active?: boolean;
           exhibit_user_id?: string;
-          updated_at?: string | null;
         };
         Relationships: [
           {
@@ -480,6 +489,44 @@ export type Database = {
           },
         ];
       };
+      system_message: {
+        Row: {
+          bid_price: number;
+          chatroom_id: string;
+          created_at: string;
+          nickname: string;
+          product_image_url: string;
+          product_title: string;
+          system_message_id: string;
+        };
+        Insert: {
+          bid_price: number;
+          chatroom_id?: string;
+          created_at: string;
+          nickname: string;
+          product_image_url: string;
+          product_title: string;
+          system_message_id?: string;
+        };
+        Update: {
+          bid_price?: number;
+          chatroom_id?: string;
+          created_at?: string;
+          nickname?: string;
+          product_image_url?: string;
+          product_title?: string;
+          system_message_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'system_message_chatroom_id_fkey';
+            columns: ['chatroom_id'];
+            isOneToOne: false;
+            referencedRelation: 'chat_room';
+            referencedColumns: ['chatroom_id'];
+          },
+        ];
+      };
       user_push_token: {
         Row: {
           auth: string;
@@ -530,6 +577,36 @@ export type Database = {
       get_auction_detail_rpc: {
         Args: { auction_id: string };
         Returns: Json;
+      };
+      get_chatrooms_with_last_message: {
+        Args: { user_uuid: string };
+        Returns: {
+          chatroom_id: string;
+          auction_id: string;
+          bid_user_id: string;
+          exhibit_user_id: string;
+          created_at: string;
+          bid_user_active: boolean;
+          exhibit_user_active: boolean;
+          last_message: Json;
+        }[];
+      };
+      get_chatrooms_with_profile_and_last_message: {
+        Args: { user_uuid: string };
+        Returns: {
+          chatroom_id: string;
+          auction_id: string;
+          bid_user_id: string;
+          exhibit_user_id: string;
+          created_at: string;
+          bid_user_active: boolean;
+          exhibit_user_active: boolean;
+          your_profile: Json;
+          last_message: Json;
+          product_image: Json;
+          unread_count: number;
+          iswin: boolean;
+        }[];
       };
       get_current_highest_bid: {
         Args: { auction_uuid: string };

@@ -5,7 +5,6 @@ import { useAuthStore } from '@/shared/model/authStore';
 import { useEffect, useState } from 'react';
 import { anonSupabase } from '@/shared/lib/supabaseClient';
 import Loading from '@/shared/ui/Loading/Loading';
-import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function ChatPage() {
@@ -34,9 +33,7 @@ export default function ChatPage() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <div className="flex h-screen w-full justify-center">{effectiveUserId && <ChatList />}</div>
-      </RecoilRoot>
+      <div className="flex h-screen w-full justify-center">{effectiveUserId && <ChatList />}</div>
     </QueryClientProvider>
   );
 }

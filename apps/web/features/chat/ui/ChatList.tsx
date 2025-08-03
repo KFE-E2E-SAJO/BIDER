@@ -3,8 +3,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useGetChatList } from '@/features/chat/model/useGetChatList';
 import { useRouter } from 'next/navigation';
-import { useRecoilState } from 'recoil';
-import { presenceState, selectedUserIdState, selectedUserIndexState } from '../lib/atoms';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { useAuthStore } from '@/shared/model/authStore';
 import { deleteChatRoom } from '@/features/chat/api/deleteChatRoom';
@@ -67,9 +65,7 @@ export default function ChatList() {
   const userId = useAuthStore((state) => state.user?.id);
   const router = useRouter();
   const [selected, setSelected] = useState('all');
-  //const [selectedUserId, setSelectedUserId] = useRecoilState(selectedUserIdState);
-  //const [selectedUserIndex, setSelectedUserIndex] = useRecoilState(selectedUserIndexState);
-  //const [presence, setPresence] = useRecoilState(presenceState);
+
   const DEFAULT_PROFILE_IMG = '/default-profile.png';
   const [swipeStates, setSwipeStates] = useState<ChatItemSwipeState>({});
   const dragStartX = useRef<number | null>(null);
@@ -215,7 +211,6 @@ export default function ChatList() {
           {!isLoading &&
             !isError &&
             filteredChats.map((chat: any) => {
-              console.log('chat:', chat);
               const swipeState = swipeStates[chat.chatroom_id] || 'none';
               const isSeller = chat.seller?.user_id === userId;
               const isBuyer = chat.buyer?.user_id === userId;
@@ -326,7 +321,7 @@ export default function ChatList() {
                           {chat.latestMessage?.content || '메시지가 없습니다.'}
                         </span>
                         <span className="text-xs text-gray-400">
-                          {formatRelativeTime(chat.created_at)}
+                          {formatRelativeTime(chat.created_at2)}
                         </span>
                       </div>
                     </div>
