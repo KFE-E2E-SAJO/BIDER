@@ -8,15 +8,33 @@ import { MessageWithProfile } from '@/entities/message/model/types';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useMessages } from '../model/useMessages';
 import Loading from '@/shared/ui/Loading/Loading';
+import { useMessageRealtime } from '../api/useMessageRealtime';
+import { setMessagesRead } from '../api/setMessageRead';
 
 const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boolean }) => {
   const { data, isLoading, error } = useMessages(shortId);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const prevMessageCountRef = useRef(0);
   const userId = useAuthStore((state) => state.user?.id) as string;
+  useMessageRealtime(shortId);
 
+  // 초기 로드 시 스크롤
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'auto' });
-  }, []);
+    if (data && data.length > 0) {
+      bottomRef.current?.scrollIntoView({ behavior: 'auto' });
+      prevMessageCountRef.current = data.length;
+    }
+    setMessagesRead(shortId);
+  }, [isLoading]); // isLoading이 false가 될 때 실행
+
+  // 새 메시지가 추가될 때 스크롤
+  useEffect(() => {
+    if (data && data.length > prevMessageCountRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      prevMessageCountRef.current = data.length;
+    }
+    setMessagesRead(shortId);
+  }, [data?.length]);
 
   if (isLoading) return <Loading />;
   if (error) return <p>오류: {(error as Error).message}</p>;
@@ -26,11 +44,6 @@ const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boole
         <p className="pt-[30px] text-center">아직 대화가 없습니다.</p>
       </div>
     );
-
-  // 메시지 수가 변할 때마다 아래로 스크롤
-  //   useEffect(() => {
-  //     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  //     }, [messages.length]);
 
   const messages = data;
 
@@ -67,7 +80,6 @@ const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boole
         const isSameUserTalking = prevMessage ? prevMessage.sender_id === message.sender_id : false;
         const willSameUserTalk = nextMessage ? nextMessage.sender_id === message.sender_id : false;
         const showTime = !willSameUserTalk || !isNextSameTime || !isNextSameDay;
-
         const returnMessage = (
           <div key={message.message_id}>
             {(isFirstMessage || isDifferentDay) && <DateDivider isoDate={message.created_at} />}

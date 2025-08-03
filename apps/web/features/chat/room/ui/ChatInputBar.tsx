@@ -1,15 +1,12 @@
 'use client';
 
-import { Input } from '@repo/ui/components/Input/Input';
 import { cn } from '@repo/ui/lib/utils';
 import { Camera, SendHorizontal } from 'lucide-react';
 import React, { useEffect, useState, useTransition } from 'react';
 import { sendMessage } from '../api/sendMessage';
-import { useQueryClient } from '@tanstack/react-query';
 import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 
 const ChatInputBar = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boolean }) => {
-  const queryClient = useQueryClient();
   const [message, setMessage] = useState('');
   const [isPending, startTransition] = useTransition();
   const [isFocused, setIsFocused] = useState(false);
@@ -31,17 +28,24 @@ const ChatInputBar = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: bool
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  let isMessageSendable = Boolean(message.length > 0);
+  let isMessageSendable = Boolean(message.trim().length > 0);
 
-  const onSubmit = () => {
-    if (!message.trim()) return;
+  const onSubmit = async () => {
+    const messageToSend = message.trim();
+    if (!messageToSend) return;
 
-    startTransition(() => {
-      sendMessage(shortId, message);
-      queryClient.invalidateQueries({ queryKey: ['messages', shortId] });
-    });
-
+    // 먼저 입력창 비우기
     setMessage('');
+
+    startTransition(async () => {
+      try {
+        await sendMessage(shortId, messageToSend);
+      } catch (error) {
+        console.error('메시지 전송 실패:', error);
+        // 에러 발생 시 메시지 복원
+        setMessage(messageToSend);
+      }
+    });
   };
 
   return (
@@ -53,7 +57,7 @@ const ChatInputBar = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: bool
       )}
     >
       <div
-        className={`flex flex-1 items-end rounded-[10px] ${isChatEnd ? 'bg-neutral-300' : 'bg-neutral-050'}`}
+        className={`flex flex-1 items-end rounded-[10px] ${isChatEnd || isPending ? 'bg-neutral-300' : 'bg-neutral-050'}`}
       >
         <Textarea
           name="message"
@@ -63,7 +67,7 @@ const ChatInputBar = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: bool
           onChange={(e) => setMessage(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          disabled={isChatEnd}
+          disabled={isChatEnd || isPending}
           onKeyDown={(e) => {
             if (!isMobile && e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault(); // 줄바꿈 막기
