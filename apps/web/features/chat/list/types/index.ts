@@ -8,4 +8,5 @@ export interface ChatListProps {
 export interface ChatItemProps {
   onClick?: () => void;
   data: ChatRoomForList;
+  isLastMsgMine: boolean;
 }

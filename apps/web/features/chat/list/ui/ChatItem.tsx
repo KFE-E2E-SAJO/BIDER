@@ -6,7 +6,7 @@ import { ChatItemProps } from '../types';
 import StatusBadge from '@/shared/ui/badge/StatusBadge';
 import { getTimeAgo } from '../lib/getTimeAgo';
 
-const ChatItem = ({ onClick, data }: ChatItemProps) => {
+const ChatItem = ({ onClick, data, isLastMsgMine }: ChatItemProps) => {
   return (
     <div
       onClick={onClick}
@@ -33,7 +33,7 @@ const ChatItem = ({ onClick, data }: ChatItemProps) => {
               <div className="flex">
                 <div
                   className={`typo-caption-regular max-w-[50vw] truncate ${
-                    data.last_message?.is_read ? 'text-neutral-400' : ''
+                    data.last_message?.is_read || isLastMsgMine ? 'text-neutral-400' : ''
                   }`}
                 >
                   {data.last_message?.content}

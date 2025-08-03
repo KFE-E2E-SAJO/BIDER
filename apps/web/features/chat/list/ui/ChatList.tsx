@@ -15,9 +15,11 @@ import {
   DialogTitle,
 } from '@repo/ui/components/Dialog/Dialog';
 import { Button } from '@repo/ui/components/Button/Button';
+import { useChatStore } from '../../room/model/chatStore';
 
 const ChatList = ({ filter, data }: ChatListProps) => {
   const queryClient = useQueryClient();
+  const setNickname = useChatStore((s) => s.setNickname);
   const userId = useAuthStore((state) => state.user?.id) as string;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{
@@ -59,10 +61,9 @@ const ChatList = ({ filter, data }: ChatListProps) => {
   const handleLeaveChat = async (chatRoom: string, exhibitUser: string) => {
     try {
       await inactiveChat(chatRoom, exhibitUser);
-      await queryClient.invalidateQueries({ queryKey: ['chatList'] }); // ✅ 이거면 됨
+      await queryClient.invalidateQueries({ queryKey: ['chatList'] });
       toast({ content: '삭제되었습니다.' });
     } catch (e) {
-      console.error(e);
       toast({ content: '채팅방 나가기에 실패했습니다.' });
     }
   };
@@ -89,18 +90,22 @@ const ChatList = ({ filter, data }: ChatListProps) => {
               href={`/chat/${encodeUUID(chat.chatroom_id)}`}
               onClick={(e) => {
                 if (isDragging) {
-                  e.preventDefault(); // 브라우저 기본 이동 차단
-                  e.stopPropagation(); // 이벤트 전파 차단 (React 내부)
+                  e.preventDefault();
+                  e.stopPropagation();
                   return;
                 }
 
                 if (openItemId === chat.chatroom_id) {
-                  e.preventDefault(); // 열린 상태일 땐 링크 막고
-                  setOpenItemId(null); // 닫기만
+                  e.preventDefault();
+                  setOpenItemId(null);
                 }
               }}
             >
-              <ChatItem data={chat} />
+              <ChatItem
+                onClick={() => setNickname(chat.your_profile.nickname)}
+                data={chat}
+                isLastMsgMine={chat.last_message?.sender_id === userId}
+              />
             </Link>
           </SwipeableItem>
         </div>

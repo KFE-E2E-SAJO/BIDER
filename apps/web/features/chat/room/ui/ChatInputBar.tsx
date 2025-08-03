@@ -5,7 +5,7 @@ import { cn } from '@repo/ui/lib/utils';
 import { Camera, SendHorizontal } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
-const ChatInputBar = () => {
+const ChatInputBar = ({ shortId }: { shortId: string }) => {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
