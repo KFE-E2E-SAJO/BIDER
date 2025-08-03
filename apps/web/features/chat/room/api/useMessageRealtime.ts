@@ -1,16 +1,18 @@
 import { useCallback, useEffect } from 'react';
-import { anonSupabase } from '@/shared/lib/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { useAuthStore } from '@/shared/model/authStore';
 import { MessageWithProfile } from '@/entities/message/model/types';
 import { RealtimeMessagePayload } from '../types';
 import { Profiles } from '@/entities/profiles/model/types';
+import { createClient } from '@/shared/lib/supabase/client';
+import { anonSupabase } from '@/shared/lib/supabaseClient';
 
 export const useMessageRealtime = (chatRoomId: string) => {
   const queryClient = useQueryClient();
   const fullChatRoomId = decodeShortId(chatRoomId);
   const userId = useAuthStore((state) => state.user?.id) as string;
+  const supabase = createClient();
 
   // 캐시 직접 업데이트 함수
   const updateMessageCache = useCallback(
@@ -91,7 +93,7 @@ export const useMessageRealtime = (chatRoomId: string) => {
       return;
     }
 
-    const channel = anonSupabase.channel(`message-${fullChatRoomId}`);
+    const channel = supabase.channel(`message-${fullChatRoomId}`);
 
     channel.on(
       'postgres_changes' as any,
@@ -118,7 +120,7 @@ export const useMessageRealtime = (chatRoomId: string) => {
     channel.subscribe();
 
     return () => {
-      anonSupabase.removeChannel(channel);
+      supabase.removeChannel(channel);
     };
   }, [chatRoomId, fullChatRoomId, queryClient, userId]);
 };

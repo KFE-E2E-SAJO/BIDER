@@ -15,9 +15,11 @@ import {
   DialogTitle,
 } from '@repo/ui/components/Dialog/Dialog';
 import { Button } from '@repo/ui/components/Button/Button';
+import { useMessageRealtimeForList } from '../api/useMessageRealtimeForList';
 
 const ChatList = ({ filter, data }: ChatListProps) => {
   const queryClient = useQueryClient();
+  useMessageRealtimeForList();
   const userId = useAuthStore((state) => state.user?.id) as string;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{
@@ -34,7 +36,9 @@ const ChatList = ({ filter, data }: ChatListProps) => {
       filteredData = data.filter((item) => item.exhibit_user_id === userId);
       break;
     case 'unread':
-      filteredData = data.filter((item) => item.last_message?.is_read === false);
+      filteredData = data.filter(
+        (item) => item.last_message?.is_read === false && item.last_message.sender_id !== userId
+      );
       break;
     default:
       filteredData = data;

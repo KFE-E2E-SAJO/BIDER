@@ -29,7 +29,7 @@ const ChatItem = ({ data, isLastMsgMine }: ChatItemProps) => {
             {data.last_message ? (
               <div className="flex">
                 <div
-                  className={`typo-caption-regular max-w-[50vw] truncate ${
+                  className={`typo-caption-regular max-w-[40vw] truncate ${
                     data.last_message?.is_read || isLastMsgMine ? 'text-neutral-400' : ''
                   }`}
                 >
