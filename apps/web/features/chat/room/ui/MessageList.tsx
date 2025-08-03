@@ -9,7 +9,7 @@ import { useAuthStore } from '@/shared/model/authStore';
 import { useMessages } from '../model/useMessages';
 import Loading from '@/shared/ui/Loading/Loading';
 
-const MessageList = ({ shortId }: { shortId: string }) => {
+const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boolean }) => {
   const { data, isLoading, error } = useMessages(shortId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const userId = useAuthStore((state) => state.user?.id) as string;
@@ -20,15 +20,19 @@ const MessageList = ({ shortId }: { shortId: string }) => {
 
   if (isLoading) return <Loading />;
   if (error) return <p>오류: {(error as Error).message}</p>;
-  if (!data || data.length === 0)
+  if (!data || (data.length === 0 && !isChatEnd))
     return (
-      <p className="min-h-[calc(100dvh-222px)] pt-[30px] text-center">아직 대화가 없습니다.</p>
+      <div className="p-box flex-1 overflow-y-auto pb-[30px]">
+        <p className="pt-[30px] text-center">아직 대화가 없습니다.</p>
+      </div>
     );
 
   // 메시지 수가 변할 때마다 아래로 스크롤
   //   useEffect(() => {
   //     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   //     }, [messages.length]);
+
+  const messages = data;
 
   return (
     <div className="p-box flex-1 overflow-y-auto pb-[30px]">
@@ -37,8 +41,8 @@ const MessageList = ({ shortId }: { shortId: string }) => {
         const currentDate = new Date(message.created_at);
 
         // 이전 메시지가 존재하는지 체크
-        const prevMessage = data && index > 0 ? data[index - 1] : undefined;
-        const nextMessage = data && index < data.length - 1 ? data[index + 1] : undefined;
+        const prevMessage = data && index > 0 ? messages[index - 1] : undefined;
+        const nextMessage = data && index < messages.length - 1 ? messages[index + 1] : undefined;
         const prevDate = prevMessage ? new Date(prevMessage.created_at) : undefined;
         const nextDate = nextMessage ? new Date(nextMessage.created_at) : undefined;
 
@@ -49,7 +53,7 @@ const MessageList = ({ shortId }: { shortId: string }) => {
             currentDate.getDate() !== prevDate.getDate()
           : false;
 
-        const isLastMessage = index === data.length - 1;
+        const isLastMessage = index === messages.length - 1;
         const isNextSameTime = nextDate
           ? currentDate.getHours() === nextDate.getHours() &&
             currentDate.getMinutes() === nextDate.getMinutes()
@@ -103,6 +107,12 @@ const MessageList = ({ shortId }: { shortId: string }) => {
 
         return returnMessage;
       })}
+      {isChatEnd && (
+        <div className="my-[30px] text-center text-neutral-600">
+          상대방이 채팅을 종료했습니다. <br />
+          대화를 이어가시려면 새로운 채팅방을 생성해주세요.
+        </div>
+      )}
       <div ref={bottomRef} />
     </div>
   );

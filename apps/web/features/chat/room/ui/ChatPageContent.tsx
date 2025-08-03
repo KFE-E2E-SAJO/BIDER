@@ -1,14 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ChatInputBar from '@/features/chat/room/ui/ChatInputBar';
 import AuctionInfo from '@/features/chat/room/ui//AuctionInfo';
 import MessageList from '@/features/chat/room/ui//MessageList';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useAuctionInfo } from '../model/useAuctionInfo';
+import { fetchIsChatEnd } from '../../list/api/fetchIsChatEnd';
 
 const ChatPageContent = ({ shortId }: { shortId: string }) => {
   const { data, isLoading, error } = useAuctionInfo(shortId);
+  const [isChatEnd, setIsChatEnd] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const result = await fetchIsChatEnd(shortId);
+      setIsChatEnd(result);
+    })();
+  }, []);
 
   if (isLoading) return <Loading />;
   if (error) return <p>오류: {(error as Error).message}</p>;
@@ -22,10 +31,10 @@ const ChatPageContent = ({ shortId }: { shortId: string }) => {
       <AuctionInfo data={data} />
 
       {/* 채팅 내역 */}
-      <MessageList shortId={shortId} />
+      <MessageList shortId={shortId} isChatEnd={isChatEnd} />
 
       {/* 채팅입력칸 */}
-      <ChatInputBar shortId={shortId} />
+      <ChatInputBar shortId={shortId} isChatEnd={isChatEnd} />
     </div>
   );
 };

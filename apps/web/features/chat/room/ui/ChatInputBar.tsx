@@ -5,11 +5,12 @@ import { cn } from '@repo/ui/lib/utils';
 import { Camera, SendHorizontal } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
-const ChatInputBar = ({ shortId }: { shortId: string }) => {
+const ChatInputBar = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boolean }) => {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [bottomOffset, setBottomOffset] = useState(0);
+  console.log(isChatEnd);
 
   useEffect(() => {
     const handleResize = () => {
@@ -36,20 +37,27 @@ const ChatInputBar = ({ shortId }: { shortId: string }) => {
         !isMobile ? 'pb-[34px]' : isFocused ? 'pb-[12px]' : 'pb-[34px]'
       )}
     >
-      <div className="bg-neutral-050 flex flex-1 items-center rounded-[10px]">
+      <div
+        className={`flex flex-1 items-center rounded-[10px] ${isChatEnd ? 'bg-neutral-300' : 'bg-neutral-050'}`}
+      >
         <Input
           placeholder="메시지 보내기"
-          inputStyle="flex-1 border-none bg-neutral-050 placeholder:text-neutral-400 rounded-[10px] !focus-visible:border-none !focus-visible:ring-0 !ring-0 !shadow-none"
+          inputStyle="flex-1 border-none bg-neutral-050 placeholder:text-neutral-400 disabled:bg-neutral-300 rounded-[10px] !focus-visible:border-none !focus-visible:ring-0 !ring-0 !shadow-none"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          disabled={isChatEnd}
         />
-        <button className="ring-0" onClick={() => console.log('picture')}>
+        <button className="ring-0" onClick={() => console.log('picture')} disabled={isChatEnd}>
           <Camera size={24} className="mx-[15px] text-neutral-700" />
         </button>
       </div>
-      <button className="ring-0" onClick={() => console.log('send')} disabled={!isMessageSendable}>
+      <button
+        className="ring-0"
+        onClick={() => console.log('send')}
+        disabled={!isMessageSendable || isChatEnd}
+      >
         <SendHorizontal
           size={24}
           className={isMessageSendable ? 'text-main' : 'text-neutral-700'}

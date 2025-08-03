@@ -1,4 +1,4 @@
-import { Message } from '@/entities/message/model/types';
+import { MessageWithProfile } from '@/entities/message/model/types';
 
 export interface MessageProps {
   text: string;
@@ -11,14 +11,10 @@ export interface MessageProps {
   avatar?: string;
 }
 
-export interface GetMessagesResult {
-  messages: Message[];
-  nextCursor: string | null;
-}
-
 export interface AuctionInfoData {
   image: string;
   title: string;
   price: number;
   status: string;
+  yourNickName: string;
 }
