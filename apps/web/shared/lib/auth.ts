@@ -39,7 +39,7 @@ export const completeSignUp = async ({
     const { error: updateError } = await supabase.auth.updateUser({ password });
 
     if (updateError) {
-      return { success: false, error: updateError.message };
+      return { success: false };
     }
 
     const {

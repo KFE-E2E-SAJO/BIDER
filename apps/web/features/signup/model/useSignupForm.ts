@@ -76,8 +76,7 @@ export const useSignUpForm = () => {
       });
 
       if (error) {
-        console.error('OTP 발송 에러:', error);
-        toast({ content: `인증 코드 전송 실패: ${error.message}` });
+        setEmailError('이메일을 다시 입력해 주세요');
         return;
       }
 
@@ -117,9 +116,6 @@ export const useSignUpForm = () => {
       if (data.user) {
         setIsEmailVerified(true);
         toast({ content: '이메일 인증이 완료되었습니다!' });
-
-        // 인증 완료 후 세션 종료 (회원가입 완료 전까지)
-        await supabase.auth.signOut();
       } else {
         setIsEmailVerified(false);
       }
@@ -192,6 +188,7 @@ export const useSignUpForm = () => {
         router.push('/login');
       } else {
         toast({ content: `회원가입 실패: ${signUpResult.error}` });
+        console.log(signUpResult.error);
       }
     } catch (error) {
       console.error('회원가입 오류:', error);
