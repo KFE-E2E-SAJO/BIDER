@@ -12,6 +12,7 @@ export interface MessageProps {
 }
 
 export interface AuctionInfoData {
+  auctionId: string;
   image: string;
   title: string;
   price: number;

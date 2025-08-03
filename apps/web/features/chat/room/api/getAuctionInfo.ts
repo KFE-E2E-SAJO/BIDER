@@ -19,6 +19,7 @@ export const getAuctionInfo = async (shortId: string) => {
   const yourNickName = await getYourNickName(fullChatRoomId);
 
   return {
+    auctionId: data.auction_id,
     image: data.image,
     title: data.title,
     price: data.price,
