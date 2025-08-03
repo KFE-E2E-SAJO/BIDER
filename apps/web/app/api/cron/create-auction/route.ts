@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
+import { sendNotification } from '@/app/actions';
 
 export async function GET(request: NextRequest) {
   try {
@@ -43,6 +44,23 @@ export async function GET(request: NextRequest) {
 
           if (updateError) {
             throw new Error(`Auction ${auction.auction_id} 업데이트 실패: ${updateError.message}`);
+          }
+
+          //푸시 알림(경매 시작)
+          try {
+            const { origin } = new URL(request.url);
+            const test = await fetch(`${origin}/api/alarm/acution/startBid`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                product_id: auction.product_id,
+                auction_id: auction.auction_id,
+              }),
+            });
+          } catch (e) {
+            console.error('경매 시작 전송 실패:', e);
           }
 
           return {

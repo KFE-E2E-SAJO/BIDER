@@ -48,6 +48,8 @@ const MakePrice = () => {
     formData.append('auctionId', auctionId);
     formData.append('proposedPrice', price);
 
+    console.log('-----------formdata:', formData, '-----------');
+
     try {
       const res = await fetch(`/api/auction/${shortId}/proposal`, {
         method: 'POST',
@@ -57,8 +59,22 @@ const MakePrice = () => {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
 
+      const error = await fetch('/api/alarm/proposal-pending', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'pending',
+          user_id: userId,
+          auctionId: auctionId,
+          price: price,
+        }),
+      });
+
       router.push(`/auction/${shortId}`);
       toast({ content: '제안이 완료되었습니다.' });
+
       router.refresh();
     } catch (error) {
       console.error('Unexpected error in callback:', error);
