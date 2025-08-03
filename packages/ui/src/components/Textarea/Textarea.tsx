@@ -4,75 +4,64 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const textareaVariants = cva(
-  'w-full resize-none rounded border text-body px-3 py-2 transition-shadow focus:outline-none',
-  {
-    variants: {
-      variant: {
-        form: 'bg-white border-neutral-400 focus:border-main focus:ring-0',
-        chat: 'bg-[#f6f6f6] border-transparent placeholder:text-neutral-400 rounded-xl',
-      },
+const textareaVariants = cva('w-full focus:outline-none resize-none custom-scrollbar', {
+  variants: {
+    variant: {
+      form: 'bg-neutral-0 border border-neutral-400 rounded-[3px] px-[15px] py-[10px] placeholder:text-neutral-600 focus:border-main focus:ring-0',
+      chat: 'bg-neutral-050 placeholder:text-neutral-400 disabled:bg-neutral-300 rounded-[10px] pl-[17px] py-[9px]',
     },
-    defaultVariants: {
-      variant: 'form',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'form',
+  },
+});
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-    VariantProps<typeof textareaVariants> {}
+    VariantProps<typeof textareaVariants> {
+  maxRows?: number;
+}
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, variant = 'form', onInput, ...props }, ref) => {
-    const innerRef = React.useRef<HTMLTextAreaElement>(null);
-    const [overflowStyle, setOverflowStyle] = React.useState<'hidden' | 'auto' | undefined>(
-      'hidden'
-    );
+  ({ className, variant = 'form', maxRows = 8, ...props }, ref) => {
+    const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
-    React.useImperativeHandle(ref, () => innerRef.current!);
+    React.useImperativeHandle(ref, () => textareaRef.current!);
 
-    const updateOverflowStyle = () => {
-      const textarea = innerRef.current;
-      if (!textarea) return;
+    const adjustHeight = React.useCallback(() => {
+      const textarea = textareaRef.current;
+      if (!textarea || variant !== 'chat') return;
 
-      if (variant === 'chat') {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-        setOverflowStyle('hidden');
-      } else if (variant === 'form') {
-        const hasExternalHeight = props.style?.height || className?.includes('h-');
+      textarea.style.height = 'auto';
 
-        if (!hasExternalHeight) {
-          textarea.style.height = 'auto';
-          textarea.style.height = textarea.scrollHeight + 'px';
-        }
-        const isFirstLine = textarea.scrollHeight <= textarea.clientHeight + 5;
-        setOverflowStyle(isFirstLine ? 'hidden' : 'auto');
-      }
-    };
+      const lineHeight = 21; // typo-body-regular 기준
+      const padding = 18; // py-[9px] = 상하 9px씩
+      const minHeight = lineHeight + padding; // 1줄 높이
+      const maxHeight = lineHeight * maxRows + padding; // 최대 8줄 높이
 
-    const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
-      updateOverflowStyle();
-      if (onInput) onInput(e);
-    };
+      const scrollHeight = textarea.scrollHeight;
+      const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+
+      textarea.style.height = `${newHeight}px`;
+    }, [variant, maxRows]);
 
     React.useEffect(() => {
-      updateOverflowStyle();
-    }, [props.value, variant]);
+      adjustHeight();
+    }, [props.value, adjustHeight]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      props.onChange?.(e);
+      setTimeout(adjustHeight, 0);
+    };
 
     return (
       <textarea
-        ref={innerRef}
+        ref={textareaRef}
         data-slot="textarea"
         className={cn(textareaVariants({ variant, className }))}
+        rows={variant === 'chat' ? 1 : undefined}
         {...props}
-        onInput={handleInput}
-        rows={1}
-        style={{
-          overflow: overflowStyle,
-          ...props.style,
-        }}
+        onChange={handleChange}
       />
     );
   }

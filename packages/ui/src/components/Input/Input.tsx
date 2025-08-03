@@ -64,7 +64,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         'placeholder:text-neutral-600 dark:bg-input/30',
         'border-neutral-400 flex h-13 w-full min-w-0 rounded-sm border bg-transparent px-[15px] py-[10px] shadow-xs',
         'transition-[color,box-shadow] outline-none',
-        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
       );
 
       if (disabled || status === 'disabled') {
@@ -103,7 +103,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
 
-        {writeText && <div className="text-sm text-neutral-700">{writeText}</div>}
+        {writeText && <div className="text-neutral-700">{writeText}</div>}
 
         <div className="relative">
           {icon && (
@@ -135,9 +135,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           />
         </div>
 
-        {status === 'error' && errorMessage && (
-          <p className="text-danger text-sm">{errorMessage}</p>
-        )}
+        {status === 'error' && errorMessage && <p className="text-danger">{errorMessage}</p>}
       </div>
     );
   }
