@@ -3,6 +3,7 @@
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { AuctionInfoData } from '../types';
+import { getYourNickName } from './getYourNickName';
 
 export const getAuctionInfo = async (shortId: string) => {
   const fullChatRoomId = decodeShortId(shortId);
@@ -15,5 +16,13 @@ export const getAuctionInfo = async (shortId: string) => {
     throw new Error(`AuctionInfo 조회 실패: ${error.message}`);
   }
 
-  return data as AuctionInfoData;
+  const yourNickName = await getYourNickName(fullChatRoomId);
+
+  return {
+    image: data.image,
+    title: data.title,
+    price: data.price,
+    status: data.status,
+    yourNickName,
+  } as AuctionInfoData;
 };

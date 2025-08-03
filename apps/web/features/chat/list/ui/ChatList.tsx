@@ -15,11 +15,9 @@ import {
   DialogTitle,
 } from '@repo/ui/components/Dialog/Dialog';
 import { Button } from '@repo/ui/components/Button/Button';
-import { useChatStore } from '../../room/model/chatStore';
 
 const ChatList = ({ filter, data }: ChatListProps) => {
   const queryClient = useQueryClient();
-  const setNickname = useChatStore((s) => s.setNickname);
   const userId = useAuthStore((state) => state.user?.id) as string;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{
@@ -101,11 +99,7 @@ const ChatList = ({ filter, data }: ChatListProps) => {
                 }
               }}
             >
-              <ChatItem
-                onClick={() => setNickname(chat.your_profile.nickname)}
-                data={chat}
-                isLastMsgMine={chat.last_message?.sender_id === userId}
-              />
+              <ChatItem data={chat} isLastMsgMine={chat.last_message?.sender_id === userId} />
             </Link>
           </SwipeableItem>
         </div>

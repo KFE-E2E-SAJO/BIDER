@@ -6,12 +6,9 @@ import { ChatItemProps } from '../types';
 import StatusBadge from '@/shared/ui/badge/StatusBadge';
 import { getTimeAgo } from '../lib/getTimeAgo';
 
-const ChatItem = ({ onClick, data, isLastMsgMine }: ChatItemProps) => {
+const ChatItem = ({ data, isLastMsgMine }: ChatItemProps) => {
   return (
-    <div
-      onClick={onClick}
-      className="bg-neutral-0 flex w-full items-center justify-between py-[17px]"
-    >
+    <div className="bg-neutral-0 flex w-full items-center justify-between py-[17px]">
       <div className="flex items-center">
         <div className="relative size-[46px] overflow-hidden rounded">
           <Image

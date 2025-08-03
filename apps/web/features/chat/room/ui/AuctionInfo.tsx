@@ -4,7 +4,6 @@ import StatusBadge from '@/shared/ui/badge/StatusBadge';
 import Image from 'next/image';
 import React from 'react';
 import BackBtn from '@/shared/ui/button/BackBtn';
-import { useChatStore } from '../model/chatStore';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { AuctionInfoData } from '../types';
 
@@ -13,7 +12,7 @@ interface AuctionInfoProps {
 }
 
 const AuctionInfo = ({ data }: AuctionInfoProps) => {
-  const nickname = useChatStore((s) => s.nickname);
+  const nickname = data.yourNickName;
 
   return (
     <div className="bg-neutral-0 w-full">
