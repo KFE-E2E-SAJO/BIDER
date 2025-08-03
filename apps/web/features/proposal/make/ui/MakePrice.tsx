@@ -59,7 +59,7 @@ const MakePrice = () => {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
 
-      const error = await fetch('/api/alarm/proposal-pending', {
+      const error = await fetch('/api/alarm/proposal/proposal-pending', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

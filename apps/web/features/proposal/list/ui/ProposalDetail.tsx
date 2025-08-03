@@ -42,7 +42,7 @@ const ProposalDetail = () => {
           try {
             toast({ content: '제안이 수락되었습니다.' });
 
-            await fetch('/api/alarm/proposal-accepted', {
+            await fetch('/api/alarm/proposal/proposal-accepted', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
