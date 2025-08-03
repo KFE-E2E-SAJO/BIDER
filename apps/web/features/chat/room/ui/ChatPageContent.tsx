@@ -1,26 +1,26 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ChatInputBar from '@/features/chat/room/ui/ChatInputBar';
 import AuctionInfo from '@/features/chat/room/ui//AuctionInfo';
 import MessageList from '@/features/chat/room/ui//MessageList';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useAuctionInfo } from '../model/useAuctionInfo';
-import { fetchIsChatEnd } from '../../list/api/fetchIsChatEnd';
+import { useIsChatEnd } from '../../list/model/useIsChatEnd';
 
 const ChatPageContent = ({ shortId }: { shortId: string }) => {
   const { data, isLoading, error } = useAuctionInfo(shortId);
-  const [isChatEnd, setIsChatEnd] = useState(false);
+  const {
+    data: isChatEndData,
+    isLoading: isChatEndLoading,
+    error: isChatEndError,
+  } = useIsChatEnd(shortId);
 
-  useEffect(() => {
-    (async () => {
-      const result = await fetchIsChatEnd(shortId);
-      setIsChatEnd(result);
-    })();
-  }, []);
+  const isChatEnd = isChatEndData ?? false;
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isChatEndLoading) return <Loading />;
   if (error) return <p>오류: {(error as Error).message}</p>;
+  if (isChatEndError) return <p>채팅 종료 여부 확인 오류: {(isChatEndError as Error).message}</p>;
   if (!data) {
     return <p>경매 정보를 조회할 수 없습니다.</p>;
   }

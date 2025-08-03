@@ -95,6 +95,7 @@ export const useMessageRealtime = (chatRoomId: string) => {
 
     const channel = supabase.channel(`message-${fullChatRoomId}`);
 
+    // 1. message 테이블 변경 감지
     channel.on(
       'postgres_changes' as any,
       {
@@ -114,6 +115,20 @@ export const useMessageRealtime = (chatRoomId: string) => {
         if (isInsert || (isUpdate && isMyMessage)) {
           await updateMessageCache(payload);
         }
+      }
+    );
+
+    // 2. chat_room 테이블 UPDATE 감지 (채팅방 종료 상태 변경)
+    channel.on(
+      'postgres_changes',
+      {
+        event: 'UPDATE', // UPDATE 이벤트 감지
+        schema: 'public',
+        table: 'chat_room',
+        filter: `chatroom_id=eq.${fullChatRoomId}`, // 현재 채팅방의 상태 변경만 감지
+      },
+      () => {
+        queryClient.invalidateQueries({ queryKey: ['chatRoom_active', chatRoomId] });
       }
     );
 
