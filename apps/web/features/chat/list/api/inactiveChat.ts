@@ -1,7 +1,8 @@
 import { ApiError } from 'next/dist/server/api-utils';
 
 export const inactiveChat = async (chatRoom: string, exhibitUser: string) => {
-  const res = await fetch('/api/chat', {
+  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const res = await fetch(`${baseURL}/api/chat`, {
     method: 'POST',
     body: JSON.stringify({
       chatRoom,

@@ -3,7 +3,8 @@ export const getChatRoomIdIfExist = async (
   exhibitUserId: string,
   bidUserId: string
 ) => {
-  const res = await fetch('/api/chat/getChatRoomLink', {
+  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const res = await fetch(`${baseURL}/api/chat/getChatRoomLink`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ auctionId, exhibitUserId, bidUserId }),

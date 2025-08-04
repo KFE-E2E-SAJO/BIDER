@@ -1,5 +1,6 @@
 export const fetchIsChatEnd = async (chatRoomId: string): Promise<boolean> => {
-  const res = await fetch(`/api/chat/checkIsChatEnd/${chatRoomId}`);
+  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const res = await fetch(`${baseURL}/api/chat/checkIsChatEnd/${chatRoomId}`);
   const result = await res.json();
 
   if (!res.ok) {

@@ -109,11 +109,14 @@ export const useMessageRealtime = (chatRoomId: string) => {
         const isInsert = payload.eventType === 'INSERT';
         const isUpdate = payload.eventType === 'UPDATE';
 
-        // payload.new가 존재하고, 그 안에 sender_id가 있는지 확인
-        const isMyMessage = payload.new?.sender_id === userId;
-
-        if (isInsert || (isUpdate && isMyMessage)) {
+        if (isInsert) {
           await updateMessageCache(payload);
+        } else if (isUpdate) {
+          // UPDATE의 경우 내 메시지만 처리 (읽음 상태 등)
+          const isMyMessage = payload.new?.sender_id === userId;
+          if (isMyMessage) {
+            await updateMessageCache(payload);
+          }
         }
       }
     );

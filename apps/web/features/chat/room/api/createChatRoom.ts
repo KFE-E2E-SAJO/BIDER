@@ -1,5 +1,6 @@
 export const createChatRoom = async (auction: string, exhibitUser: string, bidUser: string) => {
-  const res = await fetch('/api/chat/create', {
+  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const res = await fetch(`${baseURL}/api/chat/create`, {
     method: 'POST',
     body: JSON.stringify({
       auction,
