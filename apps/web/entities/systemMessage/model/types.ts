@@ -1,4 +1,4 @@
-export interface systemMessage {
+export interface SystemMessage {
   system_message_id: string;
   chatroom_id: string;
   product_image_url: string;

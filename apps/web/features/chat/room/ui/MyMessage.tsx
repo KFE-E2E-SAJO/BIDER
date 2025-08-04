@@ -14,7 +14,7 @@ const MyMessage = ({ text, showTime, isRead, isLast, className, time }: MessageP
         )}
         {showTime && <div className="text-[12px] text-neutral-400">{formatKoreanTime(time)}</div>}
       </div>
-      <div className="bg-main text-neutral-0 max-w-[65vw] rounded-[10px] px-[10px] py-[6px]">
+      <div className="bg-main text-neutral-0 max-w-[70%] rounded-[10px] px-[10px] py-[6px]">
         {text}
       </div>
     </div>

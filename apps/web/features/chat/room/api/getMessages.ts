@@ -1,7 +1,6 @@
 'use server';
 
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { createClient } from '@/shared/lib/supabase/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 
 export const getMessages = async (chatRoomId: string) => {

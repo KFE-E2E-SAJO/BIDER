@@ -1,20 +1,13 @@
-import { systemMessage } from '@/entities/systemMessage/model/types';
+import { SystemMessage } from '@/entities/systemMessage/model/types';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import Image from 'next/image';
 import React from 'react';
 
-const data: systemMessage = {
-  system_message_id: 'string',
-  chatroom_id: 'string',
-  product_image_url:
-    'https://nrxemenkpeejarhejbbk.supabase.co/storage/v1/object/public/product-image/products/036c7ce8-5cea-4c7f-b32d-e503c0c15d8f.png',
-  nickname: '입찰매니아',
-  created_at: '2025-07-30 05:19:40.114422+00',
-  product_title: '테스트',
-  bid_price: 50000,
+type BidWinMessageProps = {
+  data: SystemMessage;
 };
 
-const BidWinMessage = () => {
+const BidWinMessage = ({ data }: BidWinMessageProps) => {
   return (
     <div className="border-alert flex flex-col gap-[6px] border-l-[2px] pl-[15px] text-left">
       <div className="relative size-[37px] overflow-hidden rounded">

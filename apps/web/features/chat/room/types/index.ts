@@ -1,4 +1,5 @@
 import { MessageWithProfile } from '@/entities/message/model/types';
+import { SystemMessage } from '@/entities/systemMessage/model/types';
 
 // Supabase 실시간 페이로드 타입 정의
 export interface RealtimeMessagePayload {
@@ -31,3 +32,7 @@ export interface AuctionInfoData {
   exhibitUserId: string;
   bidUserId: string;
 }
+
+export type CombinedMessage =
+  | (MessageWithProfile & { messageType: 'user' })
+  | (SystemMessage & { messageType: 'system' });
