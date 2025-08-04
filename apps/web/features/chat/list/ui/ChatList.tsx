@@ -86,6 +86,7 @@ const ChatList = ({ filter, data }: ChatListProps) => {
               });
               setIsDialogOpen(true);
             }}
+            btnText={'나가기'}
             onDragChange={(dragging) => setIsDragging(dragging)}
           >
             <Link

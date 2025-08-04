@@ -7,6 +7,7 @@ interface SwipeableItemProps {
   onOpen: () => void;
   onClose: () => void;
   onDragChange?: (isDragging: boolean) => void;
+  btnText: string;
 }
 
 const SwipeableItem: React.FC<SwipeableItemProps> = ({
@@ -16,6 +17,7 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({
   onOpen,
   onClose,
   onDragChange,
+  btnText = '나가기',
 }) => {
   const [translateX, setTranslateX] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -165,7 +167,7 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({
           onClick={onDelete}
           className="text-neutral-0 typo-caption-medium h-full w-full cursor-pointer"
         >
-          나가기
+          {btnText}
         </button>
       </div>
 
