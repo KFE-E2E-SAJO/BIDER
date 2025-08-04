@@ -1,3 +1,4 @@
+import { SecretBidPrice } from '@/features/auction/list/types';
 import { CategoryValue } from '@/features/category/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 
@@ -7,7 +8,7 @@ export interface ProductList {
   title: string;
   address: string;
   bidCount: number;
-  minPrice: number;
+  minPrice: number | SecretBidPrice;
   myBidPrice?: number;
   auctionEndAt: string;
   auctionStatus: string;
@@ -15,6 +16,7 @@ export interface ProductList {
   sellerId: string;
   isAwarded: boolean;
   isPending?: boolean;
+  isSecret: boolean;
 }
 
 export interface ProductFormData {

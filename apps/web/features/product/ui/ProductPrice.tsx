@@ -1,18 +1,26 @@
 'use client';
 
+import { SecretBidPrice } from '@/features/auction/list/types';
 import { usePathname } from 'next/navigation';
 
 interface PriductPriceProps {
-  minPrice: number;
+  minPrice: number | SecretBidPrice;
   myBidPrice?: number;
+  isSecret: boolean;
 }
 
-const ProductPrice = ({ minPrice, myBidPrice }: PriductPriceProps) => {
+const ProductPrice = ({ minPrice, myBidPrice, isSecret }: PriductPriceProps) => {
   const pathname = usePathname();
   const isBidPage = pathname === '/auction/bids' ? true : false;
 
-  const isMyBidHigher = myBidPrice !== undefined && myBidPrice >= minPrice;
-  const isMinPriceHigher = myBidPrice !== undefined && minPrice > myBidPrice;
+  const isMyBidHigher =
+    !isSecret && typeof minPrice === 'number' && myBidPrice !== undefined
+      ? myBidPrice >= minPrice
+      : false;
+  const isMinPriceHigher =
+    !isSecret && typeof minPrice === 'number' && myBidPrice !== undefined
+      ? minPrice > myBidPrice
+      : false;
 
   return (
     <div className="mb-[10px]">

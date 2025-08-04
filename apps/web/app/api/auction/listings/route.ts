@@ -1,3 +1,5 @@
+import { BidHistory } from '@/entities/bidHistory/model/types';
+import { SECRET_PRICE } from '@/features/auction/list/constants';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -43,8 +45,32 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  const filtered = data
+    .filter((product) => product.exhibit_user_id === userId)
+    .map((product) => ({
+      ...product,
+      auction: product.auction[0],
+    }));
 
-  const filtered = data.filter((product) => product.exhibit_user_id === userId);
+  const masked = filtered.map((product) => {
+    const auction = product.auction;
 
-  return NextResponse.json({ success: true, data: filtered });
+    if (auction.is_secret) {
+      return {
+        ...product,
+        auction: {
+          ...auction,
+          min_price: SECRET_PRICE,
+          bid_history: auction.bid_history.map((bid: BidHistory) => ({
+            ...bid,
+            bid_price: bid.is_awarded ? bid.bid_price : SECRET_PRICE,
+          })),
+        },
+      };
+    }
+
+    return product;
+  });
+
+  return NextResponse.json({ success: true, data: masked });
 }
