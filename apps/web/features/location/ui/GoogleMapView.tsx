@@ -6,7 +6,7 @@ import { Location } from '@/features/location/types';
 import { MapMarkers } from '@/features/location/ui/MapMarkers';
 import { AuctionMarkerResponse } from '@/features/auction/list/types';
 import GoogleMapPinBottomCard from '@/features/location/ui/GoogleMapPinBottomCard';
-import GoogleMapAdjustCenter from '@/features/location/ui/GoogleMapAdjustCenter';
+import { SheetMode } from '@/features/home/types';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
@@ -17,7 +17,7 @@ export interface GoogleMapViewProps {
   markers?: AuctionMarkerResponse[];
   showMyLocation?: boolean;
   showMarkers?: boolean;
-  onMarkerClick?: (marker: AuctionMarkerResponse) => void;
+  setSheetMode: React.Dispatch<React.SetStateAction<SheetMode>>;
 }
 
 const GoogleMapView = ({
@@ -27,7 +27,7 @@ const GoogleMapView = ({
   markers = [],
   showMyLocation = true,
   showMarkers = false,
-  onMarkerClick,
+  setSheetMode,
 }: GoogleMapViewProps) => {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<AuctionMarkerResponse | null>(null);
@@ -50,8 +50,6 @@ const GoogleMapView = ({
           disableDefaultUI
           gestureHandling="greedy"
         >
-          <GoogleMapAdjustCenter />
-
           {showMyLocation && (
             <AdvancedMarker position={currentLocation}>
               <Pin
@@ -67,7 +65,7 @@ const GoogleMapView = ({
               pois={markers}
               selectedMarkerId={selectedMarker?.id ?? null}
               onMarkerSelect={(marker) => {
-                onMarkerClick?.(marker);
+                setSheetMode('collapsed');
                 setSelectedMarker(marker);
               }}
             />

@@ -44,9 +44,8 @@ const AuctionList = ({
   if (auctionList.length === 0) {
     return <p className="mt-10 text-center text-neutral-500">상품이 존재하지 않습니다.</p>;
   }
-
   return (
-    <div ref={parentRef} style={{ height: height }} className="p-box overflow-auto">
+    <div ref={parentRef} style={{ height }} className="p-box overflow-auto">
       <ul className="relative w-full" style={{ height: `${totalSize}px` }}>
         {virtualRows.map((virtualRow) => {
           const index = virtualRow.index;

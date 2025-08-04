@@ -4,13 +4,14 @@ import LocationPin from '@/features/location/ui/LocationPin';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@repo/ui/components/Button/Button';
-import { List, Map } from 'lucide-react';
+import { Map } from 'lucide-react';
 import { AuctionMarkerResponse, AuctionSort } from '@/features/auction/list/types';
 import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
 import { LocationWithAddress } from '@/features/location/types';
 import GoogleMapSkeleton from '@/features/location/ui/GoogleMapSkeleton';
 import dynamic from 'next/dynamic';
 import { getListHeight } from '@/features/auction/list/lib/utils';
+import { SheetMode } from '@/features/home/types';
 
 const GoogleMapView = dynamic(() => import('@/features/location/ui/GoogleMapView'), {
   ssr: false,
@@ -32,34 +33,40 @@ interface HomeClientPageProps {
   auctionMarkers: AuctionMarkerResponse[];
 }
 
-type SheetMode = 'collapsed' | 'half' | 'full';
-
 const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) => {
   const [sheetMode, setSheetMode] = useState<SheetMode>('half');
-  const [showMap, setShowMap] = useState(true);
+  const [showList, setShowList] = useState(true);
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
-  const [listHeight, setListHeight] = useState(getListHeight('home', showMap));
+  const [listHeight, setListHeight] = useState(getListHeight('home', showList));
+  const [mapHeight, setMapHeight] = useState('h-[300px]');
 
   const getTranslateY = () => {
-    if (sheetMode === 'collapsed') {
-      setShowMap(true); //안보이니까 대충넣어놈
-      return '92%'; // 지도만 보임
-    }
-
-    if (sheetMode === 'half') {
-      setShowMap(true);
-      return '45%'; // 지도 + 리스트 반반
-    }
-
-    if (sheetMode === 'full') {
-      setShowMap(false);
-      return '0%'; // 리스트만 보임
+    switch (sheetMode) {
+      case 'collapsed':
+        return '92%'; // 지도만 보임
+      case 'half':
+        return '280px'; // 지도 + 리스트 반반
+      case 'full':
+        return '0%'; // 리스트만 보임
     }
   };
 
   useEffect(() => {
-    setListHeight(getListHeight('home', showMap));
-  }, [showMap]);
+    if (sheetMode === 'half') {
+      setMapHeight('h-[300px]');
+      setShowList(true);
+    } else if (sheetMode === 'full') {
+      setMapHeight('h-0');
+      setShowList(true);
+    } else {
+      setMapHeight('h-full');
+      setShowList(false);
+    }
+  }, [sheetMode]);
+
+  useEffect(() => {
+    setListHeight(getListHeight('home', showList));
+  }, [showList]);
 
   const sheetRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
@@ -105,14 +112,12 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
         {/* 배경 전체 지도 */}
         <GoogleMapView
           mapId="auctionList"
-          height="h-full"
+          height={mapHeight}
           location={userLocation.location}
           showMyLocation={false}
           markers={auctionMarkers}
           showMarkers={true}
-          onMarkerClick={() => {
-            setSheetMode('collapsed');
-          }}
+          setSheetMode={setSheetMode}
         />
 
         {/* 하단 리스트 시트 */}
@@ -150,8 +155,8 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
 
             {/* 리스트 */}
             <div
-              className="scroll-container flex-1 overflow-y-auto"
-              style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 80px)' : '0' }}
+              className="flex-1 overflow-y-auto"
+              style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 72px)' : '0' }}
             >
               <AuctionList sort={sort} height={listHeight} />
             </div>

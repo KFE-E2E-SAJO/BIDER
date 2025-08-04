@@ -14,10 +14,10 @@ export const createAuctionListQueryKey = ({ cate, sort, filter, search }: Auctio
   return key;
 };
 
-export const getListHeight = (page: Page, showMap: boolean = false) => {
+export const getListHeight = (page: Page, showList: boolean = false) => {
   switch (page) {
     case 'home':
-      return showMap ? 'calc(100vh - 535px)' : 'calc(100vh - 235px)';
+      return showList ? '100%' : '0';
     case 'list':
       return 'calc(100vh - 326px)';
     case 'search':
