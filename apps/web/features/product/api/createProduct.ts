@@ -1,5 +1,5 @@
-import { combineDateTime, parseFormattedPrice } from '../lib/utils';
-import { ApiError, CreateProductRequest, CreateProductResponse } from '../types';
+import { combineDateTime, parseFormattedPrice } from '@/features/product/lib/utils';
+import { ApiError, CreateProductRequest, CreateProductResponse } from '@/features/product/types';
 
 export const createProduct = async (data: CreateProductRequest): Promise<CreateProductResponse> => {
   const endAt = combineDateTime(data.endDate, data.endTime);
@@ -12,6 +12,7 @@ export const createProduct = async (data: CreateProductRequest): Promise<CreateP
   formData.append('end_at', endAt.toISOString());
   formData.append('category', data.category);
   formData.append('user_id', data.userId);
+  formData.append('is_secret', String(data.isSecret));
   if (data.dealLongitude !== undefined) {
     formData.append('deal_longitude', data.dealLongitude.toString());
   }

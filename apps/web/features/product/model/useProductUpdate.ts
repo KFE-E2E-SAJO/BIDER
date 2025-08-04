@@ -1,5 +1,5 @@
+import { updateProduct } from '@/features/product/api/editProduct';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateProduct } from '../api/editProduct';
 
 export const useProductUpdateMutation = (shortId: string) => {
   const queryClient = useQueryClient();

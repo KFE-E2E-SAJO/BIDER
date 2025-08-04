@@ -1,3 +1,5 @@
+import { SECRET_PRICE } from '@/features/auction/list/constants';
+import { SecretBidPrice } from '@/features/auction/list/types';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -68,11 +70,18 @@ export async function GET(request: NextRequest) {
     maxPriceMap[auctionId] = Math.max(maxPriceMap[auctionId] ?? 0, price);
   }
 
-  const enriched = deduplicated.map((item) => ({
-    ...item,
-    bidCount: bidCountMap[item.auction_id] ?? 0,
-    maxPrice: maxPriceMap[item.auction_id] ?? item.auction?.min_price ?? 0,
-  }));
+  const enriched = deduplicated.map((item) => {
+    const is_secret = item.auction?.is_secret;
+    const maxPrice = is_secret
+      ? SECRET_PRICE
+      : (maxPriceMap[item.auction_id] ?? item.auction?.min_price ?? 0);
 
+    return {
+      ...item,
+      bidCount: bidCountMap[item.auction_id] ?? 0,
+      is_secret,
+      maxPrice,
+    };
+  });
   return NextResponse.json({ success: true, data: enriched });
 }

@@ -1,5 +1,8 @@
+import { SECRET_PRICE } from '@/features/auction/list/constants';
 import { CategoryValue } from '@/features/category/types';
 import { Location } from '@/features/location/types';
+
+export type SecretBidPrice = typeof SECRET_PRICE;
 
 export interface AuctionList {
   id: string;
@@ -7,10 +10,11 @@ export interface AuctionList {
   title: string;
   address: string;
   bidCount: number;
-  bidPrice: number;
+  bidPrice: number | SecretBidPrice;
   auctionEndAt: string;
   auctionStatus: string;
   createdAt: string;
+  isSecret: boolean;
 }
 
 export interface AuctionListResponse {
@@ -42,3 +46,5 @@ export interface AuctionMarkerResponse {
   highestBid: number | null;
   title: string;
 }
+
+export type Page = 'home' | 'list' | 'search';

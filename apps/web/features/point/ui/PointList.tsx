@@ -1,7 +1,7 @@
 import React from 'react';
-import { PointListProps } from '../types';
 import PointItem from './PointItem';
 import { Point } from '@/entities/point/model/types';
+import { PointListProps } from '@/features/point/types';
 
 const PointList = ({ filter, data }: PointListProps) => {
   const filteredData =
