@@ -17,7 +17,7 @@ export interface GoogleMapViewProps {
   markers?: AuctionMarkerResponse[];
   showMyLocation?: boolean;
   showMarkers?: boolean;
-  setSheetMode: React.Dispatch<React.SetStateAction<SheetMode>>;
+  setSheetMode?: React.Dispatch<React.SetStateAction<SheetMode>>;
 }
 
 const GoogleMapView = ({
@@ -60,7 +60,7 @@ const GoogleMapView = ({
             </AdvancedMarker>
           )}
 
-          {showMarkers && (
+          {showMarkers && setSheetMode && (
             <MapMarkers
               pois={markers}
               selectedMarkerId={selectedMarker?.id ?? null}
