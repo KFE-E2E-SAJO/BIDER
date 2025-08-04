@@ -45,7 +45,6 @@ export const useBidSubmit = (shortId: string) => {
       }
       toast({ content: result.message || '입찰이 완료되었습니다!' });
       context?.onSuccess?.();
-      localStorage.setItem('lastAuctionId', shortId);
       router.replace('/bid/complete');
     },
     onError: (error) => {
