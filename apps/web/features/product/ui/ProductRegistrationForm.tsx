@@ -108,6 +108,7 @@ export const ProductRegistrationForm = () => {
             상품 제목<span className="text-main">*</span>
           </div>
           <Input
+            name="title"
             placeholder="상품 제목을 입력해 주세요."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -120,7 +121,11 @@ export const ProductRegistrationForm = () => {
           <div className="typo-subtitle-small-medium">
             카테고리<span className="text-main">*</span>
           </div>
-          <Select value={category} onValueChange={(value) => setCategory(value as CategoryValue)}>
+          <Select
+            name="category"
+            value={category}
+            onValueChange={(value) => setCategory(value as CategoryValue)}
+          >
             <SelectTrigger className="typo-body-regular rounded-sm px-[10.5px]">
               <SelectValue placeholder="카테고리를 선택해 주세요." />
             </SelectTrigger>
@@ -142,6 +147,7 @@ export const ProductRegistrationForm = () => {
             자세한 설명<span className="text-main">*</span>
           </div>
           <Textarea
+            name="discription"
             className="h-[204px]"
             placeholder="상품의 상태, 구매 시기, 사용감 등을 자세히 설명해 주세요."
             value={description}
@@ -172,6 +178,7 @@ export const ProductRegistrationForm = () => {
                 height="h-[300px]"
               />
               <Input
+                name="address"
                 placeholder="위치 추가"
                 value={dealAddress}
                 onChange={(e) => setDealAddress(e.target.value)}
@@ -191,6 +198,7 @@ export const ProductRegistrationForm = () => {
           </div>
           <div className="flex items-end">
             <Input
+              name="minPrice"
               value={minPrice}
               onChange={handleMinPriceChange}
               placeholder="희망하는 최소 입찰가를 적어주세요."
@@ -209,6 +217,7 @@ export const ProductRegistrationForm = () => {
             <div className="flex w-[calc(50%-8px)] flex-1 basis-[0] flex-col">
               <div className="typo-caption-regular mb-[6px]">종료 날짜</div>
               <Input
+                name="endDate"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -218,7 +227,7 @@ export const ProductRegistrationForm = () => {
             <div className="flex w-[calc(50%-8px)] flex-1 basis-[0] flex-col">
               <div className="typo-caption-regular mb-[6px]">종료 시간</div>
               <Input
-                type="time"
+                name="endTime"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required

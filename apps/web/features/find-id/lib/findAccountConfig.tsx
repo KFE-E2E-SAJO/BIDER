@@ -16,10 +16,10 @@ export const FindAccountConfig = (accountType: string) => {
       title: '비밀번호 찾기',
       placeholder: '이메일 주소',
       icon: () => <Mail size={20} strokeWidth={1.5} />,
-      inputType: 'text' as const,
+      inputType: 'email' as const,
       buttonText: '재설정 이메일 발송',
       resultPrefix: '',
-      description: '입력하신 이메일로 재설정 링크를 확인해주세요.',
+      description: '아래의 인증코드를 입력해주세요.',
     };
   }
 };
