@@ -1,21 +1,15 @@
 'use server';
 
 import { SecretViewHistory } from '@/entities/auction/model/types';
-import { createClient } from '@/shared/lib/supabase/server';
+import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 
 export default async function checkSecretViewHistory(
   auctionId: string
 ): Promise<SecretViewHistory> {
-  const authSupabase = await createClient();
+  const userId = getUserId();
 
-  const {
-    data: { session },
-  } = await authSupabase.auth.getSession();
-
-  const userId = session?.user.id;
-
-  if (!session?.user) {
+  if (!userId) {
     return { hasPaid: false, isValid: false };
   }
   const { data, error } = await supabase
