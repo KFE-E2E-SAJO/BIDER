@@ -4,10 +4,10 @@ import { getCountdown } from '@/shared/lib/getCountdown';
 import { Button } from '@repo/ui/components/Button/Button';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { BidDialog } from '../../bids/ui/BidDialog';
-import { BottomBarProps } from '../types';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import clsx from 'clsx';
+import { BottomBarProps } from '@/features/auction/detail/types';
+import { BidDialog } from '@/features/auction/bids/ui/BidDialog';
 
 const BottomBar = ({
   shortId,

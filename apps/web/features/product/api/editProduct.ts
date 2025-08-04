@@ -1,5 +1,5 @@
 import { ProductForEdit } from '@/entities/product/model/types';
-import { ProductEditResponse } from '../types';
+import { ProductEditResponse } from '@/features/product/types';
 
 export const fetchProductForEdit = async (shortId: string): Promise<ProductForEdit> => {
   const response = await fetch(`/api/product/edit/${shortId}`);

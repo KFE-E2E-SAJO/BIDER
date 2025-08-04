@@ -7,10 +7,14 @@ import {
   formatProductDateTime,
   createFormDataFromProduct,
   handleMinPriceChange,
-} from '../lib/editFormUtils';
-import { canEditProduct, isEndDateAfterInitialDate, validateProductEditForm } from '../lib/utils';
-import { useProductEditQuery } from './useProductForEdit';
-import { useProductUpdateMutation } from './useProductUpdate';
+} from '@/features/product/lib/editFormUtils';
+import { useProductEditQuery } from '@/features/product/model/useProductForEdit';
+import { useProductUpdateMutation } from '@/features/product/model/useProductUpdate';
+import {
+  canEditProduct,
+  isEndDateAfterInitialDate,
+  validateProductEditForm,
+} from '@/features/product/lib/utils';
 
 export const useProductEdit = (shortId: string) => {
   const router = useRouter();

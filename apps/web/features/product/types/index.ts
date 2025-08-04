@@ -1,5 +1,4 @@
 import { CategoryValue } from '@/features/category/types';
-import { Location } from '@/features/location/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 
 export interface ProductList {
@@ -29,6 +28,7 @@ export interface ProductFormData {
   endDate: string;
   endTime: string;
   images: UploadedImage[];
+  isSecret: boolean;
 }
 
 export interface ProductFormState extends ProductFormData {
@@ -46,6 +46,7 @@ export interface ProductFormActions {
   setEndDate: (date: string) => void;
   setEndTime: (time: string) => void;
   setImages: (images: UploadedImage[]) => void;
+  setIsSecret: (isSecret: boolean) => void;
   setIsSubmitting: (isSubmitting: boolean) => void;
   reset: () => void;
 }

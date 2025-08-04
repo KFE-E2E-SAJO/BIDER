@@ -1,6 +1,6 @@
 import { Point } from '@/entities/point/model/types';
+import { getPointList } from '@/features/point/api/getPointList';
 import { useQuery } from '@tanstack/react-query';
-import { getPointList } from '../api/getPointList';
 
 export const useGetPointList = (userId: string) => {
   return useQuery<Point[] | []>({

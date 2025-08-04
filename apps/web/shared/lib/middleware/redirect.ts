@@ -1,5 +1,5 @@
+import { createClient } from '@/shared/lib/supabase/server';
 import { NextResponse, NextRequest } from 'next/server';
-import { createClient } from '../supabase/server';
 
 export async function handleRedirect(request: NextRequest) {
   const redirectPage = request.nextUrl.pathname;

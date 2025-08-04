@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 import { Button } from '@repo/ui/components/Button/Button';
@@ -14,12 +14,12 @@ import {
 import { categories, CategoryValue } from '@/features/category/types';
 import ImageUploadPreview from '@/shared/lib/ImageUploadPreview';
 import Loading from '@/shared/ui/Loading/Loading';
-import { useProductEdit } from '../model/useProductEdit';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import GoogleMap from '@/features/location/ui/GooggleMap';
 import { Location } from '@/features/location/types';
 import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
 import { Info } from 'lucide-react';
+import { useProductEdit } from '@/features/product/model/useProductEdit';
 
 interface ProductEditFormProps {
   shortId: string;
@@ -40,7 +40,6 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     dealLatitude,
     dealLongitude,
     minPrice,
-    images,
     endDate,
     endTime,
     isSecret,

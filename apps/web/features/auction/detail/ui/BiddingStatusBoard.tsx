@@ -1,9 +1,9 @@
 import { Crown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { BiddingStatusBoardProps } from '../types';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
-import { useBidHistoryRealtime } from '../api/useBidHistoryRealtime';
+import { BiddingStatusBoardProps } from '@/features/auction/detail/types';
+import { useBidHistoryRealtime } from '@/features/auction/detail/api/useBidHistoryRealtime';
 
 const BiddingStatusBoard = ({
   data,

@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from '@repo/ui/components/Toast/Sonner';
-import { CreateProductRequest, CreateProductResponse, productKeys } from '../types';
-import { createProduct } from '../api/createProduct';
+import { CreateProductResponse, CreateProductRequest, productKeys } from '@/features/product/types';
+import { createProduct } from '@/features/product/api/createProduct';
 
 interface UseCreateProductOptions {
   onSuccess?: (data: CreateProductResponse) => void;

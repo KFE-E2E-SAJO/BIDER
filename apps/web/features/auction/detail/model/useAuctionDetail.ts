@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAuctionDetail } from '../api/getAuctionDetail';
 import { AuctionDetail } from '@/entities/auction/model/types';
+import { getAuctionDetail } from '@/features/auction/detail/api/getAuctionDetail';
 
 export const useAuctionDetail = (shortId: string) => {
   return useQuery<AuctionDetail | null>({

@@ -1,7 +1,7 @@
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { ProductForEdit } from '@/entities/product/model/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
-import { ProductEditFormData } from '../types';
+import { ProductEditFormData } from '@/features/product/types';
 
 export const createFormDataFromProduct = (
   data: ProductEditFormData,

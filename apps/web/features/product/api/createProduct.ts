@@ -1,5 +1,5 @@
-import { combineDateTime, parseFormattedPrice } from '../lib/utils';
-import { ApiError, CreateProductRequest, CreateProductResponse } from '../types';
+import { combineDateTime, parseFormattedPrice } from '@/features/product/lib/utils';
+import { ApiError, CreateProductRequest, CreateProductResponse } from '@/features/product/types';
 
 export const createProduct = async (data: CreateProductRequest): Promise<CreateProductResponse> => {
   const endAt = combineDateTime(data.endDate, data.endTime);

@@ -15,15 +15,16 @@ import {
   SelectContent,
   SelectItem,
 } from '@repo/ui/components/Select/Select';
-import { formatPriceInput, isEndDateValid } from '../lib/utils';
-import { useCreateProductWithValidation } from '../model/useCreateProduct';
-import { useProductFormWithoutSubmitting } from '../model/useProductForm';
+
 import GoogleMap from '@/features/location/ui/GooggleMap';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import { Location } from '@/features/location/types';
 import { Info } from 'lucide-react';
 import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
+import { useProductFormWithoutSubmitting } from '@/features/product/model/useProductForm';
+import { useCreateProductWithValidation } from '@/features/product/model/useCreateProduct';
+import { formatPriceInput, isEndDateValid } from '@/features/product/lib/utils';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
@@ -42,6 +43,7 @@ export const ProductRegistrationForm = () => {
     endDate,
     endTime,
     images,
+    isSecret,
     // Actions
     setTitle,
     setCategory,
@@ -53,6 +55,7 @@ export const ProductRegistrationForm = () => {
     setEndDate,
     setEndTime,
     setImages,
+    setIsSecret,
     reset,
   } = useProductFormWithoutSubmitting();
 
@@ -98,7 +101,6 @@ export const ProductRegistrationForm = () => {
   const isSubmitting = createProduct.isPending;
 
   const [dealLocationUse, setDealLocationUse] = useState(false);
-  const [isSecret, setIsSecret] = useState(false);
 
   return (
     <div className="flex flex-col gap-[26px]">

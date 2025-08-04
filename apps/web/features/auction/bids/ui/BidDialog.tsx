@@ -5,10 +5,10 @@ import { Dialog, DialogHeader, DialogTitle } from '@repo/ui/components/Dialog/Di
 import { Input } from '@repo/ui/components/Input/Input';
 import { Button } from '@repo/ui/components/Button/Button';
 import { getCountdown } from '@/shared/lib/getCountdown';
-import { BidDialogProps } from '../types';
-import { useBidSubmit } from '../model/useBidSubmit';
-import { formatBidPrice, getInitialBidPrice } from '../lib/utils';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
+import { BidDialogProps } from '@/features/auction/bids/types';
+import { formatBidPrice, getInitialBidPrice } from '@/features/auction/bids/lib/utils';
+import { useBidSubmit } from '@/features/auction/bids/model/useBidSubmit';
 
 export const BidDialog = ({
   shortId,
