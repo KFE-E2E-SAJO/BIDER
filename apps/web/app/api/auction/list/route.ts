@@ -85,7 +85,7 @@ export async function GET(
       const { product, auction_status, auction_end_at } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
-      const matchSearch = search || searcher(product.title, search);
+      const matchSearch = !search || searcher(product.title, search);
       const matchCate = cate === 'all' || product.category === cate;
 
       const now = new Date();

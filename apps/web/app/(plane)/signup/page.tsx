@@ -15,7 +15,7 @@ const SignUpPage = () => {
           className="mt-[30px] size-[30px] cursor-pointer stroke-[#8C8C8C] stroke-[1.5]"
           onClick={() => router.back()}
         />
-        <h1 className="typo-h2 mb-[41px] mt-[56px] text-center">회원가입</h1>
+        <h1 className="typo-h2 mb-[38px] mt-[40px] text-center">회원가입</h1>
         <SignUpForm />
       </div>
     </ReactQueryProvider>

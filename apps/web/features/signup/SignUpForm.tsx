@@ -5,34 +5,41 @@ import { PasswordField } from './ui/PasswordField';
 import { ConfirmPasswordField } from './ui/ConfirmPassword';
 import { NicknameField } from './ui/NicknameField';
 import { useSignUpForm } from './model/useSignupForm';
+import { EmailVerifiedField } from './ui/EmailVerifiedField';
 
 export const SignUpForm = () => {
   const {
     email,
     domain,
     customDomain,
+    verifiedCode,
     password,
     confirmPassword,
     nickname,
 
-    setEmail,
-    setDomain,
-    setCustomDomain,
-    setPassword,
-    setConfirmPassword,
-    setNickname,
-
-    isLoading,
-    isEmailVerified,
     isEmailSent,
+    verifiedEmail,
+    isEmailVerified,
+    isLoading,
+    disabled,
 
     emailError,
     domainError,
+    verifiedCodeError,
     passwordError,
     confirmPasswordError,
     nicknameError,
 
+    setEmail,
+    setDomain,
+    setCustomDomain,
+    setVerifiedCode,
+    setPassword,
+    setConfirmPassword,
+    setNickname,
+
     sendVerificationEmail,
+    onClickVerifyCode,
     handleSubmitForm,
   } = useSignUpForm();
 
@@ -52,6 +59,19 @@ export const SignUpForm = () => {
         onChangeCustomDomain={setCustomDomain}
         onClickSendVerification={sendVerificationEmail}
       />
+
+      {isEmailSent && verifiedEmail && (
+        <EmailVerifiedField
+          verifiedCode={verifiedCode}
+          verifiedCodeError={verifiedCodeError}
+          isEmailVerified={isEmailVerified}
+          verifiedEmail={verifiedEmail}
+          onChangeVerifiedCode={setVerifiedCode}
+          onClickVerifyCode={onClickVerifyCode}
+          disabled={!isEmailSent || !verifiedEmail}
+          isLoading={isLoading}
+        />
+      )}
 
       <PasswordField
         password={password}
