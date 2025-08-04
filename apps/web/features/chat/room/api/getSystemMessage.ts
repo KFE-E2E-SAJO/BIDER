@@ -30,7 +30,6 @@ export const getSystemMessage = async (
   }
 
   if (!data) return null;
-  console.log(data);
 
   return {
     ...data,

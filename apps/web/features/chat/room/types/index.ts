@@ -36,3 +36,12 @@ export interface AuctionInfoData {
 export type CombinedMessage =
   | (MessageWithProfile & { messageType: 'user' })
   | (SystemMessageWithNickname & { messageType: 'system' });
+
+export interface CreateSystemMessagePayload {
+  chatroomId: string;
+  exhibitUserId: string;
+  bidUserId: string;
+  imgUrl: string;
+  price: number;
+  title: string;
+}
