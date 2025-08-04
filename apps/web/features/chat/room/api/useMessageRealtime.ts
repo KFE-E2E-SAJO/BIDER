@@ -144,11 +144,8 @@ export const useMessageRealtime = (chatRoomId: string) => {
         table: 'system_message',
         filter: `chatroom_id=eq.${fullChatRoomId}`,
       },
-      async (payload: RealtimeMessagePayload) => {
-        const systemMessage = payload.new;
-        if (!systemMessage) return;
-
-        queryClient.setQueryData(['systemMessage', chatRoomId], systemMessage);
+      () => {
+        queryClient.invalidateQueries({ queryKey: ['systemMessage', chatRoomId] });
       }
     );
 
