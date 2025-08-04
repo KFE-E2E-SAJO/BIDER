@@ -11,7 +11,7 @@ import {
   UserRound,
 } from 'lucide-react';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
-import { toast } from '@repo/ui/components/Toast/Sonner';
+import { useUnreadMessagesCount } from '@/features/chat/nav/api/useUnreadMessagesCount';
 
 interface NavItems {
   href: string;
@@ -55,7 +55,8 @@ const navItems: NavItems[] = [
 
 const Nav = () => {
   const pathname = usePathname();
-  const hasNewChat = false; //새로운 채팅 여부 받아오기
+  const unreadCount = useUnreadMessagesCount();
+  const hasNewChat = unreadCount > 0; //새로운 채팅 여부 받아오기
 
   return (
     <nav className="bg-neutral-0 p-box fixed bottom-0 left-1/2 flex w-full max-w-[600px] translate-x-[-50%] items-baseline justify-between border-t border-neutral-100 pb-[40px] pt-[13px]">
