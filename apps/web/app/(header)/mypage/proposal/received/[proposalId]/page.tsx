@@ -1,10 +1,12 @@
 import ProposalDetail from '@/features/proposal/list/ui/ProposalDetail';
+import getUserId from '@/shared/lib/getUserId';
 import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
 
-const ProposalDetailPage = () => {
+const ProposalDetailPage = async () => {
+  const userId = await getUserId();
   return (
     <ReactQueryProvider>
-      <ProposalDetail />
+      <ProposalDetail userId={userId} />
     </ReactQueryProvider>
   );
 };

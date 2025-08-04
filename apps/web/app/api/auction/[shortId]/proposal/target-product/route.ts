@@ -1,3 +1,4 @@
+import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import shortUUID from 'short-uuid';
@@ -5,42 +6,41 @@ import shortUUID from 'short-uuid';
 const translator = shortUUID();
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('userId');
-  const shortId = searchParams.get('shortId');
+  try {
+    const { searchParams } = new URL(request.url);
+    const shortId = searchParams.get('shortId');
+    const userId = await getUserId();
 
-  if (!userId || !shortId) {
-    return NextResponse.json(
-      { success: false, message: '요청 정보가 부족합니다.' },
-      { status: 400 }
-    );
-  }
+    if (!userId || !shortId) {
+      throw new Error('요청 정보가 부족합니다.');
+    }
 
-  const auctionId = translator.toUUID(shortId);
+    const auctionId = translator.toUUID(shortId);
 
-  const { data, error } = await supabase
-    .from('auction')
-    .select(
+    const { data, error } = await supabase
+      .from('auction')
+      .select(
+        `
+        auction_id,
+        product_id,
+        min_price,
+        product:product_id(
+          *,
+          product_image:product_image!product_image_product_id_fkey(*)
+        ),
+        bid_history!auction_id(bid_price)
       `
-      auction_id,
-      product_id,
-      min_price,
-      product:product_id(
-        *,
-        product_image:product_image!product_image_product_id_fkey(*)
-      ),
-       bid_history!auction_id(bid_price)
-    `
-    )
-    .eq('auction_id', auctionId)
-    .single();
+      )
+      .eq('auction_id', auctionId)
+      .single();
 
-  if (error || !data) {
-    return NextResponse.json(
-      { success: false, message: '상품 불러오기 실패', error },
-      { status: 500 }
-    );
+    if (error || !data) {
+      throw new Error(`상품 불러오기 실패 : ${error.message}`);
+    }
+
+    return NextResponse.json({ success: true, data: data });
+  } catch (err) {
+    console.error(`target-product 처리 실패`, err);
+    return NextResponse.json({ success: false, message: (err as Error).message }, { status: 500 });
   }
-
-  return NextResponse.json({ success: true, data: data });
 }

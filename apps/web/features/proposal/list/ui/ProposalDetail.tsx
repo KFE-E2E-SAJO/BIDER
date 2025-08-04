@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuthStore } from '@/shared/model/authStore';
 import { useParams, useRouter } from 'next/navigation';
 import { useProposalDetail } from '@/features/proposal/list/model/userProposalDetail';
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
@@ -16,8 +15,7 @@ import Image from 'next/image';
 import useRespondProposal from '@/features/proposal/list/model/useRespondProposal';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 
-const ProposalDetail = () => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
+const ProposalDetail = ({ userId }: { userId: string }) => {
   const params = useParams();
   const router = useRouter();
   const proposalId = params?.proposalId as string;
