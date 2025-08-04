@@ -10,12 +10,27 @@ import { useMessages } from '../model/useMessages';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useMessageRealtime } from '../api/useMessageRealtime';
 import { setMessagesRead } from '../api/setMessageRead';
+import { cn } from '@repo/ui/lib/utils';
+import { getChatRoomLink } from '../model/getChatRoomLink';
+import { AuctionInfoData } from '../types';
+import { useRouter } from 'next/navigation';
+import { encodeUUID } from '@/shared/lib/shortUuid';
 
-const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boolean }) => {
+const MessageList = ({
+  shortId,
+  isChatEnd,
+  auctionInfo,
+}: {
+  shortId: string;
+  isChatEnd: boolean;
+  auctionInfo: AuctionInfoData;
+}) => {
   const { data, isLoading, error } = useMessages(shortId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const prevMessageCountRef = useRef(0);
   const userId = useAuthStore((state) => state.user?.id) as string;
+  const router = useRouter();
+
   useMessageRealtime(shortId);
 
   // 초기 로드 시 스크롤
@@ -45,10 +60,20 @@ const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boole
       </div>
     );
 
+  const linkChatRoom = async () => {
+    const { auctionId, exhibitUserId, bidUserId } = auctionInfo;
+    const encodedChatRoomId = await getChatRoomLink(
+      encodeUUID(auctionId),
+      encodeUUID(exhibitUserId),
+      encodeUUID(bidUserId)
+    );
+    router.push(`/chat/${encodedChatRoomId}`);
+  };
+
   const messages = data;
 
   return (
-    <div className="p-box flex-1 overflow-y-auto pb-[30px]">
+    <div className="p-box custom-scrollbar flex-1 overflow-y-auto">
       {data?.map((message: MessageWithProfile, index) => {
         // 최초 메세지이거나 이전 메세지와 날짜가 달라진 경우 DateDivider
         const currentDate = new Date(message.created_at);
@@ -85,13 +110,14 @@ const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boole
             {(isFirstMessage || isDifferentDay) && <DateDivider isoDate={message.created_at} />}
             {userId === message.sender_id ? (
               <MyMessage
-                className={
+                className={cn(
                   isFirstMessage || isDifferentDay
                     ? ''
                     : isSameUserTalking
                       ? 'mt-[10px]'
-                      : 'mt-[20px]'
-                }
+                      : 'mt-[20px]',
+                  isLastMessage && 'mb-[30px]'
+                )}
                 text={message.content}
                 showTime={showTime}
                 time={message.created_at}
@@ -100,13 +126,14 @@ const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boole
               />
             ) : (
               <YourMessage
-                className={
+                className={cn(
                   isFirstMessage || isDifferentDay
                     ? ''
                     : isSameUserTalking
                       ? 'mt-[10px]'
-                      : 'mt-[20px]'
-                }
+                      : 'mt-[20px]',
+                  isLastMessage && 'mb-[30px]'
+                )}
                 text={message.content}
                 showTime={showTime}
                 showAvatar={isDifferentDay || !isSameUserTalking}
@@ -120,9 +147,17 @@ const MessageList = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: boole
         return returnMessage;
       })}
       {isChatEnd && (
-        <div className="my-[30px] text-center text-neutral-600">
-          상대방이 채팅을 종료했습니다. <br />
-          대화를 이어가시려면 새로운 채팅방을 생성해주세요.
+        <div className="bg-main-lightest py-[20px] text-center">
+          <div className="typo-caption-medium text-neutral-600">
+            상대방이 채팅을 종료했습니다. <br />
+            대화를 이어가시려면 새로운 채팅방을 생성해주세요.
+          </div>
+          <button
+            onClick={linkChatRoom}
+            className="typo-body-medium text-main mt-[7px] cursor-pointer underline outline-none focus:outline-none focus:ring-0 active:outline-none"
+          >
+            새 채팅 시작하기
+          </button>
         </div>
       )}
       <div ref={bottomRef} />

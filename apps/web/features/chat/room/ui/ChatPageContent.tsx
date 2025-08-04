@@ -31,7 +31,7 @@ const ChatPageContent = ({ shortId }: { shortId: string }) => {
       <AuctionInfo data={data} />
 
       {/* 채팅 내역 */}
-      <MessageList shortId={shortId} isChatEnd={isChatEnd} />
+      <MessageList shortId={shortId} isChatEnd={isChatEnd} auctionInfo={data} />
 
       {/* 채팅입력칸 */}
       <ChatInputBar shortId={shortId} isChatEnd={isChatEnd} />

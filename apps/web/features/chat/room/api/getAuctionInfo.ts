@@ -25,5 +25,7 @@ export const getAuctionInfo = async (shortId: string) => {
     price: data.price,
     status: data.status,
     yourNickName,
+    exhibitUserId: data.exhibit_user_id,
+    bidUserId: data.bid_user_id,
   } as AuctionInfoData;
 };

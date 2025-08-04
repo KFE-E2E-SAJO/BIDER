@@ -28,4 +28,6 @@ export interface AuctionInfoData {
   price: number;
   status: string;
   yourNickName: string;
+  exhibitUserId: string;
+  bidUserId: string;
 }
