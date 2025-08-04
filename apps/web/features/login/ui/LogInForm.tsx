@@ -3,7 +3,7 @@ import { Input } from '@repo/ui/components/Input/Input';
 import { Button } from '@repo/ui/components/Button/Button';
 import { Mail, LockKeyhole } from 'lucide-react';
 import Link from 'next/link';
-import { useLogin } from '../model/useLogin';
+import { useLogin } from '@/features/login/model/useLogin';
 
 export const LogInForm = () => {
   const { fullEmail, setEmail, password, setPassword, error, isLoading, handleSubmit } = useLogin();

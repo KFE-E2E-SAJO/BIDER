@@ -6,12 +6,7 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const point = searchParams.get('point');
 
-  console.log('[DEBUG] VWORLD_KEY is present:', !!KEY); // true/false만 찍기
-  console.log('[DEBUG] point param:', point);
-
   const url = `https://api.vworld.kr/req/address?service=address&request=getAddress&type=both&crs=epsg:4326&zipcode=false&simple=false&format=json&key=${KEY}&point=${point}`;
-
-  console.log('[DEBUG] Request URL:', url);
 
   try {
     const res = await fetch(url);

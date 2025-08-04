@@ -1,5 +1,5 @@
+import { getUserPoint } from '@/features/point/api/getUserPoint';
 import { useQuery } from '@tanstack/react-query';
-import { getUserPoint } from '../api/getUserPoint';
 
 export const useUserProfile = (userId: string) => {
   return useQuery({

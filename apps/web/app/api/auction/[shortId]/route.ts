@@ -55,6 +55,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     const productData = auctionData.product;
     const userData = productData?.exhibit_user;
 
+    const fallbackBidHistory = bidHistory || [];
+    const safeBidHistory = auctionData.is_secret ? [] : fallbackBidHistory;
+    const safeCurrentHighestBid = auctionData.is_secret
+      ? null
+      : currentHighestBid || auctionData.min_price;
+
     // 응답 데이터 구성
     const response: AuctionDetail = {
       ...auctionData,
@@ -63,8 +69,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
         exhibit_user: userData,
         product_image: productData?.product_image || [],
       },
-      bid_history: bidHistory || [],
-      current_highest_bid: currentHighestBid || auctionData.min_price,
+      bid_cnt: fallbackBidHistory.length,
+      bid_history: safeBidHistory,
+      current_highest_bid: safeCurrentHighestBid,
     } as AuctionDetail;
 
     return NextResponse.json(response);

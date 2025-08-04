@@ -6,3 +6,5 @@ export const DEFAULT_AUCTION_LIST_PARAMS: AuctionListParams = {
   filter: ['exclude-ended'],
   search: '',
 };
+
+export const SECRET_PRICE = '*******' as const;

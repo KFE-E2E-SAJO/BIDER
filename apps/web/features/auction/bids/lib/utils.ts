@@ -14,7 +14,7 @@ export const validateBidPrice = (price: string): boolean => {
   return numericPrice > 0;
 };
 
-export const getInitialBidPrice = (lastPrice: string): string => {
+export const getInitialBidPrice = (lastPrice: number | null): string => {
   return formatNumberWithComma(Number(lastPrice) + 1000);
 };
 

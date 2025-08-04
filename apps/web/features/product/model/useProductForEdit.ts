@@ -1,5 +1,5 @@
+import { fetchProductForEdit } from '@/features/product/api/editProduct';
 import { useQuery } from '@tanstack/react-query';
-import { fetchProductForEdit } from '../api/editProduct';
 
 export const useProductEditQuery = (shortId: string) => {
   return useQuery({

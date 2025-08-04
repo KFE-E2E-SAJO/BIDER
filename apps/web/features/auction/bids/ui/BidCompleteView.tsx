@@ -4,9 +4,9 @@ import { useBidStore } from '@/features/auction/bids/model/bidStore';
 import { Button } from '@repo/ui/components/Button/Button';
 import { Check } from 'lucide-react';
 import React from 'react';
-import { formatBidDate } from '../lib/utils';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
 import { useRouter } from 'next/navigation';
+import { formatBidDate } from '@/features/auction/bids/lib/utils';
 
 const BidCompleteView = () => {
   const { bidInfo } = useBidStore();

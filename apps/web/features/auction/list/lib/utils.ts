@@ -1,4 +1,4 @@
-import { AuctionListParams } from '@/features/auction/list/types';
+import { AuctionListParams, Page } from '@/features/auction/list/types';
 
 export const createAuctionListQueryKey = ({ cate, sort, filter, search }: AuctionListParams) => {
   const key = ['auctionList', cate, sort];
@@ -12,4 +12,15 @@ export const createAuctionListQueryKey = ({ cate, sort, filter, search }: Auctio
   }
 
   return key;
+};
+
+export const getListHeight = (page: Page, showMap: boolean = false) => {
+  switch (page) {
+    case 'home':
+      return showMap ? 'calc(100vh - 535px)' : 'calc(100vh - 235px)';
+    case 'list':
+      return 'calc(100vh - 326px)';
+    case 'search':
+      return 'calc(100vh - 172px)';
+  }
 };
