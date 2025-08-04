@@ -39,6 +39,7 @@ const GoogleMapView = ({
   }, [location]);
 
   if (!currentLocation) return null;
+  console.log(selectedMarker);
 
   return (
     <div className={`${height} bg-neutral-100`}>

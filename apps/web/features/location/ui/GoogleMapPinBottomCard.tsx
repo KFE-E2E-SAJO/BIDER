@@ -29,7 +29,7 @@ const GoogleMapPinBottomCard = ({ product, onClose }: GoogleMapPinBottomCardProp
               {product.title}
             </p>
             <div className="typo-subtitle-small-medium mt-[3px]">
-              {product.highestBid?.toLocaleString()}
+              {product.bidPrice.toLocaleString()}
               <span className="typo-body-regular ml-[2px]">원</span>
             </div>
           </div>

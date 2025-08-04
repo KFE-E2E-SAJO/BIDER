@@ -43,8 +43,9 @@ export interface AuctionMarkerResponse {
   location: Location;
   thumbnail: string;
   auctionEndAt: string;
-  highestBid: number | null;
+  bidPrice: number | SecretBidPrice;
   title: string;
+  isSecret: boolean;
 }
 
 export type Page = 'home' | 'list' | 'search';
