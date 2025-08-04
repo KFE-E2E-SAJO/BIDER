@@ -16,6 +16,7 @@ interface AuctionListProps {
   cate?: CategoryValue;
   listOnly?: boolean;
   search?: string;
+  isHome?: boolean;
 }
 
 const AuctionList = ({
@@ -24,6 +25,7 @@ const AuctionList = ({
   cate = DEFAULT_AUCTION_LIST_PARAMS.cate,
   search = DEFAULT_AUCTION_LIST_PARAMS.search,
   listOnly = true,
+  isHome = false,
 }: AuctionListProps) => {
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useAuctionList({ params: { sort, filter, cate, search } });
@@ -39,16 +41,17 @@ const AuctionList = ({
   if (isLoading) {
     return <Loading />;
   }
-
   if (auctionList.length === 0) {
     return <p className="mt-10 text-center text-neutral-500">상품이 존재하지 않습니다.</p>;
   }
+
+  const listHeight = isHome
+    ? listOnly
+      ? 'calc(100vh - 235px)'
+      : 'calc(100vh - 535px)'
+    : 'calc(100vh - 326px)';
   return (
-    <div
-      ref={parentRef}
-      style={{ height: listOnly ? 'calc(100vh - 235px)' : 'calc(100vh - 535px)' }}
-      className="p-box overflow-auto"
-    >
+    <div ref={parentRef} style={{ height: listHeight }} className="p-box overflow-auto">
       <ul className="relative w-full" style={{ height: `${totalSize}px` }}>
         {virtualRows.map((virtualRow) => {
           const index = virtualRow.index;

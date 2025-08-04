@@ -57,7 +57,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
         <AuctionSortDropdown sort={sort} setSort={setSort} />
       </div>
 
-      <AuctionList sort={sort} listOnly={!showMap} />
+      <AuctionList sort={sort} listOnly={!showMap} isHome={true} />
 
       <Button
         shape="rounded"
