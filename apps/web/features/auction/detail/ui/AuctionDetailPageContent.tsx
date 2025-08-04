@@ -1,8 +1,8 @@
 import React from 'react';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
-import { getAuctionDetail } from '../api/getAuctionDetail';
-import AuctionDetailClient from './AuctionDetailClient';
 import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
+import { getAuctionDetail } from '@/features/auction/detail/api/getAuctionDetail';
+import AuctionDetailClient from '@/features/auction/detail/ui/AuctionDetailClient';
 
 const AuctionDetailPageContent = async ({ shortId }: { shortId: string }) => {
   const queryClient = new QueryClient();

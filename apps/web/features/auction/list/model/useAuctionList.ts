@@ -17,7 +17,6 @@ export const useAuctionList = ({ params }: UseAuctionListProps) => {
     queryFn: ({ pageParam = 0 }) => getAuctionListApi({ offset: pageParam as number, params }),
     getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
     initialPageParam: 0,
-    staleTime: 1000 * 60 * 1,
     retry: 2,
   });
 };

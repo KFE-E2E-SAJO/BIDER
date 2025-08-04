@@ -1,11 +1,11 @@
 import { useAuthStore } from '@/shared/model/authStore';
 import { toast } from '@repo/ui/components/Toast/Sonner';
-import { parseBidPrice, validateBidPrice } from '../lib/utils';
-import { submitBid } from '../api/doBid';
+import { parseBidPrice, validateBidPrice } from '@/features/auction/bids/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { BidResponse, SubmitBidContext } from '../types';
 import { useBidStore } from '@/features/auction/bids/model/bidStore';
 import { useRouter } from 'next/navigation';
+import { BidResponse, SubmitBidContext } from '@/features/auction/bids/types';
+import { submitBid } from '@/features/auction/bids/api/doBid';
 
 export const useBidSubmit = (shortId: string) => {
   const queryClient = useQueryClient();

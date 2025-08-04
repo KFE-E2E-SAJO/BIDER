@@ -1,7 +1,7 @@
 'use server';
 
 import { AuctionList } from '@/entities/auction/model/types';
-import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
+import { DEFAULT_AUCTION_LIST_PARAMS, SECRET_PRICE } from '@/features/auction/list/constants';
 import { AuctionListParams, AuctionListResponse } from '@/features/auction/list/types';
 import { getDistanceKm } from '@/features/product/lib/utils';
 import { searcher } from '@/features/search/lib/utils';
@@ -55,7 +55,8 @@ export async function getAuctionListAction(
     bid_history!auction_id (
       bid_price
     ),
-    created_at
+    created_at,
+    is_secret
   `);
 
   if (error) {
@@ -88,6 +89,7 @@ export async function getAuctionListAction(
     .map((item) => {
       const bidPrices = item.bid_history?.map((b) => b.bid_price) ?? [];
       const highestBid = bidPrices.length > 0 ? Math.max(...bidPrices) : null;
+      const safeBidPrice = item.is_secret ? SECRET_PRICE : (highestBid ?? item.min_price);
       return {
         id: item.auction_id,
         thumbnail:
@@ -96,10 +98,11 @@ export async function getAuctionListAction(
         title: item.product.title,
         address: item.product.address,
         bidCount: item.bid_history?.length ?? 0,
-        bidPrice: highestBid ?? item.min_price,
+        bidPrice: safeBidPrice,
         auctionEndAt: item.auction_end_at,
         auctionStatus: item.auction_status,
         createdAt: item.created_at,
+        isSecret: item.is_secret,
       };
     });
 

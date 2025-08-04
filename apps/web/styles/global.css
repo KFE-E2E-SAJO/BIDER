@@ -50,6 +50,10 @@
   --color-danger-light: #ff9bb4;
   --color-danger-lightest: #ffd1dd;
 
+  /* Event */
+  --color-event: #9787f4;
+  --color-event-light: #e8deff;
+
   /* Dimmed */
   --color-dimmed: #00000066;
 

@@ -2,7 +2,7 @@
 
 import LocationPin from '@/features/location/ui/LocationPin';
 import Loading from '@/shared/ui/Loading/Loading';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@repo/ui/components/Button/Button';
 import { List, Map } from 'lucide-react';
 import { AuctionMarkerResponse, AuctionSort } from '@/features/auction/list/types';
@@ -10,6 +10,7 @@ import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
 import { LocationWithAddress } from '@/features/location/types';
 import GoogleMapSkeleton from '@/features/location/ui/GoogleMapSkeleton';
 import dynamic from 'next/dynamic';
+import { getListHeight } from '@/features/auction/list/lib/utils';
 
 const GoogleMapView = dynamic(() => import('@/features/location/ui/GoogleMapView'), {
   ssr: false,
@@ -36,6 +37,11 @@ interface HomeClientPageProps {
 const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) => {
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
   const [showMap, setShowMap] = useState(true);
+  const [listHeight, setListHeight] = useState(getListHeight('home', showMap));
+
+  useEffect(() => {
+    setListHeight(getListHeight('home', showMap));
+  }, [showMap]);
 
   return (
     <>
@@ -57,7 +63,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
         <AuctionSortDropdown sort={sort} setSort={setSort} />
       </div>
 
-      <AuctionList sort={sort} listOnly={!showMap} />
+      <AuctionList sort={sort} height={listHeight} />
 
       <Button
         shape="rounded"
