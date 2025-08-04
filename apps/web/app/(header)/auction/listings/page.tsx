@@ -1,15 +1,7 @@
-import { Suspense } from 'react';
-import AuctionListings from '@/features/auction/listings';
-import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
+import AuctionListings from '@/features/auction/listings/ui/AuctionListings';
 
 const SetAuctionListings = () => {
-  return (
-    <Suspense fallback={null}>
-      <ReactQueryProvider>
-        <AuctionListings />
-      </ReactQueryProvider>
-    </Suspense>
-  );
+  return <AuctionListings />;
 };
 
 export default SetAuctionListings;
