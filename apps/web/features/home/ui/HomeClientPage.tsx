@@ -38,7 +38,6 @@ type SheetMode = 'collapsed' | 'half' | 'full';
 const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) => {
   const [sheetMode, setSheetMode] = useState<SheetMode>('half');
   const [sort, setSort] = useState<AuctionSort>(DEFAULT_AUCTION_LIST_PARAMS.sort);
-  const sheetRef = useRef<HTMLDivElement>(null);
 
   const getTranslateY = () => {
     switch (sheetMode) {
@@ -51,49 +50,43 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
     }
   };
 
-  // 스와이프 제스처 (간단한 touch 이벤트)
-  useEffect(() => {
-    const sheet = sheetRef.current;
-    if (!sheet) return;
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLDivElement>(null);
 
-    let startY = 0;
-    let currentY = 0;
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
 
-    const onTouchStart = (e: TouchEvent) => {
-      const touch = e.touches?.[0];
-      if (!touch) return;
-      startY = touch.clientY;
-    };
+  const onPointerDown = (e: React.PointerEvent) => {
+    isDragging = true;
+    startY = e.clientY;
+    currentY = startY;
 
-    const onTouchMove = (e: TouchEvent) => {
-      const touch = e.touches?.[0];
-      if (!touch) return;
-      currentY = touch.clientY;
-    };
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp);
+  };
 
-    const onTouchEnd = () => {
-      const delta = currentY - startY;
-      if (delta > 50) {
-        // 아래로 스와이프
-        setSheetMode((prev) =>
-          prev === 'full' ? 'half' : prev === 'half' ? 'collapsed' : 'collapsed'
-        );
-      } else if (delta < -50) {
-        // 위로 스와이프
-        setSheetMode((prev) => (prev === 'collapsed' ? 'half' : prev === 'half' ? 'full' : 'full'));
-      }
-    };
+  const onPointerMove = (e: PointerEvent) => {
+    if (!isDragging) return;
+    currentY = e.clientY;
+  };
 
-    sheet.addEventListener('touchstart', onTouchStart);
-    sheet.addEventListener('touchmove', onTouchMove);
-    sheet.addEventListener('touchend', onTouchEnd);
+  const onPointerUp = () => {
+    if (!isDragging) return;
+    isDragging = false;
 
-    return () => {
-      sheet.removeEventListener('touchstart', onTouchStart);
-      sheet.removeEventListener('touchmove', onTouchMove);
-      sheet.removeEventListener('touchend', onTouchEnd);
-    };
-  }, []);
+    const delta = currentY - startY;
+    if (delta > 50) {
+      setSheetMode((prev) =>
+        prev === 'full' ? 'half' : prev === 'half' ? 'collapsed' : 'collapsed'
+      );
+    } else if (delta < -50) {
+      setSheetMode((prev) => (prev === 'collapsed' ? 'half' : prev === 'half' ? 'full' : 'full'));
+    }
+
+    document.removeEventListener('pointermove', onPointerMove);
+    document.removeEventListener('pointerup', onPointerUp);
+  };
 
   return (
     <>
@@ -120,22 +113,31 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
           <div
             className={`flex h-full flex-col bg-white shadow-lg ${sheetMode !== 'full' ? 'rounded-t-2xl' : ''} `}
           >
-            {/* 상단 핸들 */}
-            {sheetMode !== 'full' && (
-              <div className="flex items-center justify-center pt-[10px]">
-                <div className="h-[6px] w-[75px] rounded-full bg-neutral-300" />
-              </div>
-            )}
-
             <div
-              className={`p-box flex items-center justify-between pb-[20px] ${sheetMode === 'full' ? 'pt-[5px]' : 'pt-[24px]'}`}
+              ref={handleRef}
+              onPointerDown={onPointerDown}
+              style={{ touchAction: 'none' }}
+              className="cursor-pointer"
             >
-              <LocationPin address={userLocation.address} />
-              <AuctionSortDropdown sort={sort} setSort={setSort} />
+              {sheetMode !== 'full' && (
+                <div className="flex items-center justify-center pt-[10px]">
+                  <div className="h-[6px] w-[75px] rounded-full bg-neutral-300" />
+                </div>
+              )}
+
+              <div
+                className={`p-box flex items-center justify-between pb-[20px] ${sheetMode === 'full' ? 'pt-[10px]' : 'pt-[24px]'}`}
+              >
+                <LocationPin address={userLocation.address} />
+                <AuctionSortDropdown sort={sort} setSort={setSort} />
+              </div>
             </div>
 
             {/* 리스트 */}
-            <div className={`flex-1 overflow-y-scroll ${sheetMode !== 'full' ? 'pb-[300px]' : ''}`}>
+            <div
+              className={`flex-1 overflow-y-scroll`}
+              style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 80px)' : '' }}
+            >
               <AuctionList sort={sort} />
             </div>
           </div>
@@ -144,7 +146,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
           <Button
             shape="rounded"
             size="fit"
-            className="typo-caption-medium fixed bottom-[112px] left-1/2 z-20 h-10 -translate-x-1/2 bg-neutral-900"
+            className="typo-caption-medium fixed bottom-[122px] left-1/2 z-20 h-10 -translate-x-1/2 bg-neutral-900"
             onClick={() => {
               setSheetMode('collapsed');
             }}
