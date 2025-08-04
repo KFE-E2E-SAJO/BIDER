@@ -35,7 +35,7 @@ export async function handleRedirect(request: NextRequest) {
     '/bid',
     '/alarm',
   ];
-  const authRoutes = ['/login', '/signup', '/find-id', '/reset-pw'];
+  const authRoutes = ['/login', '/signup', '/find-id'];
 
   if (redirectPage === '/splash') {
     if (isLoggedIn) {
