@@ -105,7 +105,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
         {/* 하단 리스트 시트 */}
         <div
           ref={sheetRef}
-          className="bg-neutral-0 absolute left-0 right-0 top-0 z-10 h-full transition-transform duration-300"
+          className="absolute left-0 right-0 top-0 z-10 h-full transition-transform duration-300"
           style={{ transform: `translateY(${getTranslateY()})` }}
         >
           <div

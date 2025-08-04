@@ -63,9 +63,7 @@ const AuctionList = ({
               }`}
               style={{
                 height:
-                  !listOnly && virtualRow.index === 0
-                    ? `${virtualRow.size - 20}px`
-                    : `${virtualRow.size}px`,
+                  virtualRow.index === 0 ? `${virtualRow.size - 20}px` : `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >

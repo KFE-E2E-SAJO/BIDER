@@ -38,4 +38,7 @@ export interface AuctionMarkerResponse {
   id: string;
   location: Location;
   thumbnail: string;
+  auctionEndAt: string;
+  highestBid: number | null;
+  title: string;
 }

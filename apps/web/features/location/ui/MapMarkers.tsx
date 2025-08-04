@@ -1,10 +1,7 @@
-import { InfoWindow, useMap } from '@vis.gl/react-google-maps';
+import { useMap } from '@vis.gl/react-google-maps';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { type Marker, MarkerClusterer } from '@googlemaps/markerclusterer';
 import { MarkerItem } from '@/features/location/ui/MarkerItem';
-import Image from 'next/image';
-import Link from 'next/link';
-import { encodeUUID } from '@/shared/lib/shortUuid';
 import { AuctionMarkerResponse } from '@/features/auction/list/types';
 
 export type MapMarkersProps = {

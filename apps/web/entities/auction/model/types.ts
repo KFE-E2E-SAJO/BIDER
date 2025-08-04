@@ -43,6 +43,10 @@ export type AuctionList = Pick<
   bid_history: Pick<BidHistory, 'bid_price'>[];
 };
 
-export type MapAuction = Pick<Auction, 'auction_id' | 'product_id'> & {
+export type MapAuction = Pick<
+  Auction,
+  'auction_id' | 'product_id' | 'auction_end_at' | 'min_price'
+> & {
+  highest_bid?: { max: number | null }[];
   product: ProductForMapList;
 };

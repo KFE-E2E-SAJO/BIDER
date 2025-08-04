@@ -28,9 +28,13 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
       `
     auction_id,
     auction_status,
+    auction_end_at,
+    min_price,
+    highest_bid:bid_history!auction_id(max:bid_price),
     product:product_id (
       latitude,
       longitude,
+      title,
       product_image (
         image_url,
         order_index
@@ -52,6 +56,9 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
 
   const markers = filtered.map((item) => ({
     id: item.auction_id,
+    auctionEndAt: item.auction_end_at,
+    highestBid: item.highest_bid?.[0]?.max ?? item.min_price,
+    title: item.product.title,
     location: {
       lat: item.product.latitude,
       lng: item.product.longitude,
