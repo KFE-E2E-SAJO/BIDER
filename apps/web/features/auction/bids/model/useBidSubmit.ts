@@ -45,7 +45,7 @@ export const useBidSubmit = (shortId: string) => {
       }
       toast({ content: result.message || '입찰이 완료되었습니다!' });
       context?.onSuccess?.();
-      router.replace('/bid/complete');
+      router.push('/bid/complete');
     },
     onError: (error) => {
       const errorMessage =
