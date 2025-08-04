@@ -18,9 +18,7 @@ const GoogleMapView = dynamic(() => import('@/features/location/ui/GoogleMapView
 
 const AuctionSortDropdown = dynamic(
   () => import('@/features/auction/list/ui/AuctionSortDropdown'),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
 
 const AuctionList = dynamic(() => import('@/features/auction/list/ui/AuctionList'), {
@@ -42,7 +40,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
   const getTranslateY = () => {
     switch (sheetMode) {
       case 'collapsed':
-        return '88%'; // 지도만 보임
+        return '92%'; // 지도만 보임
       case 'half':
         return '45%'; // 지도 + 리스트 반반
       case 'full':
@@ -90,10 +88,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
 
   return (
     <>
-      <div
-        className="relative h-dvh w-full overflow-hidden"
-        style={{ height: 'calc(100dvh - 167px)' }}
-      >
+      <div className="relative w-full overflow-hidden" style={{ height: 'calc(100svh - 167px)' }}>
         {/* 배경 전체 지도 */}
         <GoogleMapView
           mapId="auctionList"
@@ -102,6 +97,9 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
           showMyLocation={false}
           markers={auctionMarkers}
           showMarkers={true}
+          onMarkerClick={() => {
+            setSheetMode('collapsed');
+          }}
         />
 
         {/* 하단 리스트 시트 */}
@@ -111,7 +109,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
           style={{ transform: `translateY(${getTranslateY()})` }}
         >
           <div
-            className={`flex h-full flex-col bg-white shadow-lg ${sheetMode !== 'full' ? 'rounded-t-2xl' : ''} `}
+            className={`flex h-full flex-col overflow-y-hidden bg-white shadow-lg ${sheetMode !== 'full' ? 'rounded-t-2xl' : ''} `}
           >
             <div
               ref={handleRef}
@@ -120,23 +118,35 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
               className="cursor-pointer"
             >
               {sheetMode !== 'full' && (
-                <div className="flex items-center justify-center pt-[10px]">
+                <div
+                  className={`flex items-center justify-center pt-[10px] ${sheetMode === 'collapsed' ? 'pb-[50px]' : 'pb-[24px]'} `}
+                >
                   <div className="h-[6px] w-[75px] rounded-full bg-neutral-300" />
                 </div>
               )}
 
-              <div
-                className={`p-box flex items-center justify-between pb-[20px] ${sheetMode === 'full' ? 'pt-[10px]' : 'pt-[24px]'}`}
-              >
-                <LocationPin address={userLocation.address} />
-                <AuctionSortDropdown sort={sort} setSort={setSort} />
-              </div>
+              {sheetMode !== 'collapsed' && (
+                <div
+                  className={`p-box flex items-center justify-between pb-[20px] ${sheetMode === 'full' ? 'pt-[10px]' : 'pt-0'}`}
+                >
+                  <LocationPin address={userLocation.address} />
+                  <AuctionSortDropdown sort={sort} setSort={setSort} />
+                </div>
+              )}
             </div>
 
             {/* 리스트 */}
             <div
-              className={`flex-1 overflow-y-scroll`}
-              style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 80px)' : '' }}
+              className="flex-1 overflow-y-auto"
+              // style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 80px)' : '0' }}
+              style={{
+                height:
+                  sheetMode === 'half'
+                    ? `calc(45svh - 80px)` // 보이는 높이 기준
+                    : `calc(100svh - 80px)`, // full 모드일 때
+                paddingBottom: 'env(safe-area-inset-bottom)', // iOS 홈바 높이만큼 패딩
+                WebkitOverflowScrolling: 'touch', // 부드러운 스크롤
+              }}
             >
               <AuctionList sort={sort} />
             </div>

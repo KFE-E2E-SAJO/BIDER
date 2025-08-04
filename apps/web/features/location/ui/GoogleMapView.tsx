@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { Location } from '@/features/location/types';
 import { MapMarkers } from '@/features/location/ui/MapMarkers';
 import { AuctionMarkerResponse } from '@/features/auction/list/types';
+import GoogleMapPinBottomCard from './GoogleMapPinBottomCard';
+import GoogleMapAdjustCenter from './GoogleMapAdjustCenter';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
@@ -15,6 +17,7 @@ export interface GoogleMapViewProps {
   markers?: AuctionMarkerResponse[];
   showMyLocation?: boolean;
   showMarkers?: boolean;
+  onMarkerClick?: (marker: AuctionMarkerResponse) => void;
 }
 
 const GoogleMapView = ({
@@ -24,8 +27,10 @@ const GoogleMapView = ({
   markers = [],
   showMyLocation = true,
   showMarkers = false,
+  onMarkerClick,
 }: GoogleMapViewProps) => {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<AuctionMarkerResponse | null>(null);
 
   useEffect(() => {
     if (location) {
@@ -45,6 +50,8 @@ const GoogleMapView = ({
           disableDefaultUI
           gestureHandling="greedy"
         >
+          <GoogleMapAdjustCenter />
+
           {showMyLocation && (
             <AdvancedMarker position={currentLocation}>
               <Pin
@@ -55,9 +62,22 @@ const GoogleMapView = ({
             </AdvancedMarker>
           )}
 
-          {showMarkers && <MapMarkers pois={markers} />}
+          {showMarkers && (
+            <MapMarkers
+              pois={markers}
+              selectedMarkerId={selectedMarker?.id ?? null}
+              onMarkerSelect={(marker) => {
+                onMarkerClick?.(marker);
+                setSelectedMarker(marker);
+              }}
+            />
+          )}
         </Map>
       </APIProvider>
+
+      {selectedMarker && (
+        <GoogleMapPinBottomCard product={selectedMarker} onClose={() => setSelectedMarker(null)} />
+      )}
     </div>
   );
 };
