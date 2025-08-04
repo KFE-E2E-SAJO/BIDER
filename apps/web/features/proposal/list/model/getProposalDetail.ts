@@ -1,7 +1,9 @@
 import { ProposalDetailParams } from '@/features/proposal/list/types';
+import getUserId from '@/shared/lib/getUserId';
 
 const getProposalDetail = async (params: ProposalDetailParams) => {
-  const { userId, proposalId } = params;
+  const { proposalId } = params;
+  const userId = await getUserId();
   const res = await fetch(
     `/api/proposal/received-proposal/proposal-detail?userId=${userId}&proposalId=${proposalId}`
   );
