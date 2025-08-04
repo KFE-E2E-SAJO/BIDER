@@ -46,7 +46,7 @@ const AuctionList = ({
   return (
     <div
       ref={parentRef}
-      style={{ height: listOnly ? 'calc(100vh - 235px)' : '100%' }}
+      style={{ height: listOnly ? 'calc(100vh - 235px)' : 'calc(100vh - 535px)' }}
       className="p-box overflow-auto"
     >
       <ul className="relative w-full" style={{ height: `${totalSize}px` }}>

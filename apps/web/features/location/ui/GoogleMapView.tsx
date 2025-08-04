@@ -32,8 +32,6 @@ const GoogleMapView = ({
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<AuctionMarkerResponse | null>(null);
 
-  console.log(selectedMarker);
-
   useEffect(() => {
     if (location) {
       setCurrentLocation(location);
