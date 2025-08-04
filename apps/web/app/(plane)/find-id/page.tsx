@@ -7,10 +7,24 @@ import { useRouter } from 'next/navigation';
 import { FindAccountConfig } from '@/features/find-id/lib/findAccountConfig';
 import { Suspense } from 'react';
 import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
+import { EmailVerifiedField } from '@/features/signup/ui/EmailVerifiedField';
 
 function FindAccountContent() {
-  const { inputValue, isFound, isSearching, accountType, result, setInputValue, handleSubmit } =
-    useFindId();
+  const {
+    inputValue,
+    isFound,
+    isSearching,
+    accountType,
+    result,
+    verifiedCode,
+    verifiedCodeError,
+    isEmailVerified,
+    verifiedEmail,
+    setInputValue,
+    handleSubmit,
+    setVerifiedCode,
+    onClickVerifyCode,
+  } = useFindId();
 
   const router = useRouter();
   const config = FindAccountConfig(accountType);
@@ -64,23 +78,39 @@ function FindAccountContent() {
               <p className="mb-[1.12rem] mt-2 pl-4 text-xs text-gray-500">{config.description}</p>
             </div>
 
-            <div className="flex justify-between gap-3">
-              <Button
-                variant="secondary"
-                className="h-13 typo-body-medium flex-1"
-                onClick={() => router.push('/login')}
-              >
-                로그인 하기
-              </Button>
-
+            <div>
               {accountType == 'email' && (
-                <Button
-                  variant="secondary"
-                  className="h-13 typo-body-medium flex-1"
-                  onClick={() => router.push('/find-id?type=password')}
-                >
-                  비밀번호 찾기
-                </Button>
+                <div className="flex justify-between gap-3">
+                  <Button
+                    variant="secondary"
+                    className="h-13 typo-body-medium flex-1"
+                    onClick={() => router.push('/login')}
+                  >
+                    로그인 하기
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    className="h-13 typo-body-medium flex-1"
+                    onClick={() => router.push('/find-id?type=password')}
+                  >
+                    비밀번호 찾기
+                  </Button>
+                </div>
+              )}
+
+              {accountType == 'password' && (
+                <div className="mt-2 block">
+                  <EmailVerifiedField
+                    verifiedCode={verifiedCode}
+                    verifiedCodeError={verifiedCodeError}
+                    isEmailVerified={isEmailVerified}
+                    verifiedEmail={inputValue}
+                    onChangeVerifiedCode={setVerifiedCode}
+                    onClickVerifyCode={onClickVerifyCode}
+                    disabled={!verifiedEmail}
+                    isLoading={isSearching}
+                  />
+                </div>
               )}
             </div>
           </div>
