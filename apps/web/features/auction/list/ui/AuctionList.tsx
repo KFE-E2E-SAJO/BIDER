@@ -1,22 +1,23 @@
 import { DEFAULT_AUCTION_LIST_PARAMS } from '@/features/auction/list/constants';
+import { getListHeight } from '@/features/auction/list/lib/utils';
 import { useAuctionList } from '@/features/auction/list/model/useAuctionList';
 import useAuctionListErrorHandler from '@/features/auction/list/model/useAuctionListErrorHandler';
 import useVirtualInfiniteScroll from '@/features/auction/list/model/useVirtualInfiniteScroll';
-import { AuctionFilter, AuctionSort } from '@/features/auction/list/types';
+import { AuctionFilter, AuctionSort, Page } from '@/features/auction/list/types';
 import AuctionItem from '@/features/auction/list/ui/AuctionItem';
 import { CategoryValue } from '@/features/category/types';
 import Skeleton from '@/features/product/ui/Skeleton';
 import { encodeUUID } from '@/shared/lib/shortUuid';
 import Loading from '@/shared/ui/Loading/Loading';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface AuctionListProps {
   sort?: AuctionSort;
   filter?: AuctionFilter[];
   cate?: CategoryValue;
-  listOnly?: boolean;
   search?: string;
-  isHome?: boolean;
+  height: string;
 }
 
 const AuctionList = ({
@@ -24,8 +25,7 @@ const AuctionList = ({
   filter = DEFAULT_AUCTION_LIST_PARAMS.filter,
   cate = DEFAULT_AUCTION_LIST_PARAMS.cate,
   search = DEFAULT_AUCTION_LIST_PARAMS.search,
-  listOnly = true,
-  isHome = false,
+  height,
 }: AuctionListProps) => {
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useAuctionList({ params: { sort, filter, cate, search } });
@@ -45,13 +45,8 @@ const AuctionList = ({
     return <p className="mt-10 text-center text-neutral-500">상품이 존재하지 않습니다.</p>;
   }
 
-  const listHeight = isHome
-    ? listOnly
-      ? 'calc(100vh - 235px)'
-      : 'calc(100vh - 535px)'
-    : 'calc(100vh - 326px)';
   return (
-    <div ref={parentRef} style={{ height: listHeight }} className="p-box overflow-auto">
+    <div ref={parentRef} style={{ height: height }} className="p-box overflow-auto">
       <ul className="relative w-full" style={{ height: `${totalSize}px` }}>
         {virtualRows.map((virtualRow) => {
           const index = virtualRow.index;

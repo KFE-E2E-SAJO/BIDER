@@ -43,3 +43,5 @@ export interface AuctionMarkerResponse {
   location: Location;
   thumbnail: string;
 }
+
+export type Page = 'home' | 'list' | 'search';

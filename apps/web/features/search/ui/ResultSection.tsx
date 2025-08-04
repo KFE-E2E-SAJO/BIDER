@@ -8,6 +8,7 @@ import AuctionList from '@/features/auction/list/ui/AuctionList';
 import dynamic from 'next/dynamic';
 import LocationPin from '@/features/location/ui/LocationPin';
 import AuctionFilter from '@/features/auction/list/ui/AuctionFilter';
+import { getListHeight } from '@/features/auction/list/lib/utils';
 
 const AuctionSortDropdown = dynamic(
   () => import('@/features/auction/list/ui/AuctionSortDropdown'),
@@ -30,6 +31,7 @@ const ResultSection = ({ search, address }: ResultSectionProps) => {
   const [filter, setFilter] = useState<AuctionFilterType[]>(DEFAULT_AUCTION_LIST_PARAMS.filter);
   const [cate, setCate] = useState<CategoryValue>(DEFAULT_AUCTION_LIST_PARAMS.cate);
   const isEmpty = !search.trim();
+  const listHeight = getListHeight('search');
 
   return (
     <>
@@ -46,7 +48,7 @@ const ResultSection = ({ search, address }: ResultSectionProps) => {
       {isEmpty ? (
         <p className="mt-10 text-center text-neutral-500">검색어를 입력해주세요.</p>
       ) : (
-        <AuctionList sort={sort} filter={filter} cate={cate} search={search} />
+        <AuctionList sort={sort} filter={filter} cate={cate} search={search} height={listHeight} />
       )}
     </>
   );
