@@ -76,9 +76,9 @@ const ChatInputBar = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: bool
           }}
           className="max-h-[157px] flex-1"
         />
-        <button className="ring-0" onClick={() => console.log('picture')} disabled={isChatEnd}>
+        {/* <button className="ring-0" onClick={() => console.log('picture')} disabled={isChatEnd}>
           <Camera size={24} className="mx-[15px] mb-[9px] text-neutral-700" />
-        </button>
+        </button> */}
       </div>
       <button
         className={`mb-[9px] ring-0 ${isMessageSendable ? 'cursor-pointer' : ''}`}
