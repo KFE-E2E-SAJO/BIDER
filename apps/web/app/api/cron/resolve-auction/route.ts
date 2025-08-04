@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
               .eq('auction_id', auction.auction_id);
 
             // 푸시 알림 전송
-            await fetch(`${origin}/api/acution/noBid`, {
+            await fetch(`${origin}/api/alarm/auction/noBid`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
             }
 
             // 푸시 알람 전송(낙찰자, 출품자)
-            await fetch(`${origin}/api/alarm/acution/winningBid`, {
+            await fetch(`${origin}/api/alarm/auction/winningBid`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
               await createPointByReason('deal_complete_seller', auction.product.exhibit_user_id);
               try {
                 // 푸시 알람 전송(출품자 포인트 적립)
-                await fetch(`${origin}/api/point`, {
+                await fetch(`${origin}/api/alarm/point`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ export async function GET(request: NextRequest) {
 
               try {
                 // 푸시 알람 전송(낙찰자 포인트 적립)
-                await fetch(`${origin}/api/point`, {
+                await fetch(`${origin}/api/alarm/point`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',

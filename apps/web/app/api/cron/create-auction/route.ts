@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
           //푸시 알림(경매 시작)
           try {
             const { origin } = new URL(request.url);
-            const test = await fetch(`${origin}/api/alarm/acution/startBid`, {
+            const test = await fetch(`${origin}/api/alarm/auction/startBid`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

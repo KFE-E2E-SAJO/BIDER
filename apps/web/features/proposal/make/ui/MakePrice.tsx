@@ -48,8 +48,6 @@ const MakePrice = () => {
     formData.append('auctionId', auctionId);
     formData.append('proposedPrice', price);
 
-    console.log('-----------formdata:', formData, '-----------');
-
     try {
       const res = await fetch(`/api/auction/${shortId}/proposal`, {
         method: 'POST',

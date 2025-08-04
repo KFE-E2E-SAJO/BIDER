@@ -6,49 +6,80 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const proposalValue = await req.json();
 
-  console.log('--------proposalValue:', proposalValue, '--------');
-
   try {
-    const { data, error } = await supabase
+    const { data: proposalData, error: proposalError } = await supabase
       .from('proposal')
       .select(
         `
-          proposal_id,
-          proposer:proposer_id (
-            nickname
-          ),
-          auction:auction_id (
-            product:product_id (
-              title,
-              product_image (
-                image_url
-              )
+        proposer_id,
+        proposed_price,
+        auction_id,
+        auction (
+          product (
+            title,
+            exhibit_user_id,
+            product_image (
+              image_url,
+              order_index
             )
           )
-        `
+        )
+      `
       )
       .eq('proposal_id', proposalValue.proposalId)
       .single();
 
-    console.log('------data', data, '--------');
-
-    if (error || !data) {
-      return NextResponse.json({ error: '데이터 조회 실패' }, { status: 500 });
+    if (proposalError || !proposalData) {
+      console.error('제안 데이터 조회 실패:', proposalError);
+      return NextResponse.json(
+        {
+          error: '제안 정보를 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
     }
+
+    const proposerId = proposalData.proposer_id;
+    const productInfo = proposalData.auction.product;
+
+    const { data: sellerProfile, error: sellerError } = await supabase
+      .from('profiles')
+      .select('nickname')
+      .eq('user_id', proposalValue.user_id)
+      .single();
+
+    if (sellerError || !sellerProfile) {
+      console.error('판매자 프로필 조회 실패:', sellerError);
+      return NextResponse.json(
+        {
+          error: '사용자 정보를 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
+    }
+
+    const sellerNickname = sellerProfile.nickname;
+
+    const sortedImages = productInfo?.product_image?.sort((a, b) => a.order_index - b.order_index);
+    const firstImageUrl = sortedImages?.[0]?.image_url;
+
     const payload = {
-      nickname: data.proposer[0]?.nickname,
-      productName: data.auction[0]?.product?.title,
-      image: data.auction[0]?.product?.product_image?.[0]?.image_url ?? null,
-      // chatroomId: chatRoomRes.data?.chatroom_id ?? null,
+      nickname: sellerNickname,
+      productName: productInfo?.title,
+      image: firstImageUrl,
+      price: proposalData.proposed_price,
     };
 
-    console.log('payload: ', payload);
-
-    await sendNotification(`${proposalValue.user_id}`, 'auction', 'proposalAccepted', payload);
+    await sendNotification(proposerId, 'auction', 'proposalAccepted', payload);
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('알림 전송 오류:', err);
-    return NextResponse.json({ error: '알림 전송 실패' }, { status: 500 });
+    console.error('제안 수락 알림 전송 오류:', err);
+    return NextResponse.json(
+      {
+        error: err instanceof Error ? err.message : '알림 전송 실패',
+      },
+      { status: 500 }
+    );
   }
 }

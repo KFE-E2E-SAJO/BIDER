@@ -172,7 +172,7 @@ export async function POST(req: NextRequest) {
     const { origin } = new URL(req.url);
 
     // 푸시 알람 전송(판매자, 입찰자)
-    await fetch(`${origin}/api/alarm/acution/bid`, {
+    await fetch(`${origin}/api/alarm/auction/bid`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

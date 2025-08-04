@@ -6,43 +6,47 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const proposalValue = await req.json();
 
-  console.log('-----------proposalValue:', proposalValue, '-------------');
-
   try {
-    const { data, error } = await supabase
-      .from('proposal')
+    // 닉네임 조회(제안자)
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('nickname')
+      .eq('user_id', proposalValue.user_id);
+
+    const nickname = profileData?.[0]?.nickname;
+
+    // 상품 정보 조회
+    const { data: auctionData, error: auctionError } = await supabase
+      .from('auction')
       .select(
         `
-           *,
-           auction:proposal_auction_id_fkey(
-             auction_id,
-             product:product_id(
-               product_id,
-               title,
-               product_image:product_image!product_image_product_id_fkey(image_url),
-                exhibit_user_id
-               )
-             ),
-           proposer_id:proposal_proposer_id_fkey(nickname, profile_img, user_id)    
-         `
+        product (
+          title,
+          exhibit_user_id,
+          product_image (
+            image_url
+          )
+        )
+        `
       )
-      .eq('proposer_id', proposalValue.user_id)
-      .order('created_at', { ascending: false });
+      .eq('auction_id', proposalValue.auctionId)
+      .single();
 
-    console.log('--------data', data, '----------');
-
-    if (error || !data) {
-      return NextResponse.json({ error: '데이터 조회 실패' }, { status: 500 });
-    }
+    const productInfo = auctionData?.product;
 
     const payload = {
-      nickname: data[0]?.proposer_id?.nickname,
-      productName: data[0]?.auction?.product?.title,
+      nickname: nickname,
+      productName: productInfo?.title,
+      image: productInfo?.product_image?.image_url,
       price: proposalValue.price,
-      image: data[0]?.auction?.product?.product_image?.[0]?.image_url,
     };
 
-    await sendNotification(`${proposalValue.user_id}`, 'auction', 'proposalRequest', payload);
+    await sendNotification(
+      `${productInfo?.exhibit_user_id}`,
+      'auction',
+      'proposalRequest',
+      payload
+    );
 
     return NextResponse.json({ success: true });
   } catch (err) {
