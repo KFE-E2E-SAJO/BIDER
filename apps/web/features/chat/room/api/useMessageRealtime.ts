@@ -135,6 +135,23 @@ export const useMessageRealtime = (chatRoomId: string) => {
       }
     );
 
+    // 3. system_message 테이블 INSERT 감지
+    channel.on(
+      'postgres_changes' as any,
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'system_message',
+        filter: `chatroom_id=eq.${fullChatRoomId}`,
+      },
+      async (payload: RealtimeMessagePayload) => {
+        const systemMessage = payload.new;
+        if (!systemMessage) return;
+
+        queryClient.setQueryData(['systemMessage', chatRoomId], systemMessage);
+      }
+    );
+
     channel.subscribe();
 
     return () => {
