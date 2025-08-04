@@ -15,7 +15,6 @@ export default async function checkSecretViewHistory(
 
   const userId = session?.user.id;
 
-  console.log(userId, auctionId);
   if (!session?.user) {
     return { hasPaid: false, isValid: false };
   }

@@ -3,14 +3,16 @@ import { Avatar } from '@repo/ui/components/Avatar/Avatar';
 import { AlarmClock, Info, PencilLine } from 'lucide-react';
 import React, { useState } from 'react';
 import { formatTimestamptz } from '@/shared/lib/formatTimestamp';
-import BiddingStatusBoard from './BiddingStatusBoard';
+
 import { getCategoryLabel } from '@/features/category/lib/utils';
 import { CategoryValue } from '@/features/category/types';
 import GoogleMapView from '@/features/location/ui/GoogleMapView';
-import ProposalActionButton from './ProposalActionButton';
+
 import { AuctionDetailContentProps } from '@/features/auction/detail/types';
 import SecretBidStatusBoard from '@/features/auction/secret/ui/SecretBiddingStatusBoard';
 import Link from 'next/link';
+import ProposalActionButton from '@/features/auction/detail/ui/ProposalActionButton';
+import BiddingStatusBoard from '@/features/auction/detail/ui/BiddingStatusBoard';
 
 const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
