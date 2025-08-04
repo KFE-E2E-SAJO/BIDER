@@ -13,6 +13,7 @@ import SecretBidStatusBoard from '@/features/auction/secret/ui/SecretBiddingStat
 import Link from 'next/link';
 import ProposalActionButton from '@/features/auction/detail/ui/ProposalActionButton';
 import BiddingStatusBoard from '@/features/auction/detail/ui/BiddingStatusBoard';
+import { SECRET_PRICE } from '@/features/auction/list/constants';
 
 const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
   const [currentHighestBid, setCurrentHighestBid] = useState(data.currentHighestBid);
@@ -35,7 +36,7 @@ const AuctionDetail = ({ data, isProductMine }: AuctionDetailContentProps) => {
             <div className="typo-caption-regular text-neutral-600">최고 입찰가</div>
             <div className="typo-subtitle-bold">
               {data.isSecret ? (
-                <span className="text-event">******* </span>
+                <span className="text-event">{SECRET_PRICE} </span>
               ) : (
                 formatNumberWithComma(currentHighestBid as number)
               )}

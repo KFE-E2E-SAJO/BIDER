@@ -39,7 +39,13 @@ export interface AuctionForBid {
 
 export type AuctionList = Pick<
   Auction,
-  'auction_id' | 'product_id' | 'auction_status' | 'min_price' | 'auction_end_at' | 'created_at'
+  | 'auction_id'
+  | 'product_id'
+  | 'auction_status'
+  | 'min_price'
+  | 'auction_end_at'
+  | 'created_at'
+  | 'is_secret'
 > & {
   product: ProductForList;
   bid_history: Pick<BidHistory, 'bid_price'>[];
