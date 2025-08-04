@@ -105,7 +105,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
         {/* 하단 리스트 시트 */}
         <div
           ref={sheetRef}
-          className="absolute left-0 right-0 top-0 z-10 h-full transition-transform duration-300"
+          className="bg-neutral-0 absolute left-0 right-0 top-0 z-10 h-full transition-transform duration-300"
           style={{ transform: `translateY(${getTranslateY()})` }}
         >
           <div
@@ -138,15 +138,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
             {/* 리스트 */}
             <div
               className="flex-1 overflow-y-auto"
-              // style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 80px)' : '0' }}
-              style={{
-                height:
-                  sheetMode === 'half'
-                    ? `calc(45svh - 80px)` // 보이는 높이 기준
-                    : `calc(100svh - 80px)`, // full 모드일 때
-                paddingBottom: 'env(safe-area-inset-bottom)', // iOS 홈바 높이만큼 패딩
-                WebkitOverflowScrolling: 'touch', // 부드러운 스크롤
-              }}
+              style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 80px)' : '0' }}
             >
               <AuctionList sort={sort} />
             </div>

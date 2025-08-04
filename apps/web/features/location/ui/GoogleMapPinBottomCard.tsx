@@ -13,9 +13,9 @@ interface GoogleMapPinBottomCardProps {
 
 const GoogleMapPinBottomCard = ({ product, onClose }: GoogleMapPinBottomCardProps) => {
   return (
-    <div className="bg-neutral-0 animate-slide-up fixed bottom-[21dvh] left-[50%] w-[90%] max-w-[400px] translate-x-[-50%] rounded-xl shadow-lg">
+    <div className="bg-neutral-0 animate-slide-up fixed bottom-[21dvh] left-[50%] w-[90%] max-w-[400px] translate-x-[-50%] overflow-hidden rounded-xl shadow-lg">
       <div className="flex gap-2">
-        <div className="relative h-24 w-24 overflow-hidden rounded-md">
+        <div className="relative h-24 w-24">
           <Image src={product.thumbnail} alt={''} fill className="object-cover" />
         </div>
         <div className="flex flex-1 flex-col justify-between p-[10px]">

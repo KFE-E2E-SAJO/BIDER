@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { Location } from '@/features/location/types';
 import { MapMarkers } from '@/features/location/ui/MapMarkers';
 import { AuctionMarkerResponse } from '@/features/auction/list/types';
-import GoogleMapPinBottomCard from './GoogleMapPinBottomCard';
-import GoogleMapAdjustCenter from './GoogleMapAdjustCenter';
+import GoogleMapPinBottomCard from '@/features/location/ui/GoogleMapPinBottomCard';
+import GoogleMapAdjustCenter from '@/features/location/ui/GoogleMapAdjustCenter';
 
 const MAPAPIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
