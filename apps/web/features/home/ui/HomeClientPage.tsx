@@ -156,7 +156,7 @@ const HomeClientPage = ({ userLocation, auctionMarkers }: HomeClientPageProps) =
             {/* 리스트 */}
             <div
               className="flex-1 overflow-y-auto"
-              style={{ paddingBottom: sheetMode === 'half' ? 'calc(0.45 * 100dvh - 72px)' : '0' }}
+              style={{ paddingBottom: sheetMode === 'half' ? '279px' : '0' }}
             >
               <AuctionList sort={sort} height={listHeight} />
             </div>
