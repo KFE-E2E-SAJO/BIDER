@@ -52,6 +52,7 @@ const AuctionDetailClient = ({ shortId }: { shortId: string }) => {
           lastPrice={mapped.currentHighestBid}
           isSecret={mapped.isSecret}
           minPrice={mapped.minPrice}
+          exhibitUser={mapped.exhibitUser}
         />
       )}
     </div>

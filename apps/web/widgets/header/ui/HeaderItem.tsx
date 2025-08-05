@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
 import { Bell, House, Search, Settings } from 'lucide-react';
 import BackBtn from '@/shared/ui/button/BackBtn';
 import Logo from '@/shared/ui/icon/Logo';

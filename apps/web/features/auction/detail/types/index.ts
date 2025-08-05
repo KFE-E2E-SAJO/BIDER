@@ -30,6 +30,7 @@ export interface BottomBarProps {
   shortId: string;
   auctionEndAt: string | Date;
   title: string;
+  exhibitUser: Profiles;
   lastPrice: number | null;
   isSecret: boolean;
   minPrice: number;

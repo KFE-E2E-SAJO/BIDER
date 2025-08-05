@@ -1,12 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
-import { PROPOSAL_COST } from '@/shared/consts/pointConstants';
+import { createPointByReason } from '@/features/point/api/createPointByReason';
+import getUserId from '@/shared/lib/getUserId';
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const userId = formData.get('userId') as string;
+    const userId = await getUserId();
     const auctionId = formData.get('auctionId') as string;
     const proposedPrice = parseInt(formData.get('proposedPrice') as string, 10);
 
@@ -24,41 +25,18 @@ export async function POST(request: NextRequest) {
     });
 
     if (proposalError) {
-      return NextResponse.json({ error: '제안 등록 실패' }, { status: 500 });
+      throw new Error(`제안 보내기 실패: ${proposalError.message}`);
     }
 
-    // 유저 포인트 확인
-    const { data: userData, error: userError } = await supabase
-      .from('profiles')
-      .select('point')
-      .eq('user_id', userId)
-      .single();
-
-    if (userError || !userData) {
-      return NextResponse.json({ error: '포인트 정보를 가져올 수 없습니다.' }, { status: 403 });
+    try {
+      await createPointByReason('bid_propose', userId);
+    } catch (error) {
+      console.error('제안 포인트 사용 실패:', error);
     }
-
-    // 포인트 차감
-    const { error: deductError } = await supabase
-      .from('profiles')
-      .update({ point: userData.point - PROPOSAL_COST })
-      .eq('user_id', userId);
-
-    if (deductError) {
-      return NextResponse.json({ error: '포인트 차감 실패' }, { status: 500 });
-    }
-
-    // 포인트 로그 기록
-    await supabase.from('point').insert({
-      point_id: uuidv4(),
-      user_id: userId,
-      point: -PROPOSAL_COST,
-      reason: 'bid_propose',
-    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('제안 에러:', error);
+    console.error('제안 보내기 에러:', error);
     return NextResponse.json({ error: '서버 오류' }, { status: 500 });
   }
 }

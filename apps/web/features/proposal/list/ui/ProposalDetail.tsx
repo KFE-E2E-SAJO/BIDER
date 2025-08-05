@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuthStore } from '@/shared/model/authStore';
 import { useParams, useRouter } from 'next/navigation';
 import { useProposalDetail } from '@/features/proposal/list/model/userProposalDetail';
 import { Avatar } from '@repo/ui/components/Avatar/Avatar';
@@ -16,8 +15,7 @@ import Image from 'next/image';
 import useRespondProposal from '@/features/proposal/list/model/useRespondProposal';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 
-const ProposalDetail = () => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
+const ProposalDetail = ({ userId }: { userId: string }) => {
   const params = useParams();
   const router = useRouter();
   const proposalId = params?.proposalId as string;
@@ -102,7 +100,7 @@ const ProposalDetail = () => {
         </ul>
       </div>
 
-      <ul className="p-box bg-warning-light text-warning-medium typo-caption-medium fixed bottom-0 left-0 w-full list-inside list-disc pb-[75px] pt-[20px]">
+      <ul className="p-box bg-warning-light text-warning-medium typo-caption-medium fixed bottom-0 left-[50%] w-full max-w-[600px] translate-x-[-50%] list-inside list-disc pb-[75px] pt-[20px]">
         <li>제안을 수락하면 경매는 즉시 종료돼요.</li>
         <li>다른 입찰자는 더 이상 입찰할 수 없어요.</li>
         <li>수락 후에는 되돌릴 수 없어요.</li>
