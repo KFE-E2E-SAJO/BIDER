@@ -16,7 +16,7 @@ import SwipeableItem from '@/shared/ui/listItem/SwipeableItem';
 const Alarm = () => {
   const { alarms, isLoading, handleAlarmClick, handleAlarmDelete } = useAlarmList();
 
-  const [selectedAlarmId, setSelectedAlarmId] = useState<number | null>(null);
+  const [selectedAlarmId, setSelectedAlarmId] = useState<number | undefined>(undefined);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [openItemId, setOpenItemId] = useState<string | null>(null);
@@ -118,8 +118,9 @@ const Alarm = () => {
             <Button onClick={handleCancelDelete} variant="ghost" className="w-1/2">
               <span>취소</span>
             </Button>
+
             <Button
-              onClick={handleConfirmDelete(selectedAlarmId)}
+              onClick={() => handleConfirmDelete(selectedAlarmId)}
               variant="ghost"
               className="text-danger w-1/2"
             >
