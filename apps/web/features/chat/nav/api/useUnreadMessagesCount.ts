@@ -70,6 +70,6 @@ export const useUnreadMessagesCount = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [userId]);
   return unreadCount;
 };
