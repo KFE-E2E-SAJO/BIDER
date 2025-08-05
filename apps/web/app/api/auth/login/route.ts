@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { createClient } from '@/shared/lib/supabase/server';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const { fullEmail, password } = await req.json();
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const supabase = await createClient();
 
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
     const userInfo = {
       id: data.user.id,
-      email: data.user.email!,
+      email: data.user.email ?? '',
       nickName: profile.nickname || '',
       address: profile.address || '',
     };
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function getUserProfileAndCheckFirstLogin(userId: string) {
+async function getUserProfileAndCheckFirstLogin(userId: string) {
   try {
     const supabase = await createClient();
 
