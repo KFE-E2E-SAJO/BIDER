@@ -28,7 +28,11 @@ export async function POST(request: NextRequest) {
       throw new Error(`제안 보내기 실패: ${proposalError.message}`);
     }
 
-    await createPointByReason('bid_propose', userId);
+    try {
+      await createPointByReason('bid_propose', userId);
+    } catch (error) {
+      console.error('제안 포인트 사용 실패:', error);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
