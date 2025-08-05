@@ -1,19 +1,10 @@
 'use server';
 
-import { createClient } from '@/shared/lib/supabase/server';
+import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 
 export const getYourNickName = async (chatRoomId: string) => {
-  const authSupabase = await createClient();
-
-  const {
-    data: { session },
-  } = await authSupabase.auth.getSession();
-  const userId = session?.user.id;
-
-  if (!userId) {
-    throw new Error(`로그인이 필요합니다.`);
-  }
+  const userId = await getUserId();
   const { data, error } = await supabase.rpc('get_other_nickname_by_chatroom', {
     current_user_id: userId,
     chatroom_id_input: chatRoomId,
