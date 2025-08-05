@@ -7,6 +7,7 @@ import BackBtn from '@/shared/ui/button/BackBtn';
 import Logo from '@/shared/ui/icon/Logo';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
 import { toast } from '@repo/ui/components/Toast/Sonner';
+import { useAlarmCount } from '@/app/api/alarm/nav/useAlarmCount';
 
 // 좌측 타이틀
 const HEADER_TITLE_MAP: Record<string, React.ReactNode> = {
@@ -38,7 +39,8 @@ const SHOW_RIGHTICON = (pathname: string) => {
   );
 };
 
-const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
+const HeaderItem = () => {
+  const alarmCount = useAlarmCount();
   const pathname = usePathname();
 
   const headerTitle = HEADER_TITLE_MAP[pathname];
@@ -73,19 +75,17 @@ const HeaderItem = ({ hasNewAlert }: { hasNewAlert: boolean }) => {
 
       <div className="flex items-center justify-end">
         {pathname === '/alarm' ? (
-          <Settings />
+          <Link href="/alarm/setting">
+            <Settings />
+          </Link>
         ) : SHOW_RIGHTICON(pathname) ? (
           <>
             <Link href="/search">
               <Search className="mr-4.5" />
             </Link>
-            <Link
-              href="/"
-              className="relative"
-              onClick={() => toast({ content: '준비 중인 기능입니다.' })}
-            >
+            <Link href="/alarm" className="relative" W>
               <Bell />
-              {hasNewAlert && <AlertBadge placementClass="absolute right-0 top-0" />}
+              {alarmCount > 0 && <AlertBadge placementClass="absolute right-0 top-0" />}
             </Link>
           </>
         ) : null}
