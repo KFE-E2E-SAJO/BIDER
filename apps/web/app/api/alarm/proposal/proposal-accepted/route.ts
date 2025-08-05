@@ -63,11 +63,18 @@ export async function POST(req: NextRequest) {
     const sortedImages = productInfo?.product_image?.sort((a, b) => a.order_index - b.order_index);
     const firstImageUrl = sortedImages?.[0]?.image_url;
 
+    const { data: chat, error: chatError } = await supabase
+      .from('chat_room')
+      .select('chatroom_id')
+      .eq('bid_user_id', proposalData.proposer_id)
+      .eq('exhibit_user_id', proposalData.auction.product.exhibit_user_id);
+
     const payload = {
       nickname: sellerNickname,
       productName: productInfo?.title,
       image: firstImageUrl,
       price: proposalData.proposed_price,
+      chatroonId: chat?.[0]?.chatroom_id,
     };
 
     await sendNotification(proposerId, 'auction', 'proposalAccepted', payload);
