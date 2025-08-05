@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
     // 2. 경매 정보 조회
     const { data: auctionData, error: auctionError } = await supabase
       .from('auction')
-      .select('auction_end_at, auction_status, min_price, product:product_id(title)')
+      .select('auction_end_at, auction_status, min_price, is_secret, product:product_id(title)')
       .eq('auction_id', auctionId)
       .single();
 
@@ -142,14 +142,17 @@ export async function POST(req: NextRequest) {
       ? currentHighestBid.bid_price
       : auctionData.min_price;
 
-    if (bidPrice <= minRequiredBid) {
-      return NextResponse.json(
-        {
-          error: `최소 입찰가는 ${minRequiredBid.toLocaleString()}원 초과입니다.`,
-          minRequiredBid,
-        },
-        { status: 400 }
-      );
+    if (!auctionData.is_secret) {
+      //시크릿경매가 아닐때만 체크
+      if (bidPrice <= minRequiredBid) {
+        return NextResponse.json(
+          {
+            error: `최소 입찰가는 ${minRequiredBid.toLocaleString()}원 초과입니다.`,
+            minRequiredBid,
+          },
+          { status: 400 }
+        );
+      }
     }
 
     // 6. 입찰 데이터 삽입
