@@ -1,5 +1,5 @@
+import { ProductEditFormData } from '@/features/product/types';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
-import { ProductEditFormData } from '../types';
 
 export const getCountdownWithColor = (
   endTime: string | Date

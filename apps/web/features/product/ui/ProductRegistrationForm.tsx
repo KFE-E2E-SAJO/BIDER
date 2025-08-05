@@ -15,18 +15,21 @@ import {
   SelectContent,
   SelectItem,
 } from '@repo/ui/components/Select/Select';
-import { formatPriceInput, isEndDateValid } from '../lib/utils';
-import { useCreateProductWithValidation } from '../model/useCreateProduct';
-import { useProductFormWithoutSubmitting } from '../model/useProductForm';
+
 import GoogleMap from '@/features/location/ui/GooggleMap';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import { Location } from '@/features/location/types';
 import { Info } from 'lucide-react';
+import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
+import { useProductFormWithoutSubmitting } from '@/features/product/model/useProductForm';
+import { useCreateProductWithValidation } from '@/features/product/model/useCreateProduct';
+import { formatPriceInput, isEndDateValid } from '@/features/product/lib/utils';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
   const user = useAuthStore();
+  const { DialogHost, openSecretGuide } = useSecretDialog();
 
   const {
     // State
@@ -40,6 +43,7 @@ export const ProductRegistrationForm = () => {
     endDate,
     endTime,
     images,
+    isSecret,
     // Actions
     setTitle,
     setCategory,
@@ -51,6 +55,7 @@ export const ProductRegistrationForm = () => {
     setEndDate,
     setEndTime,
     setImages,
+    setIsSecret,
     reset,
   } = useProductFormWithoutSubmitting();
 
@@ -89,6 +94,7 @@ export const ProductRegistrationForm = () => {
       endTime,
       images,
       userId: user.user.id,
+      isSecret,
     });
   };
 
@@ -191,6 +197,17 @@ export const ProductRegistrationForm = () => {
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       <div className="p-box flex flex-col gap-[26px]">
+        {/* 시크릿 경매 */}
+        <div className="flex items-center justify-between">
+          <div className="flex gap-[5px]">
+            <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+            <button onClick={() => openSecretGuide()}>
+              <Info className="stroke-event size-[17px]" />
+            </button>
+          </div>
+          <Switch checked={isSecret} onCheckedChange={setIsSecret} />
+        </div>
+
         {/* 입찰 시작가 */}
         <div className="flex flex-col gap-[10px]">
           <div className="typo-subtitle-small-medium">
@@ -242,6 +259,7 @@ export const ProductRegistrationForm = () => {
           onClick={handleSubmit}
           variant={isSubmitting ? 'loading' : 'default'}
           disabled={isSubmitting}
+          className={`${isSubmitting && 'animate-pulse'}`}
         >
           {isSubmitting ? '출품 중...' : '출품하기'}
         </Button>
@@ -264,6 +282,7 @@ export const ProductRegistrationForm = () => {
           </ul>
         </div>
       </div>
+      <DialogHost />
     </div>
   );
 };

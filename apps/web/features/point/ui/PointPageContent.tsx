@@ -2,12 +2,12 @@
 
 import { Tabs } from '@repo/ui/components/Tabs/Tabs';
 import React from 'react';
-import PointList from './PointList';
 import { useAuthStore } from '@/shared/model/authStore';
-import { useUserProfile } from '../model/useUserProfile';
-import { useGetPointList } from '../model/useGetPointList';
 import Loading from '@/shared/ui/Loading/Loading';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
+import { useUserProfile } from '@/features/point/model/useUserProfile';
+import { useGetPointList } from '@/features/point/model/useGetPointList';
+import PointList from '@/features/point/ui/PointList';
 
 const PointPageContent = () => {
   const userId = useAuthStore((state) => state.user?.id) as string;

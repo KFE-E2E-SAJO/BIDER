@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import { AuctionList } from '@/features/auction/list/types';
 import StatusBadge, { StatusType } from '@/shared/ui/badge/StatusBadge';
+import SecretBadge from '@/shared/ui/badge/SecretBadge';
 
 const AuctionItem = ({
   thumbnail,
@@ -12,6 +13,7 @@ const AuctionItem = ({
   bidPrice,
   auctionEndAt,
   auctionStatus,
+  isSecret,
 }: AuctionList) => {
   const { text, color } =
     auctionStatus === AUCTION_STATUS.ENDED
@@ -47,8 +49,9 @@ const AuctionItem = ({
           <div>
             <span className="typo-body-bold">{bidPrice.toLocaleString()}</span>원
           </div>
-          <div className="align-center flex flex-wrap gap-1">
+          <div className="align-center flex gap-1">
             <StatusBadge type={timeBadgeType} label={text} />
+            {isSecret && <SecretBadge />}
           </div>
         </li>
       </ul>

@@ -1,4 +1,4 @@
-import { POINT_REASONS, PointReason } from '../types';
+import { POINT_REASONS, PointReason } from '@/features/point/types';
 
 export const getPointValue = (reason: PointReason, context?: { bidAmount?: number }): number => {
   const reasonItem = POINT_REASONS.find((r) => r.value === reason);

@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/shared/model/authStore';
-import { createClient } from '@/shared/lib/supabase/client';
-import { getKoreanErrorMessage } from '../lib/getKoreanErrorMessage';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { validateFullEmail } from '@/shared/lib/validation/email';
 import { passwordSchema } from '@/shared/lib/validation/signupSchema';
 import { createPointByReason } from '@/features/point/api/createPointByReason';
+import { getKoreanErrorMessage } from '@/features/login/lib/getKoreanErrorMessage';
 
 export const useLogin = () => {
   const [fullEmail, setEmail] = useState('');
