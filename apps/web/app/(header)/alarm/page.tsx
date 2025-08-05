@@ -31,7 +31,7 @@ const Alarm = () => {
   }
 
   const handleCancelDelete = () => {
-    setSelectedAlarmId(null);
+    setSelectedAlarmId(undefined);
     setIsDialogOpen(false);
   };
 
@@ -39,7 +39,7 @@ const Alarm = () => {
     const idToDelete = alarmId || selectedAlarmId;
     if (idToDelete) {
       handleAlarmDelete(idToDelete);
-      setSelectedAlarmId(null);
+      setSelectedAlarmId(undefined);
       setIsDialogOpen(false);
     }
   };
