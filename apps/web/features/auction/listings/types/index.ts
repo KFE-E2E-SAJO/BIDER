@@ -2,6 +2,9 @@ export interface ListingListParams {
   userId: string;
   filter: 'all' | 'pending' | 'progress' | 'win' | 'fail';
 }
+export interface AuctionListingsTabsProps {
+  userId: string;
+}
 
 export interface ListingData {
   product_id: string;

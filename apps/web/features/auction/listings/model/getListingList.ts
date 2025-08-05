@@ -5,7 +5,9 @@ import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 const getListingList = async (params: ListingListParams): Promise<ProductList[]> => {
   const { filter, userId } = params;
 
-  const res = await fetch(`/api/auction/listings?userId=${userId}`);
+  const res = await fetch(`/api/auction/listings?userId=${userId}&filter=${filter}`, {
+    next: { revalidate: 60 },
+  });
   const result = await res.json();
 
   if (!res.ok || !result.success) {
@@ -14,58 +16,24 @@ const getListingList = async (params: ListingListParams): Promise<ProductList[]>
 
   const listingData: ListingData[] = result.data;
 
-  const filtered = listingData
-    .map((product) => {
-      const auction = Array.isArray(product.auction) ? product.auction[0] : product.auction;
-      const myBid = auction?.bid_history?.find((b: any) => b.bid_user_id === userId);
-
-      const hasLocation = product.latitude != null && product.longitude != null;
-      if (!hasLocation || !auction) return null;
-
-      let pass = false;
-
-      switch (filter) {
-        case 'pending':
-          pass = auction.auction_status === AUCTION_STATUS.PENDING;
-          break;
-        case 'progress':
-          pass = auction.auction_status === AUCTION_STATUS.IN_PROGRESS;
-          break;
-        case 'win':
-          pass = auction.auction_status === AUCTION_STATUS.ENDED && !!auction.winning_bid_user_id;
-          break;
-        case 'fail':
-          pass = auction.auction_status === AUCTION_STATUS.ENDED && !auction.winning_bid_user_id;
-          break;
-        case 'all':
-        default:
-          pass = true;
-      }
-
-      return pass ? { product, auction, myBid } : null;
-    })
-    .filter(Boolean) as {
-    product: any;
-    auction?: any;
-    myBid?: any;
-  }[];
-
-  return filtered.map(({ product, auction, myBid }) => {
+  return listingData.map((product) => {
+    const auction = Array.isArray(product.auction) ? product.auction[0] : product.auction;
+    const myBid = auction?.bid_history?.find((b: any) => b.bid_user_id === product.exhibit_user_id); // seller 기준이라면 제외 가능
     const isEnd = !!auction?.winning_bid_user_id;
     const hasBids = auction?.bid_history?.length > 0;
     const highestBid = hasBids
-      ? Math.max(...auction.bid_history.map((bid: any) => Number(bid.bid_price) || 0))
+      ? Math.max(...auction?.bid_history.map((bid: any) => Number(bid.bid_price) || 0))
       : undefined;
 
-    const minPrice = auction.is_secret
+    const minPrice = auction?.is_secret
       ? isEnd
         ? (highestBid ?? auction.min_price) // 비밀경매 + 낙찰 → 최고가
         : auction.min_price // 비밀경매 + 미낙찰 → 최소가
-      : (highestBid ?? auction.min_price); // 🔹 일반 경매
+      : (highestBid ?? auction?.min_price); // 🔹 일반 경매
 
     return {
       id:
-        auction.auction_status === AUCTION_STATUS.PENDING
+        auction?.auction_status === AUCTION_STATUS.PENDING
           ? product.product_id
           : auction?.auction_id,
       thumbnail:
@@ -73,16 +41,16 @@ const getListingList = async (params: ListingListParams): Promise<ProductList[]>
         '/default.png',
       title: product.title,
       address: product.address ?? '위치 정보 없음',
-      bidCount: auction.bid_history.length,
       price: myBid?.bid_price ?? 0,
-      minPrice,
+      bidCount: auction?.bid_history.length ?? 0,
+      minPrice: minPrice,
       auctionEndAt: auction?.auction_end_at ?? '',
       auctionStatus: auction?.auction_status,
       winnerId: auction?.winning_bid_user_id ?? null,
       sellerId: product.exhibit_user_id,
       isAwarded: myBid?.is_awarded ?? false,
-      isPending: auction.auction_status === AUCTION_STATUS.PENDING,
-      isSecret: auction.is_secret,
+      isPending: auction?.auction_status === AUCTION_STATUS.PENDING,
+      isSecret: auction?.is_secret,
     };
   });
 };

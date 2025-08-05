@@ -2,21 +2,28 @@
 
 import ProductList from '@/features/product/ui/ProductList';
 import { useGetBidList } from '@/features/auction/bids/model/useGetBidList';
-import { useAuthStore } from '@/shared/model/authStore';
-import Loading from '@/shared/ui/Loading/Loading';
-export interface BidListProps {
-  filter: 'all' | 'progress' | 'win' | 'fail';
-}
+import Skeleton from '@/features/product/ui/Skeleton';
+import { BidListParams } from '@/features/auction/bids/types';
 
-const BidList = ({ filter }: BidListProps) => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
+const BidList = ({ userId, filter }: BidListParams) => {
+  const { data, isLoading, error } = useGetBidList({ userId, filter });
 
-  const { data, isLoading, error } = useGetBidList({
-    userId,
-    filter,
-  });
+  if (isLoading) {
+    return (
+      <div className="p-box">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
+  }
 
-  if (isLoading || error || !data) return <Loading />;
+  if (error)
+    return (
+      <div className="p-box typo-body-medium mt-[30px] text-center">내역을 찾을 수 없습니다.</div>
+    );
+  if (!data || data.length === 0)
+    return <div className="p-box typo-body-medium mt-[30px] text-center">내역이 없습니다.</div>;
 
   return (
     <div className="flex flex-col gap-4 px-4">
