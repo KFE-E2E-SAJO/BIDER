@@ -1,8 +1,10 @@
 import { ProposalListParams } from '@/features/proposal/list/types';
 import { PROPOSAL_STATUS } from '@/shared/consts/proposalStatus';
+import getUserId from '@/shared/lib/getUserId';
 
 const getReceivedProposal = async (params: ProposalListParams) => {
-  const { filter, userId } = params;
+  const { filter } = params;
+  const userId = await getUserId();
 
   const res = await fetch(`/api/proposal/received-proposal?userId=${userId}`);
   const result = await res.json();

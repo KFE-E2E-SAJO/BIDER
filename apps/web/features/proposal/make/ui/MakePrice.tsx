@@ -3,7 +3,6 @@
 import { PROPOSAL_COST } from '@/shared/consts/pointConstants';
 import { Button } from '@repo/ui/components/Button/Button';
 import { Input } from '@repo/ui/components/Input/Input';
-import { useAuthStore } from '@/shared/model/authStore';
 import Loading from '@/shared/ui/Loading/Loading';
 import { useTargetProduct } from '@/features/proposal/make/model/useTargetProduct';
 import { useParams, useRouter } from 'next/navigation';
@@ -14,8 +13,7 @@ import shortUUID from 'short-uuid';
 
 const translator = shortUUID();
 
-const MakePrice = () => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
+const MakePrice = ({ userId }: { userId: string }) => {
   const params = useParams();
   const shortId = params?.shortId as string;
   const auctionId = translator.toUUID(shortId);
@@ -44,7 +42,6 @@ const MakePrice = () => {
     if (!isValidPrice) return;
 
     const formData = new FormData();
-    formData.append('userId', userId);
     formData.append('auctionId', auctionId);
     formData.append('proposedPrice', price);
 
