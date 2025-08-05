@@ -4,7 +4,6 @@ import ProductBadge from '@/features/product/ui/ProductBadge';
 import Image from 'next/image';
 import ProductPrice from './ProductPrice';
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
-import SecretBadge from '@/shared/ui/badge/SecretBadge';
 
 const ProductItem = ({
   thumbnail,
@@ -50,8 +49,7 @@ const ProductItem = ({
         <li className="mt-[30px]">
           <ProductPrice minPrice={minPrice} myBidPrice={myBidPrice} isSecret={isSecret} />
           <div className="flex gap-1">
-            <ProductBadge {...badgeProps} />
-            {isSecret && <SecretBadge />}
+            <ProductBadge {...badgeProps} isSecret={isSecret} />
           </div>
         </li>
       </ul>

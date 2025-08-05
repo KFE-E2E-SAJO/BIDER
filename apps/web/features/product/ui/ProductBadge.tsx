@@ -1,6 +1,7 @@
 'use client';
 
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
+import SecretBadge from '@/shared/ui/badge/SecretBadge';
 import StatusBadge, { StatusType } from '@/shared/ui/badge/StatusBadge';
 import { usePathname } from 'next/navigation';
 
@@ -12,6 +13,7 @@ interface ProductBadgeProps {
   isPending?: boolean;
   bidCount: number;
   winnerId?: string | null;
+  isSecret: boolean;
 }
 
 const ProductBadge = ({
@@ -22,6 +24,7 @@ const ProductBadge = ({
   isPending,
   bidCount,
   winnerId,
+  isSecret,
 }: ProductBadgeProps) => {
   const pathname = usePathname();
   const isAuctionPage =
@@ -59,6 +62,7 @@ const ProductBadge = ({
     <div className="align-center flex flex-wrap gap-1">
       <StatusBadge type={timeBadgeType} label={text} />
       {stateBadge && <StatusBadge type={stateBadge.type} label={stateBadge.label} />}
+      {isSecret && <SecretBadge />}
     </div>
   );
 };
