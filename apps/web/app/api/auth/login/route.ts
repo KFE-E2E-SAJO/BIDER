@@ -5,7 +5,7 @@ import { createClient } from '@/shared/lib/supabase/server';
 export async function POST(req: NextRequest) {
   try {
     const { fullEmail, password } = await req.json();
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = await createClient();
 
     const { data, error } = await supabase.auth.signInWithPassword({
