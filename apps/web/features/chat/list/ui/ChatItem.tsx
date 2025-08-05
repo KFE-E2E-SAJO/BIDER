@@ -9,7 +9,7 @@ import { getTimeAgo } from '../lib/getTimeAgo';
 const ChatItem = ({ data, isLastMsgMine }: ChatItemProps) => {
   return (
     <div className="bg-neutral-0 flex w-full items-center justify-between py-[17px]">
-      <div className="flex items-center">
+      <div className="flex w-full items-center">
         <div className="relative size-[46px] overflow-hidden rounded">
           <Image
             src={data.product_image.image_url}
@@ -19,17 +19,17 @@ const ChatItem = ({ data, isLastMsgMine }: ChatItemProps) => {
             className="object-cover object-center"
           />
         </div>
-        <div className="ml-[15px] flex flex-col gap-[6px]">
+        <div className="ml-[15px]" style={{ width: 'calc(100% - 61px)' }}>
           <div className="flex items-center gap-[7px]">
             <Avatar className="size-[18px]" src={data.your_profile.profile_img || undefined} />
             <div className="typo-body-medium">{data.your_profile.nickname}</div>
             {data.is_win && <StatusBadge type="state-blue" label="낙찰" />}
           </div>
-          <div>
+          <div className="relative mt-[6px] w-full">
             {data.last_message ? (
               <div className="flex">
                 <div
-                  className={`typo-caption-regular max-w-[40vw] truncate ${
+                  className={`typo-caption-regular max-w-[70%] truncate ${
                     data.last_message?.is_read || isLastMsgMine ? 'text-neutral-400' : ''
                   }`}
                 >
