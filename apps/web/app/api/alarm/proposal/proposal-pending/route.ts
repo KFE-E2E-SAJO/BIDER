@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const payload = {
       nickname: nickname,
       productName: productInfo?.title,
-      image: productInfo?.product_image?.image_url,
+      image: productInfo?.product_image?.[0]?.image_url,
       price: proposalValue.price,
     };
 

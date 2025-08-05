@@ -228,6 +228,7 @@ export const ProductRegistrationForm = () => {
               <div className="typo-caption-regular mb-[6px]">종료 시간</div>
               <Input
                 name="endTime"
+                type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required

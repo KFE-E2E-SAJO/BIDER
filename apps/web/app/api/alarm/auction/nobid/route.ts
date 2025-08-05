@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       'auctionEndedLost',
       {
         productName: `${PushAlarmData?.[0]?.product?.title}`,
-        image: `${PushAlarmData?.[0]?.product[0]?.product_image[0]?.image_url}`,
+        image: `${PushAlarmData[0]?.product?.product_image?.[0]?.image_url}`,
       }
     );
 

@@ -5,8 +5,8 @@ import {
   PushAlarmData,
   PushAlarmType,
 } from '@/features/alarm/setting/lib/getPushAlarmMessage';
-import { createClient } from '@/shared/lib/supabase/server';
 import { createServerClient } from '@supabase/ssr';
+import { supabase } from '@/shared/lib/supabaseClient';
 import { cookies } from 'next/headers';
 import webpush from 'web-push';
 
@@ -94,8 +94,6 @@ export async function sendNotification(
     process.env.VAPID_PRIVATE_KEY!
   );
 
-  const supabase = await createClient();
-
   const { data: pushToken, error } = await supabase
     .from('user_push_token')
     .select('*')
@@ -130,14 +128,18 @@ export async function sendNotification(
     try {
       await webpush.sendNotification(subscription, payloadData);
 
-      const { data: AlarmItem, error: insertError } = await supabase.from('alarm').insert({
-        user_id: token.user_id,
-        type: type,
-        title: pushMessage.title,
-        body: pushMessage.body,
-        link: pushMessage.url,
-        image_url: pushMessage.image,
-      });
+      const { data: AlarmItem, error: insertError } = await supabase
+        .from('alarm')
+        .insert({
+          user_id: token.user_id,
+          type: type,
+          title: pushMessage.title,
+          body: pushMessage.body,
+          link: pushMessage.url,
+          image_url: pushMessage.image,
+        })
+        .select()
+        .single();
 
       if (insertError) {
         return { success: false, error: 'Alarm DB 추가 실패' };

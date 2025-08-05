@@ -8,6 +8,7 @@ import { getKoreanErrorMessage } from '../lib/getKoreanErrorMessage';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { validateFullEmail } from '@/shared/lib/validation/email';
 import { passwordSchema } from '@/shared/lib/validation/signupSchema';
+import { createPointByReason } from '@/features/point/api/createPointByReason';
 
 export const useLogin = () => {
   const [fullEmail, setEmail] = useState('');
@@ -53,7 +54,10 @@ export const useLogin = () => {
         return;
       }
 
-      const { user } = await res.json();
+      const { user, isFirstLogin } = await res.json();
+
+      console.log('user: ', user);
+      console.log('firstLogin?: ', isFirstLogin);
 
       if (!user) {
         setError('유저 정보를 불러오지 못했습니다.');
@@ -69,6 +73,22 @@ export const useLogin = () => {
       });
 
       toast({ content: '로그인에 성공했습니다!' });
+
+      if (isFirstLogin) {
+        console.log('ttttttttt');
+
+        await createPointByReason('signup', user.id);
+
+        await fetch(`${origin}/api/alarm/point`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: user.id,
+          }),
+        });
+      }
 
       router.push('/');
     } catch (err) {

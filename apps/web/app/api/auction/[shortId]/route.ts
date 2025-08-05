@@ -169,6 +169,7 @@ export async function POST(req: NextRequest) {
       console.error('입찰 삽입 오류:', bidError);
       return NextResponse.json({ error: '입찰 처리 중 오류가 발생했습니다.' }, { status: 500 });
     }
+
     const { origin } = new URL(req.url);
 
     // 푸시 알람 전송(판매자, 입찰자)
@@ -181,6 +182,7 @@ export async function POST(req: NextRequest) {
         auction_id: auctionId,
       }),
     });
+
     const auctionTyped = auctionData as unknown as AuctionForBid;
     const productTitle = auctionTyped.product.title;
 

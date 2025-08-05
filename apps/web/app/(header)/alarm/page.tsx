@@ -64,43 +64,45 @@ const Alarm = () => {
 
   return (
     <>
-      {alarms.map((alarm) => (
-        <div key={alarm.id} className="relative overflow-hidden">
-          <SwipeableItem
-            isOpen={openItemId === alarm.id.toString()}
-            onOpen={() => handleOpen(alarm.id.toString())}
-            onClose={handleClose}
-            onDragChange={(dragging) => setIsDragging(dragging)}
-            btnText="삭제"
-            onDelete={() => handleDeleteClick(alarm.id)}
-          >
-            <div
-              onClick={() => handleAlarmClick(alarm.id, alarm.link)}
-              className={`p-box flex h-full min-h-[90px] w-full items-center justify-between py-[13px] ${alarm.isRead ? 'opacity-50' : ''}`}
+      <div className="w-full overflow-x-hidden">
+        {alarms.map((alarm) => (
+          <div key={alarm.id} className="relative overflow-hidden">
+            <SwipeableItem
+              isOpen={openItemId === alarm.id.toString()}
+              onOpen={() => handleOpen(alarm.id.toString())}
+              onClose={handleClose}
+              onDragChange={(dragging) => setIsDragging(dragging)}
+              btnText="삭제"
+              onDelete={() => handleDeleteClick(alarm.id)}
             >
-              <div className="flex-1 py-4 pr-4">
-                <p className="typo-body-regular pb-[3px] text-neutral-900">{alarm.contents}</p>
-                <span className="typo-caption-regular text-neutral-400">{alarm.time}</span>
-              </div>
-
-              {alarm.image && alarm.image !== '/alarm_thumb.png' && (
-                <div className="h-[60px] w-[60px] flex-shrink-0">
-                  <Image
-                    src={alarm.image}
-                    alt="알림 이미지"
-                    loader={({ src }) => src}
-                    unoptimized
-                    width={60}
-                    height={60}
-                    className="h-full w-full rounded-sm object-cover"
-                  />
+              <div
+                onClick={() => handleAlarmClick(alarm.id, alarm.link)}
+                className={`p-box flex h-full min-h-[90px] w-full items-center justify-between py-[13px] ${alarm.isRead ? 'opacity-50' : ''}`}
+              >
+                <div className="flex-1 py-4 pr-4">
+                  <p className="typo-body-regular pb-[3px] text-neutral-900">{alarm.contents}</p>
+                  <span className="typo-caption-regular text-neutral-400">{alarm.time}</span>
                 </div>
-              )}
-            </div>
-          </SwipeableItem>
-          <Line className="z-10" />
-        </div>
-      ))}
+
+                {alarm.image && alarm.image !== '/alarm_thumb.png' && (
+                  <div className="h-[60px] w-[60px] flex-shrink-0">
+                    <Image
+                      src={alarm.image}
+                      alt="알림 이미지"
+                      loader={({ src }) => src}
+                      unoptimized
+                      width={60}
+                      height={60}
+                      className="h-full w-full rounded-sm object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+            </SwipeableItem>
+            <Line className="z-10" />
+          </div>
+        ))}
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogHeader className="sr-only">

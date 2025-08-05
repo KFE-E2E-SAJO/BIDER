@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       {
         productName: `${PushAlarmData[0]?.product?.title}`,
         auctionId: winnigBIdValue.auction_id,
-        image: `${PushAlarmData[0]?.product[0]?.product_image?.image_url}`,
+        image: `${PushAlarmData[0]?.product?.product_image?.[0]?.image_url}`,
       }
     );
 
@@ -65,13 +65,21 @@ export async function POST(req: NextRequest) {
         productName: `${PushAlarmData[0]?.product?.title}`,
         price: PushAlarmData[0]?.bid_history[0]?.bid_price,
         auctionId: winnigBIdValue.auction_id,
-        image: `${PushAlarmData?.[0]?.product[0]?.product_image[0]?.image_url}`,
+        image: `${PushAlarmData[0]?.product?.product_image?.[0]?.image_url}`,
       }
     );
 
     if (exhibitAlarmError) {
       throw new Error(` 출품자 갱신 알림 전송 실패: ${exhibitAlarmError}`);
     }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: '알림 전송이 완료되었습니다',
+      },
+      { status: 200 }
+    );
   } catch (err) {
     console.error('알림 전송 오류:', err);
     return NextResponse.json({ error: '알림 전송 실패' }, { status: 500 });
