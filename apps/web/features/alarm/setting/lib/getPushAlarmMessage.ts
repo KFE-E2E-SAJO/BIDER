@@ -1,3 +1,5 @@
+import { encodeUUID } from '@/shared/lib/shortUuid';
+
 export type PushAlarmType = 'auction' | 'point' | 'review' | 'chat';
 
 export type AuctionPushAlarmType =
@@ -34,43 +36,43 @@ const pushAlarmMessage: Record<
   'auction:bid': (data) => ({
     title: '입찰 완료',
     body: `${data.productName}에 ${data.price}원으로 입찰되었습니다.`,
-    link: `/product/${data.productId}`,
+    link: `/product/${encodeUUID(data.auctionId!)}`,
     image: `${data.image}`,
   }),
   'auction:bidUpdated': (data) => ({
     title: '입찰 금액 갱신',
     body: `${data.productName}의 입찰 금액이 갱신되었습니다. 다시 입찰해 보세요`,
-    link: `/product/${data.productId}`,
+    link: `/product/${encodeUUID(data.auctionId!)}`,
     image: `${data.image}`,
   }),
   'auction:auctionWon': (data) => ({
     title: '경매 낙찰 성공',
     body: `축하합니다! ${data.productName}을 낙찰받았습니다. 지금 ${data.nickname}님과 대화를 시작해 보세요.`,
-    link: `/chat/${data.chatroomId}`,
+    link: data.chatroomId ? `/chat/${encodeUUID(data.chatroomId)}` : '/chat',
     image: `${data.image}`,
   }),
   'auction:proposalAccepted': (data) => ({
     title: '제안 수락',
     body: `${data.productName}에 대한 제안이 수락되었습니다. ${data.nickname}님과 대화를 시작해보세요.`,
-    link: `/chat/${data.chatroomId}`,
+    link: data.chatroomId ? `/chat/${encodeUUID(data.chatroomId)}` : '/chat',
     image: `${data.image}`,
   }),
   'auction:auctionStarted': (data) => ({
     title: '경매 시작',
     body: `${data.productName}의 경매가 시작되었습니다!`,
-    link: `/auction/${data.auctionId}`,
+    link: `/auction/${encodeUUID(data.auctionId!)}`,
     image: `${data.image}`,
   }),
   'auction:bidNotification': (data) => ({
     title: '입찰 발생 알림',
     body: `${data.nickname}님이 ${data.productName}에 ${data.price}원으로 입찰했어요!`,
-    link: `/auction/${data.auctionId}`,
+    link: `/auction/${encodeUUID(data.auctionId!)}`,
     image: `${data.image}`,
   }),
   'auction:auctionEndedWon': (data) => ({
     title: '경매 종료 - 낙찰',
     body: `${data.productName}의 경매가 종료 되었습니다. ${data.nickname}님과 대화를 시작해보세요.`,
-    link: `/chat/${data.chatroomId}`,
+    link: data.chatroomId ? `/chat/${encodeUUID(data.chatroomId)}` : '/chat',
     image: `${data.image}`,
   }),
   'auction:auctionEndedLost': (data) => ({
@@ -98,7 +100,7 @@ const pushAlarmMessage: Record<
   'chat:newMessage': (data) => ({
     title: '새 메시지 도착',
     body: `${data.nickname}님이 메시지를 보냈습니다. 확인해보세요.`,
-    link: `/chat/${data.chatroomId}`,
+    link: data.chatroomId ? `/chat/${encodeUUID(data.chatroomId)}` : '/chat',
     image: `${data.image}`,
   }),
 };

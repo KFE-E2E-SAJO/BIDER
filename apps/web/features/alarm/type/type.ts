@@ -5,4 +5,5 @@ export type AlarmItem = {
   time: string;
   image: string;
   isRead: boolean;
+  link: string;
 };

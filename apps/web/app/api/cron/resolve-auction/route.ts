@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
               .eq('auction_id', auction.auction_id);
 
             // 푸시 알림 전송
-            await fetch(`${origin}/api/alarm/auction/noBid`, {
+            await fetch(`${origin}/api/alarm/auction/nobid`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

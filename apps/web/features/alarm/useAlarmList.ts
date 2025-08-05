@@ -2,10 +2,12 @@
 import { createClient } from '@/shared/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import { AlarmItem } from './type/type';
+import { useRouter } from 'next/navigation';
 
 export const useAlarmList = () => {
   const [alarms, setAlarms] = useState<AlarmItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchAlarms() {
@@ -37,11 +39,13 @@ export const useAlarmList = () => {
       } else {
         const formatted = (alarmData ?? []).map((item) => ({
           id: item.alarm_id,
-          user_id: item.user_Id,
+          user_id: item.user_id,
           contents: item.body,
           time: getTimeDiff(item.create_at),
-          image: item.image_url ?? '/alarm_thumb.png',
+          // 이미지 URL 처리 개선
+          image: getImageUrl(item.image_url),
           isRead: item.is_read ?? false,
+          link: item.link,
         }));
 
         setAlarms(formatted);
@@ -54,28 +58,51 @@ export const useAlarmList = () => {
   }, []);
 
   //알림 읽음 처리
-  const handleAlarmClick = async (alarmId: number) => {
+  const handleAlarmClick = async (alarmId: number, link: string) => {
+    // UI 즉시 업데이트
     setAlarms((prev) =>
       prev.map((alarm) => (alarm.id === alarmId ? { ...alarm, isRead: true } : alarm))
     );
 
     markAlarmAsRead(alarmId);
+
+    if (link && link.trim()) {
+      router.push(link);
+    }
   };
 
   // 개별 알림 삭제
   const handleAlarmDelete = async (alarmId: number) => {
-    setAlarms((prev) => prev.filter((alarm) => alarm.id !== alarmId));
+    try {
+      setAlarms((prev) => prev.filter((alarm) => alarm.id !== alarmId));
 
-    const supabase = createClient();
-    const { error } = await supabase.from('alarm').delete().eq('alarm_id', alarmId);
+      const supabase = createClient();
+      const { error } = await supabase.from('alarm').delete().eq('alarm_id', alarmId);
 
-    if (error) {
-      console.error('알림 삭제 실패:', error);
+      if (error) {
+        console.error('알림 삭제 실패:', error);
+      }
+    } catch (error) {
+      console.error('알림 삭제 중 오류:', error);
     }
   };
 
   return { alarms, isLoading, handleAlarmClick, handleAlarmDelete };
 };
+
+function getImageUrl(imageUrl: string | null | undefined): string | null {
+  if (!imageUrl || !imageUrl.trim()) {
+    return null;
+  }
+
+  const trimmedUrl = imageUrl.trim();
+
+  if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+    return trimmedUrl;
+  }
+
+  return null;
+}
 
 function getTimeDiff(createdAt: string): string {
   const now = new Date();
@@ -89,13 +116,17 @@ function getTimeDiff(createdAt: string): string {
 }
 
 async function markAlarmAsRead(alarmId: number) {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from('alarm')
-    .update({ is_read: true })
-    .eq('alarm_id', alarmId);
+  try {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('alarm')
+      .update({ is_read: true })
+      .eq('alarm_id', alarmId);
 
-  if (error) {
-    console.error('알림 읽음 처리 실패:', error);
+    if (error) {
+      console.error('알림 읽음 처리 실패:', error);
+    }
+  } catch (error) {
+    console.error('알림 읽음 처리 중 오류:', error);
   }
 }

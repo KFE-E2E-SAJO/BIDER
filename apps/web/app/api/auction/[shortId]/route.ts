@@ -2,8 +2,6 @@ import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import { AuctionDetail, AuctionForBid } from '@/entities/auction/model/types';
-import { generateBlurDataURL } from '@/features/auction/detail/lib/generateBlurImg';
-import { sendNotification } from '@/app/actions';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {
   const resolvedParams = await params;
@@ -57,9 +55,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
     const productData = auctionData.product;
     const userData = productData?.exhibit_user;
 
-    const mainImage = { ...productData?.product_image[0] };
-    mainImage.blurDataUrl = await generateBlurDataURL(mainImage.image_url);
-    productData.product_image[0] = mainImage;
+    const fallbackBidHistory = bidHistory || [];
+    const safeBidHistory = auctionData.is_secret ? [] : fallbackBidHistory;
+    const safeCurrentHighestBid = auctionData.is_secret
+      ? null
+      : currentHighestBid || auctionData.min_price;
 
     // 응답 데이터 구성
     const response: AuctionDetail = {
@@ -69,8 +69,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ shortId
         exhibit_user: userData,
         product_image: productData?.product_image || [],
       },
-      bid_history: bidHistory || [],
-      current_highest_bid: currentHighestBid || auctionData.min_price,
+      bid_cnt: fallbackBidHistory.length,
+      bid_history: safeBidHistory,
+      current_highest_bid: safeCurrentHighestBid,
     } as AuctionDetail;
 
     return NextResponse.json(response);
@@ -168,7 +169,6 @@ export async function POST(req: NextRequest) {
       console.error('입찰 삽입 오류:', bidError);
       return NextResponse.json({ error: '입찰 처리 중 오류가 발생했습니다.' }, { status: 500 });
     }
-
     const { origin } = new URL(req.url);
 
     // 푸시 알람 전송(판매자, 입찰자)
@@ -181,7 +181,6 @@ export async function POST(req: NextRequest) {
         auction_id: auctionId,
       }),
     });
-
     const auctionTyped = auctionData as unknown as AuctionForBid;
     const productTitle = auctionTyped.product.title;
 

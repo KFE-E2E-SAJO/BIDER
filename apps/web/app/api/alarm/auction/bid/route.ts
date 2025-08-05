@@ -46,8 +46,8 @@ export async function POST(req: NextRequest) {
       'bidUpdated',
       {
         productName: `${PushAlarmData[0]?.product?.title}`,
-        productId: `${PushAlarmData[0]?.product?.product_id}`,
-        image: `${PushAlarmData?.[0]?.product[0]?.product_image[0]?.image_url}`,
+        auctionId: winnigBIdValue.auction_id,
+        image: `${PushAlarmData[0]?.product[0]?.product_image?.image_url}`,
       }
     );
 
