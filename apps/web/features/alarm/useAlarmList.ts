@@ -43,7 +43,7 @@ export const useAlarmList = () => {
           contents: item.body,
           time: getTimeDiff(item.create_at),
           // 이미지 URL 처리 개선
-          image: getImageUrl(item.image_url),
+          image: getImageUrl(item.image_url) ?? '',
           isRead: item.is_read ?? false,
           link: item.link,
         }));

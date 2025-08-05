@@ -83,7 +83,7 @@ const HeaderItem = () => {
             <Link href="/search">
               <Search className="mr-4.5" />
             </Link>
-            <Link href="/alarm" className="relative" W>
+            <Link href="/alarm" className="relative">
               <Bell />
               {alarmCount > 0 && <AlertBadge placementClass="absolute right-0 top-0" />}
             </Link>
