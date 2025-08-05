@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
     // 2. 경매 정보 조회
     const { data: auctionData, error: auctionError } = await supabase
       .from('auction')
-      .select('auction_end_at, auction_status, min_price, product:product_id(title)')
+      .select('auction_end_at, auction_status, min_price, product:product_id(title), is_secret')
       .eq('auction_id', auctionId)
       .single();
 
@@ -172,16 +172,18 @@ export async function POST(req: NextRequest) {
 
     const { origin } = new URL(req.url);
 
-    // 푸시 알람 전송(판매자, 입찰자)
-    await fetch(`${origin}/api/alarm/auction/bid`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        auction_id: auctionId,
-      }),
-    });
+    if (!auctionData.is_secret) {
+      // 푸시 알람 전송(판매자, 입찰자)
+      await fetch(`${origin}/api/alarm/auction/bid`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          auction_id: auctionId,
+        }),
+      });
+    }
 
     const auctionTyped = auctionData as unknown as AuctionForBid;
     const productTitle = auctionTyped.product.title;
