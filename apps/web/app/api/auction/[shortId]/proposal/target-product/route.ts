@@ -4,10 +4,10 @@ import shortUUID from 'short-uuid';
 
 const translator = shortUUID();
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: { shortId: string } }) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const shortId = searchParams.get('shortId');
+    const shortId = params.shortId || searchParams.get('shortId');
     const userId = searchParams.get('userId');
 
     if (!userId || !shortId) {
