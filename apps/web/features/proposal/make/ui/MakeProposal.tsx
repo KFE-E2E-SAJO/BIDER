@@ -1,15 +1,17 @@
 import MakePrice from '@/features/proposal/make/ui/MakePrice';
 import TargetProduct from '@/features/proposal/make/ui/TargetProduct';
 import ReactQueryProvider from '@/shared/providers/ReactQueryProvider';
+import getUserId from '@/shared/lib/getUserId';
 
-const MakeProposal = () => {
+const MakeProposal = async () => {
+  const userId = await getUserId();
   return (
     <div>
       <ReactQueryProvider>
-        <TargetProduct />
-        <MakePrice />
+        <TargetProduct userId={userId} />
+        <MakePrice userId={userId} />
       </ReactQueryProvider>
-      <ul className="p-box bg-warning-light text-warning-medium typo-caption-medium fixed bottom-0 left-0 w-full list-inside list-disc pb-[93px] pt-[20px]">
+      <ul className="p-box bg-warning-light text-warning-medium typo-caption-medium fixed bottom-0 left-[50%] w-full max-w-[600px] translate-x-[-50%] list-inside list-disc pb-[93px] pt-[20px]">
         <li>제안하기 사용 시 100포인트가 차감돼요.</li>
         <li>최고 입찰가 이상으로만 제안이 가능해요.</li>
         <li>제안 성공 시 거래는 즉시 종료돼요.</li>

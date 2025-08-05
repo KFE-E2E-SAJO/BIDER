@@ -1,9 +1,9 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import getUserId from '@/shared/lib/getUserId';
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('userId');
+export async function GET() {
+  const userId = await getUserId();
 
   if (!userId) {
     return NextResponse.json(
