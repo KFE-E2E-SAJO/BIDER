@@ -2,6 +2,26 @@ import { sendNotification } from '@/app/actions';
 import { createClient } from '@/shared/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
+type AuctionWonPayload = {
+  auction_id: string;
+  product_id: string;
+  winning_bid_user_id: string | null;
+
+  product: {
+    title: string;
+    exhibit_user_id: string;
+    product_image: { image_url: string }[];
+  };
+
+  profiles: {
+    nickname: string;
+  } | null; // winning_bid_user_id가 없으면 null일 수 있음
+};
+
+type ChatRoomPayload = {
+  chatroom_id: string;
+};
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const winnigBIdValue = await req.json();
@@ -28,7 +48,8 @@ export async function POST(req: NextRequest) {
       )
       `
       )
-      .eq('auction_id', winnigBIdValue.auction_id);
+      .eq('auction_id', winnigBIdValue.auction_id)
+      .returns<AuctionWonPayload[]>();
 
     if (error || !PushAlarmData || PushAlarmData.length === 0) {
       throw new Error(`pushAlarm 조회 실패: ${error?.message || 'No data found'}`);
@@ -41,7 +62,8 @@ export async function POST(req: NextRequest) {
       .from('chat_room')
       .select('chatroom_id')
       .eq('bid_user_id', winning_bid_user_id)
-      .eq('exhibit_user_id', exhibit_user_Id);
+      .eq('exhibit_user_id', exhibit_user_Id)
+      .returns<ChatRoomPayload[]>();
 
     if (chatError) {
       console.error('Chat room 조회 실패:', chatError);

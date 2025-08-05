@@ -2,6 +2,24 @@ import { sendNotification } from '@/app/actions';
 import { createClient } from '@/shared/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
+type ChatRoomPayload = {
+  bid_user_id: string;
+  exhibit_user_id: string;
+  auction?: {
+    product?: {
+      title?: string;
+      product_image?: {
+        image_url: string;
+        order_index: number;
+      }[];
+    };
+  };
+};
+
+type ProfilePayload = {
+  nickname: string;
+};
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
 
@@ -25,14 +43,17 @@ export async function POST(req: NextRequest) {
         )
       `
       )
-      .eq('chatroom_id', chatValue.chatroom_id);
+      .eq('chatroom_id', chatValue.chatroom_id)
+      .returns<ChatRoomPayload[]>();
 
     if (chatError || !chatDataList || chatDataList.length === 0) {
-      console.error('chat_room 조회 실패:', chatError);
       throw new Error(`chat_room 조회 실패: ${chatError?.message}`);
     }
 
     const chatData = chatDataList[0];
+    if (!chatData) {
+      throw new Error('chat_room 데이터가 없습니다.');
+    }
 
     const receiver_id =
       chatValue.sender_id === chatData.bid_user_id
@@ -43,7 +64,7 @@ export async function POST(req: NextRequest) {
       .from('profiles')
       .select('nickname')
       .eq('user_id', chatValue.sender_id)
-      .single();
+      .single<ProfilePayload>();
 
     if (senderError || !senderProfile) {
       console.error('sender 프로필 조회 실패:', senderError);
@@ -71,7 +92,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (err) {
-    console.error('알림 전송 오류:', err);
+    console.error('알림 전송 오류:', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: '알림 전송 실패' }, { status: 500 });
   }
 }

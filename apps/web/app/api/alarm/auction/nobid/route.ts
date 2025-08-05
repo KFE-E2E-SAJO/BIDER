@@ -2,6 +2,16 @@ import { sendNotification } from '@/app/actions';
 import { createClient } from '@/shared/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
+type AuctionEndedLostPayload = {
+  product: {
+    title: string;
+    exhibit_user_id: string;
+    product_image: {
+      image_url: string;
+    }[];
+  };
+};
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const winnigBIdValue = await req.json();
@@ -20,7 +30,8 @@ export async function POST(req: NextRequest) {
       )
       `
       )
-      .eq('auction_id', winnigBIdValue.auction_id);
+      .eq('auction_id', winnigBIdValue.auction_id)
+      .returns<AuctionEndedLostPayload[]>();
 
     if (error || !PushAlarmData) {
       throw new Error(`pushAlarm 조회 실패: ${error.message}`);
