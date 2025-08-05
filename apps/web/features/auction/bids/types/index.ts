@@ -1,10 +1,14 @@
+import { SecretBidPrice } from '@/features/auction/list/types';
+
 export interface BidDialogProps {
   shortId: string;
   auctionEndAt: string | Date;
   title: string;
-  lastPrice: string;
+  lastPrice: number | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isSecret: boolean;
+  minPrice: number;
 }
 
 export interface BidRequest {
@@ -42,7 +46,7 @@ export interface BidData {
     auction_status: string;
     auction_end_at: string;
     winning_bid_user_id: string | null;
-
+    is_secret: boolean;
     product: {
       product_id: string;
       title: string;
@@ -60,7 +64,7 @@ export interface BidData {
 }
 export interface BidDataWithStats extends BidData {
   bidCount: number;
-  maxPrice: number;
+  maxPrice: number | SecretBidPrice;
 }
 
 export interface AuctionBidTabsProps {

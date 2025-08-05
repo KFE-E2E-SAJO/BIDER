@@ -15,18 +15,21 @@ import {
   SelectContent,
   SelectItem,
 } from '@repo/ui/components/Select/Select';
-import { formatPriceInput, isEndDateValid } from '../lib/utils';
-import { useCreateProductWithValidation } from '../model/useCreateProduct';
-import { useProductFormWithoutSubmitting } from '../model/useProductForm';
+
 import GoogleMap from '@/features/location/ui/GooggleMap';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import { Location } from '@/features/location/types';
 import { Info } from 'lucide-react';
+import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
+import { useProductFormWithoutSubmitting } from '@/features/product/model/useProductForm';
+import { useCreateProductWithValidation } from '@/features/product/model/useCreateProduct';
+import { formatPriceInput, isEndDateValid } from '@/features/product/lib/utils';
 
 export const ProductRegistrationForm = () => {
   const router = useRouter();
   const user = useAuthStore();
+  const { DialogHost, openSecretGuide } = useSecretDialog();
 
   const {
     // State
@@ -40,6 +43,7 @@ export const ProductRegistrationForm = () => {
     endDate,
     endTime,
     images,
+    isSecret,
     // Actions
     setTitle,
     setCategory,
@@ -51,6 +55,7 @@ export const ProductRegistrationForm = () => {
     setEndDate,
     setEndTime,
     setImages,
+    setIsSecret,
     reset,
   } = useProductFormWithoutSubmitting();
 
@@ -89,6 +94,7 @@ export const ProductRegistrationForm = () => {
       endTime,
       images,
       userId: user.user.id,
+      isSecret,
     });
   };
 
@@ -108,6 +114,7 @@ export const ProductRegistrationForm = () => {
             상품 제목<span className="text-main">*</span>
           </div>
           <Input
+            name="title"
             placeholder="상품 제목을 입력해 주세요."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -120,7 +127,11 @@ export const ProductRegistrationForm = () => {
           <div className="typo-subtitle-small-medium">
             카테고리<span className="text-main">*</span>
           </div>
-          <Select value={category} onValueChange={(value) => setCategory(value as CategoryValue)}>
+          <Select
+            name="category"
+            value={category}
+            onValueChange={(value) => setCategory(value as CategoryValue)}
+          >
             <SelectTrigger className="typo-body-regular rounded-sm px-[10.5px]">
               <SelectValue placeholder="카테고리를 선택해 주세요." />
             </SelectTrigger>
@@ -142,6 +153,7 @@ export const ProductRegistrationForm = () => {
             자세한 설명<span className="text-main">*</span>
           </div>
           <Textarea
+            name="discription"
             className="h-[204px]"
             placeholder="상품의 상태, 구매 시기, 사용감 등을 자세히 설명해 주세요."
             value={description}
@@ -172,6 +184,7 @@ export const ProductRegistrationForm = () => {
                 height="h-[300px]"
               />
               <Input
+                name="address"
                 placeholder="위치 추가"
                 value={dealAddress}
                 onChange={(e) => setDealAddress(e.target.value)}
@@ -184,6 +197,17 @@ export const ProductRegistrationForm = () => {
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       <div className="p-box flex flex-col gap-[26px]">
+        {/* 시크릿 경매 */}
+        <div className="flex items-center justify-between">
+          <div className="flex gap-[5px]">
+            <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+            <button onClick={() => openSecretGuide()}>
+              <Info className="stroke-event size-[17px]" />
+            </button>
+          </div>
+          <Switch checked={isSecret} onCheckedChange={setIsSecret} />
+        </div>
+
         {/* 입찰 시작가 */}
         <div className="flex flex-col gap-[10px]">
           <div className="typo-subtitle-small-medium">
@@ -191,6 +215,7 @@ export const ProductRegistrationForm = () => {
           </div>
           <div className="flex items-end">
             <Input
+              name="minPrice"
               value={minPrice}
               onChange={handleMinPriceChange}
               placeholder="희망하는 최소 입찰가를 적어주세요."
@@ -209,6 +234,7 @@ export const ProductRegistrationForm = () => {
             <div className="flex w-[calc(50%-8px)] flex-1 basis-[0] flex-col">
               <div className="typo-caption-regular mb-[6px]">종료 날짜</div>
               <Input
+                name="endDate"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -218,6 +244,7 @@ export const ProductRegistrationForm = () => {
             <div className="flex w-[calc(50%-8px)] flex-1 basis-[0] flex-col">
               <div className="typo-caption-regular mb-[6px]">종료 시간</div>
               <Input
+                name="endTime"
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
@@ -232,6 +259,7 @@ export const ProductRegistrationForm = () => {
           onClick={handleSubmit}
           variant={isSubmitting ? 'loading' : 'default'}
           disabled={isSubmitting}
+          className={`${isSubmitting && 'animate-pulse'}`}
         >
           {isSubmitting ? '출품 중...' : '출품하기'}
         </Button>
@@ -254,6 +282,7 @@ export const ProductRegistrationForm = () => {
           </ul>
         </div>
       </div>
+      <DialogHost />
     </div>
   );
 };

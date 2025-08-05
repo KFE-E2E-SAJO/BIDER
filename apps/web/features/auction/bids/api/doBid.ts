@@ -1,4 +1,4 @@
-import { BidRequest, BidResponse } from '../types';
+import { BidRequest, BidResponse } from '@/features/auction/bids/types';
 
 export const submitBid = async (shortId: string, bidData: BidRequest): Promise<BidResponse> => {
   const response = await fetch(`/api/auction/${shortId}`, {

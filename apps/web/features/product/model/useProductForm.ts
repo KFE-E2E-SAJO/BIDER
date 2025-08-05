@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 import { CategoryValue } from '@/features/category/types';
-import { ProductFormActions, ProductFormState } from '../types';
+import { ProductFormActions, ProductFormState } from '@/features/product/types';
 
 const initialState: Omit<ProductFormState, 'isSubmitting'> = {
   title: '',
@@ -13,6 +13,7 @@ const initialState: Omit<ProductFormState, 'isSubmitting'> = {
   minPrice: '',
   endDate: '',
   endTime: '',
+  isSecret: false,
   images: [],
 };
 
@@ -24,6 +25,7 @@ export const useProductForm = (options?: { withSubmitting?: boolean }) => {
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
   const [images, setImages] = useState<UploadedImage[]>([]);
+  const [isSecret, setIsSecret] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const reset = () => {
@@ -34,6 +36,7 @@ export const useProductForm = (options?: { withSubmitting?: boolean }) => {
     setEndDate('');
     setEndTime('');
     setImages([]);
+    setIsSecret(false);
     setIsSubmitting(false);
   };
 
@@ -52,6 +55,8 @@ export const useProductForm = (options?: { withSubmitting?: boolean }) => {
     setEndTime,
     images,
     setImages,
+    isSecret,
+    setIsSecret,
     reset,
   };
 
@@ -71,6 +76,7 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
   const [endDate, setEndDate] = useState(initialState.endDate);
   const [endTime, setEndTime] = useState(initialState.endTime);
   const [images, setImages] = useState<UploadedImage[]>(initialState.images);
+  const [isSecret, setIsSecret] = useState(initialState.isSecret);
 
   const reset = () => {
     setTitle(initialState.title);
@@ -83,6 +89,7 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
     setEndDate(initialState.endDate);
     setEndTime(initialState.endTime);
     setImages(initialState.images);
+    setIsSecret(initialState.isSecret);
   };
 
   return {
@@ -97,6 +104,7 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
     endDate,
     endTime,
     images,
+    isSecret,
     // Actions
     setTitle,
     setCategory,
@@ -108,6 +116,7 @@ export const useProductFormWithoutSubmitting = (): Omit<ProductFormState, 'isSub
     setEndDate,
     setEndTime,
     setImages,
+    setIsSecret,
     reset,
   };
 };

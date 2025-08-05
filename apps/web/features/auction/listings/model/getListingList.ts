@@ -19,6 +19,17 @@ const getListingList = async (params: ListingListParams): Promise<ProductList[]>
   return listingData.map((product) => {
     const auction = Array.isArray(product.auction) ? product.auction[0] : product.auction;
     const myBid = auction?.bid_history?.find((b: any) => b.bid_user_id === product.exhibit_user_id); // seller 기준이라면 제외 가능
+    const isEnd = !!auction?.winning_bid_user_id;
+    const hasBids = auction?.bid_history?.length > 0;
+    const highestBid = hasBids
+      ? Math.max(...auction?.bid_history.map((bid: any) => Number(bid.bid_price) || 0))
+      : undefined;
+
+    const minPrice = auction?.is_secret
+      ? isEnd
+        ? (highestBid ?? auction.min_price) // 비밀경매 + 낙찰 → 최고가
+        : auction.min_price // 비밀경매 + 미낙찰 → 최소가
+      : (highestBid ?? auction?.min_price); // 🔹 일반 경매
 
     return {
       id:
@@ -30,17 +41,16 @@ const getListingList = async (params: ListingListParams): Promise<ProductList[]>
         '/default.png',
       title: product.title,
       address: product.address ?? '위치 정보 없음',
-      bidCount: auction?.bid_history.length ?? 0,
       price: myBid?.bid_price ?? 0,
-      minPrice: auction?.bid_history?.length
-        ? Math.max(...auction.bid_history.map((bid: any) => bid.bid_price))
-        : (auction?.min_price ?? 0),
+      bidCount: auction?.bid_history.length ?? 0,
+      minPrice: minPrice,
       auctionEndAt: auction?.auction_end_at ?? '',
       auctionStatus: auction?.auction_status,
       winnerId: auction?.winning_bid_user_id ?? null,
       sellerId: product.exhibit_user_id,
       isAwarded: myBid?.is_awarded ?? false,
       isPending: auction?.auction_status === AUCTION_STATUS.PENDING,
+      isSecret: auction?.is_secret,
     };
   });
 };

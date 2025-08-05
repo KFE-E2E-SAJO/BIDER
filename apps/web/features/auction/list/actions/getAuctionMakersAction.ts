@@ -5,6 +5,7 @@ import getUserId from '@/shared/lib/getUserId';
 import { MapAuction } from '@/entities/auction/model/types';
 import { AuctionMarkerResponse } from '@/features/auction/list/types';
 import { supabase } from '@/shared/lib/supabaseClient';
+import { SECRET_PRICE } from '@/features/auction/list/constants';
 
 export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[] | null> {
   const userId = await getUserId();
@@ -28,9 +29,16 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
       `
     auction_id,
     auction_status,
+    auction_end_at,
+    min_price,
+    bid_history!auction_id (
+      bid_price
+    ),
+    is_secret,
     product:product_id (
       latitude,
       longitude,
+      title,
       product_image (
         image_url,
         order_index
@@ -38,7 +46,7 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
     )
   `
     )
-    .neq('auction_status', '경매 종료');
+    .eq('auction_status', '경매 중');
 
   if (error) {
     return null;
@@ -50,15 +58,25 @@ export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[]
     return within5km;
   });
 
-  const markers = filtered.map((item) => ({
-    id: item.auction_id,
-    location: {
-      lat: item.product.latitude,
-      lng: item.product.longitude,
-    },
-    thumbnail:
-      item.product.product_image?.find((img) => img.order_index === 0)?.image_url ?? '/default.png',
-  }));
+  const markers = filtered.map((item) => {
+    const bidPrices = item.bid_history?.map((b) => b.bid_price) ?? [];
+    const highestBid = bidPrices.length > 0 ? Math.max(...bidPrices) : null;
+    const safeBidPrice = item.is_secret ? SECRET_PRICE : (highestBid ?? item.min_price);
+    return {
+      id: item.auction_id,
+      auctionEndAt: item.auction_end_at,
+      bidPrice: safeBidPrice,
+      title: item.product.title,
+      isSecret: item.is_secret,
+      location: {
+        lat: item.product.latitude,
+        lng: item.product.longitude,
+      },
+      thumbnail:
+        item.product.product_image?.find((img) => img.order_index === 0)?.image_url ??
+        '/default.png',
+    };
+  });
 
   return markers;
 }

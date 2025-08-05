@@ -27,6 +27,7 @@ const getBidList = async (params: BidListParams): Promise<ProductList[]> => {
     sellerId: item.auction.product.exhibit_user_id ?? '',
     isAwarded: item.is_awarded,
     productId: item.auction.product.product_id,
+    isSecret: item.auction.is_secret,
   }));
 };
 

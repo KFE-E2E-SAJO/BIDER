@@ -5,6 +5,7 @@ import { AuctionMarkerResponse } from '@/features/auction/list/types';
 
 export type MarkerProps = {
   poi: AuctionMarkerResponse;
+  isSelected: boolean;
   onClick: (poi: AuctionMarkerResponse) => void;
   setMarkerRef: (marker: Marker | null, key: string) => void;
 };
@@ -13,7 +14,7 @@ export type MarkerProps = {
  * Wrapper Component for an AdvancedMarker for a single tree.
  */
 export const MarkerItem = (props: MarkerProps) => {
-  const { poi, onClick, setMarkerRef } = props;
+  const { poi, isSelected, onClick, setMarkerRef } = props;
 
   const handleClick = useCallback(() => onClick(poi), [onClick, poi]);
   const ref = useCallback(
@@ -24,9 +25,9 @@ export const MarkerItem = (props: MarkerProps) => {
   return (
     <AdvancedMarker position={poi.location} ref={ref} onClick={handleClick}>
       <Pin
-        background="var(--color-main)"
+        background={isSelected ? 'var(--color-main-text)' : 'var(--color-main)'}
         glyphColor="var(--color-neutral-0)"
-        borderColor="var(--color-main)"
+        borderColor={isSelected ? 'var(--color-main-text)' : 'var(--color-main)'}
       />
     </AdvancedMarker>
   );

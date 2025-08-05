@@ -15,7 +15,9 @@ export type StatusType =
   | 'count-gray'
   | 'count-green'
   | 'state-gray'
+  | 'state-lightgray'
   | 'state-orange'
+  | 'state-blue'
   | 'state-green';
 
 const baseStyle =
@@ -32,8 +34,10 @@ const colorStyles: Record<StatusType, string> = {
   'count-green': 'text-neutral-0 bg-alert',
 
   'state-gray': 'text-neutral-0 bg-neutral-700',
+  'state-lightgray': 'text-neutral-700 bg-neutral-100',
   'state-orange': 'text-neutral-0 bg-warning',
   'state-green': 'text-neutral-0 bg-alert',
+  'state-blue': 'text-main bg-main-lightest',
 };
 
 const StatusBadge = ({ label, type, className }: StatusBadgeProps) => {

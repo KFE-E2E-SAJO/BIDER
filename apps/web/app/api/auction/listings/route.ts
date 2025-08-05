@@ -1,3 +1,5 @@
+import { BidHistory } from '@/entities/bidHistory/model/types';
+import { SECRET_PRICE } from '@/features/auction/list/constants';
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
@@ -43,7 +45,32 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const filtered = data.filter((product) => {
+  const filtered = data
+    .map((product) => ({
+      ...product,
+      auction: product.auction[0],
+    }))
+    .map((product) => {
+      const auction = product.auction;
+
+      if (auction.is_secret) {
+        return {
+          ...product,
+          auction: {
+            ...auction,
+            min_price: SECRET_PRICE,
+            bid_history: auction.bid_history.map((bid: BidHistory) => ({
+              ...bid,
+              bid_price: bid.is_awarded ? bid.bid_price : SECRET_PRICE,
+            })),
+          },
+        };
+      }
+
+      return product;
+    });
+
+  const tabFiltered = filtered.filter((product) => {
     const auction = Array.isArray(product.auction) ? product.auction[0] : product.auction;
     if (!auction || product.latitude == null || product.longitude == null) return false;
 
@@ -62,5 +89,5 @@ export async function GET(request: NextRequest) {
     }
   });
 
-  return NextResponse.json({ success: true, data: filtered });
+  return NextResponse.json({ success: true, data: tabFiltered });
 }

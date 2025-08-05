@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Input } from '@repo/ui/components/Input/Input';
 import { Textarea } from '@repo/ui/components/Textarea/Textarea';
 import { Button } from '@repo/ui/components/Button/Button';
@@ -14,10 +14,12 @@ import {
 import { categories, CategoryValue } from '@/features/category/types';
 import ImageUploadPreview from '@/shared/lib/ImageUploadPreview';
 import Loading from '@/shared/ui/Loading/Loading';
-import { useProductEdit } from '../model/useProductEdit';
 import { Switch } from '@repo/ui/components/Switch/Switch';
 import GoogleMap from '@/features/location/ui/GooggleMap';
 import { Location } from '@/features/location/types';
+import { useSecretDialog } from '@/features/auction/secret/model/useSecretDialog';
+import { Info } from 'lucide-react';
+import { useProductEdit } from '@/features/product/model/useProductEdit';
 
 interface ProductEditFormProps {
   shortId: string;
@@ -38,9 +40,9 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     dealLatitude,
     dealLongitude,
     minPrice,
-    images,
     endDate,
     endTime,
+    isSecret,
     setTitle,
     setCategory,
     setDescription,
@@ -51,9 +53,12 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
     setImages,
     setEndDate,
     setEndTime,
+    setIsSecret,
     handleMinPriceUpdate,
     handleSubmit,
   } = useProductEdit(shortId);
+
+  const { DialogHost, openSecretGuide } = useSecretDialog();
 
   if (loading) return <Loading />;
   if (error) return <p>오류: {error}</p>;
@@ -71,6 +76,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
             상품 제목<span className="text-main">*</span>
           </div>
           <Input
+            name="title"
             placeholder="상품 제목을 입력해 주세요."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -83,7 +89,11 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
           <div className="typo-subtitle-small-medium">
             카테고리<span className="text-main">*</span>
           </div>
-          <Select value={category} onValueChange={(value) => setCategory(value as CategoryValue)}>
+          <Select
+            name="category"
+            value={category}
+            onValueChange={(value) => setCategory(value as CategoryValue)}
+          >
             <SelectTrigger className="typo-body-regular rounded-sm px-[10.5px]">
               <SelectValue placeholder="카테고리를 선택해 주세요." />
             </SelectTrigger>
@@ -105,6 +115,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
             자세한 설명<span className="text-main">*</span>
           </div>
           <Textarea
+            name="description"
             className="h-[204px]"
             placeholder="상품의 상태, 구매 시기, 사용감 등을 자세히 설명해 주세요."
             value={description}
@@ -139,6 +150,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
                 }
               />
               <Input
+                name="address"
                 placeholder="위치 추가"
                 value={dealAddress}
                 onChange={(e) => setDealAddress(e.target.value)}
@@ -151,6 +163,17 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
       <div className="h-[8px] w-full bg-neutral-100"></div>
 
       <div className="p-box flex flex-col gap-[26px]">
+        {/* 시크릿 경매 */}
+        <div className="flex items-center justify-between">
+          <div className="flex gap-[5px]">
+            <div className="typo-subtitle-small-medium">시크릿 경매 이용하기</div>
+            <button onClick={() => openSecretGuide()}>
+              <Info className="stroke-event size-[17px]" />
+            </button>
+          </div>
+          <Switch checked={isSecret} onCheckedChange={setIsSecret} />
+        </div>
+
         {/* 시작가 */}
         <div className="flex flex-col gap-[13px]">
           <div className="typo-subtitle-small-medium">
@@ -158,6 +181,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
           </div>
           <div className="flex items-end">
             <Input
+              name="minPrice"
               value={minPrice}
               onChange={handleMinPriceUpdate}
               placeholder="희망하는 최소 입찰가를 적어주세요."
@@ -176,6 +200,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
             <div className="flex w-[calc(50%-8px)] flex-col">
               <div className="typo-caption-regular mb-[6px]">종료 날짜</div>
               <Input
+                name="endDate"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -185,6 +210,7 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
             <div className="flex w-[calc(50%-8px)] flex-col">
               <div className="typo-caption-regular mb-[6px]">종료 시간</div>
               <Input
+                name="endTime"
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
@@ -198,10 +224,12 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({ shortId }) => 
           onClick={handleSubmit}
           variant={isSubmitting ? 'loading' : 'default'}
           disabled={isSubmitting}
+          className={`${isSubmitting && 'animate-pulse'}`}
         >
           {isSubmitting ? '수정 중...' : '수정하기'}
         </Button>
       </div>
+      <DialogHost />
     </div>
   );
 };

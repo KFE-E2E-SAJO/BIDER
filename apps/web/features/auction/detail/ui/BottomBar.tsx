@@ -4,11 +4,23 @@ import { getCountdown } from '@/shared/lib/getCountdown';
 import { Button } from '@repo/ui/components/Button/Button';
 import { MessageSquareMore } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { BidDialog } from '../../bids/ui/BidDialog';
-import { BottomBarProps } from '../types';
-import { toast } from '@repo/ui/components/Toast/Sonner';
+import clsx from 'clsx';
+import { BottomBarProps } from '@/features/auction/detail/types';
+import { BidDialog } from '@/features/auction/bids/ui/BidDialog';
+import { useRouter } from 'next/navigation';
+import { getChatRoomLink } from '@/features/chat/room/model/getChatRoomLink';
+import { encodeUUID } from '@/shared/lib/shortUuid';
 
-const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) => {
+const BottomBar = ({
+  shortId,
+  auctionEndAt,
+  title,
+  lastPrice,
+  isSecret,
+  minPrice,
+  exhibitUser,
+}: BottomBarProps) => {
+  const router = useRouter();
   const [countdown, setCountdown] = useState('');
   const [hasMounted, setHasMounted] = useState(false);
   const [openBiddingSheet, setOpenBiddingSheet] = useState(false);
@@ -22,6 +34,20 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
 
     return () => clearInterval(timer);
   }, [auctionEndAt]);
+
+  const linkChatRoom = async () => {
+    const chatRoomShortId = await getChatRoomLink(
+      shortId,
+      encodeUUID(exhibitUser.user_id),
+      'loginUser'
+    );
+    router.push(`/chat/${chatRoomShortId}`);
+  };
+
+  const buttonText = isSecret ? '시크릿 입찰하기' : '입찰하기';
+  const bgColorClass = isSecret ? 'bg-event' : 'bg-main';
+  const borderColorClass = isSecret ? 'border-event' : 'border-main';
+  const iconColorClass = isSecret ? 'text-event' : 'text-main';
 
   return (
     <div className="bg-neutral-0 fixed bottom-0 left-[50%] z-50 h-[102px] w-full max-w-[600px] translate-x-[-50%] border-t border-neutral-100 px-[16px] pt-[15px]">
@@ -39,16 +65,17 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
           <Button
             onClick={() => setOpenBiddingSheet(true)}
             disabled={countdown === '마감됨' || !hasMounted}
-            className="w-[142px]"
+            className={clsx('w-[142px]', bgColorClass)}
           >
-            입찰하기
+            {buttonText}
           </Button>
+
           <Button
             variant="outline"
-            className="w-[53px] border-[1.5px]"
-            onClick={() => toast({ content: '준비 중인 기능입니다.' })}
+            className={clsx('w-[53px] border-[1.5px]', borderColorClass)}
+            onClick={linkChatRoom}
           >
-            <MessageSquareMore className="text-main" strokeWidth={1.5} />
+            <MessageSquareMore className={clsx(iconColorClass)} strokeWidth={1.5} />
           </Button>
         </div>
       </div>
@@ -60,6 +87,8 @@ const BottomBar = ({ shortId, auctionEndAt, title, lastPrice }: BottomBarProps) 
         lastPrice={lastPrice}
         open={openBiddingSheet}
         onOpenChange={setOpenBiddingSheet}
+        isSecret={isSecret}
+        minPrice={minPrice}
       />
     </div>
   );

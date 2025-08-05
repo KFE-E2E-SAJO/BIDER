@@ -1,5 +1,5 @@
+import { SecretBidPrice } from '@/features/auction/list/types';
 import { CategoryValue } from '@/features/category/types';
-import { Location } from '@/features/location/types';
 import { UploadedImage } from '@/shared/lib/ImageUploadPreview';
 
 export interface ProductList {
@@ -8,7 +8,7 @@ export interface ProductList {
   title: string;
   address: string;
   bidCount: number;
-  minPrice: number;
+  minPrice: number | SecretBidPrice;
   myBidPrice?: number;
   auctionEndAt: string;
   auctionStatus: string;
@@ -16,6 +16,7 @@ export interface ProductList {
   sellerId: string;
   isAwarded: boolean;
   isPending?: boolean;
+  isSecret: boolean;
 }
 
 export interface ProductFormData {
@@ -29,6 +30,7 @@ export interface ProductFormData {
   endDate: string;
   endTime: string;
   images: UploadedImage[];
+  isSecret: boolean;
 }
 
 export interface ProductFormState extends ProductFormData {
@@ -46,6 +48,7 @@ export interface ProductFormActions {
   setEndDate: (date: string) => void;
   setEndTime: (time: string) => void;
   setImages: (images: UploadedImage[]) => void;
+  setIsSecret: (isSecret: boolean) => void;
   setIsSubmitting: (isSubmitting: boolean) => void;
   reset: () => void;
 }
@@ -62,6 +65,7 @@ export interface CreateProductRequest {
   endTime: string;
   images: UploadedImage[];
   userId: string;
+  isSecret: boolean;
 }
 
 export interface CreateProductResponse {
@@ -97,6 +101,7 @@ export interface ProductEditFormData {
   dealAddress?: string | null;
   dealLatitude?: number | null;
   dealLongitude?: number | null;
+  isSecret: boolean;
 }
 
 export interface ProductEditPageProps {

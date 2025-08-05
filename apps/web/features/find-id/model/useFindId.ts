@@ -12,6 +12,11 @@ export const useFindId = () => {
   const [isFound, setIsFound] = useState<boolean>(false);
   const [accountType, setAccountType] = useState<'email' | 'password'>('email');
 
+  const [verifiedCode, setVerifiedCode] = useState('');
+  const [verifiedCodeError, setVerifiedCodeError] = useState('');
+  const [verifiedEmail, setVerifiedEmail] = useState('');
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -71,6 +76,11 @@ export const useFindId = () => {
   const handlePasswordReset = async () => {
     const result = validateFullEmail({ fullEmail: inputValue });
 
+    if (!result.fullEmail) {
+      console.error('이메일 입력 오류');
+      return;
+    }
+
     if (result.success) {
       try {
         const { data: userData, error: userError } = await supabase
@@ -83,24 +93,23 @@ export const useFindId = () => {
           toast({ content: '등록되지 않은 이메일입니다.' });
           return;
         }
-        const getRedirectURL = () => {
-          if (typeof window !== 'undefined') {
-            return `${window.location.origin}/reset-pw`;
-          }
-          const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-          return `${baseURL}/reset-pw`;
-        };
 
-        const { error } = await supabase.auth.resetPasswordForEmail(inputValue.trim(), {
-          redirectTo: `${getRedirectURL()}`,
+        const { error } = await supabase.auth.signInWithOtp({
+          email: result.fullEmail,
+          options: {
+            shouldCreateUser: false,
+          },
         });
 
         if (error) {
-          toast({ content: '등록되지 않은 이메일이거나 오류가 발생했습니다.' });
+          console.error('OTP 발송 에러:', error);
+          toast({ content: `인증 코드 전송 실패: ${error.message}` });
           return;
         }
 
+        toast({ content: `${result.fullEmail}로 인증 코드가 전송되었습니다.` });
         setResult('비밀번호 재설정 이메일이 발송되었습니다.');
+        setVerifiedEmail(result.fullEmail);
         setIsFound(true);
       } catch (err) {
         console.error('비밀번호 재설정 오류:', err);
@@ -136,6 +145,44 @@ export const useFindId = () => {
     }
   };
 
+  const onClickVerifyCode = async () => {
+    if (!verifiedCode || !verifiedEmail) {
+      setVerifiedCodeError('인증 코드를 입력해주세요.');
+      return;
+    }
+
+    setIsSearching(true);
+    setVerifiedCodeError('');
+
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: verifiedEmail,
+        token: verifiedCode,
+        type: 'email',
+      });
+
+      if (error) {
+        console.error('OTP 인증 에러:', error);
+        setVerifiedCodeError('인증 코드가 올바르지 않습니다.');
+        return;
+      }
+
+      if (data.user) {
+        setIsEmailVerified(true);
+        toast({ content: '이메일 인증이 완료되었습니다!' });
+
+        router.replace('/reset-pw');
+      } else {
+        setIsEmailVerified(false);
+      }
+    } catch (error) {
+      console.error('인증 코드 확인 오류:', error);
+      setVerifiedCodeError('인증 코드 확인 중 오류가 발생했습니다.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   return {
     inputValue,
     isFound,
@@ -144,5 +191,12 @@ export const useFindId = () => {
     result,
     setInputValue,
     handleSubmit,
+
+    verifiedCode,
+    verifiedCodeError,
+    isEmailVerified,
+    verifiedEmail,
+    setVerifiedCode,
+    onClickVerifyCode,
   };
 };

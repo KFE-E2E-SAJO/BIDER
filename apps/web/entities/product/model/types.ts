@@ -1,4 +1,4 @@
-import { ProductImage, ProductImageWithBlur } from '@/entities/productImage/model/types';
+import { ProductImage } from '@/entities/productImage/model/types';
 import { Profiles } from '@/entities/profiles/model/types';
 
 export interface Product {
@@ -16,7 +16,7 @@ export interface Product {
 
 export interface ProductWithUserNImages extends Product {
   exhibit_user: Profiles;
-  product_image: ProductImageWithBlur[];
+  product_image: ProductImage[];
 }
 
 export interface ProductForEdit extends Product {
@@ -26,6 +26,7 @@ export interface ProductForEdit extends Product {
   deal_address: string;
   deal_longitude: number;
   deal_latitude: number;
+  is_secret: boolean;
 }
 
 export type ProductForList = Pick<
@@ -35,6 +36,6 @@ export type ProductForList = Pick<
   product_image: ProductImage[];
 };
 
-export type ProductForMapList = Pick<Product, 'latitude' | 'longitude'> & {
+export type ProductForMapList = Pick<Product, 'latitude' | 'longitude' | 'title'> & {
   product_image: ProductImage[];
 };

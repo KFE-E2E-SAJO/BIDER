@@ -1,8 +1,8 @@
 import React from 'react';
-import { PointItemProps } from '../types';
 import { formatDate } from '@/shared/lib/formatDate';
-import { getPointReasonLabel } from '../lib/utils';
 import { formatNumberWithComma } from '@/shared/lib/formatNumberWithComma';
+import { PointItemProps } from '@/features/point/types';
+import { getPointReasonLabel } from '@/features/point/lib/utils';
 
 const PointItem = ({ data }: PointItemProps) => {
   const isEarn = Boolean(data.point > 0);

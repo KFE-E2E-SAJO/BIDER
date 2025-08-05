@@ -5,6 +5,7 @@ import { getDistanceKm } from '@/features/product/lib/utils';
 import { AuctionList } from '@/entities/auction/model/types';
 import { AuctionListResponse } from '@/features/auction/list/types';
 import getUserId from '@/shared/lib/getUserId';
+import { SECRET_PRICE } from '@/features/auction/list/constants';
 
 interface ErrorResponse {
   error: string;
@@ -73,7 +74,8 @@ export async function GET(
   bid_history!auction_id (
     bid_price
   ),
-  created_at
+  created_at,
+  is_secret
 `);
 
   if (error) {
@@ -85,7 +87,7 @@ export async function GET(
       const { product, auction_status, auction_end_at } = item;
       const distance = getDistanceKm(lat, lng, product.latitude, product.longitude);
       const within5km = distance <= 5;
-      const matchSearch = search || searcher(product.title, search);
+      const matchSearch = !search || searcher(product.title, search);
       const matchCate = cate === 'all' || product.category === cate;
 
       const now = new Date();
@@ -103,6 +105,7 @@ export async function GET(
     .map((item) => {
       const bidPrices = item.bid_history?.map((b) => b.bid_price) ?? [];
       const highestBid = bidPrices.length > 0 ? Math.max(...bidPrices) : null;
+      const safeBidPrice = item.is_secret ? SECRET_PRICE : (highestBid ?? item.min_price);
       return {
         id: item.auction_id,
         thumbnail:
@@ -111,10 +114,11 @@ export async function GET(
         title: item.product.title,
         address: item.product.address,
         bidCount: item.bid_history?.length ?? 0,
-        bidPrice: highestBid ?? item.min_price,
+        bidPrice: safeBidPrice,
         auctionEndAt: item.auction_end_at,
         auctionStatus: item.auction_status,
         createdAt: item.created_at,
+        isSecret: item.is_secret,
       };
     });
 
