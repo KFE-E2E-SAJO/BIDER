@@ -36,6 +36,6 @@ export type ProductForList = Pick<
   product_image: ProductImage[];
 };
 
-export type ProductForMapList = Pick<Product, 'latitude' | 'longitude'> & {
+export type ProductForMapList = Pick<Product, 'latitude' | 'longitude' | 'title'> & {
   product_image: ProductImage[];
 };

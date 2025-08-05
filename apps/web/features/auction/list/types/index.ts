@@ -42,6 +42,10 @@ export interface AuctionMarkerResponse {
   id: string;
   location: Location;
   thumbnail: string;
+  auctionEndAt: string;
+  bidPrice: number | SecretBidPrice;
+  title: string;
+  isSecret: boolean;
 }
 
 export type Page = 'home' | 'list' | 'search';

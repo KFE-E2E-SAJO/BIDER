@@ -118,7 +118,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
 
   return (
     <div className="w-full">
-      <div className="scroll-container flex gap-[18px] pt-[10px]">
+      <div className="scroll-container flex gap-[18px] overflow-x-auto pt-[10px]">
         <div
           className="flex h-[70px] w-[70px] shrink-0 items-center justify-center rounded-[5px] border border-neutral-400"
           onClick={openActionSheet}
