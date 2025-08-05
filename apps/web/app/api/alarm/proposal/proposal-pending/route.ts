@@ -2,6 +2,40 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendNotification } from '@/app/actions';
 import { createClient } from '@/shared/lib/supabase/server';
 
+type PendingWithProduct = {
+  proposer_id: string;
+  proposed_price: number;
+  auction_id: string;
+  auction: {
+    product: {
+      title: string;
+      exhibit_user_id: string;
+      product_image: {
+        image_url: string;
+        order_index: number;
+      }[];
+    };
+  };
+};
+
+type ProductImage = {
+  image_url: string;
+};
+
+type Product = {
+  title: string;
+  exhibit_user_id: string;
+  product_image: ProductImage[];
+};
+
+type AuctionWithProduct = {
+  product: Product;
+};
+
+type ProfileNicknameOnly = {
+  nickname: string;
+};
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const proposalValue = await req.json();
@@ -11,7 +45,8 @@ export async function POST(req: NextRequest) {
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('nickname')
-      .eq('user_id', proposalValue.user_id);
+      .eq('user_id', proposalValue.user_id)
+      .returns<ProfileNicknameOnly[]>();
 
     const nickname = profileData?.[0]?.nickname;
 
@@ -30,7 +65,7 @@ export async function POST(req: NextRequest) {
         `
       )
       .eq('auction_id', proposalValue.auctionId)
-      .single();
+      .single<AuctionWithProduct>();
 
     const productInfo = auctionData?.product;
 

@@ -2,6 +2,22 @@ import { sendNotification } from '@/app/actions';
 import { createClient } from '@/shared/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
+type ProposalWithProduct = {
+  proposer_id: string;
+  proposed_price: number;
+  auction_id: string;
+  auction: {
+    product: {
+      title: string;
+      exhibit_user_id: string;
+      product_image: {
+        image_url: string;
+        order_index: number;
+      }[];
+    };
+  };
+};
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const proposalValue = await req.json();
@@ -10,7 +26,7 @@ export async function POST(req: NextRequest) {
     const { data: proposalData, error: proposalError } = await supabase
       .from('proposal')
       .select(
-        `
+        `s
         proposer_id,
         proposed_price,
         auction_id,
@@ -27,7 +43,7 @@ export async function POST(req: NextRequest) {
       `
       )
       .eq('proposal_id', proposalValue.proposalId)
-      .single();
+      .single<ProposalWithProduct>();
 
     if (proposalError || !proposalData) {
       console.error('제안 데이터 조회 실패:', proposalError);
@@ -61,7 +77,7 @@ export async function POST(req: NextRequest) {
     const sellerNickname = sellerProfile.nickname;
 
     const sortedImages = productInfo?.product_image?.sort((a, b) => a.order_index - b.order_index);
-    const firstImageUrl = sortedImages?.[0]?.image_url;
+    const firstImageUrl = sortedImages?.[0]?.image_url ?? '';
 
     const { data: chat, error: chatError } = await supabase
       .from('chat_room')
@@ -69,15 +85,27 @@ export async function POST(req: NextRequest) {
       .eq('bid_user_id', proposalData.proposer_id)
       .eq('exhibit_user_id', proposalData.auction.product.exhibit_user_id);
 
+    if (chatError) {
+      console.error('chat_room 조회 실패:', chatError);
+    }
+
     const payload = {
       nickname: sellerNickname,
       productName: productInfo?.title,
       image: firstImageUrl,
       price: proposalData.proposed_price,
-      chatroonId: chat?.[0]?.chatroom_id,
+      chatroomId: chat?.[0]?.chatroom_id ?? null,
     };
 
-    await sendNotification(proposerId, 'auction', 'proposalAccepted', payload);
+    const { error: notificationError } = await sendNotification(
+      proposerId,
+      'auction',
+      'proposalAccepted',
+      payload
+    );
+    if (notificationError) {
+      throw new Error(`알림 전송 실패: ${notificationError}`);
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
