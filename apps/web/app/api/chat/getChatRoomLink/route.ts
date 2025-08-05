@@ -1,5 +1,5 @@
+import getUserId from '@/shared/lib/getUserId';
 import { decodeShortId, encodeUUID } from '@/shared/lib/shortUuid';
-import { createClient } from '@/shared/lib/supabase/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextResponse } from 'next/server';
 
@@ -10,12 +10,7 @@ export async function POST(request: Request) {
     const exhibitUserFullId = decodeShortId(exhibitUserId);
     let bidUserFullId = '';
     if (bidUserId === 'loginUser') {
-      const authSupabase = await createClient();
-
-      const {
-        data: { session },
-      } = await authSupabase.auth.getSession();
-      const userId = session?.user.id;
+      const userId = await getUserId();
 
       if (!userId) {
         return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });

@@ -2,8 +2,8 @@ import { ChatRoomForList } from '@/entities/chatRoom/model/types';
 import { Message } from '@/entities/message/model/types';
 import { ProductImage } from '@/entities/productImage/model/types';
 import { Profiles } from '@/entities/profiles/model/types';
+import getUserId from '@/shared/lib/getUserId';
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { createClient } from '@/shared/lib/supabase/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -19,16 +19,7 @@ type RawRow = Omit<
 };
 
 export async function GET(_req: Request) {
-  const authSupabase = await createClient();
-
-  const {
-    data: { session },
-  } = await authSupabase.auth.getSession();
-  const userId = session?.user.id;
-
-  if (!userId) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
-  }
+  const userId = await getUserId();
 
   const { data, error } = await supabase.rpc('get_chatrooms_with_profile_and_last_message', {
     user_uuid: userId,
@@ -57,16 +48,10 @@ export async function GET(_req: Request) {
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { chatRoom, exhibitUser } = body;
+  const userId = await getUserId();
 
   const chatRoomId = decodeShortId(chatRoom);
   const exhibitUserId = decodeShortId(exhibitUser);
-
-  const authSupabase = await createClient();
-
-  const {
-    data: { session },
-  } = await authSupabase.auth.getSession();
-  const userId = session?.user.id;
 
   if (exhibitUserId === userId) {
     const { error } = await supabase
