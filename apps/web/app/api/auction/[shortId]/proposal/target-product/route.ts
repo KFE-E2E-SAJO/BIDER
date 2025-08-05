@@ -1,4 +1,3 @@
-import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 import shortUUID from 'short-uuid';
@@ -9,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const shortId = searchParams.get('shortId');
-    const userId = await getUserId();
+    const userId = searchParams.get('userId');
 
     if (!userId || !shortId) {
       throw new Error('요청 정보가 부족합니다.');
