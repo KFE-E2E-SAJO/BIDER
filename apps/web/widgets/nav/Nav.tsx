@@ -11,7 +11,7 @@ import {
   UserRound,
 } from 'lucide-react';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
-import { toast } from '@repo/ui/components/Toast/Sonner';
+import { useUnreadMessagesCount } from '@/features/chat/nav/api/useUnreadMessagesCount';
 
 interface NavItems {
   href: string;
@@ -40,8 +40,7 @@ const navItems: NavItems[] = [
     matchPath: (pathname) => pathname === '/product/registration',
   },
   {
-    href: '/',
-    // href: '/chat',
+    href: '/chat',
     label: '채팅',
     icon: MessageSquareMore,
     matchPath: (pathname) => pathname === '/chat',
@@ -56,7 +55,8 @@ const navItems: NavItems[] = [
 
 const Nav = () => {
   const pathname = usePathname();
-  const hasNewChat = false; //새로운 채팅 여부 받아오기
+  const unreadCount = useUnreadMessagesCount();
+  const hasNewChat = unreadCount > 0; //새로운 채팅 여부 받아오기
 
   return (
     <nav className="bg-neutral-0 p-box fixed bottom-0 left-1/2 z-20 flex w-full max-w-[600px] translate-x-[-50%] items-baseline justify-between border-t border-neutral-100 pb-[40px] pt-[13px]">
@@ -66,15 +66,9 @@ const Nav = () => {
 
         return (
           <Link
-            key={label}
+            key={href}
             href={href}
             className="relative flex w-1/5 flex-col items-center justify-center"
-            onClick={(e) => {
-              if (label === '채팅') {
-                e.preventDefault();
-                toast({ content: '준비 중인 기능입니다.' });
-              }
-            }}
           >
             <Icon
               className={`w-6 ${isActive ? 'fill-neutral-900 stroke-neutral-900' : 'fill-neutral-0 stroke-neutral-400'}`}

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { createPointByReason } from '@/features/point/api/createPointByReason';
+import { createSystemMessage } from '@/features/chat/room/api/createSystemMessage';
+import { getChatRoomLink } from '@/features/chat/room/model/getChatRoomLink';
+import { getProductInfo } from '@/features/chat/room/api/getProductInfoForSystemMessage';
+import { decodeShortId, encodeUUID } from '@/shared/lib/shortUuid';
 
 export async function GET(request: NextRequest) {
   try {
@@ -104,6 +108,27 @@ export async function GET(request: NextRequest) {
 
             if (bidHistoryError) {
               throw new Error(`낙찰 상태 업데이트 실패: ${bidHistoryError.message}`);
+            }
+
+            try {
+              // 상품 정보 가져오기
+              const { title, imageUrl } = await getProductInfo(auction.product_id);
+              const chatroomId = await getChatRoomLink(
+                encodeUUID(auction.auction_id),
+                encodeUUID(auction.product.exhibit_user_id),
+                encodeUUID(winning_user_id)
+              );
+
+              await createSystemMessage({
+                chatroomId: decodeShortId(chatroomId),
+                exhibitUserId: auction.product.exhibit_user_id,
+                bidUserId: winning_user_id,
+                imgUrl: imageUrl,
+                price: winning_bid.bid_price,
+                title: title,
+              });
+            } catch (error) {
+              console.error('낙찰 시스템 메세지 생성 실패: ', error);
             }
 
             try {
