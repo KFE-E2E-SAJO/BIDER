@@ -2,12 +2,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { createPointByReason } from '@/features/point/api/createPointByReason';
-import getUserId from '@/shared/lib/getUserId';
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const userId = await getUserId();
+    const userId = formData.get('userId') as string;
     const auctionId = formData.get('auctionId') as string;
     const proposedPrice = parseInt(formData.get('proposedPrice') as string, 10);
 
