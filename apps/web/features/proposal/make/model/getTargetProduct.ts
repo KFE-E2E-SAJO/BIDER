@@ -1,10 +1,13 @@
 import { ProposalPriceParams } from '@/features/proposal/make/types';
+import getUserId from '@/shared/lib/getUserId';
 
 const getTargetProduct = async (params: ProposalPriceParams) => {
-  const { userId, shortId } = params;
+  const { shortId } = params;
+  const userId = await getUserId();
+  const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
   const res = await fetch(
-    `/api/auction/${shortId}/proposal/target-product?userId=${userId}&shortId=${shortId}`
+    `${BASE_URL}/api/auction/${shortId}/proposal/target-product?userId=${userId}&shortId=${shortId}`
   );
   const result = await res.json();
 

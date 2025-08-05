@@ -1,11 +1,10 @@
 'use client';
 
-import { useAuthStore } from '@/shared/model/authStore';
 import { useParams } from 'next/navigation';
 import { useTargetProduct } from '@/features/proposal/make/model/useTargetProduct';
+import Image from 'next/image';
 
-const TargetProduct = () => {
-  const userId = useAuthStore((state) => state.user?.id) as string;
+const TargetProduct = ({ userId }: { userId: string }) => {
   const params = useParams();
   const shortId = params?.shortId as string;
 
@@ -18,8 +17,13 @@ const TargetProduct = () => {
 
   return (
     <div className="p-box flex gap-[10px] border-b border-t border-neutral-100 py-[13px]">
-      <div className="w-[37px]">
-        <img src={data.product.product_image[0].image_url} />
+      <div className="relative flex h-[37px] w-[37px] items-center justify-center overflow-hidden">
+        <Image
+          src={data.product.product_image[0].image_url}
+          alt={data.product.title}
+          width={37}
+          height={37}
+        />
       </div>
       <ul>
         <li className="typo-caption-regular">{data.product.title}</li>
