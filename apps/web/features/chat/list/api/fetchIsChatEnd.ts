@@ -1,6 +1,5 @@
 export const fetchIsChatEnd = async (chatRoomId: string): Promise<boolean> => {
-  const baseURL =
-    'https://bider-git-test-bider-aac1a071.vercel.app/auction/k8KrqSd6VadqxdNUsSGD8E://localhost:3000';
+  const baseURL = 'https://bider-git-test-bider-aac1a071.vercel.app';
   const res = await fetch(`${baseURL}/api/chat/checkIsChatEnd/${chatRoomId}`);
   const result = await res.json();
 

@@ -3,7 +3,7 @@ export const getChatRoomIdIfExist = async (
   exhibitUserId: string,
   bidUserId: string
 ) => {
-  const baseURL = 'https://bider-git-test-bider-aac1a071.vercel.app/auction/k8KrqSd6VadqxdNUsSGD8E';
+  const baseURL = 'https://bider-git-test-bider-aac1a071.vercel.app';
   const res = await fetch(`${baseURL}/api/chat/getChatRoomLink`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
