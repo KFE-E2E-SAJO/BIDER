@@ -39,7 +39,7 @@ const ChatInputBar = ({ shortId, isChatEnd }: { shortId: string; isChatEnd: bool
 
     startTransition(async () => {
       try {
-        await sendMessage(shortId, messageToSend);
+        await sendMessage(shortId, messageToSend, window.location.origin);
       } catch (error) {
         console.error('메시지 전송 실패:', error);
         // 에러 발생 시 메시지 복원
