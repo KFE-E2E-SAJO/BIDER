@@ -53,10 +53,7 @@ export const useLogin = () => {
         return;
       }
 
-      const { user, isFirstLogin } = await res.json();
-
-      console.log('user: ', user);
-      console.log('firstLogin?: ', isFirstLogin);
+      const { user } = await res.json();
 
       if (!user) {
         setError('유저 정보를 불러오지 못했습니다.');
@@ -72,22 +69,6 @@ export const useLogin = () => {
       });
 
       toast({ content: '로그인에 성공했습니다!' });
-
-      if (isFirstLogin) {
-        console.log('ttttttttt');
-
-        await createPointByReason('signup', user.id);
-
-        await fetch(`${origin}/api/alarm/point`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: user.id,
-          }),
-        });
-      }
 
       router.push('/');
     } catch (err) {

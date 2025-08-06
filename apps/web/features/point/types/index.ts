@@ -21,7 +21,7 @@ export const POINT_REASONS = [
   {
     label: '회원 가입',
     value: 'signup',
-    point: 500,
+    point: 1000,
     type: 'earn',
   },
   {
