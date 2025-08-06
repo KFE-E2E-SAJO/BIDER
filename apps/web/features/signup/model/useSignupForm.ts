@@ -185,6 +185,19 @@ export const useSignUpForm = () => {
 
       if (signUpResult.success) {
         toast({ content: '회원가입이 완료되었습니다!' });
+
+        await fetch(`/api/alarm/point`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'signup',
+            user_id: verifiedEmail,
+            reason: 'signup',
+          }),
+        });
+
         router.push('/login');
       } else {
         toast({ content: `회원가입 실패: ${signUpResult.error}` });

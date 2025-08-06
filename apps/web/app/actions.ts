@@ -86,7 +86,8 @@ export async function sendNotification(
   user_id: string,
   type: PushAlarmType,
   subType: string,
-  data: PushAlarmData
+  data: PushAlarmData,
+  options?: { allowWithoutToken?: boolean }
 ) {
   webpush.setVapidDetails(
     'mailto:haruyam15@gmail.com',
@@ -99,60 +100,60 @@ export async function sendNotification(
     .select('*')
     .eq('user_id', user_id);
 
-  if (error || !pushToken || pushToken.length === 0) {
-    console.error('푸시 토큰 조회 실패:', error);
-    return { success: false, error: '푸시 토큰 조회 실패' };
-  }
+  const hasValidToken = !error && pushToken && pushToken.length > 0;
 
-  for (const token of pushToken) {
-    const subscription = {
-      endpoint: token.endpoint,
-      keys: {
-        p256dh: token.p256dh,
-        auth: token.auth,
-      },
-    };
+  const customMessage = getPushAlarmMessage(type, subType, data);
 
-    const customMessage = getPushAlarmMessage(type, subType, data);
+  if (hasValidToken) {
+    for (const token of pushToken) {
+      const subscription = {
+        endpoint: token.endpoint,
+        keys: {
+          p256dh: token.p256dh,
+          auth: token.auth,
+        },
+      };
 
-    const pushMessage = {
-      title: customMessage.title,
-      body: customMessage.body,
-      image: customMessage.image ?? '',
-      time: new Date().toISOString().slice(0, 19).replace('T', ' '),
-      url: customMessage.link,
-    };
+      const pushMessage = {
+        title: customMessage.title,
+        body: customMessage.body,
+        image: customMessage.image ?? '',
+        time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        url: customMessage.link,
+      };
 
-    const payloadData = JSON.stringify(pushMessage);
+      const payloadData = JSON.stringify(pushMessage);
 
-    try {
-      await webpush.sendNotification(subscription, payloadData);
-
-      const { data: AlarmItem, error: insertError } = await supabase
-        .from('alarm')
-        .insert({
-          user_id: token.user_id,
-          type: type,
-          title: pushMessage.title,
-          body: pushMessage.body,
-          link: pushMessage.url,
-          image_url: pushMessage.image,
-        })
-        .select()
-        .single();
-
-      if (insertError) {
-        return { success: false, error: 'Alarm DB 추가 실패' };
-      }
-    } catch (err: any) {
-      console.error('알림 전송 실패:', err);
-
-      if (err.statusCode === 410 || err.statusCode === 404) {
-        console.log('만료된 구독입니다. DB에서 삭제합니다.');
-
-        await supabase.from('user_push_token').delete().eq('endpoint', subscription.endpoint);
+      try {
+        await webpush.sendNotification(subscription, payloadData);
+      } catch (err: any) {
+        console.error('알림 전송 실패:', err);
+        if (err.statusCode === 410 || err.statusCode === 404) {
+          await supabase.from('user_push_token').delete().eq('endpoint', subscription.endpoint);
+        }
       }
     }
+  }
+
+  const pushMessage = {
+    title: customMessage.title,
+    body: customMessage.body,
+    image: customMessage.image ?? '',
+    time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+    url: customMessage.link,
+  };
+
+  const { error: insertError } = await supabase.from('alarm').insert({
+    user_id: user_id,
+    type: type,
+    title: pushMessage.title,
+    body: pushMessage.body,
+    link: pushMessage.url,
+    image_url: pushMessage.image,
+  });
+
+  if (insertError) {
+    return { success: false, error: 'Alarm DB 추가 실패' };
   }
 
   return { success: true };
