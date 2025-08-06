@@ -1,7 +1,7 @@
 import { ApiError } from 'next/dist/server/api-utils';
 
 export const inactiveChat = async (chatRoom: string, exhibitUser: string) => {
-  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseURL = 'https://bider-git-test-bider-aac1a071.vercel.app/auction/k8KrqSd6VadqxdNUsSGD8E';
   const res = await fetch(`${baseURL}/api/chat`, {
     method: 'POST',
     body: JSON.stringify({

@@ -10,7 +10,7 @@ export const createSystemMessage = async ({
   price,
   title,
 }: CreateSystemMessagePayload): Promise<string | null> => {
-  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseURL = 'https://bider-git-test-bider-aac1a071.vercel.app/auction/k8KrqSd6VadqxdNUsSGD8E';
 
   const response = await fetch(`${baseURL}/api/system-message`, {
     method: 'POST',
