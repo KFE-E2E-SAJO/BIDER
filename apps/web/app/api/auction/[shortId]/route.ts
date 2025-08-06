@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
     // 2. 경매 정보 조회
     const { data: auctionData, error: auctionError } = await supabase
       .from('auction')
-      .select('auction_end_at, auction_status, min_price, is_secret, product:product_id(title)')
+      .select('auction_end_at, auction_status, min_price, product:product_id(title), is_secret')
       .eq('auction_id', auctionId)
       .single();
 
@@ -171,6 +171,21 @@ export async function POST(req: NextRequest) {
     if (bidError) {
       console.error('입찰 삽입 오류:', bidError);
       return NextResponse.json({ error: '입찰 처리 중 오류가 발생했습니다.' }, { status: 500 });
+    }
+
+    const { origin } = new URL(req.url);
+
+    if (!auctionData.is_secret) {
+      // 푸시 알람 전송(판매자, 입찰자)
+      await fetch(`${origin}/api/alarm/auction/bid`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          auction_id: auctionId,
+        }),
+      });
     }
 
     const auctionTyped = auctionData as unknown as AuctionForBid;

@@ -4,7 +4,7 @@ import getUserId from '@/shared/lib/getUserId';
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 
-export const sendMessage = async (chatRoomId: string, message: string) => {
+export const sendMessage = async (chatRoomId: string, message: string, location?: string) => {
   try {
     const userId = await getUserId();
     const fullChatRoomId = decodeShortId(chatRoomId);
@@ -17,6 +17,21 @@ export const sendMessage = async (chatRoomId: string, message: string) => {
         content: message,
       })
       .select();
+
+    if (!location) {
+      throw new Error('sendMessage 실패: location (origin) 값이 전달되지 않았습니다.');
+    }
+
+    await fetch(`${location}/api/alarm/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chatroom_id: fullChatRoomId,
+        sender_id: userId,
+      }),
+    });
 
     if (error) {
       console.error('메시지 전송 에러:', error);
