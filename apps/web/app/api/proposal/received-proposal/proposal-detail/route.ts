@@ -1,4 +1,3 @@
-import getUserId from '@/shared/lib/getUserId';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -6,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const proposalId = searchParams.get('proposalId');
-    const userId = await getUserId();
+    const userId = searchParams.get('userId');
 
     if (!userId || !proposalId) {
       return NextResponse.json(

@@ -42,6 +42,7 @@ const MakePrice = ({ userId }: { userId: string }) => {
     if (!isValidPrice) return;
 
     const formData = new FormData();
+    formData.append('userId', userId);
     formData.append('auctionId', auctionId);
     formData.append('proposedPrice', price);
 
