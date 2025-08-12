@@ -32,13 +32,14 @@ const BiddingStatusBoard = ({
   if (bidData.length === 0) {
     return <div className="text-center">아직 입찰자가 없습니다. 첫 입찰자가 되어보세요!</div>;
   }
+  const bidDataLength = isSecret ? 1 : 5;
 
   return (
     <div>
-      {bidData.slice(0, 5).map((bid, index) => (
+      {bidData.slice(0, bidDataLength).map((bid, index) => (
         <div
           key={bid.bid_id}
-          className={`flex justify-between border-b border-dashed border-neutral-300 px-[16px] py-[9px] ${
+          className={`flex justify-between ${!isSecret && `border-b`} border-dashed border-neutral-300 px-[16px] py-[9px] ${
             index === 0 ? `${pointColor} typo-body-bold` : 'text-neutral-700'
           }`}
         >
