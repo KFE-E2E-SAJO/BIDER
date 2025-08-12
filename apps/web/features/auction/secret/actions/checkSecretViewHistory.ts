@@ -7,7 +7,7 @@ import { supabase } from '@/shared/lib/supabaseClient';
 export default async function checkSecretViewHistory(
   auctionId: string
 ): Promise<SecretViewHistory> {
-  const userId = getUserId();
+  const userId = await getUserId();
 
   if (!userId) {
     return { hasPaid: false, isValid: false };
