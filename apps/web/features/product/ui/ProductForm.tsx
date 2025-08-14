@@ -52,6 +52,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ mode, shortId }) => {
   const router = useRouter();
   const user = useAuthStore();
   const { DialogHost, openSecretGuide } = useSecretDialog();
+  const minPriceRef = useRef<HTMLInputElement>(null);
 
   // Edit 모드일 때만 데이터 가져오기
   const shouldFetchEditData = mode === 'edit' && !!shortId;
@@ -169,6 +170,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ mode, shortId }) => {
       return;
     }
 
+    if (!isMinPriceValid(parseFormattedPrice(minPrice))) {
+      toast({ content: '입찰 시작가의 최대 금액은 2,000,000,000원입니다.' });
+      minPriceRef.current?.focus();
+      return;
+    }
+
     if (!isEndDateValid(endDate, endTime)) {
       toast({ content: '종료일시는 현재 시간 기준 1시간 이후여야 합니다.' });
       return;
@@ -196,6 +203,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ mode, shortId }) => {
     if (!canEditProduct(editData.created_at)) {
       toast({ content: '상품 수정 가능 시간이 만료되었습니다!' });
       router.back();
+      return;
+    }
+
+    if (!isMinPriceValid(parseFormattedPrice(minPrice))) {
+      toast({ content: '입찰 시작가의 최대 금액은 2,000,000,000원입니다.' });
+      minPriceRef.current?.focus();
       return;
     }
 
@@ -369,6 +382,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ mode, shortId }) => {
           <div className="flex items-end">
             <Input
               name="minPrice"
+              ref={minPriceRef}
               value={minPrice}
               onChange={handleMinPriceInputChange}
               placeholder="희망하는 최소 입찰가를 적어주세요."
