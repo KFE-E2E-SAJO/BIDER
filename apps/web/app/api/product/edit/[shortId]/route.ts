@@ -3,6 +3,7 @@ import { decodeShortId } from '@/shared/lib/shortUuid';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { NextResponse } from 'next/server';
 import { ProductForEdit } from '@/entities/product/model/types';
+import sharp from 'sharp';
 
 export async function GET(
   _req: Request,
@@ -163,16 +164,25 @@ export async function POST(request: Request) {
         throw new Error(`기존 이미지 조회 실패: ${fetchError.message}`);
       }
 
-      // 3-2: 새 이미지 업로드
+      // 3-2: 새 이미지 업로드 (webP 변환 포함)
       const uploadedImageUrls: string[] = [];
       for (const file of newImageFiles) {
-        const ext = file.name.split('.').pop();
-        const fileName = `${uuidv4()}.${ext}`;
+        // File → Buffer 변환
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // sharp를 사용하여 webP 형태로 변환
+        const convertedBuffer = await sharp(buffer).toFormat('webp', { quality: 90 }).toBuffer();
+
+        // 파일명을 webp 확장자로 변경
+        const fileName = `${uuidv4()}.webp`;
         const filePath = `products/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from('product-image')
-          .upload(filePath, file, { contentType: file.type });
+          .upload(filePath, convertedBuffer, {
+            contentType: 'image/webp',
+          });
 
         if (uploadError) {
           throw new Error(`이미지 업로드 실패: ${uploadError.message}`);
@@ -193,7 +203,7 @@ export async function POST(request: Request) {
         (img) => !orderExistingImageIds.includes(img.image_id.toString())
       );
 
-      // 3-4: 삭제할 이미지들 제거
+      // 3-4: 삭제할 이미지들 제거 (스토리지에서도 삭제)
       if (imagesToDelete.length > 0) {
         const { error: deleteError } = await supabase
           .from('product_image')
@@ -205,6 +215,20 @@ export async function POST(request: Request) {
 
         if (deleteError) {
           throw new Error(`이미지 삭제 실패: ${deleteError.message}`);
+        }
+
+        // 스토리지에서도 파일 삭제
+        for (const img of imagesToDelete) {
+          try {
+            // URL에서 파일 경로 추출
+            const url = new URL(img.image_url);
+            const filePath = url.pathname.split('/').slice(-2).join('/'); // "products/filename.webp" 형태
+
+            await supabase.storage.from('product-image').remove([filePath]);
+          } catch (error) {
+            console.warn(`스토리지 파일 삭제 실패: ${img.image_url}`, error);
+            // 스토리지 삭제 실패는 치명적이지 않으므로 계속 진행
+          }
         }
       }
 
