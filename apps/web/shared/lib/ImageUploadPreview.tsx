@@ -51,8 +51,8 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
     }
   }, [images, notifyParent, exImages.length]);
 
-  // HEIC 파일을 JPG로 변환하는 함수
-  const convertHeicToJpg = async (file: File): Promise<File> => {
+  // HEIC 파일을 WebP로 변환하는 함수
+  const convertHeicToWebP = async (file: File): Promise<File> => {
     try {
       // 브라우저 환경 체크
       if (typeof window === 'undefined') {
@@ -64,18 +64,18 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
 
       const convertedBlob = (await heic2any({
         blob: file,
-        toType: 'image/jpeg',
+        toType: 'image/webp',
         quality: 0.8,
       })) as Blob;
 
       // 변환된 Blob을 File 객체로 변환
-      const convertedFile = new File([convertedBlob], file.name.replace(/\.heic$/i, '.jpg'), {
-        type: 'image/jpeg',
+      const convertedFile = new File([convertedBlob], file.name.replace(/\.heic$/i, '.webp'), {
+        type: 'image/webp', // MIME 타입도 WebP로 변경
       });
 
       return convertedFile;
     } catch (error) {
-      console.error('HEIC 변환 실패:', error);
+      console.error('HEIC → WebP 변환 실패:', error);
       throw error;
     }
   };
@@ -100,7 +100,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
           // HEIC 파일인 경우 JPG로 변환
           if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
             try {
-              processedFile = await convertHeicToJpg(file);
+              processedFile = await convertHeicToWebP(file);
               isConverted = true;
             } catch (error) {
               console.error(`HEIC 변환 실패 (${file.name}):`, error);

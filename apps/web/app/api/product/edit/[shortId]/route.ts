@@ -164,24 +164,33 @@ export async function POST(request: Request) {
         throw new Error(`기존 이미지 조회 실패: ${fetchError.message}`);
       }
 
-      // 3-2: 새 이미지 업로드 (webP 변환 포함)
+      // 3-2: 새 이미지 업로드 (조건부 webP 변환)
       const uploadedImageUrls: string[] = [];
       for (const file of newImageFiles) {
-        // File → Buffer 변환
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
-        // sharp를 사용하여 webP 형태로 변환
-        const convertedBuffer = await sharp(buffer).toFormat('webp', { quality: 90 }).toBuffer();
-
-        // 파일명을 webp 확장자로 변경
         const fileName = `${uuidv4()}.webp`;
         const filePath = `products/${fileName}`;
 
+        let finalBuffer: Buffer;
+        let contentType = 'image/webp';
+
+        // WebP 파일인지 확인
+        if (file.type === 'image/webp') {
+          // 이미 WebP인 경우 그대로 사용
+          const arrayBuffer = await file.arrayBuffer();
+          finalBuffer = Buffer.from(arrayBuffer);
+        } else {
+          // WebP가 아닌 경우 변환
+          const arrayBuffer = await file.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+
+          // sharp를 사용하여 WebP로 변환
+          finalBuffer = await sharp(buffer).toFormat('webp', { quality: 90 }).toBuffer();
+        }
+
         const { error: uploadError } = await supabase.storage
           .from('product-image')
-          .upload(filePath, convertedBuffer, {
-            contentType: 'image/webp',
+          .upload(filePath, finalBuffer, {
+            contentType,
           });
 
         if (uploadError) {

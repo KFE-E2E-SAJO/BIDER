@@ -39,20 +39,30 @@ export async function POST(req: NextRequest) {
 
     // STEP 1: 이미지 업로드 → 실패 시 abort
     for (const [index, file] of files.entries()) {
-      // File → Buffer 변환
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      // sharp 변환 (webp 포맷)
-      const convertedBuffer = await sharp(buffer).toFormat('webp', { quality: 90 }).toBuffer();
-
       const fileName = `${uuidv4()}.webp`;
       const filePath = `products/${fileName}`;
 
+      let finalBuffer: Buffer;
+      let contentType = 'image/webp';
+
+      // WebP 파일인지 확인
+      if (file.type === 'image/webp') {
+        // 이미 WebP인 경우 그대로 사용
+        const arrayBuffer = await file.arrayBuffer();
+        finalBuffer = Buffer.from(arrayBuffer);
+      } else {
+        // WebP가 아닌 경우 변환
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // sharp를 사용하여 WebP로 변환
+        finalBuffer = await sharp(buffer).toFormat('webp', { quality: 90 }).toBuffer();
+      }
+
       const { error: uploadError } = await supabase.storage
         .from('product-image')
-        .upload(filePath, convertedBuffer, {
-          contentType: 'image/webp',
+        .upload(filePath, finalBuffer, {
+          contentType,
         });
 
       if (uploadError) {
