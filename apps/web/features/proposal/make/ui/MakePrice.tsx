@@ -96,7 +96,6 @@ const MakePrice = ({ userId }: { userId: string }) => {
             setPrice(rawValue);
 
             const parsed = parseInt(rawValue, 10);
-            console.log(parsed, highestBid);
             if (isNaN(parsed) || parsed <= highestBid) {
               setInputStatus('error');
               setErrorMessage('최고 입찰가보다 높게 제안해 주세요.');
