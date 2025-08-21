@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@repo/ui/components/Dialog/Dialog';
-import { Camera, Plus, X } from 'lucide-react';
+import { Camera, LoaderCircle, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface UploadedImage {
@@ -214,7 +214,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
 
       {isConverting && (
         <div className="text-main mt-2 flex items-center gap-2 text-sm">
-          <div className="border-main h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
+          <LoaderCircle size={16} className="text-main animate-spin" />
           이미지 등록 중
         </div>
       )}
