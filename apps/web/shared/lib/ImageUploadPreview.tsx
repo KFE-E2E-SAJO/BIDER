@@ -215,7 +215,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
       {isConverting && (
         <div className="text-main mt-2 flex items-center gap-2 text-sm">
           <div className="border-main h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
-          이미지를 변환하고 있습니다...
+          이미지 등록 중
         </div>
       )}
 
