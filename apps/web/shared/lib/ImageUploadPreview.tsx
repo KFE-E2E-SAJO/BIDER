@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@repo/ui/components/Dialog/Dialog';
-import { Camera, Plus, X } from 'lucide-react';
+import { Camera, LoaderCircle, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface UploadedImage {
@@ -16,6 +16,7 @@ export interface UploadedImage {
   file: File | null;
   preview: string;
   order_index: number;
+  isConverted?: boolean; // HEIC에서 변환된 파일인지 표시
 }
 
 interface ImageUploadPreviewProps {
@@ -26,6 +27,7 @@ interface ImageUploadPreviewProps {
 const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProps) => {
   const [images, setImages] = useState<UploadedImage[]>(exImages);
   const [showActionSheet, setShowActionSheet] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const maxImages = 5;
@@ -49,39 +51,93 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
     }
   }, [images, notifyParent, exImages.length]);
 
-  const handleFileSelect = (files: FileList | null) => {
+  // HEIC 파일을 WebP로 변환하는 함수
+  const convertHeicToWebP = async (file: File): Promise<File> => {
+    try {
+      // 브라우저 환경 체크
+      if (typeof window === 'undefined') {
+        throw new Error('브라우저 환경에서만 사용 가능합니다.');
+      }
+
+      // Dynamic import로 브라우저에서만 로드
+      const heic2any = (await import('heic2any')).default;
+
+      const convertedBlob = (await heic2any({
+        blob: file,
+        toType: 'image/webp',
+        quality: 0.8,
+      })) as Blob;
+
+      // 변환된 Blob을 File 객체로 변환
+      const convertedFile = new File([convertedBlob], file.name.replace(/\.heic$/i, '.webp'), {
+        type: 'image/webp', // MIME 타입도 WebP로 변경
+      });
+
+      return convertedFile;
+    } catch (error) {
+      console.error('HEIC → WebP 변환 실패:', error);
+      throw error;
+    }
+  };
+
+  const handleFileSelect = async (files: FileList | null) => {
     if (!files) return;
 
     const newImages: UploadedImage[] = [];
     const remainingSlots = maxImages - images.length;
     const filesToProcess = Math.min(files.length, remainingSlots);
 
-    for (let i = 0; i < filesToProcess; i++) {
-      const file = files[i];
-      if (file?.type.startsWith('image/')) {
-        const preview = URL.createObjectURL(file);
-        newImages.push({
-          id: `image-${i}`,
-          file,
-          preview,
-          order_index: images.length === 0 && i === 0 ? 0 : 1,
-        });
+    setIsConverting(true);
+    setShowActionSheet(false); // 변환 시작하면 Dialog 닫기
+
+    try {
+      for (let i = 0; i < filesToProcess; i++) {
+        const file = files[i];
+        if (file?.type.startsWith('image/') || file?.name.toLowerCase().endsWith('.heic')) {
+          let processedFile = file;
+          let isConverted = false;
+
+          // HEIC 파일인 경우 JPG로 변환
+          if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
+            try {
+              processedFile = await convertHeicToWebP(file);
+              isConverted = true;
+            } catch (error) {
+              console.error(`HEIC 변환 실패 (${file.name}):`, error);
+              // 변환 실패 시 원본 파일 사용 (미리보기는 안될 수 있음)
+              processedFile = file;
+            }
+          }
+
+          const preview = URL.createObjectURL(processedFile);
+          newImages.push({
+            id: `image-${Date.now()}-${i}`,
+            file: processedFile,
+            preview,
+            order_index: images.length === 0 && i === 0 ? 0 : 1,
+            isConverted,
+          });
+        }
       }
+
+      setImages((prev) => [...prev, ...newImages]);
+    } catch (error) {
+      console.error('파일 처리 중 오류:', error);
+    } finally {
+      setIsConverting(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      if (cameraInputRef.current) cameraInputRef.current.value = '';
     }
-    setImages((prev) => [...prev, ...newImages]);
-    setShowActionSheet(false);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-    if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
   const handleGallerySelect = () => {
-    if (fileInputRef.current) {
+    if (fileInputRef.current && !isConverting) {
       fileInputRef.current.click();
     }
   };
 
   const handleCameraCapture = () => {
-    if (cameraInputRef.current) {
+    if (cameraInputRef.current && !isConverting) {
       cameraInputRef.current.click();
     }
   };
@@ -106,7 +162,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
   }, [images, onImagesChange]);
 
   const openActionSheet = () => {
-    if (images.length >= maxImages) return;
+    if (images.length >= maxImages || isConverting) return;
     setShowActionSheet(true);
   };
 
@@ -120,7 +176,9 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
     <div className="w-full">
       <div className="scroll-container flex gap-[18px] overflow-x-auto pt-[10px]">
         <div
-          className="flex h-[70px] w-[70px] shrink-0 items-center justify-center rounded-[5px] border border-neutral-400"
+          className={`flex h-[70px] w-[70px] shrink-0 items-center justify-center rounded-[5px] border border-neutral-400 ${
+            isConverting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+          }`}
           onClick={openActionSheet}
         >
           <div className="flex flex-col items-center">
@@ -146,6 +204,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
               size="icon"
               className="absolute right-1 top-1 size-[20px] -translate-y-1/2 translate-x-1/2 rounded-full bg-neutral-800"
               onClick={() => removeImage(image.id)}
+              disabled={isConverting}
             >
               <X size={12} />
             </Button>
@@ -153,18 +212,29 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
         ))}
       </div>
 
+      {isConverting && (
+        <div className="text-main mt-2 flex items-center gap-2 text-sm">
+          <LoaderCircle size={16} className="text-main animate-spin" />
+          이미지 등록 중
+        </div>
+      )}
+
       <Dialog open={showActionSheet} onOpenChange={setShowActionSheet}>
-        {/* 타이틀 (화면에서 안 보이게 처리) */}
         <DialogHeader className="sr-only">
           <DialogTitle>작업 선택</DialogTitle>
         </DialogHeader>
         <DialogContent>
           <div className="space-y-3">
-            <Button onClick={handleCameraCapture} variant="outline" className="items-center">
+            <Button
+              onClick={handleCameraCapture}
+              variant="outline"
+              className="items-center"
+              disabled={isConverting}
+            >
               <Camera size={20} className="flex-shrink-0" />
               <span>카메라로 촬영</span>
             </Button>
-            <Button onClick={handleGallerySelect}>
+            <Button onClick={handleGallerySelect} disabled={isConverting}>
               <Plus size={20} />
               <span>갤러리에서 선택</span>
             </Button>
