@@ -1,5 +1,4 @@
 import { ProposalPriceParams } from '@/features/proposal/make/types';
-import getUserId from '@/shared/lib/getUserId';
 
 const getTargetProduct = async (params: ProposalPriceParams) => {
   const { shortId } = params;

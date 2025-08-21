@@ -6,15 +6,18 @@ import shortUUID from 'short-uuid';
 
 const translator = shortUUID();
 
-export async function GET(request: NextRequest, { params }: { params: { shortId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ shortId: string }> }
+) {
   try {
-    const { shortId } = params;
     const userId = await getUserId();
 
     if (!userId) {
       throw new Error('유저 정보가 부족합니다.');
     }
 
+    const { shortId } = await params;
     const auctionId = decodeShortId(shortId);
 
     const { data, error } = await supabase
