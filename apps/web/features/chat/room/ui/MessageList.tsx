@@ -76,9 +76,13 @@ const MessageList = ({
   return (
     <div className="p-box custom-scrollbar flex-1 overflow-y-auto">
       {data?.map((message: CombinedMessage, index) => {
+        const isLastMessage = index === messages.length - 1;
         if (message.messageType === 'system') {
           return (
-            <div key={message.system_message_id}>
+            <div
+              key={message.system_message_id}
+              className={isLastMessage && index > 0 ? 'mt-[30px]' : ''}
+            >
               {index === 0 && <DateDivider isoDate={message.created_at} />}
               <BidWinMessage data={message} />
             </div>
@@ -104,7 +108,6 @@ const MessageList = ({
               currentDate.getDate() !== prevDate.getDate()
             : false;
 
-          const isLastMessage = index === messages.length - 1;
           const isNextSameTime = nextDate
             ? currentDate.getHours() === nextDate.getHours() &&
               currentDate.getMinutes() === nextDate.getMinutes()
