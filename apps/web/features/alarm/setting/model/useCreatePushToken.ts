@@ -7,10 +7,7 @@ function urlBase64ToUint8Array(base64String: string) {
 
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
+  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
   return outputArray;
 }
 
@@ -21,41 +18,39 @@ export const useCreatePushToken = (isChecked: boolean) => {
 
   useEffect(() => {
     if (!isChecked) return;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    if (Notification.permission !== 'granted') return;
 
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      setIsSupported(true);
-      registerServiceWorker();
+    const vapid = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    if (!vapid) {
+      console.error('VAPID 키 없음!');
+      setMessage('푸시 키 누락');
+      return;
     }
 
-    async function registerServiceWorker() {
+    async function registerPushToken() {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js', {
-          scope: '/',
-          updateViaCache: 'none',
-        });
+        const registration = await navigator.serviceWorker.ready;
 
-        const sub = await registration.pushManager.getSubscription();
-
-        if (sub === null) {
-          const subscription = await registration.pushManager.subscribe({
+        let sub = await registration.pushManager.getSubscription();
+        if (!sub) {
+          sub = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+            applicationServerKey: urlBase64ToUint8Array(vapid!),
           });
-
-          setSubscription(subscription);
-
-          const serializedSub = JSON.parse(JSON.stringify(subscription));
-          await subscribeUser(serializedSub);
-        } else {
-          setSubscription(sub);
-          const serializedSub = JSON.parse(JSON.stringify(sub));
-          await subscribeUser(serializedSub);
         }
+
+        setSubscription(sub);
+
+        const serializedSub = JSON.parse(JSON.stringify(sub));
+        await subscribeUser(serializedSub);
       } catch (err) {
-        console.error('서비스 등록 실패:', err);
-        setMessage('푸시 알림 등록 실패');
+        console.error('푸시 구독 실패:', err);
       }
     }
+
+    registerPushToken();
+    setIsSupported(true);
   }, [isChecked]);
 
   return { isSupported, subscription, message };

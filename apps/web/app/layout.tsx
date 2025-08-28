@@ -4,6 +4,8 @@ import '@repo/ui/styles.css';
 import '../styles/global.css';
 import { Toaster } from '@repo/ui/components/Toast/Sonner';
 import Script from 'next/script';
+import PushBootstrap from './PushBootstrap';
+import GlobalPushGate from './GlobalPushGate';
 
 export const metadata: Metadata = {
   title: '가장 가까운 경매장 | Bider',
@@ -94,9 +96,14 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const enabledDefault = true;
+
   return (
     <html lang="ko">
       <body>
+        <PushBootstrap />
+        <GlobalPushGate enabledDefault={enabledDefault} />
+
         <div className="bg-neutral-0 mx-auto my-0 max-w-[600px]">
           <div id="container" className="flex min-h-screen flex-col">
             {children}
