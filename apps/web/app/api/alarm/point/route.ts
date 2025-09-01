@@ -12,13 +12,13 @@ export async function POST(req: NextRequest) {
 
     if (pointValue.type === 'accepted') {
       point = getPointValue(pointValue.reason);
-      user_id = pointValue.user_id;
     } else if (pointValue.type === 'pending') {
       point = getPointValue(pointValue.reason, { bidAmount: pointValue.price });
-      user_id = pointValue.user_id;
     } else {
       point = getPointValue(pointValue.reason, { bidAmount: pointValue.price });
     }
+
+    user_id = pointValue.user_id;
 
     if (pointValue.type === 'signup') {
       const { data, error } = await supabase
@@ -33,19 +33,19 @@ export async function POST(req: NextRequest) {
       }
 
       user_id = data.user_id;
-    }
 
-    //포인트 알림 전송
-    const { error: exhibitAlarmError } = await sendNotification(
-      user_id,
-      'point',
-      'pointAdded',
-      { amount: point },
-      pointValue.type === 'signup' ? { allowWithoutToken: true } : undefined
-    );
+      //포인트 알림 전송
+      const { error: exhibitAlarmError } = await sendNotification(
+        user_id,
+        'point',
+        'pointAdded',
+        { amount: point },
+        pointValue.type === 'signup' ? { allowWithoutToken: true } : undefined
+      );
 
-    if (exhibitAlarmError) {
-      throw new Error(` 출품자 포인트 알림 전송 실패: ${exhibitAlarmError}`);
+      if (exhibitAlarmError) {
+        throw new Error(` 출품자 포인트 알림 전송 실패: ${exhibitAlarmError}`);
+      }
     }
   } catch (err) {
     console.error('알림 전송 오류:', err);

@@ -32,15 +32,17 @@ export async function POST(req: NextRequest) {
       product_id,
       winning_bid_user_id,
                 
-      product:product (
+      product (
         title,
         exhibit_user_id,
-        product_image ( image_url ),
+        product_image (
+          image_url
+        ),
         exhibitor_profile:profiles!product_exhibit_user_id_fkey ( nickname )
       ),
 
-      winner_profile:profiles!auction_winning_bid_user_id_fkey ( nickname )
-        `
+       winner_profile:profiles!auction_winning_bid_user_id_fkey ( nickname )
+      `
       )
       .eq('auction_id', winnigBIdValue.auction_id)
       .returns<AuctionWonPayload[]>();
@@ -70,7 +72,7 @@ export async function POST(req: NextRequest) {
       'auctionEndedWon',
       {
         productName: `${PushAlarmData?.[0]?.product?.title}`,
-        nickname: `${PushAlarmData?.[0]?.winner_profile?.nickname}`,
+        nickname: `${PushAlarmData?.[0]?.winner_profile?.nickname}`, //낙찰자 닉네임
         chatroomId: `${chat?.[0]?.chatroom_id}`,
         image: `${PushAlarmData?.[0]?.product?.product_image?.[0]?.image_url}`,
       }
@@ -87,7 +89,7 @@ export async function POST(req: NextRequest) {
       'auctionWon',
       {
         productName: `${PushAlarmData?.[0]?.product?.title}`,
-        nickname: `${PushAlarmData?.[0]?.product.exhibitor_profile?.nickname}`,
+        nickname: `${PushAlarmData?.[0]?.product.exhibitor_profile?.nickname}`, // 출품자 닉네임
         chatroomId: `${chat?.[0]?.chatroom_id}`,
         image: `${PushAlarmData?.[0]?.product?.product_image?.[0]?.image_url}`,
       }

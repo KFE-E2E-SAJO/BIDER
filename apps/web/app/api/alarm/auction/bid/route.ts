@@ -27,26 +27,25 @@ export async function POST(req: NextRequest) {
     const { data: PushAlarmData, error } = await supabase
       .from('auction')
       .select(
-        `        
-          product: (
-            title,
-            product_id,
-            exhibit_user_id,
-            product_image (
-              image_url
-            )
-          ),
-
-          bid_history!BidHistory_auction_id_fkey (
-            bid_user_id,
-            bid_price,
-            profiles (
-              nickname
-            )
-          )
         `
+    product:product_id (
+      product_id,
+      title,
+      exhibit_user_id,
+      product_image (
+        image_url
       )
-      .eq('auction_id', winnigBidValue.auction_id)
+    ),
+    bid_history!BidHistory_auction_id_fkey (
+      bid_user_id,
+      bid_price,
+      profiles!bid_history_bid_user_id_fkey (
+        nickname
+      )
+    )
+  `
+      )
+      .eq('auction_id', winnigBidValue.auction_id) // 변수명 통일
       .returns<MyCustomAuctionWithJoinType[]>();
 
     if (error || !PushAlarmData) {
