@@ -22,6 +22,13 @@ export interface MessageProps {
   avatar?: string;
 }
 
+export interface MessageRequest {
+  chatRoomId: string;
+  message?: string;
+  location?: string;
+  images?: ChatImage[];
+}
+
 export interface AuctionInfoData {
   auctionId: string;
   image: string;
@@ -44,4 +51,11 @@ export interface CreateSystemMessagePayload {
   imgUrl: string;
   price: number;
   title: string;
+}
+
+export interface ChatImage {
+  id: string;
+  file: File | null;
+  preview: string;
+  isConverted?: boolean;
 }
