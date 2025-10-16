@@ -9,6 +9,7 @@ import { Camera, Plus } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatImage } from '../types';
 import { convertHeicToWebP } from '@/shared/lib/convertHeicToWebP';
+import { toast } from '@repo/ui/components/Toast/Sonner';
 
 interface ImageUploadForChatProps {
   onImagesChange: (images: ChatImage[]) => void;
@@ -21,6 +22,7 @@ const ImageUploadForChat = ({ onImagesChange, open = false, onClose }: ImageUplo
   const [isConverting, setIsConverting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const MAX_IMAGES = 9;
 
   const notifyParent = useCallback(
     (updatedImages: ChatImage[]) => {
@@ -39,8 +41,16 @@ const ImageUploadForChat = ({ onImagesChange, open = false, onClose }: ImageUplo
     if (!files) return;
     onClose?.();
 
+    const availableSlots = MAX_IMAGES - images.length;
+    let newFiles = Array.from(files);
+
+    if (newFiles.length > availableSlots) {
+      newFiles = newFiles.slice(0, availableSlots);
+      toast({ content: `한 번에 전송할 수 있는 이미지는 최대 ${MAX_IMAGES}장입니다.` });
+    }
+
     const processedImages: ChatImage[] = await Promise.all(
-      Array.from(files).map(async (f, i) => {
+      newFiles.map(async (f, i) => {
         let file: File = f;
         let isConverted = false;
 
@@ -62,7 +72,7 @@ const ImageUploadForChat = ({ onImagesChange, open = false, onClose }: ImageUplo
       })
     );
 
-    onImagesChange(processedImages);
+    setImages(processedImages);
 
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
