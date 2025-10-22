@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     const { data: proposalData, error: proposalError } = await supabase
       .from('proposal')
       .select(
-        `s
+        `
         proposer_id,
         proposed_price,
         auction_id,

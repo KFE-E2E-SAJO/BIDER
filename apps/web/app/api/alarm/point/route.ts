@@ -33,20 +33,22 @@ export async function POST(req: NextRequest) {
       }
 
       user_id = data.user_id;
-
-      //포인트 알림 전송
-      const { error: exhibitAlarmError } = await sendNotification(
-        user_id,
-        'point',
-        'pointAdded',
-        { amount: point },
-        pointValue.type === 'signup' ? { allowWithoutToken: true } : undefined
-      );
-
-      if (exhibitAlarmError) {
-        throw new Error(` 출품자 포인트 알림 전송 실패: ${exhibitAlarmError}`);
-      }
     }
+
+    //포인트 알림 전송
+    const { error: exhibitAlarmError } = await sendNotification(
+      user_id,
+      'point',
+      'pointAdded',
+      { amount: point },
+      pointValue.type === 'signup' ? { allowWithoutToken: true } : undefined
+    );
+
+    if (exhibitAlarmError) {
+      throw new Error(` 출품자 포인트 알림 전송 실패: ${exhibitAlarmError}`);
+    }
+
+    return NextResponse.json({ success: true, message: '알림 전송 완료' });
   } catch (err) {
     console.error('알림 전송 오류:', err);
     return NextResponse.json({ error: '알림 전송 실패' }, { status: 500 });
