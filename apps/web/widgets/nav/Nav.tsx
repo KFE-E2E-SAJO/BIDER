@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import AlertBadge from '@/shared/ui/badge/AlertBadge';
 import { useUnreadMessagesCount } from '@/features/chat/nav/api/useUnreadMessagesCount';
+import { useUnreadStore } from '@/features/chat/nav/model/unreadStore';
 
 interface NavItems {
   href: string;
@@ -55,8 +56,10 @@ const navItems: NavItems[] = [
 
 const Nav = () => {
   const pathname = usePathname();
-  const unreadCount = useUnreadMessagesCount();
+  const unreadCount = useUnreadStore((state) => state.count);
   const hasNewChat = unreadCount > 0; //새로운 채팅 여부 받아오기
+
+  useUnreadMessagesCount();
 
   return (
     <nav className="bg-neutral-0 p-box fixed bottom-0 left-1/2 z-20 flex w-full max-w-[600px] translate-x-[-50%] items-baseline justify-between border-t border-neutral-100 pb-[40px] pt-[13px]">
