@@ -54,13 +54,13 @@ const ImageUploadForChat = ({ onImagesChange, open = false, onClose }: ImageUplo
         let file: File = f;
         let isConverted = false;
 
-        if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
-          try {
+        try {
+          if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
             file = await convertHeicToWebP(file);
             isConverted = true;
-          } catch (error) {
-            console.error(`HEIC 변환 실패 (${file.name}):`, error);
           }
+        } catch (error) {
+          console.warn(`HEIC 변환 실패, 원본으로 대체: ${file.name}`);
         }
 
         return {
@@ -72,11 +72,19 @@ const ImageUploadForChat = ({ onImagesChange, open = false, onClose }: ImageUplo
       })
     );
 
-    setImages(processedImages);
+    // 기존 이미지 유지
+    setImages((prev) => [...prev, ...processedImages]);
 
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
+
+  // revoke는 unmount 시점에만
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => URL.revokeObjectURL(img.preview));
+    };
+  }, []);
 
   const handleGallerySelect = () => {
     if (fileInputRef.current && !isConverting) {
