@@ -32,16 +32,17 @@ export default function ImageGrid({ images, onClick }: ImageGridProps) {
           style={{ gridTemplateColumns: `repeat(${row.length}, 1fr)` }}
         >
           {row.map(() => {
+            const currentIndex = imgIndex;
             const img = images[imgIndex++];
             return (
               <div
                 key={img?.image_id}
                 className="relative cursor-pointer bg-neutral-200"
-                onClick={() => onClick(imgIndex - 1)}
+                onClick={() => onClick(currentIndex)}
               >
                 <img
                   src={img?.image_url}
-                  alt={`chat-img-${imgIndex - 1}`}
+                  alt={`chat-img-${currentIndex}`}
                   className="h-full w-full object-cover"
                 />
               </div>
