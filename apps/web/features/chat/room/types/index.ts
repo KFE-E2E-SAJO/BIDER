@@ -1,4 +1,5 @@
-import { MessageWithProfile } from '@/entities/message/model/types';
+import { MessageWithImage, MessageWithProfile } from '@/entities/message/model/types';
+import { MessageImage } from '@/entities/messageImage/model/types';
 import { SystemMessageWithNickname } from '@/entities/systemMessage/model/types';
 
 // Supabase 실시간 페이로드 타입 정의
@@ -12,7 +13,7 @@ export interface RealtimeMessagePayload {
   errors: string[];
 }
 export interface MessageProps {
-  text: string;
+  text: string | null | undefined;
   showTime: boolean;
   isRead?: boolean;
   showAvatar?: boolean;
@@ -20,6 +21,8 @@ export interface MessageProps {
   className?: string;
   time: string;
   avatar?: string;
+  isImage?: boolean;
+  images?: MessageImage[];
 }
 
 export interface MessageRequest {
@@ -41,7 +44,7 @@ export interface AuctionInfoData {
 }
 
 export type CombinedMessage =
-  | (MessageWithProfile & { messageType: 'user' })
+  | (MessageWithImage & { messageType: 'user' })
   | (SystemMessageWithNickname & { messageType: 'system' });
 
 export interface CreateSystemMessagePayload {

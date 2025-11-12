@@ -1,3 +1,4 @@
+import { MessageImage } from '@/entities/messageImage/model/types';
 import { Profiles } from '@/entities/profiles/model/types';
 
 type MessageType = 'text' | 'image';
@@ -14,4 +15,8 @@ export interface Message {
 
 export interface MessageWithProfile extends Message {
   profile?: Profiles;
+}
+
+export interface MessageWithImage extends MessageWithProfile {
+  images: MessageImage[];
 }

@@ -150,6 +150,8 @@ const MessageList = ({
                   time={message.created_at}
                   isRead={message.is_read}
                   isLast={isLastMessage}
+                  isImage={message.message_type === 'image'}
+                  images={message.images}
                 />
               ) : (
                 <YourMessage
@@ -168,6 +170,8 @@ const MessageList = ({
                   showAvatar={isDifferentDay || !isSameUserTalking}
                   time={message.created_at}
                   avatar={message.profile?.profile_img}
+                  isImage={message.message_type === 'image'}
+                  images={message.images}
                 />
               )}
             </div>
