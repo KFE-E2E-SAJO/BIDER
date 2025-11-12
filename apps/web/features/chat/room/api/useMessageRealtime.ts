@@ -2,11 +2,12 @@ import { useCallback, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { decodeShortId } from '@/shared/lib/shortUuid';
 import { useAuthStore } from '@/shared/model/authStore';
-import { MessageWithProfile } from '@/entities/message/model/types';
+import { MessageWithImage } from '@/entities/message/model/types';
 import { RealtimeMessagePayload } from '../types';
 import { Profiles } from '@/entities/profiles/model/types';
 import { createClient } from '@/shared/lib/supabase/client';
 import { anonSupabase } from '@/shared/lib/supabaseClient';
+import { MessageImage } from '@/entities/messageImage/model/types';
 
 export const useMessageRealtime = (chatRoomId: string) => {
   const queryClient = useQueryClient();
@@ -21,60 +22,71 @@ export const useMessageRealtime = (chatRoomId: string) => {
 
       if (payload.eventType === 'INSERT') {
         // payload.new는 Message 타입만 가지고 있으므로, profile 정보를 직접 가져와야 함
-        const rawMessage = payload.new as MessageWithProfile;
+        const rawMessage = payload.new as MessageWithImage;
         if (!rawMessage) {
           console.warn('INSERT 페이로드에 새 메시지 데이터가 없습니다.');
           return;
         }
 
-        let messageWithProfile: MessageWithProfile = rawMessage;
+        let newMessage: typeof rawMessage & Partial<{ profile: Profiles; images: MessageImage[] }> =
+          { ...rawMessage };
 
-        // sender_id를 사용하여 profiles 테이블에서 프로필 정보 가져오기
-        if (rawMessage.sender_id) {
-          try {
-            const { data: profileData, error: profileError } = await anonSupabase
-              .from('profiles')
-              .select('profile_img, nickname') // 필요한 프로필 필드만 선택
-              .eq('user_id', rawMessage.sender_id)
-              .single();
+        // 상대 프로필과 이미지 데이터를 병렬로 가져오기
+        const profilePromise =
+          rawMessage.sender_id !== userId
+            ? anonSupabase
+                .from('profiles')
+                .select('profile_img, nickname')
+                .eq('user_id', rawMessage.sender_id)
+                .single()
+            : Promise.resolve({ data: null, error: null });
 
-            if (profileError) {
-              console.error('프로필 정보 가져오기 에러:', profileError);
-            } else if (profileData) {
-              messageWithProfile = {
-                ...rawMessage,
-                profile: profileData as Profiles, // 가져온 프로필 데이터를 할당
-              };
-            }
-          } catch (e) {
-            console.error('프로필 가져오기 비동기 에러:', e);
+        const imagePromise =
+          rawMessage.message_type === 'image'
+            ? supabase
+                .from('message_image')
+                .select('*')
+                .eq('message_id', rawMessage.message_id)
+                .order('order_index')
+            : Promise.resolve({ data: null, error: null });
+
+        try {
+          const [profileResult, imageResult] = await Promise.all([profilePromise, imagePromise]);
+
+          if (profileResult.data) {
+            newMessage.profile = profileResult.data as Profiles;
           }
+          if (imageResult.data) {
+            newMessage.images = imageResult.data as MessageImage[];
+          }
+        } catch (e) {
+          console.error('메시지 추가 데이터 가져오기 에러:', e);
         }
 
         // 새 메시지 추가
-        queryClient.setQueryData(queryKey, (oldData: MessageWithProfile[] | undefined) => {
+        queryClient.setQueryData(queryKey, (oldData: MessageWithImage[] | undefined) => {
           if (!oldData) {
             queryClient.invalidateQueries({ queryKey });
             return oldData;
           }
 
           // 중복 방지
-          const exists = oldData.some((msg) => msg.message_id === messageWithProfile.message_id);
+          const exists = oldData.some((msg) => msg.message_id === newMessage.message_id);
           if (exists) {
             return oldData;
           }
 
-          return [...oldData, messageWithProfile];
+          return [...oldData, newMessage];
         });
       } else if (payload.eventType === 'UPDATE') {
         // 메시지 업데이트 (읽음 상태 등)
-        queryClient.setQueryData(queryKey, (oldData: MessageWithProfile[] | undefined) => {
+        queryClient.setQueryData(queryKey, (oldData: MessageWithImage[] | undefined) => {
           if (!oldData) {
             queryClient.invalidateQueries({ queryKey });
             return oldData;
           }
 
-          const updatedMessage = payload.new as MessageWithProfile;
+          const updatedMessage = payload.new as MessageWithImage;
 
           const updatedData = oldData.map((msg) =>
             msg.message_id === updatedMessage.message_id ? { ...msg, ...updatedMessage } : msg

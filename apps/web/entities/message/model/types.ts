@@ -18,5 +18,5 @@ export interface MessageWithProfile extends Message {
 }
 
 export interface MessageWithImage extends MessageWithProfile {
-  images: MessageImage[];
+  images?: MessageImage[];
 }
