@@ -10,7 +10,7 @@ import {
 } from '@repo/ui/components/Dialog/Dialog';
 import { Camera, LoaderCircle, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { convertAndFixOrientation } from './convertAndFixOrientation';
+import { convertHeicToWebP } from './convertHeicToWebP';
 
 export interface UploadedImage {
   id: string;
@@ -72,7 +72,7 @@ const ImageUploadPreview = ({ exImages, onImagesChange }: ImageUploadPreviewProp
           // HEIC 파일인 경우 JPG로 변환
           if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
             try {
-              processedFile = await convertAndFixOrientation(file);
+              processedFile = await convertHeicToWebP(file);
               isConverted = true;
             } catch (error) {
               console.error(`HEIC 변환 실패 (${file.name}):`, error);

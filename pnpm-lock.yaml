@@ -239,9 +239,6 @@ importers:
       '@tanstack/eslint-plugin-query':
         specifier: ^5.81.2
         version: 5.81.2(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.2)
-      '@types/blueimp-load-image':
-        specifier: ^5.16.6
-        version: 5.16.6
       '@types/lodash':
         specifier: ^4.17.19
         version: 4.17.20
@@ -2197,9 +2194,6 @@ packages:
 
   '@types/babel__traverse@7.20.7':
     resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
-
-  '@types/blueimp-load-image@5.16.6':
-    resolution: {integrity: sha512-e7s6CdDCUoBQdCe62Q6OS+DF68M8+ABxCEMh2Isjt4Fl3xuddljCHMN8mak48AMSVGGwUUtNRaZbkzgL5PEWew==}
 
   '@types/chai@5.2.2':
     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
@@ -7459,8 +7453,6 @@ snapshots:
   '@types/babel__traverse@7.20.7':
     dependencies:
       '@babel/types': 7.28.1
-
-  '@types/blueimp-load-image@5.16.6': {}
 
   '@types/chai@5.2.2':
     dependencies:
