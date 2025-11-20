@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         const buffer = Buffer.from(arrayBuffer);
 
         // sharp를 사용하여 WebP로 변환
-        finalBuffer = await sharp(buffer).toFormat('webp', { quality: 90 }).toBuffer();
+        finalBuffer = await sharp(buffer).rotate().toFormat('webp', { quality: 90 }).toBuffer();
       }
 
       const { error: uploadError } = await supabase.storage
