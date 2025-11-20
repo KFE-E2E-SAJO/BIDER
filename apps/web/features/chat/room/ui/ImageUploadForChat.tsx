@@ -8,7 +8,7 @@ import {
 import { Camera, Plus } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatImage } from '../types';
-import { convertAndFixOrientation } from '@/shared/lib/convertAndFixOrientation';
+import { convertHeicToWebP } from '@/shared/lib/convertHeicToWebP';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 
 interface ImageUploadForChatProps {
@@ -56,7 +56,7 @@ const ImageUploadForChat = ({ onImagesChange, open = false, onClose }: ImageUplo
 
         try {
           if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
-            file = await convertAndFixOrientation(file);
+            file = await convertHeicToWebP(file);
             isConverted = true;
           }
         } catch (error) {
