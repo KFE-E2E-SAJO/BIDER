@@ -41,6 +41,7 @@
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tanstack/eslint-plugin-query": "^5.81.2",
+    "@types/blueimp-load-image": "^5.16.6",
     "@types/lodash": "^4.17.19",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
