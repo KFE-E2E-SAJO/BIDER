@@ -331,7 +331,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ mode, shortId }) => {
             <div className="flex flex-col gap-[10px]">
               <div className="typo-caption-regular text-neutral-700">
                 {mode === 'create'
-                  ? '*지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.'
+                  ? '⁕ 지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.'
                   : '⁕ 지도의 핀을 이동해주시고, 입력창에 상세 주소를 입력해주세요.'}
               </div>
               <GoogleMap
