@@ -1,9 +1,11 @@
 'use client';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { createClient } from '@/shared/lib/supabase/client';
 import { validateFullEmail } from '@/shared/lib/validation/email';
 import { toast } from '@repo/ui/components/Toast/Sonner';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+const supabase = createClient();
 
 export const useFindId = () => {
   const [inputValue, setInputValue] = useState<string>('');

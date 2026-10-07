@@ -2,7 +2,7 @@ import { BidHistory } from '@/entities/bidHistory/model/types';
 import { SECRET_PRICE } from '@/features/auction/list/constants';
 import { AUCTION_STATUS } from '@/shared/consts/auctionStatus';
 import getUserId from '@/shared/lib/getUserId';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {

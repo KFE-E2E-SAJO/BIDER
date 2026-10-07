@@ -1,9 +1,11 @@
 'use client';
 
-import { supabase } from '@/shared/lib/supabaseClient';
+import { createClient } from '@/shared/lib/supabase/client';
 import { passwordSchema } from '@/shared/lib/validation/signupSchema';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+const supabase = createClient();
 
 export const useResetPw = () => {
   const [newPassword, setNewPassword] = useState('');

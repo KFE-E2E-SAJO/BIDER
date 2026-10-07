@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { decodeShortId } from '@/shared/lib/shortUuid';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ shortId: string }> }) {

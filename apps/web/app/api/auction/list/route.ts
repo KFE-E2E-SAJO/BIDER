@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { searcher } from '@/features/search/lib/utils';
 import { getDistanceKm } from '@/features/product/lib/utils';
 import { AuctionList } from '@/entities/auction/model/types';

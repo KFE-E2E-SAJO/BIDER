@@ -4,7 +4,7 @@ import { ProductImage } from '@/entities/productImage/model/types';
 import { Profiles } from '@/entities/profiles/model/types';
 import getUserId from '@/shared/lib/getUserId';
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { NextRequest, NextResponse } from 'next/server';
 
 type RawRow = Omit<

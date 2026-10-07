@@ -6,7 +6,6 @@ import { MessageWithImage } from '@/entities/message/model/types';
 import { RealtimeMessagePayload } from '../types';
 import { Profiles } from '@/entities/profiles/model/types';
 import { createClient } from '@/shared/lib/supabase/client';
-import { anonSupabase } from '@/shared/lib/supabaseClient';
 import { MessageImage } from '@/entities/messageImage/model/types';
 
 export const useMessageRealtime = (chatRoomId: string) => {
@@ -61,7 +60,7 @@ export const useMessageRealtime = (chatRoomId: string) => {
         // 프로필 및 이미지 데이터를 병렬로 가져오기
         const profilePromise =
           rawMessage.sender_id !== userId
-            ? anonSupabase
+            ? supabase
                 .from('profiles')
                 .select('profile_img, nickname')
                 .eq('user_id', rawMessage.sender_id)

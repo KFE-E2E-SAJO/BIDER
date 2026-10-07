@@ -2,7 +2,7 @@
 
 import { SecretViewHistory } from '@/entities/auction/model/types';
 import getUserId from '@/shared/lib/getUserId';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 
 export default async function checkSecretViewHistory(
   auctionId: string

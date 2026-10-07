@@ -1,7 +1,7 @@
 'use server';
 
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { AuctionInfoData } from '../types';
 import { getYourNickName } from './getYourNickName';
 

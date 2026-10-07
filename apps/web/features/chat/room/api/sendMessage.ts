@@ -2,7 +2,7 @@
 
 import getUserId from '@/shared/lib/getUserId';
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { MessageRequest } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';

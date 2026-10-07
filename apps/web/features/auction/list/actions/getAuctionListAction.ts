@@ -6,7 +6,7 @@ import { AuctionListParams, AuctionListResponse } from '@/features/auction/list/
 import { getDistanceKm } from '@/features/product/lib/utils';
 import { searcher } from '@/features/search/lib/utils';
 import getUserId from '@/shared/lib/getUserId';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 
 interface GetAuctionListActionProps {
   limit?: number;

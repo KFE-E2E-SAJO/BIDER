@@ -1,7 +1,7 @@
 'use server';
 
 import getUserId from '@/shared/lib/getUserId';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 
 export async function saveSecretViewHistory(auctionId: string) {
   const user_id = await getUserId();

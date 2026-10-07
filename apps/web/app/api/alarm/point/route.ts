@@ -1,6 +1,6 @@
 import { sendNotification } from '@/app/actions';
 import { getPointValue } from '@/features/point/lib/utils';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {

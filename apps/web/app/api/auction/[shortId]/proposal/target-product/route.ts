@@ -1,6 +1,6 @@
 import getUserId from '@/shared/lib/getUserId';
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { NextRequest, NextResponse } from 'next/server';
 import shortUUID from 'short-uuid';
 
