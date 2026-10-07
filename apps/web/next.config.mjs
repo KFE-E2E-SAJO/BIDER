@@ -25,7 +25,7 @@ const nextConfig = {
   transpilePackages: [],
 
   images: {
-    domains: ['nrxemenkpeejarhejbbk.supabase.co', 'maps.googleapis.com'],
+    domains: ['qzmybdoqbshgqlbpakzx.supabase.co', 'maps.googleapis.com'],
   },
 };
 
