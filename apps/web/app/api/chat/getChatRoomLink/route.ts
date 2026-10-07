@@ -1,6 +1,6 @@
 import getUserId from '@/shared/lib/getUserId';
 import { decodeShortId, encodeUUID } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {

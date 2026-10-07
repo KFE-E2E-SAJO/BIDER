@@ -1,6 +1,8 @@
-import { supabase } from '@/shared/lib/supabaseClient';
+import { createClient } from '@/shared/lib/supabase/client';
 import { useAuthStore } from '@/shared/model/authStore';
 import { useEffect, useState } from 'react';
+
+const supabase = createClient();
 
 export const useAlarmCount = () => {
   const [unreadAlarmCount, setUnreadAlarmCount] = useState(0);

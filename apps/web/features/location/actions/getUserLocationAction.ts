@@ -1,5 +1,5 @@
 'use server';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import type { LocationWithAddress } from '@/features/location/types';
 import getUserId from '@/shared/lib/getUserId';
 import { ProfileLocationData } from '@/entities/profiles/model/types';

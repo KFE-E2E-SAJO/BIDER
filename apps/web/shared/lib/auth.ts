@@ -1,7 +1,9 @@
 'use Client';
 
 import { createPointByReason } from '@/features/point/api/createPointByReason';
-import { supabase } from './supabaseClient';
+import { createClient } from './supabase/client';
+
+const supabase = createClient();
 
 export interface SignUpData {
   email: string;

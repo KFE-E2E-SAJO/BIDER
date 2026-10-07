@@ -6,7 +6,7 @@ import {
   PushAlarmType,
 } from '@/features/alarm/setting/lib/getPushAlarmMessage';
 import { createServerClient } from '@supabase/ssr';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { cookies } from 'next/headers';
 import webpush from 'web-push';
 

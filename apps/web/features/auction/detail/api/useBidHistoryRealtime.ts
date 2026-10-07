@@ -1,6 +1,8 @@
+import { createClient } from '@/shared/lib/supabase/client';
 import { useEffect } from 'react';
-import { anonSupabase } from '@/shared/lib/supabaseClient';
 import { BidHistory, BidHistoryWithUserNickname } from '@/entities/bidHistory/model/types';
+
+const supabase = createClient();
 
 export function useBidHistoryRealtime({
   auctionId,
@@ -10,7 +12,7 @@ export function useBidHistoryRealtime({
   onNewBid: (newBid: BidHistoryWithUserNickname) => void;
 }) {
   useEffect(() => {
-    const channel = anonSupabase
+    const channel = supabase
       .channel('bid_history_changes')
       .on(
         'postgres_changes',
@@ -23,7 +25,7 @@ export function useBidHistoryRealtime({
         async (payload) => {
           const newBid = payload.new;
 
-          const { data: profiles, error } = await anonSupabase
+          const { data: profiles, error } = await supabase
             .from('profiles')
             .select('nickname')
             .eq('user_id', newBid.bid_user_id)

@@ -3,7 +3,7 @@
 import { MessageWithImage } from '@/entities/message/model/types';
 import { MessageImage } from '@/entities/messageImage/model/types';
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 
 export const getMessages = async (chatRoomId: string) => {
   const fullChatRoomId = decodeShortId(chatRoomId);

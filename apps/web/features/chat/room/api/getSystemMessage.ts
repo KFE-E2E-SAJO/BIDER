@@ -2,7 +2,7 @@
 
 import { SystemMessageWithNickname } from '@/entities/systemMessage/model/types';
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 
 export const getSystemMessage = async (
   chatRoomId: string

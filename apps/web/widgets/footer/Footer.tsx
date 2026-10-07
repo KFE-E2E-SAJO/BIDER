@@ -2,7 +2,6 @@
 
 import { Button } from '@repo/ui/components/Button/Button';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/shared/lib/supabaseClient';
 import { useAuthStore } from '@/shared/model/authStore';
 
 const Footer = () => {

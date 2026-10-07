@@ -4,7 +4,7 @@ import { getDistanceKm } from '@/features/product/lib/utils';
 import getUserId from '@/shared/lib/getUserId';
 import { MapAuction } from '@/entities/auction/model/types';
 import { AuctionMarkerResponse } from '@/features/auction/list/types';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { SECRET_PRICE } from '@/features/auction/list/constants';
 
 export async function getAuctionMarkersAction(): Promise<AuctionMarkerResponse[] | null> {

@@ -1,4 +1,4 @@
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { getDistanceKm } from '@/features/product/lib/utils';
 import { NextResponse } from 'next/server';
 import { MapAuction } from '@/entities/auction/model/types';

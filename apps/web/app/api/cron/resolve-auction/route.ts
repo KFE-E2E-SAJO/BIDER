@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { createPointByReason } from '@/features/point/api/createPointByReason';
 import { createSystemMessage } from '@/features/chat/room/api/createSystemMessage';
 import { getChatRoomLink } from '@/features/chat/room/model/getChatRoomLink';

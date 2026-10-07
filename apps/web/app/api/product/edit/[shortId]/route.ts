@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { decodeShortId } from '@/shared/lib/shortUuid';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 import { NextResponse } from 'next/server';
 import { ProductForEdit } from '@/entities/product/model/types';
 import sharp from 'sharp';

@@ -6,7 +6,9 @@ import { toast } from '@repo/ui/components/Toast/Sonner';
 import { completeSignUp } from '@/shared/lib/auth';
 import { signupSchema } from '@/shared/lib/validation/signupSchema';
 import { emailSchema } from '@/shared/lib/validation/signupSchema';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { createClient } from '@/shared/lib/supabase/client';
+
+const supabase = createClient();
 
 export const useSignUpForm = () => {
   const router = useRouter();

@@ -1,6 +1,6 @@
 'use server';
 
-import { supabase } from '@/shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseAdmin';
 
 export const getProductInfo = async (productId: string) => {
   const { data, error } = await supabase
